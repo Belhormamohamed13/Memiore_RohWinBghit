@@ -1,0 +1,226 @@
+@startuml fig_class_diagram
+skinparam style strictuml
+skinparam classAttributeIconSize 0
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 70
+skinparam ArrowColor #444444
+
+' Couleurs par domaine
+skinparam class {
+  BorderColor #555555
+  BackgroundColor White
+  BackgroundColor<<Identity>> #BBDEFB
+  BackgroundColor<<Trip>> #C8E6C9
+  BackgroundColor<<Booking>> #FFE0B2
+  BackgroundColor<<Wallet>> #F8BBD0
+  BackgroundColor<<Comm>> #FFF9C4
+  BorderColor<<Identity>> #1565C0
+  BorderColor<<Trip>> #2E7D32
+  BorderColor<<Booking>> #E65100
+  BorderColor<<Wallet>> #AD1457
+  BorderColor<<Comm>> #F9A825
+}
+
+title Diagramme de classes — RohWinBghit\n(Vue domaine, alignée sur le schéma PostgreSQL)
+
+' ===== IDENTITÉ (bleu) =====
+class User <<Identity>> {
+  + id : UUID
+  + phone : String
+  + email : String
+  + first_name : String
+  + last_name : String
+  + role : String
+  + identity_status : String
+  + driver_score : Float
+  --
+  + register()
+  + verifyOtp()
+  + completeKyc()
+}
+
+class IdentityVerification <<Identity>> {
+  + id : UUID
+  + user_id : UUID
+  + status : String
+  + face_match_score : Float
+  + liveness_score : Float
+  + antispoof_score : Float
+  + reviewed_by : UUID
+  --
+  + submit()
+  + processAI()
+  + reviewManually()
+}
+
+class FraudEvent <<Identity>> {
+  + id : UUID
+  + user_id : UUID
+  + verification_id : UUID
+  + event_type : String
+  + severity : String
+  + reason : String
+  --
+  + flag()
+  + investigate()
+}
+
+' ===== TRAJET (vert) =====
+class Vehicle <<Trip>> {
+  + id : UUID
+  + user_id : UUID
+  + make : String
+  + model : String
+  + license_plate_encrypted : String
+  + is_verified : Boolean
+  --
+  + register()
+  + deactivate()
+}
+
+class Trip <<Trip>> {
+  + id : UUID
+  + driver_id : UUID
+  + vehicle_id : UUID
+  + from_wilaya_code : Integer
+  + to_wilaya_code : Integer
+  + departure_date : Date
+  + price_per_seat : Float
+  + available_seats : Integer
+  + status : String
+  --
+  + publish()
+  + cancel()
+}
+
+class TripRequest <<Trip>> {
+  + id : UUID
+  + passenger_id : UUID
+  + from_wilaya_code : Integer
+  + to_wilaya_code : Integer
+  + date : Date
+  + seats : Integer
+  + status : String
+  --
+  + create()
+  + match()
+  + expire()
+}
+
+class Wilaya <<Trip>> {
+  + code : Integer
+  + name : String
+  + latitude : Float
+  + longitude : Float
+}
+
+' ===== RÉSERVATION & PAIEMENT (orange) =====
+class Booking <<Booking>> {
+  + id : UUID
+  + trip_id : UUID
+  + passenger_id : UUID
+  + num_seats : Integer
+  + total_price : Float
+  + status : String
+  + payment_method : String
+  --
+  + confirm()
+  + cancel()
+}
+
+class Payment <<Booking>> {
+  + id : UUID
+  + booking_id : UUID
+  + method : String
+  + amount : Float
+  + status : String
+  + transaction_ref : String
+  --
+  + process()
+  + refund()
+}
+
+' ===== PORTEFEUILLE (rose) =====
+class Wallet <<Wallet>> {
+  + id : UUID
+  + user_id : UUID
+  + balance : Float
+  + currency : String
+  --
+  + credit()
+  + debit()
+}
+
+class WalletTransaction <<Wallet>> {
+  + id : UUID
+  + wallet_id : UUID
+  + type : String
+  + amount : Float
+  + balance_after : Float
+}
+
+' ===== COMMUNICATION (jaune) =====
+class Chat <<Comm>> {
+  + id : UUID
+  + trip_id : UUID
+  + last_message_at : Date
+}
+
+class Message <<Comm>> {
+  + id : UUID
+  + chat_id : UUID
+  + sender_id : UUID
+  + content : String
+  + read_at : Date
+}
+
+class Notification <<Comm>> {
+  + id : UUID
+  + user_id : UUID
+  + title : String
+  + message : String
+  + type : String
+  + is_read : Boolean
+}
+
+class Review <<Comm>> {
+  + id : UUID
+  + booking_id : UUID
+  + reviewer_id : UUID
+  + reviewee_id : UUID
+  + rating : Integer
+  + comment : String
+}
+
+' ===== RELATIONS =====
+User "1" -- "0..*" Vehicle : "possède"
+User "1" -- "0..*" Trip : "conduit"
+User "1" -- "0..*" Booking : "réserve"
+User "1" -- "0..*" TripRequest : "demande"
+User "1" -- "0..1" Wallet : "détient"
+User "1" -- "0..*" Notification : "reçoit"
+User "1" -- "0..*" IdentityVerification : "soumet"
+User "1" -- "0..*" FraudEvent : "déclenche"
+User "1" -- "0..*" Review : "écrit"
+
+IdentityVerification "1" -- "0..1" FraudEvent : "peut générer"
+
+Trip "1" -- "1" Vehicle : "utilise"
+Trip "1" *-- "0..*" Booking : "contient"
+Trip "1" -- "0..1" Chat : "associé à"
+
+Booking "1" -- "1" Payment : "génère"
+Booking "1" -- "0..2" Review : "donne lieu à"
+
+Wallet "1" *-- "0..*" WalletTransaction : "historique"
+
+Chat "1" *-- "0..*" Message : "contient"
+
+Trip "0..*" --> "2" Wilaya : "départ / arrivée"
+TripRequest "0..*" --> "2" Wilaya : "départ / arrivée"
+
+@enduml

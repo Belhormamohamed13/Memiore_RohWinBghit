@@ -1,0 +1,42 @@
+@startuml fig2_4_sequence_reservation
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+
+actor "Passager" as Passager
+participant "App Mobile" as Mobile #BBDEFB
+participant "Express :8080" as Express #C8E6C9
+participant "SurgeService" as Surge #FFF176
+database "Redis" as Redis #CE93D8
+participant "PaymentFactory" as PayFactory #FFE0B2
+participant "FraudDetect" as Fraud #FFCDD2
+database "PostgreSQL" as PG #CE93D8
+participant "Socket.IO" as Socket #B2EBF2
+
+Passager -> Mobile : Selectionne trajet + methode CIB
+Mobile -> Express : POST /api/bookings\n{trip_id, seats, method:'cib'}
+Express -> Surge : getMultiplier(db, wilayaCode)
+Surge -> Redis : GET rwb:surge:global
+Redis --> Surge : 1.5
+Surge --> Express : multiplier = 1.5
+note over Express : prix = base x 1.5
+Express -> PayFactory : new PaymentFactory()\n.getStrategy('cib')
+PayFactory --> Express : CIBStrategy instance (sandbox)
+Express -> Fraud : analyzeRisk(userId, amount)
+Fraud --> Express : {risk:'low', approved:true}
+Express -> PayFactory : strategy.process({amount, bookingId})
+PayFactory --> Express : {success:true, transactionId}
+Express -> PG : INSERT bookings (confirmed)\nUPDATE trips (seats--)
+PG --> Express : OK
+Express -> Socket : emit booking:confirmed -> passager
+Express -> Socket : emit new:booking -> conducteur
+Express --> Mobile : Ticket + QR Code
+Mobile --> Passager : Confirmation reservation
+
+note over PayFactory
+  3 strategies implementees:
+  CIB (sandbox) / Edahabia (sandbox) / Cash
+  Stripe + PayPal: deps installees,
+  strategies a implementer
+end note
+@enduml

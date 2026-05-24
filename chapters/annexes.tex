@@ -1,0 +1,599 @@
+\chapter{Extrait du schéma SQL PostgreSQL}
+\label{annexe:sql}
+
+\begin{lstlisting}[language=SQL,caption={Extrait de la création des tables principales (identifiants UUID v4)}]
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE users (
+  id                   UUID          PRIMARY KEY DEFAULT uuid_generate_v4(),
+  phone                VARCHAR(20)   UNIQUE NOT NULL,
+  email                VARCHAR(120)  UNIQUE,
+  first_name           VARCHAR(80)   NOT NULL,
+  last_name            VARCHAR(80)   NOT NULL,
+  date_of_birth        DATE,
+  password             VARCHAR(120)  NOT NULL,
+  role                 VARCHAR(20)   NOT NULL DEFAULT 'passenger',
+  verification_status  VARCHAR(20)   NOT NULL DEFAULT 'pending',
+  is_verified          BOOLEAN       NOT NULL DEFAULT false,
+  wilaya_code          INT,
+  created_at           TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+
+CREATE TABLE trips (
+  id                UUID           PRIMARY KEY DEFAULT uuid_generate_v4(),
+  driver_id         UUID           NOT NULL REFERENCES users(id),
+  vehicle_id        UUID           NOT NULL REFERENCES vehicles(id),
+  from_wilaya_id    INT            NOT NULL REFERENCES wilayas(id),
+  to_wilaya_id      INT            NOT NULL REFERENCES wilayas(id),
+  from_city         VARCHAR(120)   NOT NULL,
+  to_city           VARCHAR(120)   NOT NULL,
+  departure_date    DATE           NOT NULL,
+  departure_time    TIME           NOT NULL,
+  price_per_seat    NUMERIC(10,2)  NOT NULL,
+  available_seats   SMALLINT       NOT NULL,
+  total_seats       SMALLINT       NOT NULL,
+  status            VARCHAR(20)    NOT NULL DEFAULT 'active',
+  created_at        TIMESTAMPTZ    NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_trips_route_date ON trips
+  (from_wilaya_id, to_wilaya_id, departure_date);
+\end{lstlisting}
+
+\chapter{Extrait de code --- Factory de paiement}
+\label{annexe:factory}
+
+\begin{lstlisting}[language=Java,caption={Implémentation Node.js du patron \textit{Strategy/Factory} (extrait de \texttt{backend/src/services/patterns/payment/payment.factory.js})}]
+const CIBStrategy      = require('./cib.strategy');
+const EdahabiaStrategy = require('./edahabia.strategy');
+const CashStrategy     = require('./cash.strategy');
+
+class PaymentFactory {
+  constructor(config = {}) {
+    this.strategies = new Map();
+    this.registerStrategy('cib',      new CIBStrategy(config.cib));
+    this.registerStrategy('edahabia', new EdahabiaStrategy(config.edahabia));
+    this.registerStrategy('cash',     new CashStrategy(config.cash));
+  }
+
+  registerStrategy(method, strategy) {
+    this.strategies.set(method.toLowerCase(), strategy);
+  }
+
+  getStrategy(method) {
+    const strategy = this.strategies.get(method.toLowerCase());
+    if (!strategy) throw new Error(`Payment method not supported: ${method}`);
+    return strategy;
+  }
+
+  async processPayment(method, paymentData) {
+    return await this.getStrategy(method).process(paymentData);
+  }
+
+  async refundPayment(method, refundData) {
+    return await this.getStrategy(method).refund(refundData);
+  }
+}
+
+module.exports = PaymentFactory;
+\end{lstlisting}
+
+L'ajout d'une nouvelle méthode de paiement (p.~ex.~Baridi~Mob) consiste à créer une classe \texttt{BaridiStrategy} implémentant l'interface \texttt{process()} / \texttt{refund()}, puis à l'enregistrer dans la factory via \texttt{registerStrategy('baridi', ...)}~: aucun code existant n'est modifié, conformément au principe ouvert/fermé (OCP).
+
+\chapter{Extrait du questionnaire utilisateurs}
+\label{annexe:questionnaire}
+
+\begin{enumerate}
+  \item Quelle est votre fréquence moyenne de déplacement entre wilayas~?
+  \item Quel budget mensuel consacrez-vous aux déplacements longue distance~?
+  \item Avez-vous déjà utilisé une application de covoiturage~? Si oui, laquelle~?
+  \item Quelles sont vos principales préoccupations lors d'un trajet partagé~?
+  \item Quelle méthode de paiement privilégiez-vous (CIB, Edahabia, espèces)~?
+  \item Seriez-vous prêt à utiliser une application exigeant une vérification biométrique d'identité~?
+\end{enumerate}
+
+\chapter{Catalogue complet des captures d'écran}
+\label{annexe:captures}
+
+Ce catalogue rassemble l'intégralité des \textbf{62~écrans} de l'application mobile (31~écrans passager~+~31~écrans conducteur), ainsi que les captures du panneau d'administration.
+
+% ----------------------------------------------------------------
+\section{Parcours passager --- 31 écrans}
+% ----------------------------------------------------------------
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_01_tab_home.png}
+    {\footnotesize D.1 --- Accueil passager\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_02_tab_search.png}
+    {\footnotesize D.2 --- Recherche de trajet\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_03_tab_trips.png}
+    {\footnotesize D.3 --- Mes trajets\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_04_tab_messages.png}
+    {\footnotesize D.4 --- Messagerie\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_05_tab_profile.png}
+    {\footnotesize D.5 --- Profil\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_06_trips_upcoming.png}
+    {\footnotesize D.6 --- Trajets à venir\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_07_trips_past.png}
+    {\footnotesize D.7 --- Trajets passés\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_08_search_results.png}
+    {\footnotesize D.8 --- Résultats de recherche\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_09_trip_details.png}
+    {\footnotesize D.9 --- Détail du trajet\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_10_ticket.png}
+    {\footnotesize D.10 --- Billet numérique\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_11_create_trip_request.png}
+    {\footnotesize D.11 --- Créer demande trajet\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_12_my_trip_requests.png}
+    {\footnotesize D.12 --- Mes demandes de trajet\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_13_public_profile.png}
+    {\footnotesize D.13 --- Profil public\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_14_edit_profile.png}
+    {\footnotesize D.14 --- Modifier profil\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_15_payment_methods.png}
+    {\footnotesize D.15 --- Méthodes de paiement\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_16_add_card.png}
+    {\footnotesize D.16 --- Ajout carte bancaire\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_17_wallet_recharge.png}
+    {\footnotesize D.17 --- Recharge portefeuille\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_18_security_phone.png}
+    {\footnotesize D.18 --- Sécurité du compte\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_19_change_phone_otp.png}
+    {\footnotesize D.19 --- Changement numéro OTP\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_20_language_select.png}
+    {\footnotesize D.20 --- Sélection langue\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_21_referral.png}
+    {\footnotesize D.21 --- Parrainage\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_22_help_center.png}
+    {\footnotesize D.22 --- Centre d'aide\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_23_contact_support.png}
+    {\footnotesize D.23 --- Contacter le support\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_24_terms_legal.png}
+    {\footnotesize D.24 --- CGU et confidentialité\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_25_notifications.png}
+    {\footnotesize D.25 --- Préf. notifications\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_26_live_tracking.png}
+    {\footnotesize D.26 --- Suivi GPS temps réel\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_27_verif_intro.png}
+    {\footnotesize D.27 --- Introduction KYC\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_28_verif_id_capture.png}
+    {\footnotesize D.28 --- Capture CIN\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_29_verif_face_capture.png}
+    {\footnotesize D.29 --- Capture vivacité\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_30_verif_pending.png}
+    {\footnotesize D.30 --- KYC en attente\par}
+\end{minipage}
+\caption{Interfaces passager --- Écrans D.1 à D.30}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_31_verif_rejected.png}
+    {\footnotesize D.31 --- KYC rejeté (passager)\par}
+\end{minipage}
+\caption{Interface passager --- Écran D.31}
+\end{figure}
+
+% ----------------------------------------------------------------
+\section{Parcours conducteur --- 31 écrans}
+% ----------------------------------------------------------------
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_01_tab_dashboard.png}
+    {\footnotesize D.32 --- Dashboard conducteur\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_02_tab_trips.png}
+    {\footnotesize D.33 --- Mes trajets (conducteur)\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_03_tab_publish.png}
+    {\footnotesize D.34 --- Publication trajet\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_04_tab_vehicles.png}
+    {\footnotesize D.35 --- Onglet véhicules\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_05_tab_profile.png}
+    {\footnotesize D.36 --- Profil conducteur\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_06_trip_manage.png}
+    {\footnotesize D.37 --- Gestion du trajet\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_07_earnings.png}
+    {\footnotesize D.38 --- Gains mensuels\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_08_add_vehicle.png}
+    {\footnotesize D.39 --- Ajout véhicule\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_09_edit_vehicle.png}
+    {\footnotesize D.40 --- Modifier véhicule\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_10_documents.png}
+    {\footnotesize D.41 --- Documents véhicule\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_11_wallet.png}
+    {\footnotesize D.42 --- Portefeuille\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_12_trip_requests.png}
+    {\footnotesize D.43 --- Demandes de trajet\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_13_vehicles_list.png}
+    {\footnotesize D.44 --- Liste véhicules\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_14_public_profile.png}
+    {\footnotesize D.45 --- Profil public\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_15_edit_profile.png}
+    {\footnotesize D.46 --- Modifier profil\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_16_payment_methods.png}
+    {\footnotesize D.47 --- Méthodes de paiement\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_17_add_card.png}
+    {\footnotesize D.48 --- Ajout carte bancaire\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_18_wallet_recharge.png}
+    {\footnotesize D.49 --- Recharge portefeuille\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_19_security_phone.png}
+    {\footnotesize D.50 --- Sécurité du compte\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_20_change_phone_otp.png}
+    {\footnotesize D.51 --- Changement numéro OTP\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_21_language_select.png}
+    {\footnotesize D.52 --- Sélection langue\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_22_referral.png}
+    {\footnotesize D.53 --- Parrainage\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_23_help_center.png}
+    {\footnotesize D.54 --- Centre d'aide\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_24_contact_support.png}
+    {\footnotesize D.55 --- Contacter le support\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_25_terms_legal.png}
+    {\footnotesize D.56 --- CGU et confidentialité\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_26_notifications.png}
+    {\footnotesize D.57 --- Préf. notifications\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_27_verif_intro.png}
+    {\footnotesize D.58 --- Introduction KYC\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_28_verif_id_capture.png}
+    {\footnotesize D.59 --- Capture CIN\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_29_verif_face_capture.png}
+    {\footnotesize D.60 --- Capture vivacité\par}
+\end{minipage}\hfill
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_30_verif_pending.png}
+    {\footnotesize D.61 --- KYC en attente\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.30\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_31_verif_rejected.png}
+    {\footnotesize D.62 --- KYC rejeté (conducteur)\par}
+\end{minipage}
+\caption{Interfaces conducteur --- Écrans D.32 à D.62}
+\end{figure}
+
+% ----------------------------------------------------------------
+\section{Panneau d'administration}
+% ----------------------------------------------------------------
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{assets/admin_dashboard.png}
+\caption{D.63 --- Tableau de bord central de l'administration}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assets/admin_kyc.png}
+    {\footnotesize D.64 --- Revue manuelle des dossiers KYC\par}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assets/admin_users.png}
+    {\footnotesize D.65 --- Gestion des utilisateurs\par}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assets/admin_trips.png}
+    {\footnotesize D.66 --- Supervision des trajets\par}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assets/admin_payments.png}
+    {\footnotesize D.67 --- Suivi des transactions\par}
+\end{minipage}
+\caption{Panneau d'administration --- Captures D.63 à D.67}
+\end{figure}
+
+\chapter{Diagrammes de séquence secondaires}
+\label{annexe:sequences_secondaires}
+
+Cette annexe regroupe les diagrammes de séquence modélisant les interactions détaillées pour les fonctionnalités secondaires ou de support de la plateforme.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{fig_sequence_inscription.png}
+\caption{Séquence --- Inscription d'un nouvel utilisateur}
+\label{fig:seq-inscription}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_sequence_authentification.png}
+\caption{Séquence --- Authentification et orientation par rôle}
+\label{fig:seq-authentification}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_sequence_reservation_passager.png}
+\caption{Séquence --- Réservation côté passager}
+\label{fig:seq-reservation-passager}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_sequence_reservation_conducteur.png}
+\caption{Séquence --- Réservation côté conducteur}
+\label{fig:seq-reservation-conducteur}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_sequence_trip_request.png}
+\caption{Séquence --- Demande de trajet (\textit{matching} passager $\to$ conducteurs)}
+\label{fig:seq-trip-request}
+\end{figure}
+
+
+\chapter{Diagramme d'activité global}
+\label{annexe:activite_global}
+
+Cette annexe présente le diagramme d'activité modélisant le parcours global d'un utilisateur sur la plateforme \textit{RohWinBghit}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth,height=0.85\textheight,keepaspectratio]{fig_passenger_flow.png}
+\caption{Diagramme d'activité --- parcours global de la plateforme}
+\label{fig:activite-booking}
+\end{figure}

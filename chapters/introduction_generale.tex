@@ -1,0 +1,39 @@
+\chapter*{Introduction générale}
+\addcontentsline{toc}{chapter}{Introduction générale}
+\markboth{Introduction générale}{}
+
+\section*{Contexte et motivation}
+
+La mobilité intercité constitue l'un des défis structurels majeurs de l'Algérie contemporaine. Avec une superficie de 2~381~741~km² répartie en 69 wilayas et une population dépassant 46,8~millions d'habitants~\cite{ons_2024}, le pays présente un besoin constant de déplacements entre pôles universitaires, centres économiques et zones résidentielles. Les solutions traditionnelles --- taxis intercités, lignes de bus privées --- demeurent fragmentées, onéreuses et asymétriques en information. Parallèlement, la révolution numérique a vu émerger des plateformes de covoiturage transformant les déplacements en services à la demande. Cependant, aucune solution adaptée au contexte algérien n'a atteint une couverture nationale, les offres existantes étant urbaines ou dépourvues d'un modèle économique adapté aux flux inter-wilayas.
+
+\section*{Problématique}
+
+Cette fragmentation de l'offre de transport, confrontée à une demande étudiante et professionnelle croissante, soulève un défi technologique et organisationnel majeur. Elle conduit naturellement à la question centrale de notre recherche~: comment concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée au contexte algérien, capable simultanément d'instaurer un climat de confiance via une vérification d'identité biométrique rigoureuse, de garantir la disponibilité de l'offre, et de supporter les moyens de paiement locaux (CIB, Edahabia, espèces), tout en s'appuyant sur une architecture distribuée et maintenable~?
+
+\section*{Objectifs du travail}
+
+Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}, littéralement \textit{«~va où tu veux~»}) est conçu comme une plateforme mobile intelligente offrant une expérience sécurisée (KYC biométrique), une géolocalisation en temps réel, et un moteur de paiement hybride. Ce mémoire poursuit les objectifs suivants~:
+\begin{enumerate}[leftmargin=1.8em]
+  \item Analyser l'état de l'art du covoiturage et positionner la solution face aux acteurs existants.
+  \item Formaliser les besoins et concevoir une architecture logicielle distribuée (UML).
+  \item Développer une application mobile (React Native) adossée à un back-end Node.js et un microservice IA (FastAPI) pour le KYC.
+  \item Évaluer la viabilité économique du projet par un plan d'affaires.
+\end{enumerate}
+
+\section*{Cadre institutionnel --- Mécanisme «~Un diplôme, une Startup~» (Arrêté 1275)}
+
+Ce travail s'inscrit dans le cadre du mécanisme national «~Un diplôme, une Startup~» (Arrêté interministériel n\textsuperscript{o}~1275 du MESRS). Il propose une solution innovante répondant aux critères d'éligibilité par son ancrage technologique (IA, tarification dynamique), sa viabilité économique, et son intégration de l'écosystème financier algérien. Les aspects juridiques et le plan de développement de la startup sont détaillés dans l'étude technico-économique.
+
+\section*{Organisation du mémoire}
+
+Ce mémoire s'articule autour de quatre chapitres~:
+
+\begin{itemize}[leftmargin=1.8em]
+  \item Le \textbf{Chapitre~1 --- Contexte général et étude de l'existant} dresse l'état de l'art du covoiturage et positionne \textit{RohWinBghit} face aux solutions concurrentes à travers une étude comparative.
+  \item Le \textbf{Chapitre~2 --- Analyse et conception de la solution} détaille la méthodologie, les exigences fonctionnelles et non fonctionnelles, ainsi que la modélisation UML du système.
+  \item Le \textbf{Chapitre~3 --- Réalisation, validation et sécurité du système} documente l'implémentation technique, l'architecture des microservices, les tests et les validations de sécurité.
+  \item Le \textbf{Chapitre~4 --- Étude technico-économique et faisabilité du projet} présente l'étude de faisabilité, incluant le Business Model Canvas et les projections financières.
+\end{itemize}
+
+Enfin, la \textbf{conclusion générale} dresse le bilan des réalisations, discute les difficultés rencontrées et dessine les perspectives d'évolution du projet.
+

@@ -1,0 +1,27 @@
+@startuml fig3_8_kyc_review
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam ActivityBackgroundColor #E8F5E9
+
+start
+:File KYC conducteurs (paginees, filtrable);
+:Profil : Nom / Telephone / Wilaya / Date;
+:Documents : CNI recto/verso + Permis;
+:Scores IA FastAPI :8001 (InsightFace buffalo_l);
+fork
+    :Face Match : 0.94;
+fork again
+    :Liveness : 0.88;
+fork again
+    :Anti-spoof : 0.91;
+end fork
+:Score global = 0.94x0.55 + 0.88x0.25 + 0.91x0.20 = 0.9197;
+note right : Seuils conducteur :\nface >= 0.65\nliveness >= 0.65\nantispoof >= 0.60
+:Notes admin (optionnel);
+if (Decision admin ?) then (Approuver)
+    :#C8E6C9: identity_status = verified\nNotification FCM envoyee;
+else (Rejeter)
+    :#FFCDD2: identity_status = rejected\nMotif + Notification FCM;
+endif
+stop
+@enduml

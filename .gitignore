@@ -1,0 +1,71 @@
+# ─── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ─── Node.js ──────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.node_repl_history
+package-lock.json
+
+# ─── LaTeX auxiliary / build artefacts ───────────────────────────────────────
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.glo
+*.glg
+*.gls
+*.glsdefs
+*.acn
+*.acr
+*.alg
+*.idx
+*.ilg
+*.ind
+*.ist
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.xdv
+*.bbl-SAVE-ERROR
+
+# ─── Compiled PDFs (keep source, skip generated PDFs) ────────────────────────
+# Comment the next two lines if you want to track the compiled PDFs
+# main.pdf
+# annexes_standalone.pdf
+# memoire_rohwinbghit.pdf
+
+# ─── PowerPoint scratch / test output ────────────────────────────────────────
+test_out.pptx
+RohWinBghit_v2.pptx
+
+# ─── Editor / IDE ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
+.env
+.env.local
+
+# ─── Temporary / build cache ──────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+dist/
+build/
+.cache/

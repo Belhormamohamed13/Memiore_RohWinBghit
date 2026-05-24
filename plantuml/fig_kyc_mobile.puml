@@ -1,0 +1,26 @@
+@startuml fig3_2_kyc_mobile
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+
+|Ecran 1 - OTP|
+start
+:Saisir numero +213;
+:Envoyer SMS (Twilio 4.20.0);
+:Saisir code OTP 6 chiffres;
+:Connecte;
+
+|Ecran 2 - Upload CNI|
+:Photo recto CNI +;
+:Photo verso CNI +;
+:Permis de conduire +;
+note right : MLKit OCR\n@infinitered/mlkit\nextraction CIN
+:Continuer;
+
+|Ecran 3 - Liveness Selfie|
+:Cadre oval - Centrez visage;
+note right : InsightFace buffalo_l\nFastAPI :8001
+:Score IA : 0.94 (global pondere);
+note right : Seuils conducteur :\nface >= 0.65\nliveness >= 0.65\nantispoof >= 0.60
+:KYC Approuve;
+stop
+@enduml

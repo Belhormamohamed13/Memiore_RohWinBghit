@@ -1,0 +1,45 @@
+@startuml fig2_3_sequence_kyc
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+actor "Conducteur" as Driver
+participant "App Mobile" as Mobile #BBDEFB
+participant "Express :8080" as Express #C8E6C9
+participant "Verif MW" as VerifMW #A5D6A7
+participant "FastAPI :8001" as FastAPI #FFF176
+participant "Multer /uploads/" as Multer #CE93D8
+database "PostgreSQL" as PG #CE93D8
+
+== Phase 1 : Upload CNI ==
+Driver -> Mobile : Telecharge CNI recto/verso
+Mobile -> Mobile : MLKit OCR - extraction CIN
+Mobile -> Express : POST /api/verification/upload-id
+Express -> VerifMW : Verifier JWT + role driver
+VerifMW --> Express : Autorise
+Express -> Multer : Sauvegarde /uploads/verifications/
+Multer --> Express : URLs securisees (auth-protected)
+Express -> PG : Sauvegarde URLs verifications
+
+== Phase 2 : Liveness + Verification ==
+Driver -> Mobile : Capture selfie liveness (video)
+Mobile -> Express : POST /api/verification/face
+Express -> FastAPI : POST /verify-full\n{cin_recto, liveness_video, role=driver}\n[Header: X-Internal-Secret]
+
+note over FastAPI #FFF9C4
+  Pipeline InsightFace buffalo_l :
+  1. FaceAnalyzer.extract_embedding(CIN)
+  2. average_embedding_from_video(video)
+  3. cosine similarity -> face_score
+  4. LivenessDetector.check_video()
+  5. AntiSpoofDetector.analyze()
+  score = face x0.55 + live x0.25 + spoof x0.20
+  Seuils conducteur:
+  face >= 0.65 / liveness >= 0.65 / antispoof >= 0.60
+end note
+
+FastAPI --> Express : {score_global:0.94, verified:true}
+Express -> PG : UPDATE users SET identity_status='verified'
+Express --> Mobile : KYC approuve
+@enduml

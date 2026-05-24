@@ -1,0 +1,57 @@
+@startuml fig_sequence_reservation_passager
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #444444
+  ActorBorderColor #1565C0
+  ActorBackgroundColor #BBDEFB
+  LifeLineBorderColor #888888
+  ParticipantBorderColor #455A64
+  ParticipantBackgroundColor #ECEFF1
+  ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
+}
+
+title Diagramme de séquence — Réservation côté Passager (RohWinBghit)
+
+actor "r : Passager" as P
+participant "System" as S
+database "BDD" as DB
+
+P -> S : Rechercher des covoiturages\n(filtres : wilaya, date, places)
+S -> DB : Envoyer les données
+DB --> S : Liste des covoiturages disponibles
+S --> P : Afficher les covoiturages disponibles
+
+P -> S : Afficher les détails du covoiturage
+S --> P : Détails (conducteur, prix, itinéraire)
+
+P -> S : Réserver le covoiturage\n(choix du moyen de paiement)
+S -> DB : Créer la réservation (status = pending)
+S --> P : Envoyer une requête et une notification au conducteur
+
+alt Acceptée
+
+  S --> P : Recevoir notification (Requête acceptée)
+
+  P -> S : Marquer le covoiturage comme terminé
+  S -> DB : Mettre à jour le trajet (status = completed)
+  DB --> S : OK
+  S --> P : Recevoir notification de fin
+
+  P -> S : Noter le conducteur (1 à 5 étoiles)
+  S -> DB : Enregistrer la note et l'avis
+  DB --> S : OK
+  S --> P : Confirmation de la notation
+
+else Refusée
+  S --> P : Recevoir notification (Requête refusée)
+else Annulation
+  P -> S : Annuler le trajet
+  S -> DB : Mettre à jour la réservation\n(status = cancelled)
+  S --> P : Confirmation de l'annulation
+end
+
+@enduml

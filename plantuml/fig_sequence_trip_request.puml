@@ -1,0 +1,84 @@
+@startuml
+skinparam style strictuml
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 11
+skinparam shadowing false
+skinparam SequenceMessageAlignment center
+skinparam sequence {
+  ArrowColor #444444
+  ActorBorderColor #1565C0
+  LifeLineBorderColor #888888
+  ParticipantBorderColor #455A64
+  ParticipantBackgroundColor #ECEFF1
+  ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
+}
+
+title Séquence — Demande de trajet (Passager publie, Conducteurs alertés)
+
+actor "Passager" as Pax #BBDEFB
+participant "App Passager\n(React Native)" as AppP #ECEFF1
+participant "TripsController\n(Node.js / Express)" as API #ECEFF1
+database "PostgreSQL\n(Knex)" as DB
+participant "Matching\nService" as Match #FFE0B2
+participant "NotificationService\n(FCM + DB)" as Notif #FFE0B2
+actor "Conducteur ciblé" as Drv #C8E6C9
+participant "App Conducteur" as AppD #ECEFF1
+
+' === 1. CRÉATION DE LA DEMANDE ===
+Pax -> AppP : 1. Saisit {from_wilaya_code,\nto_wilaya_code, date, seats}
+AppP -> API : 2. POST /api/trips/request
+activate API
+
+API -> DB : 3. INSERT INTO trip_requests\n(status='open', expires_at=+24h)
+activate DB
+DB --> API : requestId
+deactivate DB
+
+API --> AppP : 4. 201 Created {request}
+AppP --> Pax : "Recherche de conducteurs en cours..."
+
+' === 2. MATCHING (asynchrone) ===
+API -> Match : 5. triggerMatching(requestId)
+activate Match
+Match -> DB : 6. SELECT drivers WHERE\nrole='driver' AND identity_status='verified'\nAND (habitual_route OR wilaya match)
+activate DB
+DB --> Match : Liste conducteurs éligibles
+deactivate DB
+Match --> API : driverIds[]
+deactivate Match
+
+' === 3. DIFFUSION FCM ===
+loop Pour chaque conducteur
+  API -> Notif : 7. dispatch(driverId,\n"Nouveau passager pour VILLE !")
+  activate Notif
+  Notif -> DB : INSERT INTO notifications
+  Notif -> Drv : 8. Push FCM
+  deactivate Notif
+end
+deactivate API
+
+' === 4. ACTION CONDUCTEUR ===
+Drv -> AppD : 9. Ouvre la notification
+AppD -> API : 10. GET /api/trips/requests\n?fromWilayaCode&toWilayaCode&date
+activate API
+API -> DB : 11. SELECT * FROM trip_requests\nWHERE status='open' AND expires_at > NOW()
+DB --> API : Liste des demandes
+API --> AppD : 200 OK {requests[]}
+deactivate API
+AppD --> Drv : Affiche demande détaillée
+Drv -> AppD : 12. Clique "Proposer un trajet"
+
+' === 5. RÉSOLUTION ===
+AppD -> API : 13. POST /api/trips (pré-rempli)
+activate API
+API -> DB : 14. INSERT INTO trips
+API -> DB : 15. UPDATE trip_requests\nSET status='matched'
+API -> Notif : 16. dispatch(passengerId,\n"Un conducteur a accepté !")
+activate Notif
+Notif -> Pax : Push FCM
+deactivate Notif
+API --> AppD : 17. 201 Created {trip}
+deactivate API
+@enduml

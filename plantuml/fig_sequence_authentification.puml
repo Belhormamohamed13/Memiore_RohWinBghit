@@ -1,0 +1,39 @@
+@startuml fig_sequence_authentification
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #444444
+  ActorBorderColor #1565C0
+  ActorBackgroundColor #BBDEFB
+  LifeLineBorderColor #888888
+  ParticipantBorderColor #455A64
+  ParticipantBackgroundColor #ECEFF1
+  ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
+}
+
+title Diagramme de séquence — Authentification (RohWinBghit)
+
+actor "r : Utilisateur" as U
+participant "System" as S
+database "BDD" as DB
+
+U -> S : Demander une connexion
+S --> U : Afficher la boîte d'authentification
+
+alt Téléphone & OTP corrects
+  U -> S : Saisir numéro et code OTP
+  S -> DB : Rechercher l'utilisateur
+  DB --> S : Utilisateur trouvé
+  S -> S : Vérifier statut KYC + générer JWT
+  S --> U : Affichage page d'accueil\n(redirection selon le rôle :\nPassager / Conducteur / Admin)
+else Téléphone ou OTP incorrect
+  U -> S : Saisir des informations invalides
+  S -> DB : Rechercher l'utilisateur
+  DB --> S : Aucun résultat\nou code OTP non valide
+  S --> U : Numéro ou code OTP incorrect
+end
+
+@enduml

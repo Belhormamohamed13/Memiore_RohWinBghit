@@ -1,0 +1,85 @@
+@startuml
+skinparam style strictuml
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 11
+skinparam shadowing false
+skinparam SequenceMessageAlignment center
+skinparam sequence {
+  ArrowColor #444444
+  ActorBorderColor #1565C0
+  LifeLineBorderColor #888888
+  ParticipantBorderColor #455A64
+  ParticipantBackgroundColor #ECEFF1
+  ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
+}
+
+title Séquence — Vérification KYC Biométrique\n(3 états : VERIFIED / PENDING_REVIEW / REJECTED)
+
+actor "Conducteur / Passager" as User #BBDEFB
+participant "App Mobile\n(Expo + MLKit OCR)" as App #ECEFF1
+participant "VerificationController\n(Node.js / Express :8080)" as Node #ECEFF1
+participant "FastAPI IA\n(InsightFace buffalo_l :8001)" as IA #FFE0B2
+database "PostgreSQL" as DB
+participant "NotificationService\n(FCM + DB)" as Notif #FFE0B2
+participant "AdminController\n(Dashboard Web)" as Admin #FFCDD2
+
+' === ÉTAPE 1 : UPLOAD CIN (recto + verso) ===
+User -> App : 1. Scanne carte CIN (recto+verso)
+App -> App : Détection locale MLKit\n(OCR Latin + MRZ TD1)
+App -> Node : 2. POST /api/verification/upload-cin\n(multipart cin_recto + cin_verso + OCR fields)
+activate Node
+Node -> DB : 3. UPDATE users SET\nidentity_card_front_url,\nidentity_card_back_url,\nverification_status='pending'
+Node -> DB : INSERT INTO identity_verifications\n(status='pending')
+Node --> App : 4. 200 OK "CIN uploadé, capture vidéo requise"
+deactivate Node
+
+' === ÉTAPE 2 : CAPTURE VIDÉO LIVENESS ===
+User -> App : 5. Capture vidéo liveness (3s)
+App -> Node : 6. POST /api/verification/submit-video\n(cin_recto + cin_verso +\nliveness_video + role)
+activate Node
+Node -> DB : Create/Update identity_verifications (status='processing')
+Node --> App : 202 Accepted (traitement asynchrone)
+
+' === ÉTAPE 3 : PIPELINE IA (asynchrone) ===
+Node -> IA : 7. POST /verify-full\n(id_card + video + role)
+activate IA
+IA -> IA : 8. Face match (InsightFace embeddings)
+IA -> IA : 9. Liveness video (frame analysis)
+IA -> IA : 10. Anti-spoof (pattern + texture)
+IA --> Node : 11. 200 OK {face_match_score,\nliveness_score, antispoof_score,\nai_score (composite pondéré)}
+deactivate IA
+
+' === ÉTAPE 4 : DÉCISION MÉTIER (3 états) ===
+Node -> Node : thresholds = (role=='driver'\n? {approve:0.80, review:0.60}\n: {approve:0.70, review:0.60})
+
+alt ai_score >= approve ET pas de hard_fail
+  Node -> DB : 12a. UPDATE identity_verifications\nstatus='verified',\nusers.verification_status='approved',\nidentity_verified_at=NOW()
+  Node -> Notif : 13a. dispatch(userId,\n"Identité vérifiée ✅")
+  Notif -> User : Push FCM
+else ai_score >= review ET < approve
+  Node -> DB : 12b. status='pending_review'\nusers.verification_status='pending'
+  Node -> Notif : 13b. dispatch(userId,\n"Vérification manuelle en cours")
+  Notif -> User : Push FCM
+else ai_score < review OU hard_fail (face<0.45 OU liveness<0.30)
+  Node -> DB : 12c. status='rejected'\nusers.verification_status='rejected'
+  Node -> DB : 14. INSERT INTO fraud_events\n(event_type, severity, reason, ai_scores)
+  Node -> Notif : 15. dispatch(userId,\n"Vérification refusée ❌")
+  Notif -> User : Push FCM
+  Node -> Notif : 16. dispatchBulk(admins,\n"Alerte fraude potentielle")
+  Notif -> Admin : Push + notification in-app
+end
+deactivate Node
+
+' === ÉTAPE 5 : POLL / REVIEW ADMIN (si pending_review) ===
+App -> Node : 17. GET /api/verification/status (polling)
+Node --> App : {status, ai_score, newStatus}
+App --> User : Affiche état final
+
+note over Admin
+  Si pending_review :
+  PATCH /api/admin/kyc/:userId/approve
+  ou PATCH /api/admin/kyc/:userId/reject
+end note
+@enduml

@@ -1,0 +1,123 @@
+% !TEX program = xelatex
+% !BIB program = biber
+% =====================================================================
+% Annexes — Master en Génie Logiciel
+% Projet : RohWinBghit — Plateforme de covoiturage inter-wilayas
+% Université Abou Bekr Belkaïd — Tlemcen
+% Année universitaire : 2025 / 2026
+% Compilation : xelatex annexes_standalone.tex (deux passes)
+% =====================================================================
+\documentclass[12pt,a4paper,oneside]{report}
+
+% ---------- Encodage et langues ----------
+% ---------- Hyperliens ----------
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=rohblue,
+  citecolor=rohblue,
+  urlcolor=rohblue,
+  pdftitle={RohWinBghit — Annexes Master GL},
+  pdfauthor={AHMED BACHA D. \& BELHORMA S.M.R.}
+}
+
+% ---------- Encodage et langues ----------
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{french}
+\setotherlanguages{english}
+
+% Bypass bidi package entirely to avoid biblatex TOC infinite loops
+\TeXXeTstate=1
+\newfontfamily\arabicfont[Script=Arabic,Scale=1.1,Extension=.ttf,UprightFont=Amiri-Regular,BoldFont=Amiri-Bold,ItalicFont=Amiri-Italic,BoldItalicFont=Amiri-BoldItalic]{Amiri-Regular}
+\newcommand{\textarabic}[1]{{\arabicfont\beginR #1\endR}}
+
+% ---------- Mise en page ----------
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=2cm]{geometry}
+\setlength{\headheight}{15.21004pt}
+\addtolength{\topmargin}{-3.21004pt}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{1.25em}
+\usepackage{microtype}
+
+% ---------- Graphisme et couleurs ----------
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage[table]{xcolor}
+\definecolor{rohblue}{RGB}{30,80,150}
+\definecolor{rohlight}{RGB}{235,242,250}
+\definecolor{rohaccent}{RGB}{200,60,60}
+
+% ---------- Tableaux ----------
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{colortbl}
+
+% ---------- Listes et mise en forme ----------
+\usepackage{enumitem}
+\usepackage{titletoc}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup[figure]{labelfont={it,bf},textfont=it,labelsep=endash,font=small}
+\captionsetup[table]{labelfont={it,bf},textfont=it,labelsep=endash,font=small}
+
+% ---------- Titres de chapitres ----------
+\usepackage[explicit]{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{rohblue}}
+  {\filleft\Large\scshape Annexe \thechapter}
+  {0pt}
+  {\vspace{0.4em}\filleft\Huge #1\vspace{-0.3em}\color{rohblue}\titlerule[1pt]}
+\titlespacing*{\chapter}{0pt}{10pt}{40pt}
+
+\titleformat{\section}
+  {\color{rohblue}\Large\bfseries}{\thesection}{0.6em}{#1}
+\titleformat{\subsection}
+  {\color{rohblue!85}\large\bfseries}{\thesubsection}{0.6em}{#1}
+\titleformat{\subsubsection}
+  {\color{rohblue!70}\normalsize\bfseries}{\thesubsubsection}{0.6em}{#1}
+
+% ---------- En-têtes / pieds de page ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% ---------- Code source ----------
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{rohblue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{rohaccent},
+  numbers=left, numberstyle=\tiny\color{gray},
+  frame=single, rulecolor=\color{rohblue!30},
+  breaklines=true, showstringspaces=false,
+  tabsize=2
+}
+
+% ---------- Encadrés ----------
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{highlight}[1][]{
+  enhanced, breakable,
+  colback=rohlight, colframe=rohblue,
+  boxrule=0.5pt, arc=2pt,
+  left=8pt,right=8pt,top=5pt,bottom=5pt,
+  #1
+}
+
+\begin{document}
+
+\pagenumbering{arabic}
+\appendix
+\include{chapters/annexes}
+
+\end{document}

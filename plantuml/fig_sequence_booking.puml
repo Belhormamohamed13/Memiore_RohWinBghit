@@ -1,0 +1,91 @@
+@startuml
+skinparam style strictuml
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 11
+skinparam shadowing false
+skinparam SequenceMessageAlignment center
+skinparam sequence {
+  ArrowColor #444444
+  ActorBorderColor #1565C0
+  LifeLineBorderColor #888888
+  ParticipantBorderColor #455A64
+  ParticipantBackgroundColor #ECEFF1
+  ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
+}
+
+title Séquence — Réservation + Paiement (PaymentFactory + Surge)
+
+actor "Passager" as Pax #BBDEFB
+participant "App Mobile\n(React Native)" as App #ECEFF1
+participant "BookingsController" as API #ECEFF1
+participant "FareService\n+ SurgeService" as Surge #FFE0B2
+participant "PaymentFactory" as Pay #FFE0B2
+database "PostgreSQL\n(Knex)" as DB
+participant "NotificationService\n(FCM)" as Notif #FFE0B2
+actor "Conducteur" as Drv #C8E6C9
+
+' === PHASE 1 : INITIALISATION ===
+Pax -> App : 1. Clique "Réserver" (tripId, seats)
+App -> API : 2. POST /api/bookings\n{trip_id, seats, payment_method}
+activate API
+
+API -> DB : 3. SELECT trip\nWHERE id=? AND available_seats>=?
+activate DB
+DB --> API : trip {price_per_seat, status}
+deactivate DB
+
+' === PHASE 2 : CALCUL PRIX + SURGE ===
+API -> Surge : 4. calculateFare(tripId, seats)
+activate Surge
+Surge -> Surge : Check Redis cache (surge:multiplier)
+Surge -> DB : Si cache miss : SELECT\nsurge_pricing_rules actives
+Surge --> API : {base, multiplier, total}
+deactivate Surge
+
+' === PHASE 3 : PAIEMENT (Strategy Pattern) ===
+API -> Pay : 5. processPayment(method, {amount, userId})
+activate Pay
+Pay -> Pay : getStrategy(method)\n→ CIBStrategy / EdahabiaStrategy / CashStrategy
+Pay -> Pay : strategy.process(data)
+Pay --> API : {success, transactionId, status}
+deactivate Pay
+
+' === PHASE 4 : ENREGISTREMENT ===
+alt Paiement réussi (CIB/Edahabia) ou Cash
+  API -> DB : 6. BEGIN TRANSACTION
+  API -> DB : 7. INSERT INTO bookings\n(status='pending',\npayment_status='paid'|'pending_cash')
+  API -> DB : 8. COMMIT
+  activate DB
+  DB --> API : booking
+  deactivate DB
+
+  API -> Notif : 9. dispatch(driverId,\n"Nouvelle réservation")
+  activate Notif
+  Notif -> DB : INSERT INTO notifications
+  Notif -> Drv : Push FCM
+  deactivate Notif
+
+  API --> App : 10. 201 Created {booking}
+  App --> Pax : "En attente de confirmation"
+else Paiement échoué
+  API -> Pay : refundPayment() si partiel
+  API --> App : 400 Bad Request {error}
+  App --> Pax : Affiche erreur de paiement
+end
+deactivate API
+
+' === PHASE 5 : CONFIRMATION DRIVER ===
+Drv -> App : 11. Accepte la réservation
+App -> API : 12. PATCH /api/bookings/:id/accept
+activate API
+API -> DB : 13. UPDATE bookings SET status='confirmed'
+API -> DB : 14. UPDATE trips SET\navailable_seats = available_seats - seats
+API -> Notif : 15. dispatch(passengerId,\n"Réservation confirmée ✅")
+activate Notif
+Notif -> Pax : Push FCM
+deactivate Notif
+API --> App : 200 OK
+deactivate API
+@enduml

@@ -1,0 +1,66 @@
+@startuml fig_activity_main
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam shadowing false
+skinparam ArrowColor #444444
+skinparam ActivityBorderColor #455A64
+skinparam ActivityBackgroundColor #ECEFF1
+skinparam ActivityDiamondBorderColor #455A64
+skinparam ActivityDiamondBackgroundColor #FFF9C4
+
+title Diagramme d'activité — Parcours global RohWinBghit
+
+start
+
+:Conducteur || Passager;
+
+:Authentification\n(téléphone + OTP);
+
+:Vérification KYC biométrique\n(CIN + selfie + liveness);
+
+:Accepter d'utiliser la géolocalisation;
+
+if (Type d'utilisateur ?) then (Conducteur)
+
+  :Ajouter / sélectionner un véhicule; <<#C8E6C9>>
+  :Publier un Covoiturage\n(wilayas, date, places, prix); <<#C8E6C9>>
+
+  :Recevoir notification\n(demande de réservation); <<#C8E6C9>>
+  repeat
+    :Voir les requêtes; <<#C8E6C9>>
+    if (Décision sur la requête ?) then (Accepter)
+      :Confirmer la réservation; <<#C8E6C9>>
+      :Notifier le passager; <<#C8E6C9>>
+      break
+    else (Refuser)
+      :Notifier le passager; <<#C8E6C9>>
+    endif
+  repeat while (autres requêtes en attente ?) is (oui)
+  ->non;
+
+else (Passager)
+
+  :Rechercher des Covoiturages\n(filtres : wilaya, date, prix); <<#BBDEFB>>
+  repeat
+    :Réserver un covoiturage\n(choix du moyen de paiement); <<#BBDEFB>>
+    if (Statut de la réservation ?) then (Acceptée)
+      break
+    else (Refusée)
+      :Recevoir notification de refus; <<#BBDEFB>>
+    endif
+  repeat while (chercher un autre trajet ?) is (oui)
+  ->non;
+
+  :Recevoir notification d'acceptation; <<#BBDEFB>>
+
+endif
+
+:Effectuer le trajet\n(suivi GPS, chat temps réel); <<#FFE0B2>>
+
+:Marquer le covoiturage terminé;
+
+:Noter l'autre partie\n(conducteur ou passager);
+
+stop
+
+@enduml

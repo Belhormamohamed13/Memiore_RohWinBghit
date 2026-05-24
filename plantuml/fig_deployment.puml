@@ -1,0 +1,84 @@
+@startuml 03-deployment
+skinparam style strictuml
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam monochrome true
+skinparam nodesep 50
+skinparam ranksep 50
+title Diagramme de déploiement — RohWinBghit
+
+' ===== CLIENTS =====
+node "Smartphone Passager/Conducteur" <<Device>> as Mobile {
+  component "App RohWinBghit\n(React Native + Expo)" as AppMobile
+  component "Mapbox SDK" as MapboxSDK
+  component "Zustand (state)" as State
+  component "MLKit Text Recognition\n(OCR CIN on-device)" as MLKit
+}
+
+node "PC Administrateur" <<Device>> as AdminPC {
+  component "Dashboard Admin\n(React + Vite + TS)" as AppWeb
+}
+
+' ===== SERVICES TIERS =====
+cloud "Services externes" {
+  node "Firebase Cloud Messaging\n(Push notifications)" as FCM
+  node "Passerelles de paiement\nCIB / Edahabia / Cash" as PaymentGateway
+  node "Mapbox API\n(Cartographie + routage)" as Mapbox
+}
+
+' ===== INFRASTRUCTURE SERVEUR =====
+node "Serveur Cloud (AWS / DigitalOcean)" <<Linux Ubuntu>> {
+  node "Reverse Proxy" <<Nginx>> as Proxy
+
+  node "API Backend" <<Docker Container>> as Backend {
+    component "Express.js :8080\n(REST API + JWT Auth)" as Express
+    component "Socket.IO Server\n(Realtime Chat + Presence)" as Socket
+    component "PaymentFactory\n(CIB / Edahabia / Cash)" as PatPay
+    component "NotificationService\n(FCM Admin SDK + DB)" as NotifSvc
+  }
+
+  node "Microservice IA" <<Docker Container>> as IA {
+    component "FastAPI :8001\n(Python 3.11)" as FastAPI
+    component "InsightFace buffalo_l\n(Face embeddings)" as IF
+    component "Liveness + Anti-spoof\n(OpenCV / custom)" as LiveAS
+    component "MRZ + Card Validator" as CardVal
+  }
+
+  node "Bases de données" <<Docker Container>> {
+    database "PostgreSQL" <<RDBMS>> as PG {
+      [users / trip_requests / trips /\nbookings / identity_verifications /\nfraud_events / face_embeddings /\nwallets / notifications / chats]
+    }
+    database "Redis" <<In-Memory>> as Redis {
+      [Surge cache / Token blacklist /\nSocket pub-sub / Rate limit]
+    }
+  }
+}
+
+node "Stockage fichiers" <<Volume>> as Files {
+  [uploads/verifications (KYC) /\nuploads/avatars /\nuploads/vehicles /\nuploads/chats]
+}
+
+' ===== CONNEXIONS =====
+AppMobile ..> Proxy : HTTPS (REST)
+AppMobile ..> Proxy : WSS (WebSocket)
+MapboxSDK ..> Mapbox : HTTPS
+AppWeb ..> Proxy : HTTPS (REST)
+
+Proxy --> Express : HTTP :8080
+Proxy --> Socket : WS
+Proxy --> FastAPI : HTTP :8001 (interne)
+
+Express --> PG : TCP/IP (Knex ORM)
+Express --> Redis : TCP/IP (ioredis)
+Express --> Files : fs (multer)
+Express ..> FastAPI : HTTP (verify-full, check-liveness)
+
+FastAPI --> PG : TCP/IP (embeddings)
+FastAPI --> Files : fs (lecture images KYC)
+
+Socket --> Redis : Pub/Sub
+
+Express ..> FCM : HTTPS (FCM Admin SDK)
+Express ..> PaymentGateway : HTTPS
+
+@enduml

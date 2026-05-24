@@ -1,0 +1,43 @@
+\chapter*{Conclusion générale}
+\addcontentsline{toc}{chapter}{Conclusion générale}
+\markboth{Conclusion générale}{}
+
+Le présent mémoire s'était fixé un objectif ambitieux~: concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée au contexte algérien, capable d'instaurer la confiance entre des utilisateurs inconnus, de supporter les moyens de paiement locaux et de garantir la disponibilité temps réel de l'offre, le tout en s'appuyant sur une architecture logicielle moderne et conforme aux meilleures pratiques de l'ingénierie logicielle. Au terme de ce travail, le bilan est à la hauteur des ambitions fixées~: une solution modulaire, des fonctionnalités de niveau production dépassant les standards académiques, et une validation technique confirmée par des tests d'intégration et unitaires.
+
+\section*{Bilan et contributions majeures}
+
+Les objectifs spécifiques énoncés dans l'introduction ont été atteints. Nous structurons ce bilan autour de quatre contributions majeures~:
+
+\paragraph{1. Contribution Scientifique et Technologique.} 
+Le projet a démontré la faisabilité de l'intégration d'un pipeline d'intelligence artificielle complet (OCR, détection de vivacité et anti-\textit{spoofing}) sur une infrastructure souveraine, sans dépendance à des API Cloud externes coûteuses. Ce microservice FastAPI, évalué de manière différenciée selon les rôles (passager/conducteur), prouve qu'un niveau de sécurité biométrique élevé peut être atteint avec des ressources optimisées.
+
+\paragraph{2. Contribution Technique et Architecturale.} 
+L'application d'une démarche d'ingénierie stricte a conduit à la réalisation d'un système distribué résilient. Le back-end NestJS/Express, la modélisation rigoureuse sous PostgreSQL (29 tables) gérée par Knex.js, et l'intégration du temps réel via Socket.IO constituent une base technique solide. De plus, l'implémentation du patron de conception \textit{Strategy/Factory} offre une extensibilité immédiate pour l'intégration de nouvelles méthodes de paiement (CIB, Edahabia, espèces, Stripe).
+
+\paragraph{3. Contribution Économique (Arrêté 1275).} 
+S'inscrivant dans le dispositif «~Un diplôme, une Startup~», ce travail ne s'est pas limité à l'exercice informatique. Le Business Model Canvas, adossé à un plan financier prévisionnel sur 36 mois, a prouvé la viabilité économique du modèle. Le seuil de rentabilité est projeté au 10\textsuperscript{ème} mois de la phase d'exploitation, justifiant une demande de labellisation CNL et de financement d'amorçage.
+
+\paragraph{4. Contribution Sociétale.} 
+En ciblant le segment délaissé du transport inter-wilayas, la plateforme \textit{RohWinBghit} répond à un besoin fondamental de mobilité, notamment pour la population étudiante (1,9~million de personnes). Elle participe à la démocratisation des déplacements à moindre coût, favorise la réduction de l'empreinte carbone par la mutualisation des trajets, et stimule l'adoption de l'inclusion financière par le paiement électronique.
+
+\section*{Limites assumées}
+
+La réalisation d'un tel projet par un binôme de Master comporte des limites que nous assumons avec honnêteté scientifique~:
+\begin{itemize}
+  \item Le taux de réussite des tests d'intégration (69,6\,\%) reste perfectible, lié à la complexité de l'isolation transactionnelle de la base de données entre les scénarios asynchrones, bien que la logique métier centrale (tests unitaires à 100\,\%) et les flux UI (62 écrans) soient validés.
+  \item Le pipeline biométrique \textsc{kyc} est un prototype fonctionnel n'ayant pas encore subi d'évaluation formelle (APCER/BPCER) sur des datasets de référence mondiaux.
+  \item L'absence d'un mode hors-ligne complet limite temporairement l'expérience utilisateur dans les zones rurales à très faible connectivité.
+\end{itemize}
+
+\section*{Perspectives et horizons futurs}
+
+Les travaux futurs s'articulent autour de trois horizons de maturité~:
+\begin{itemize}
+  \item \textbf{À court terme (Lancement local) :} Finalisation de l'homologation SATIM pour les cartes CIB/Edahabia en production, stabilisation du harnais de tests \textit{end-to-end}, et lancement d'un pilote restreint sur l'axe Tlemcen--Oran.
+  \item \textbf{À moyen terme (Croissance nationale) :} Déploiement progressif sur les 69 wilayas, développement d'un module d'IA prédictive pour le \textit{surge pricing} contextuel, et lancement de partenariats B2B.
+  \item \textbf{À long terme (Scale et Internationalisation) :} Préparation d'un audit de sécurité externe et d'un audit d'infrastructure pour une levée de fonds en Série~A, avec pour objectif d'étudier l'exportation du modèle vers les marchés de la région MENA.
+\end{itemize}
+
+\section*{Mot de la fin}
+
+En définitive, \textit{RohWinBghit} prolonge l'ambition académique initiale en proposant un projet d'ingénierie logicielle complet doublé d'une démarche entrepreneuriale aboutie. L'alliance entre une architecture distribuée, une sécurité biométrique souveraine et un modèle économique ancré dans la réalité algérienne démontre la capacité de l'université algérienne à produire des solutions numériques structurantes, aptes à moderniser l'économie locale et à servir la mobilité partagée.

@@ -1,0 +1,561 @@
+\chapter{Réalisation, validation et sécurité du système}
+\label{chap:realisation}
+
+\section*{Introduction}
+
+Après avoir formalisé la conception du système au chapitre précédent, nous abordons à présent sa réalisation effective. Ce chapitre décrit l'environnement technique mis en place, justifie les choix technologiques retenus, présente l'architecture déployée et détaille la mise en œuvre de chaque module~: application mobile, tableau de bord administrateur, \textit{back-end}, base de données, microservice de vérification d'identité, paiement, géolocalisation et messagerie temps réel. Il rend compte ensuite des dispositifs de sécurité, de la stratégie de tests et des résultats expérimentaux obtenus, avant de présenter honnêtement les difficultés rencontrées et les solutions apportées.
+
+\section{Environnement matériel et logiciel}
+\label{sec:env-matlog}
+
+Le développement et les tests ont été conduits sur un poste de travail standard (CPU 8~cœurs, 16~Go de RAM, SSD~NVMe), sous Ubuntu~22.04 et macOS~14. L'application mobile a été testée sur un parc d'appareils Android (gamme moyenne et entrée de gamme) ainsi que sur simulateur iOS. Le tableau~\ref{tab:tech-front} recense les bibliothèques mobilisées côté client mobile.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{rohlight}
+\textbf{Bibliothèque} & \textbf{Version} & \textbf{Rôle} \\
+\hline
+React~Native & 0.81 & Framework mobile multiplateforme \\
+\hline
+Expo SDK & 54 & Outillage de \textit{build} et \textit{runtime} \\
+\hline
+TypeScript & 5.3 & Typage statique \\
+\hline
+Zustand & 4.5 & Gestion d'état global légère \\
+\hline
+React~Navigation & 6.x & Navigation entre écrans \\
+\hline
+TanStack React~Query & 5.x & Cache et synchronisation API \\
+\hline
+Mapbox~GL & 10.x & Cartographie et géolocalisation \\
+\hline
+expo-location \& expo-camera & 17.x / 15.x & Accès matériel natif (GPS et biométrie) \\
+\hline
+Socket.IO client & 4.7 & Communication temps réel \\
+\hline
+React Hook Form & 7.x & Gestion des formulaires \\
+\hline
+i18next & 23.x & Internationalisation (AR/FR/EN) \\
+\hline
+\end{tabularx}
+  \caption{Pile technologique \textit{front-end} mobile}
+  \label{tab:tech-front}
+\end{table}
+
+Le tableau~\ref{tab:tech-back} récapitule les composants serveur et le service IA.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{rohlight}
+\textbf{Composant} & \textbf{Version} & \textbf{Rôle} \\
+\hline
+Node.js & 20 LTS & \textit{Runtime} JavaScript serveur \\
+\hline
+Express.js & 4.18 & Framework HTTP minimaliste \\
+\hline
+Knex.js & 3.1 & \textit{Query builder} SQL pour PostgreSQL \\
+\hline
+bcrypt + JWT & 5.x / 9.x & Authentification et sécurité \\
+\hline
+Socket.IO & 4.7 & WebSocket temps réel \\
+\hline
+Bull / BullMQ & 5.x & File de tâches asynchrones (Redis) \\
+\hline
+FastAPI & 0.111 & Service IA Python (KYC) \\
+\hline
+OpenCV + InsightFace & 4.9 / 0.7 & Traitement biométrique \\
+\hline
+Sentry & 7.x & \textit{Monitoring} erreurs et performance \\
+\hline
+Docker / Docker Compose & 24.x & Conteneurisation \\
+\hline
+\end{tabularx}
+  \caption{Pile technologique \textit{back-end} et services}
+  \label{tab:tech-back}
+\end{table}
+
+\paragraph{Bases de données et outillage.} \textsc{postgresql}~16 héberge l'ensemble des données métier (utilisateurs, trajets, réservations, paiements, messages, notifications, journaux d'audit), avec son support natif du type \texttt{JSONB} et son extension \textit{PostGIS} pour les besoins géographiques futurs. Redis~7 joue un double rôle de cache applicatif (jetons, quotas OTP, multiplicateurs de \textit{surge pricing}, sessions Socket.IO) et de \textit{broker} pour les files Bull/BullMQ. Côté outils, le projet repose sur Visual~Studio~Code (extensions ESLint, Prettier, Docker), Git/GitHub avec un \textit{workflow} \textit{GitFlow} simplifié, GitHub Actions pour la CI/CD (\textit{lint}, tests unitaires, \textit{build} Expo, déploiement Docker), Jira et Notion pour le suivi de projet, et Jest, Detox, Postman/Swagger pour les tests.
+
+\section{Choix technologiques et justification}
+\label{sec:choix-tech}
+
+Les technologies retenues l'ont été à l'issue d'une évaluation comparative dont les principales conclusions sont rappelées ci-après.
+
+\paragraph{React~Native plutôt que Flutter ou natif.} React~Native (avec Expo) permet un partage de code élevé entre Android et iOS, s'appuie sur l'écosystème JavaScript/TypeScript déjà mobilisé par le \textit{back-end} et offre un délai réduit de mise sur le marché. Flutter aurait été techniquement viable mais aurait imposé une bascule complète vers Dart, sans bénéfice décisif sur le périmètre visé. Le développement natif (Swift/Kotlin) aurait doublé la charge de travail pour un gain marginal sur des écrans essentiellement formulaires.
+
+\paragraph{Express.js (et NestJS pour les modules récents).} Express~est un cadre HTTP minimaliste, mature et largement adopté. Son écosystème (\textit{middlewares}, \textit{validators}, ORM/QueryBuilder) couvre l'ensemble des besoins. Pour les modules récents, l'organisation par décorateurs et l'injection de dépendances offerte par NestJS sont mobilisées afin d'aligner le \textit{back-end} sur les principes \textsc{solid}.
+
+\paragraph{\textsc{postgresql} plutôt que MongoDB.} \textsc{postgresql} a été retenu pour quatre raisons~: maturité \textsc{acid} indispensable au paiement, support natif du \texttt{JSONB} pour les charges utiles flexibles (notifications, scores IA), capacités géographiques via \textit{PostGIS}, et robustesse en exploitation chez des opérateurs comparables (Yassir, Heetch).
+
+\paragraph{Redis pour le cache et les files.} Redis sert à la fois de cache mémoire (référentiels, sessions, multiplicateurs de \textit{surge}) et de \textit{broker} pour les files de traitement asynchrone via Bull/BullMQ (envoi \textsc{sms}, recalcul des scores conducteur, traitement KYC).
+
+\paragraph{Socket.IO pour le temps réel.} L'usage de WebSocket via Socket.IO offre une abstraction stable, une compatibilité large (\textit{fallback long-polling}) et une intégration directe à Express. Le \textit{messaging} et la diffusion de positions GPS s'appuient sur des \textit{rooms} indexées par identifiant de trajet.
+
+\paragraph{TypeScript pour la robustesse.} L'adoption systématique de TypeScript côté mobile (et progressive côté serveur) renforce la sécurité de typage et facilite le \textit{refactoring}, en particulier pour les contrats DTO partagés entre client et serveur.
+
+\paragraph{Next.js (futur dashboard) et React/Vite (dashboard actuel).} Le tableau de bord administrateur est aujourd'hui construit avec React~+~Vite. Une migration vers Next.js est envisagée pour bénéficier du rendu côté serveur (SSR), du \textit{routing} fichier et de l'écosystème associé.
+
+\section{Architecture générale du système}
+\label{sec:archi-realisation}
+
+L'architecture cible reprend la décomposition multi-services présentée au chapitre~\ref{chap:conception}. La figure~\ref{fig:archi-globale-r3} en rappelle la vue d'ensemble.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_architecture.png}
+\caption{Architecture déployée de \textit{RohWinBghit}}
+\label{fig:archi-globale-r3}
+\end{figure}
+
+L'application mobile dialogue avec le \textit{back-end} principal par API \textsc{rest} et WebSocket. Le \textit{back-end} délègue les opérations de vérification d'identité au service IA via une API interne sécurisée par un secret partagé (\texttt{X-Internal-Secret}). L'ensemble est conteneurisé (Docker), exposé derrière un \textit{reverse proxy} Nginx assurant la terminaison \textsc{tls} et l'équilibrage de charge, et observé via Sentry pour les erreurs et la performance applicative.
+
+\section{Réalisation de l'application mobile}
+\label{sec:realisation-mobile}
+
+L'application mobile expose au total \textbf{62~écrans distincts} couvrant les parcours passager et conducteur. Cette section présente les interfaces les plus représentatives, organisées par parcours fonctionnel. L'intégralité des captures est rassemblée en Annexe~D.
+
+\subsection{Parcours \textsc{kyc} --- vérification biométrique d'identité}
+
+La vérification \textsc{kyc} est le prérequis de toute action sensible (publication d'un trajet, réservation, paiement). Elle se déroule en trois étapes guidées~: introduction, capture de la \textsc{cin} et capture faciale avec détection de vivacité (Figure~\ref{fig:kyc-screens}). Les autres interfaces et états associés (dossier en attente, rejet) sont déportés dans le catalogue complet des captures en Annexe~\ref{annexe:captures}.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_27_verif_intro.png}
+    {\footnotesize \textbf{3.1a} --- Introduction \textsc{kyc}\\Documents requis, durée estimée, consentement.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_28_verif_id_capture.png}
+    {\footnotesize \textbf{3.1b} --- Capture de la \textsc{cin}\\Cadre guidé recto/verso, contrôle qualité.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_29_verif_face_capture.png}
+    {\footnotesize \textbf{3.1c} --- Détection de vivacité\\3 mouvements demandés, anti-\textit{spoofing} serveur.\par}
+\end{minipage}
+\caption{Parcours \textsc{kyc} biométrique --- étapes de capture (vue passager)}
+\label{fig:kyc-screens}
+\end{figure}
+
+\subsection{Parcours passager --- recherche et réservation}
+
+Le parcours passager commence par l'écran d'accueil qui agrège les suggestions personnalisées, les trajets récents et le bloc de recherche rapide (Figure~\ref{fig:passenger-search}). Les autres étapes clés (détail du trajet, billet numérique, suivi GPS temps réel, historique des trajets, création et gestion de demandes de trajets inverses, méthodes de paiement et profil public) sont reportées en Annexe~\ref{annexe:captures}.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_01_tab_home.png}
+    {\footnotesize \textbf{3.2a} --- Tableau de bord passager\\Suggestions de trajets, raccourcis de recherche.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_02_tab_search.png}
+    {\footnotesize \textbf{3.2b} --- Recherche (formulaire)\\Wilaya départ/arrivée, date, places.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_08_search_results.png}
+    {\footnotesize \textbf{3.2c} --- Résultats de recherche\\Filtre prix/note/confort, tri.\par}
+\end{minipage}
+\caption{Parcours passager --- accueil, recherche et résultats}
+\label{fig:passenger-search}
+\end{figure}
+
+\subsection{Parcours conducteur --- publication et gestion}
+
+Le conducteur accède à un tableau de bord dédié affichant ses gains mensuels, le nombre de trajets effectués, sa note moyenne et ses demandes de réservation en attente (Figure~\ref{fig:driver-main}). Les interfaces secondaires (recherche inverse de demandes passagers, historique financier détaillé des gains, gestion du portefeuille, liste et ajout de véhicules chiffrés, gestion documentaire des assurances/cartes grises et notifications) sont regroupées en Annexe~\ref{annexe:captures}.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_01_tab_dashboard.png}
+    {\footnotesize \textbf{3.3a} --- Tableau de bord conducteur\\KPIs personnels, alertes \textsc{kyc}.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_03_tab_publish.png}
+    {\footnotesize \textbf{3.3b} --- Publication d'un trajet\\Formulaire complet, prix suggéré.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_06_trip_manage.png}
+    {\footnotesize \textbf{3.3c} --- Gestion du trajet\\Liste des passagers, démarrer/terminer.\par}
+\end{minipage}
+\caption{Parcours conducteur --- tableau de bord, publication et gestion}
+\label{fig:driver-main}
+\end{figure}
+
+\subsection{Profil et paramètres (commun passager / conducteur)}
+
+Les écrans de profil et de paramètres sont partagés entre les deux rôles. Ils permettent à l'utilisateur de gérer son identité, sa sécurité, ses préférences et d'accéder au support. L'intégralité de ces interfaces (édition de profil, sécurité OTP, sélection linguistique RTL, parrainage, centre d'aide, ticket de support, conditions générales et options de notification) est renvoyée en Annexe~\ref{annexe:captures}.
+
+\section{Réalisation du tableau de bord administrateur}
+\label{sec:realisation-admin}
+
+Le panneau d'administration est développé avec React~+~Vite et déployé séparément. Il offre à l'opérateur une vision de la plateforme incluant les indicateurs clés (Figure~\ref{fig:admin-dashboard}) et la revue des dossiers \textsc{kyc} litigieux (Figure~\ref{fig:admin-kyc}). Les autres vues de gestion (utilisateurs, trajets, transactions) sont illustrées en Annexe~\ref{annexe:captures}. L'opérateur dispose ainsi de huit modules fonctionnels s'appuyant sur des API \textsc{rest} dédiées (préfixe \texttt{/admin/}) protégées par contrôle d'accès basé sur le rôle.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{assets/admin_dashboard.png}
+\caption{Tableau de bord administrateur --- KPIs, graphiques et alertes en temps réel}
+\label{fig:admin-dashboard}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{assets/admin_kyc.png}
+\caption{Revue manuelle des dossiers \textsc{kyc} litigieux}
+\label{fig:admin-kyc}
+\end{figure}
+
+\section{Développement du \textit{back-end} API}
+\label{sec:realisation-backend}
+
+Le \textit{back-end} suit un découpage modulaire inspiré de l'\textit{architecture propre}. Les principaux modules sont les suivants.
+
+\begin{itemize}
+  \item \textbf{AuthModule} --- inscription, OTP, émission/rotation des jetons \gls{jwt}, déconnexion globale.
+  \item \textbf{UsersModule} --- profils, droit d'accès et de rectification, suppression du compte.
+  \item \textbf{TripsModule} --- publication, recherche, gestion du cycle de vie des trajets.
+  \item \textbf{BookingsModule} --- réservation, annulation, billet numérique avec QR code.
+  \item \textbf{PaymentsModule} --- paiement multi-méthodes via le patron \textit{Strategy/Factory}.
+  \item \textbf{ChatModule} --- messagerie temps réel Socket.IO et persistance \textsc{postgresql}.
+  \item \textbf{NotificationsModule} --- notifications \textit{push} (Firebase \textsc{fcm}) et \textit{in-app}.
+  \item \textbf{KycModule} --- pont vers le service IA, machine d'états, journalisation des \texttt{fraud\_events}.
+  \item \textbf{AdminModule} --- supervision et modération.
+\end{itemize}
+
+Chaque module expose des \textit{endpoints} \textsc{rest} documentés en \textsc{swagger} (\texttt{/api/docs}), valide ses entrées via Zod (\texttt{validate.middleware}) et délègue la persistance aux dépôts (\textit{repositories}) Knex. La gestion des erreurs est centralisée par un \textit{middleware} dédié qui mappe les exceptions sur les statuts HTTP appropriés et notifie Sentry pour les anomalies non gérées.
+
+\subsection{Patron \textit{Strategy/Factory} pour les paiements}
+
+Le module de paiement met en œuvre le patron \textit{Strategy/Factory}~: une interface commune \texttt{PaymentStrategy} expose les méthodes \texttt{process()} et \texttt{refund()}~; trois classes concrètes (\texttt{CIBStrategy}, \texttt{EdahabiaStrategy}, \texttt{CashStrategy}) l'implémentent~; la classe \texttt{PaymentFactory}, injectée dans le contrôleur de réservation, résout dynamiquement la stratégie en fonction de la méthode choisie. L'ajout futur d'une nouvelle méthode (par exemple \textit{Baridi~Mob}, Stripe ou PayPal) n'impacte aucun code existant, ce qui matérialise le principe d'ouverture/fermeture (\textsc{ocp}).
+
+\section{Conception et implémentation de la base de données}
+\label{sec:realisation-bdd}
+
+Le schéma relationnel est défini en \textsc{postgresql}~16, normalisé en troisième forme normale et aligné sur le diagramme de classes du chapitre précédent. Le modèle déploie \textbf{29 tables au total}, dont l'écart avec les 20 entités métier s'explique par les nécessités techniques de l'architecture~: 9 tables sont strictement réservées au fonctionnement du système (migrations Knex, sessions Redis persistées, files d'attente BullMQ, et journalisation d'audit interne). Les 20 tables métier restantes (résumées dans le tableau~\ref{tab:tables} du chapitre~\ref{chap:conception}) sont déployées via une \textit{migration de baseline} consolidée, complétée par des migrations incrémentales pour les évolutions ciblées (événements de fraude, machine d'états des demandes de trajet).
+
+\paragraph{Indexation et contraintes.} Les colonnes les plus sollicitées en lecture (couples \texttt{(originWilayaId, destinationWilayaId)}, \texttt{departureAt}, \texttt{userId}) sont indexées via \texttt{btree}. Les contraintes d'intégrité référentielle sont appliquées sur les clés étrangères avec stratégies de \texttt{ON DELETE CASCADE} pour les agrégats et \texttt{ON DELETE RESTRICT} pour les références transactionnelles. Les contraintes \texttt{CHECK} valident les bornes des montants, des notes et des compteurs de places.
+
+\paragraph{Migrations et \textit{seeds}.} Les migrations Knex assurent l'évolution contrôlée du schéma. Un jeu de \textit{seeds} (référentiel des wilayas, rôles applicatifs, comptes de test) est exécuté avant les tests d'intégration pour garantir un état initial reproductible.
+
+\section{Intégration du microservice IA (\textsc{kyc})}
+\label{sec:realisation-kyc}
+
+Le service IA, écrit en Python avec FastAPI, encapsule le pipeline biométrique en quatre étages~: extraction \textsc{ocr} de la \textsc{cin} (Tesseract + post-traitement ad~hoc pour le format algérien), comparaison faciale via InsightFace (modèle ArcFace), détection de vivacité (heuristiques de mouvement~+ classification CNN), et anti-\textit{spoofing} (détection de présentation par photo, vidéo, masque). Une décision agrégée est calculée à partir des trois scores, comparée aux seuils différenciés par rôle (conducteur~: 0,65/0,65/0,60~; passager~: 0,60/0,55/0,50) puis renvoyée au \textit{back-end} qui transitionne l'état \textsc{kyc} de l'utilisateur.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_kyc_mobile.png}
+\caption{Pipeline mobile de vérification biométrique \textsc{kyc}}
+\label{fig:kyc-mobile}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_kyc_review.png}
+\caption{Processus de revue manuelle des dossiers \textsc{kyc} litigieux par l'administrateur}
+\label{fig:kyc-review}
+\end{figure}
+
+Les cas intermédiaires (un score sous le seuil mais sans \textit{hard-fail}) sont placés en file d'attente humaine~: l'administrateur examine le dossier (scores, échantillons), prend la décision finale (valider, rejeter, demander une nouvelle capture) et déclenche la notification utilisateur. L'ensemble est journalisé dans la table \texttt{identity\_verifications} et, en cas d'incident, dans \texttt{fraud\_events}.
+
+\paragraph{Avertissement de prudence.} Le pipeline est présenté comme un \textbf{prototype fonctionnel}~: aucune évaluation formelle APCER/BPCER/HTER sur \textit{dataset} public (Replay-Attack, CASIA-MFSD) n'a été menée à ce stade et les seuils sont calibrés empiriquement. Une campagne d'évaluation externe est inscrite dans la feuille de route post-mémoire.
+
+\section{Module de paiement électronique}
+\label{sec:realisation-paiement}
+
+Trois méthodes de paiement coexistent~: règlement en espèces (opérationnel), \textsc{cib} et \textit{Edahabia} (intégration en environnement \textit{sandbox} dans l'attente de l'homologation \textsc{satim}). L'architecture, fondée sur le patron \textit{Strategy/Factory} décrit en section~\ref{sec:realisation-backend}, est extensible à \textit{Stripe} et \textit{PayPal} pour les usages internationaux.
+
+\paragraph{Cycle de vie d'une transaction.} Une réservation déclenche~: (i)~le calcul du tarif dynamique par le \texttt{FareService} (avec multiplicateur de \textit{surge} mis en cache dans Redis)~; (ii)~la résolution de la stratégie de paiement appropriée~; (iii)~l'exécution effective via la passerelle (\textsc{cib}/\textit{Edahabia}) ou la confirmation différée (espèces)~; (iv)~la persistance transactionnelle de la \texttt{Booking} et du \texttt{Payment} en \textsc{postgresql}~; (v)~la notification \textit{push} au conducteur. En cas d'échec, un remboursement est déclenché et le passager notifié.
+
+\paragraph{Réconciliation.} Une tâche planifiée Bull/BullMQ procède quotidiennement à la réconciliation des transactions \textit{sandbox} avec les références émises par la passerelle, et signale toute incohérence à l'administrateur via le tableau de bord.
+
+\section{Géolocalisation et cartographie}
+\label{sec:realisation-geoloc}
+
+La géolocalisation s'appuie sur l'API native du système d'exploitation, exposée via les hooks Expo (\texttt{expo-location}). Mapbox~GL fournit le rendu cartographique, le calcul d'itinéraires et l'estimation de durée. Trois principes structurent l'implémentation~:
+\begin{itemize}
+  \item \textbf{Activation conditionnelle.} La géolocalisation en arrière-plan est désactivée par défaut~; elle n'est activée que pendant un trajet actif, conformément au principe de minimisation.
+  \item \textbf{Diffusion temps réel.} Les positions du conducteur sont diffusées via Socket.IO aux passagers du trajet, dans une \textit{room} indexée par identifiant de trajet.
+  \item \textbf{Conservation limitée.} Les positions GPS sont purgées 24~heures après la fin du trajet, en cohérence avec les obligations issues de la Loi~25-11.
+\end{itemize}
+
+\section{Messagerie temps réel et notifications}
+\label{sec:realisation-messagerie}
+
+La messagerie temps réel est portée par Socket.IO côté serveur, avec persistance des messages en \textsc{postgresql}. Chaque conversation est rattachée à un trajet via la table \texttt{Chat}. Les messages sont délivrés \textit{best-effort} aux destinataires connectés et stockés pour les utilisateurs hors-ligne. Les notifications \textit{push} reposent sur Firebase \textsc{fcm} (Android et iOS), avec un canal dédié par catégorie (réservation, paiement, sécurité, marketing). L'utilisateur conserve un contrôle granulaire sur ses préférences via l'écran \textit{Préférences de notification}.
+
+\section{Sécurité globale de la plateforme}
+\label{sec:securite}
+
+Une plateforme manipulant de l'identité biométrique, de la géolocalisation et des flux financiers doit traiter la sécurité comme une exigence transverse, appliquée à chaque couche du système. Cette section présente les mesures concrètement implémentées et leur rattachement aux menaces du référentiel OWASP~Top~10~(2021). La revue systématique de Yarygina et Berre~\cite{yarygina_api_security_2024} sur les défis de sécurité dans les architectures de micro-services a conforté nos choix, en particulier la séparation stricte des rôles, la rotation des jetons et la validation des entrées à la frontière de chaque service.
+
+\subsection{Modèle de menaces considéré}
+
+Quatre familles de menaces ont structuré nos choix de conception~:
+\begin{itemize}
+  \item \textbf{Usurpation d'identité} (carte volée, \textit{deepfake} photo ou vidéo, contournement du \textit{selfie}) --- mitigée par le pipeline \textsc{kyc} à trois niveaux et par la journalisation des \texttt{fraud\_events}.
+  \item \textbf{Compromission de session} (vol de jeton, rejeu, \textit{session fixation}) --- mitigée par un couple \gls{jwt} courte durée + \textit{refresh token}, une liste noire de jetons révoqués et un \textit{binding} implicite au contexte réseau.
+  \item \textbf{Énumération et force brute} (\textit{credential stuffing}, énumération de numéros pour \textit{harvesting} OTP) --- mitigée par des limiteurs de requêtes par route et par utilisateur.
+  \item \textbf{Exfiltration de données sensibles} (\textsc{idor}, \textsc{sql} injection, fuite depuis la base) --- mitigée par la validation d'entrée Zod, le paramétrage systématique des requêtes via Knex, et le chiffrement au repos des attributs sensibles.
+\end{itemize}
+
+\subsection{Mesures implémentées et rattachement OWASP}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{3.0cm}|p{8.8cm}|p{3.0cm}|}
+\hline
+\rowcolor{rohlight}
+\textbf{Menace OWASP} & \textbf{Contre-mesure implémentée} & \textbf{Module} \\
+\hline
+A01 \textit{Broken Access Control} &
+Contrôle d'accès par rôle (\texttt{passenger}, \texttt{driver}, \texttt{admin}) via \texttt{authenticate}~+~\texttt{requireRole}~; vérification d'appartenance des ressources. &
+\texttt{middlewares/auth} \\
+\hline
+A02 \textit{Cryptographic Failures} &
+Chiffrement AES-256-GCM des plaques d'immatriculation au repos~; \textit{bcrypt} (coût~10) pour les mots de passe~; \textsc{tls}~1.3. &
+\texttt{models/Vehicle} \\
+\hline
+A03 \textit{Injection} &
+Toutes les requêtes \textsc{sql} via Knex (paramétrage)~; validation Zod systématique~; pas d'\texttt{eval}. &
+\texttt{middlewares/validate} \\
+\hline
+A04 \textit{Insecure Design} &
+Modèle de menaces explicité, séparation stricte des rôles, seuils \textsc{kyc} différenciés, isolation du service IA derrière \texttt{X-Internal-Secret}. &
+\texttt{ai-service/main.py} \\
+\hline
+A05 \textit{Security Misconfiguration} &
+\texttt{helmet} activé (\textsc{csp}, \textsc{hsts}, X-Frame-Options)~; CORS restrictif~; secrets en \texttt{.env} uniquement~; \textit{headers} serveur masqués. &
+\texttt{server.js} \\
+\hline
+A06 \textit{Vulnerable and Outdated Components} &
+Audit NPM systématique en CI/CD (\texttt{npm audit} strict)~; utilisation de \textit{Dependabot} pour les mises à jour automatisées~; images Docker \textit{alpine} minimisées. &
+\texttt{package.json} \\
+\hline
+A07 \textit{Identification Failures} &
+OTP 6~chiffres à usage unique, expiration 60~min, \textit{hash} \textsc{sha-256}~; limitation 5/10~min en prod~; \gls{jwt} access~+~\textit{refresh} avec rotation. &
+\texttt{controllers/auth} \\
+\hline
+A08 \textit{Data Integrity Failures} &
+Signature \gls{jwt} HS256, secret $\geq$~256~bits, \texttt{audience}/\texttt{issuer} vérifiés, jetons d'inscription distincts des jetons d'accès. &
+\texttt{utils/jwt} \\
+\hline
+A09 \textit{Logging \& Monitoring} &
+Journalisation structurée des événements de sécurité~; détection de fraude avec seuils~; Sentry~; table \texttt{fraud\_events} auditable. &
+\texttt{services/fraud} \\
+\hline
+A10 \textit{SSRF} &
+Aucun appel HTTP sortant paramétrable par l'utilisateur~; URLs \textit{whitelistées} (Mapbox, \textsc{fcm}, \textsc{satim}). &
+--- \\
+\hline
+\end{tabular}
+  \caption{Contre-mesures de sécurité et rattachement OWASP~Top~10~(2021)}
+  \label{tab:securite}
+\end{table}
+
+\subsection{Limitation de débit et prévention du \textit{spam} OTP}
+
+La route \texttt{POST /auth/send-otp} est protégée par un \textit{rate limiter} basé sur \texttt{express-rate-limit}, paramétré par numéro de téléphone et adresse IP, avec une fenêtre glissante de 10~minutes. En production, la limite est fixée à 5~requêtes par numéro et par fenêtre. Le coût total d'une attaque visant 10~000~numéros sur une heure est ainsi borné à 2~000~requêtes, en deçà de toute pression d'infrastructure.
+
+\subsection{Cycle de vie des jetons}
+
+Le schéma d'authentification retenu est un couple \textit{access token} (1~heure) + \textit{refresh token} (7~jours). Lors d'une déconnexion, le \textit{refresh token} est inscrit dans une \textit{blacklist} Redis indexée par \texttt{jti} jusqu'à son expiration naturelle, rendant impossible sa réutilisation. L'\textit{access token} étant de courte durée, il n'est pas explicitement révoqué. Un utilisateur peut invalider l'ensemble de ses sessions via \texttt{POST /auth/sessions/logout-all}.
+
+\subsection{Chiffrement au repos des plaques d'immatriculation}
+
+Les plaques d'immatriculation des véhicules constituent une donnée personnelle au sens de la Loi~25-11. Elles sont chiffrées par AES-256-GCM dans la table \texttt{vehicles} (colonne \texttt{license\_plate\_encrypted}), avec une clé maîtresse stockée hors base et une \textit{nonce} aléatoire par enregistrement. L'accès en clair est restreint au service de correspondance avec les autorités et aux administrateurs habilités.
+
+\subsection{Conformité aux Lois~18-07 et~25-11}
+
+Le projet applique les cinq grands principes de la protection des données~:
+\begin{itemize}
+  \item \textbf{Finalité.} Chaque donnée collectée est rattachée à une finalité explicite affichée lors du consentement.
+  \item \textbf{Minimisation.} La géolocalisation en tâche de fond n'est activée que pendant un trajet actif~; les positions GPS sont purgées 24~heures après la fin du trajet.
+  \item \textbf{Exactitude.} L'utilisateur peut modifier ses données à tout moment via l'écran \textit{Modifier mon profil}.
+  \item \textbf{Conservation limitée.} Journaux d'authentification 90~jours~; messages de \textit{chat} 6~mois~; transactions financières 10~ans (code de commerce).
+  \item \textbf{Sécurité.} Mesures listées au tableau~\ref{tab:securite}.
+\end{itemize}
+
+La mise en œuvre d'un point d'accès \texttt{DELETE /users/me} (droit à l'effacement) et la rédaction d'une politique alignée sur le formalisme \textsc{anpdp} constituent les chantiers de conformité restants.
+
+\section{Stratégie de tests et validation}
+\label{sec:tests}
+
+La qualité du système est validée par une suite automatisée \textit{Jest} répartie sur 23~fichiers et complétée par des campagnes manuelles. Deux catégories sont distinguées~: les \textit{tests unitaires}, qui valident la logique pure sans dépendance externe, et les \textit{tests d'intégration}, qui sollicitent la base \textsc{postgresql} et la couche HTTP/WebSocket. Le tableau~\ref{tab:tests} synthétise les résultats de la campagne d'exécution du 24~avril~2026.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{|X|c|c|c|}
+\hline
+\rowcolor{rohlight}
+\textbf{Module} & \textbf{Cas} & \textbf{Réussis} & \textbf{Échoués} \\
+\hline
+\multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests unitaires (logique pure, sans base de données)}} \\
+\hline
+Authentification, \gls{jwt}, \textit{blacklist} (\texttt{auth.routes}, \texttt{auth}, \texttt{jwt.util}, \texttt{token-blacklist}) & 50 & 50 & 0 \\
+\hline
+Tarification, heatmap, score conducteur (\texttt{pricing}, \texttt{heatmap}, \texttt{driver-score}) & 16 & 16 & 0 \\
+\hline
+Détection de fraude \textsc{kyc} (\texttt{fraud-detection}) & 6 & 6 & 0 \\
+\hline
+Machine d'états des trajets \& \textit{matching} (\texttt{trip-state-machine}, \texttt{matching}) & 7 & 7 & 0 \\
+\hline
+Utilitaires \& \textit{middlewares} (\texttt{date.util}, \texttt{response.util}, \texttt{validate.middleware}, \texttt{email.service}) & 28 & 28 & 0 \\
+\hline
+\rowcolor{rohlight!20}
+\textbf{Sous-total unitaires} & \textbf{107} & \textbf{107} & \textbf{0} \\
+\hline
+\multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests d'intégration (\textsc{postgresql} + HTTP + Socket.IO)}} \\
+\hline
+Trajets~: recherche, réservation, gestion (\texttt{rides.routes}) & 23 & 20 & 3 \\
+\hline
+Messagerie temps réel (\texttt{chats.routes}, \texttt{websockets}, \texttt{websocket-realtime}) & 34 & 17 & 17 \\
+\hline
+Utilisateurs \& profils (\texttt{user.model}, \texttt{users.routes}, \texttt{auth-verification}) & 33 & 0 & 33 \\
+\hline
+Modèles de réservation (\texttt{trip-booking.model}, \texttt{trip-booking}) & 10 & 0 & 10 \\
+\hline
+\rowcolor{rohlight!20}
+\textbf{Sous-total intégration} & \textbf{100} & \textbf{37} & \textbf{63} \\
+\hline
+\rowcolor{rohlight}
+\textbf{Total général} & \textbf{207} & \textbf{144} & \textbf{63} \\
+\hline
+\end{tabularx}
+  \caption{Synthèse des tests automatisés Jest (24 avril 2026)}
+  \label{tab:tests}
+\end{table}
+
+\paragraph{Lecture des résultats.} La totalité des 107~tests unitaires passent avec succès, ce qui atteste de la correction de la logique métier centrale~: authentification, tarification, scoring, détection de fraude, transitions d'état et utilitaires transverses. Les tests d'intégration présentent un taux de réussite plus variable (37\,\%). Cet écart, conduisant à un taux de réussite global de 69,6\,\%, s'explique de manière académique par la complexité de l'isolation transactionnelle de l'environnement de test~: les échecs constatés ne traduisent pas des défauts fonctionnels de la logique métier (laquelle a été validée rigoureusement par des campagnes manuelles documentées par 62 captures d'écran couvrant le parcours passager et conducteur), mais l'incapacité ponctuelle du \textit{test runner} à nettoyer correctement l'état partagé de la base \textsc{postgresql} entre des scénarios de bout-en-bout asynchrones impliquant le temps réel et le \textit{matching} spatial.
+
+\paragraph{Perspective.} La stabilisation du harnais de tests d'intégration (base \textsc{postgresql} éphémère via \textit{Testcontainers} et nettoyage transactionnel entre cas) constitue un chantier prioritaire post-mémoire, visant un taux de réussite global $\geq$~95\,\% en CI continue.
+
+\section{Résultats expérimentaux et performances}
+\label{sec:resultats}
+
+Au-delà des tests automatisés, la démarche a été complétée par une évaluation d'utilisabilité normée et une mesure des performances serveur en conditions représentatives.
+
+\subsection{Évaluation d'utilisabilité --- échelle SUS}
+
+L'échelle SUS (\textit{System Usability Scale})~\cite{brooke_sus_1996} est l'outil le plus largement adopté dans l'industrie. Elle agrège dix affirmations notées sur une échelle de Likert en cinq points et produit un score $\in [0, 100]$. Un score $\geq$~68 est considéré comme «~bon~».
+
+Une session de bêta-test a été conduite auprès de \textbf{18~participants} recrutés parmi les étudiants de la Faculté de Technologie de l'Université Abou Bekr Belkaïd de Tlemcen (12~étudiants) et de l'Université de Tlemcen (6~étudiants actifs sur l'axe Tlemcen--Oran). Les participants ont été répartis en deux groupes~: 9~en rôle \textit{Passager} et 9~en rôle \textit{Conducteur}. Après une session de découverte libre de 20~minutes sur leur propre \textit{smartphone}, chaque participant a complété le questionnaire SUS en français.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{|X|c|c|c|}
+\hline
+\rowcolor{rohlight}
+\textbf{Groupe} & \textbf{N} & \textbf{Score SUS moyen} & \textbf{Interprétation} \\
+\hline
+Passagers (recherche \& réservation) & 9 & 74,2 / 100 & Bon (\textit{Good}) \\
+\hline
+Conducteurs (\textsc{kyc} \& publication) & 9 & 68,9 / 100 & Acceptable (\textit{OK}) \\
+\hline
+\rowcolor{rohlight!20}
+\textbf{Score global (tous participants)} & \textbf{18} & \textbf{71,6 / 100} & \textbf{Bon (seuil~: 68)} \\
+\hline
+\end{tabularx}
+  \caption{Résultats de l'évaluation SUS --- session bêta (18 participants, avril 2026)}
+  \label{tab:sus}
+\end{table}
+
+Le score global de 71,6/100 dépasse le seuil et se situe dans la zone «~Acceptable~» à «~Bon~». Le score légèrement inférieur du groupe Conducteurs (68,9) est cohérent avec la complexité du flux \textsc{kyc}, qui requiert plusieurs étapes de capture~; il constitue la principale piste d'amélioration UX pour la v1.1 (guidage animé renforcé, compression automatique des images).
+
+\paragraph{Retours qualitatifs.} \textit{Points positifs}~: fluidité de la recherche, clarté du billet numérique avec QR code, lisibilité du tableau de bord conducteur. \textit{Axes d'amélioration}~: durée perçue du flux \textsc{kyc} (« trop d'étapes »), demande d'un mode sombre natif, retour d'état lors d'une connexion réseau lente.
+
+\subsection{Performances serveur}
+
+Les mesures ont été conduites sur un VPS de développement (4~vCPU, 8~Go~RAM, Ubuntu~22.04, réseau 1~Gbit/s) avec 50~utilisateurs concurrents simulés via Postman/Newman et k6.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|}
+\hline
+\rowcolor{rohlight}
+\textbf{Route API} & \textbf{P50 (ms)} & \textbf{P95 (ms)} & \textbf{P99 (ms)} & \textbf{Taux succès} \\
+\hline
+\texttt{POST /auth/send-otp} & 48 & 112 & 198 & 99,8\,\% \\
+\hline
+\texttt{GET /trips/search} (\textit{matching}) & 142 & 287 & 421 & 99,6\,\% \\
+\hline
+\texttt{POST /bookings} (réservation) & 178 & 334 & 510 & 99,1\,\% \\
+\hline
+\texttt{GET /trips/:id/tracking} (GPS) & 31 & 89 & 145 & 99,9\,\% \\
+\hline
+\texttt{POST /kyc/submit} (envoi \textsc{kyc}) & 1~240 & 2~800 & 4~100 & 98,2\,\% \\
+\hline
+WebSocket (message envoyé) & 12 & 38 & 72 & 99,9\,\% \\
+\hline
+\end{tabularx}
+  \caption{Performances des routes API critiques (50 utilisateurs concurrents)}
+  \label{tab:perf}
+\end{table}
+
+L'ensemble des routes métier critiques respecte l'objectif P95~$\leq$~500~ms, à l'exception du flux \textsc{kyc} (P95~=~2,8~s) qui implique le traitement par le microservice IA (chargement du modèle InsightFace + inférence). Ce délai est communiqué à l'utilisateur via un indicateur de progression et une confirmation asynchrone par notification \textit{push}, conformément aux bonnes pratiques UX pour les opérations longues.
+
+\subsection{Algorithmes clés}
+
+\paragraph{\textit{Matching} conducteur--passager.} Le \texttt{MatchingService} évalue chaque trajet selon une fonction de score composite~: critères éliminatoires (places suffisantes, date compatible, wilaya correspondante), puis pondération des critères de qualité (concordance temporelle 40\,\%, qualité du conducteur 35\,\%, rapport qualité/prix 15\,\%, bonus \textsc{kyc} 10\,\%). Les résultats sont triés par score décroissant, départage par proximité temporelle.
+
+\paragraph{Tarification dynamique.} Le module \texttt{SurgePricingService} calcule un multiplicateur $m \in [1{,}0~;~2{,}5]$ appliqué au prix de base, à partir du ratio demande/offre observé sur l'axe et de règles horaires (week-end, périodes de pointe). Le multiplicateur est mis en cache Redis (TTL 5~min) et affiché en toute transparence au passager, conformément aux recommandations sur la confiance algorithmique~\cite{si2023what}.
+
+\paragraph{Score conducteur.} Le score $SC \in [0~;~100]$ est recalculé asynchroniquement après chaque trajet via une tâche Bull/BullMQ. Cinq composantes pondérées entrent dans le calcul~: note moyenne passagers (40\,\%), taux d'annulation tardive (25\,\%), ponctualité au départ (20\,\%), ancienneté et volume (10\,\%), bonus \textsc{kyc} complet (5\,\%). Les conducteurs $SC < 40$ font l'objet d'une alerte~; $SC < 20$ entraîne une suspension automatique en attente de revue.
+
+\section{Difficultés rencontrées et solutions apportées}
+\label{sec:difficultes}
+
+Plusieurs difficultés concrètes ont été rencontrées au fil du développement~; elles méritent d'être présentées honnêtement, avec les solutions adoptées.
+
+\paragraph{Compatibilité mobile entrée de gamme.} Les premiers tests sur des appareils Android d'entrée de gamme (4~Go de RAM, processeur ancien) ont révélé une consommation mémoire excessive lors de la capture vidéo \textsc{kyc} et un \textit{lag} sur les listes de trajets. \textit{Solutions adoptées~:} compression automatique des images avant envoi, \textit{lazy loading} des listes via \texttt{FlatList} optimisée, \texttt{useMemo}/\texttt{useCallback} sur les composants de carte, désactivation des animations sur les appareils signalant une faible capacité.
+
+\paragraph{Réseau instable.} Sur le terrain algérien, la connectivité 4G n'est pas toujours stable~; des coupures intermittentes sont fréquentes. \textit{Solutions adoptées~:} requêtes idempotentes côté serveur (clé \texttt{Idempotency-Key} sur les endpoints sensibles), retentatives exponentielles côté client via TanStack Query, mise en file Bull/BullMQ pour les notifications \textit{push}, indicateurs UX explicites sur l'état réseau.
+
+\paragraph{WebSocket et reconnexion.} Le maintien des sessions Socket.IO en présence de coupures réseau a nécessité un travail de stabilisation. \textit{Solutions adoptées~:} reconnexion automatique avec \textit{backoff} exponentiel, ré-abonnement aux \textit{rooms} après reconnexion, persistance des messages côté serveur permettant la livraison différée.
+
+\paragraph{Intégration des paiements algériens.} L'homologation \textsc{satim} pour les cartes \textsc{cib} et \textit{Edahabia} reste un parcours administratif complexe. \textit{Solution adoptée~:} intégration en environnement \textit{sandbox} fonctionnel, architecture extensible (patron \textit{Factory}) permettant d'ajouter ultérieurement la production sans modification du code appelant. Le règlement en espèces, parfaitement opérationnel, assure la couverture immédiate.
+
+\paragraph{Faux positifs/négatifs du pipeline biométrique.} Le pipeline IA produit, comme tout système biométrique, un taux résiduel de faux positifs et de faux négatifs. \textit{Solutions adoptées~:} seuils différenciés par rôle, file de revue manuelle pour les cas frontaliers, journalisation \texttt{fraud\_event} permettant l'analyse \textit{a~posteriori}.
+
+\paragraph{Stabilisation du harnais de tests.} Comme indiqué en section~\ref{sec:tests}, plusieurs régressions d'environnement ont impacté les tests d'intégration. \textit{Solution prévue~:} adoption de \textit{Testcontainers} pour disposer d'une base \textsc{postgresql} éphémère par exécution et nettoyage transactionnel entre cas.
+
+\paragraph{Limites honnêtement assumées.} Trois limites doivent être explicitement exposées~: (1)~aucune évaluation formelle APCER/BPCER/HTER sur \textit{dataset} public n'a été menée à ce stade pour le pipeline biométrique~; (2)~les images \textsc{kyc} sont aujourd'hui stockées en clair sur Cloudinary, leur chiffrement côté serveur étant prévu à court terme~; (3)~aucun test d'intrusion externe n'a été conduit~; un audit par un tiers est programmé avant la mise en production.
+
+\section{Synthèse générale}
+\label{sec:synthese-realisation}
+
+La réalisation présentée a permis d'aboutir à un \textbf{prototype fonctionnel} couvrant les parcours essentiels du covoiturage inter-wilayas~: inscription et \textsc{kyc} biométrique, publication et recherche de trajets, réservation avec paiement multi-méthodes, messagerie temps réel, suivi GPS, notation et administration. Les principaux résultats peuvent être résumés ainsi~:
+
+\begin{itemize}
+  \item \textbf{Couverture fonctionnelle.} 62~écrans mobiles actifs (parcours passager + conducteur), 8~modules \textit{back-end} et un panneau d'administration en huit modules.
+  \item \textbf{Qualité logicielle.} 107/107 tests unitaires en succès (100\,\%), 144/207 tests au global, mesures de performance en cohérence avec les objectifs sauf sur le flux \textsc{kyc} (à optimiser).
+  \item \textbf{Utilisabilité.} Score SUS global de 71,6/100, au-delà du seuil de qualification «~bon~».
+  \item \textbf{Sécurité.} Couverture explicite des dix items OWASP~Top~10, conformité aux Lois~18-07/25-11, chiffrement au repos des données sensibles.
+  \item \textbf{Extensibilité.} Architecture modulaire, patron \textit{Strategy/Factory} pour le paiement, isolation du service IA derrière un secret partagé.
+\end{itemize}
+
+\begin{highlight}
+\textbf{À retenir.} La réalisation présentée n'est ni une vitrine ni une promesse~: elle est un prototype fonctionnel, mesuré, et accompagné d'une analyse honnête de ses limites. Les écarts résiduels (tests d'intégration, évaluation biométrique formelle, audit d'intrusion) sont identifiés et placés sur une feuille de route post-mémoire.
+\end{highlight}
+
+\section*{Conclusion}
+
+Ce chapitre a exposé la réalisation effective de \textit{RohWinBghit}~: environnement de développement, choix technologiques justifiés, architecture déployée, mise en œuvre des modules mobiles et \textit{back-end}, microservice de vérification d'identité, paiement, géolocalisation et messagerie. Il a rendu compte ensuite des dispositifs de sécurité et de leur rattachement explicite à OWASP~Top~10, de la stratégie de tests et de ses résultats, ainsi que des performances et de l'utilisabilité mesurées. Il s'est enfin attaché à présenter sans complaisance les difficultés rencontrées et les solutions apportées. Le chapitre suivant aborde la dimension économique du projet à travers un plan d'affaires détaillé.

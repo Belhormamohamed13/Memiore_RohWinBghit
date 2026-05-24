@@ -1,0 +1,22 @@
+@startuml fig3_3_passenger_flow
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+
+|Recherche trajet|
+start
+:Depart : Alger (16);
+:Arrivee : Oran (31);
+:Date : 15/04 - 08h30;
+:Chercher;
+
+|Resultats|
+:Afficher resultats;
+note right #FFF3E0 : Surge actif :\n1 500 DA (x1.5)\nnormal : 1 200 DA
+:Ahmed B. - 4.8 etoiles\n08h30 - 3 places disponibles;
+
+|Reservation|
+:Trajet Alger -> Oran\n1 500 DA (x1.5);
+:Choix paiement :\nCIB / Edahabia / Especes;
+:Confirmer 1500 DA;
+stop
+@enduml

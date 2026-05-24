@@ -1,0 +1,48 @@
+@startuml fig_sequence_inscription
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #444444
+  ActorBorderColor #1565C0
+  ActorBackgroundColor #BBDEFB
+  LifeLineBorderColor #888888
+  ParticipantBorderColor #455A64
+  ParticipantBackgroundColor #ECEFF1
+  ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
+}
+
+title Diagramme de séquence — Inscription (RohWinBghit)
+
+actor "r : Utilisateur" as U
+participant "System" as S
+database "BDD" as DB
+
+U -> S : Affichage de l'écran d'accueil
+U -> S : Demander à s'inscrire
+
+alt cpt = [[Conducteur || Passager]]
+
+  alt Téléphone & OTP corrects
+    U -> S : Saisir numéro de téléphone
+    S -> DB : Envoyer la requête (numéro)
+    DB --> S : Numéro disponible
+    S --> U : Envoi du code OTP par SMS
+    U -> S : Saisir le code OTP reçu
+    S -> S : Vérifier le code OTP
+    S --> U : OTP validé
+    U -> S : Saisir les informations\n(Nom, Prénom, Email, Mot de passe)
+    S -> DB : Envoyer les données utilisateur
+    DB --> S : Utilisateur créé
+    S --> U : Inscription avec succès\n(rôle attribué : passager / conducteur)
+  else OTP invalide ou expiré
+    U -> S : Saisir un code incorrect
+    S -> S : Vérifier le code OTP
+    S --> U : Code OTP invalide ou expiré
+  end
+
+end
+
+@enduml

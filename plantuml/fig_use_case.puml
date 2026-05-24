@@ -1,0 +1,108 @@
+@startuml fig_use_case
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam ArrowColor #444444
+skinparam ActorBorderColor #1E5096
+skinparam ActorFontStyle bold
+
+' Couleurs par catégorie de cas d'utilisation
+skinparam usecase {
+  BorderColor #555555
+  BackgroundColor White
+  BackgroundColor<<Common>> #ECEFF1
+  BackgroundColor<<Passenger>> #BBDEFB
+  BackgroundColor<<Driver>> #C8E6C9
+  BackgroundColor<<Admin>> #FFE0B2
+  BorderColor<<Common>> #455A64
+  BorderColor<<Passenger>> #1565C0
+  BorderColor<<Driver>> #2E7D32
+  BorderColor<<Admin>> #E65100
+}
+
+left to right direction
+title Diagramme de cas d'utilisation — RohWinBghit
+
+' ===== ACTEURS COLORÉS =====
+actor "Passager" as Pax #BBDEFB
+actor "Conducteur" as Drv #C8E6C9
+actor "Administrateur" as Adm #FFE0B2
+
+rectangle "Système RohWinBghit" {
+
+  ' --- Accès commun (gris) ---
+  usecase "S'inscrire" as UC_Register <<Common>>
+  usecase "S'authentifier" as UC_Auth <<Common>>
+  usecase "Vérification KYC" as UC_KYC <<Common>>
+  usecase "Gérer son profil" as UC_Profile <<Common>>
+  usecase "Recevoir notifications" as UC_Notif <<Common>>
+  usecase "Communiquer (chat)" as UC_Chat <<Common>>
+
+  ' --- Passager (bleu) ---
+  usecase "Rechercher un trajet" as UC_Search <<Passenger>>
+  usecase "Réserver une place" as UC_Book <<Passenger>>
+  usecase "Payer le trajet" as UC_Pay <<Passenger>>
+  usecase "Annuler réservation" as UC_CancelBook <<Passenger>>
+  usecase "Publier une demande" as UC_Request <<Passenger>>
+  usecase "Noter le conducteur" as UC_Review <<Passenger>>
+
+  ' --- Conducteur (vert) ---
+  usecase "Ajouter un véhicule" as UC_AddVehicle <<Driver>>
+  usecase "Publier un trajet" as UC_Publish <<Driver>>
+  usecase "Gérer les réservations" as UC_Manage <<Driver>>
+  usecase "Accepter le passager" as UC_Accept <<Driver>>
+  usecase "Refuser le passager" as UC_Reject <<Driver>>
+  usecase "Annuler le trajet" as UC_CancelTrip <<Driver>>
+  usecase "Recevoir les gains" as UC_Earn <<Driver>>
+
+  ' --- Administrateur (orange) ---
+  usecase "Tableau de bord" as UC_AdminDash <<Admin>>
+  usecase "Valider KYC" as UC_AdminKyc <<Admin>>
+  usecase "Modérer les utilisateurs" as UC_AdminUsers <<Admin>>
+  usecase "Superviser les trajets" as UC_AdminTrips <<Admin>>
+}
+
+' ===== LIAISONS PASSAGER =====
+Pax --> UC_Register
+Pax --> UC_Auth
+Pax --> UC_KYC
+Pax --> UC_Profile
+Pax --> UC_Notif
+Pax --> UC_Chat
+Pax --> UC_Search
+Pax --> UC_Book
+Pax --> UC_Request
+Pax --> UC_Review
+
+' ===== LIAISONS CONDUCTEUR =====
+Drv --> UC_Register
+Drv --> UC_Auth
+Drv --> UC_KYC
+Drv --> UC_Profile
+Drv --> UC_Notif
+Drv --> UC_Chat
+Drv --> UC_AddVehicle
+Drv --> UC_Publish
+Drv --> UC_Manage
+Drv --> UC_Earn
+
+' ===== LIAISONS ADMINISTRATEUR =====
+Adm --> UC_Auth
+Adm --> UC_AdminDash
+Adm --> UC_AdminKyc
+Adm --> UC_AdminUsers
+Adm --> UC_AdminTrips
+
+' ===== RELATIONS UML (sémantique corrigée) =====
+' include : base ..> inclus
+UC_Book ..> UC_Pay : <<include>>
+UC_Publish ..> UC_AddVehicle : <<include>>
+
+' extend : extension ..> base
+UC_CancelBook ..> UC_Book : <<extend>>
+UC_Accept ..> UC_Manage : <<extend>>
+UC_Reject ..> UC_Manage : <<extend>>
+UC_CancelTrip ..> UC_Publish : <<extend>>
+
+@enduml

@@ -1,0 +1,48 @@
+@startuml fig2_1_architecture
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+
+package "CLIENTS" <<Cloud>> #E3F2FD {
+    node "App Mobile\nReact Native 0.81.5 / Expo SDK 54\nZustand 4.4.7 · TanStack Query 5.17.0\nMapbox · Socket.IO · i18next (FR/AR)" as mobile #BBDEFB
+    node "Dashboard Admin\nReact / Vite / TypeScript\n(Admin · Conducteur · Passager)\n10 pages admin" as web #BBDEFB
+}
+
+package "BACKEND — Node.js / Express 4.18.2 :8080" <<Frame>> #E8F5E9 {
+    component "API Gateway" as gw #C8E6C9
+    component "Auth Middleware JWT (jsonwebtoken + bcryptjs)" as auth #C8E6C9
+    component "Routes 19 modules" as routes #C8E6C9
+    component "Controllers 17" as ctrl #C8E6C9
+    component "Services: surge · matching · fare\nfraud · heatmap · notification\ndriver-score · email · encryption\nlocation · public-api" as svc #F1F8E9
+    component "PaymentFactory (Map+instance)\n3 stratégies : CIB · Edahabia · Cash\n(Stripe+PayPal: deps installées)" as patterns #FFF3E0
+    component "Workers: BullMQ 5.71.0\ninitWorkers() + reconciliation" as workers #FFCDD2
+}
+
+package "DONNEES" <<Database>> #F3E5F5 {
+    database "PostgreSQL 16\n29 tables\nKnex 3.1.0" as pg #CE93D8
+    database "Redis 7\nrwb:surge:global TTL=60s" as redis #CE93D8
+    storage "Multer local /uploads/" as uploads #CE93D8
+}
+
+package "AI Service — FastAPI :8001" <<Frame>> #FFF9C4 {
+    component "FaceAnalyzer - InsightFace buffalo_l\nLivenessDetector\nAntiSpoofDetector\nCardValidator" as ai #FFF176
+}
+
+cloud "Sentry 10.45.0\nMonitoring" as sentry #EEEEEE
+
+mobile -[#1565C0]-> gw : HTTPS REST + WebSocket
+web -[#1565C0]-> gw : HTTPS REST
+gw --> auth
+auth --> routes
+routes --> ctrl
+ctrl --> svc
+ctrl --> patterns
+svc --> workers
+ctrl --> pg
+svc --> redis
+ctrl ..> ai : HTTP multipart\nX-Internal-Secret
+sentry ..> gw
+@enduml

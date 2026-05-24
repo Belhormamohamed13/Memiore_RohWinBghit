@@ -1,0 +1,50 @@
+@startuml fig_sequence_reservation_conducteur
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #444444
+  ActorBorderColor #2E7D32
+  ActorBackgroundColor #C8E6C9
+  LifeLineBorderColor #888888
+  ParticipantBorderColor #455A64
+  ParticipantBackgroundColor #ECEFF1
+  ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
+}
+
+title Diagramme de séquence — Réservation côté Conducteur (RohWinBghit)
+
+actor "r : Conducteur" as D
+participant "System" as S
+database "BDD" as DB
+
+S --> D : Recevoir notifications (FCM)
+D -> S : Accéder à la gestion des covoiturages
+S -> DB : Envoyer les informations
+DB --> S : Afficher les requêtes
+S --> D : Afficher les requêtes disponibles
+
+alt Accepter
+
+  alt Passager accepté
+    D -> S : Accepter le passager
+    S -> DB : Mettre à jour la réservation\n(status = confirmed)
+    S --> D : Confirmation du statut
+    S --> D : Envoyer notification au passager
+  else Annulation du voyage
+    D -> S : Annuler le trajet
+    S -> DB : Mettre à jour le trajet\n(status = cancelled)
+    S --> D : Requête d'annulation enregistrée
+    S --> D : Notifier les passagers concernés
+  end
+
+else Refuser
+  D -> S : Refuser le passager
+  S -> DB : Mettre à jour la réservation\n(status = rejected)
+  S --> D : Confirmation du statut
+  S --> D : Envoyer notification au passager
+end
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml fig4_5_admin_process
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam ActivityBackgroundColor #E8F5E9
+
+start
+:Admin au Dashboard React/Vite;
+:KPIs + Heatmap Algerie (Mapbox GL)\nGraphiques revenus by wilaya/jour/methode;
+fork
+    partition "File KYC" {
+        :Liste demandes (Nom/Wilaya/Date);
+        :Photos CNI/Permis;
+        :Scores InsightFace :8001\nFace / Liveness / Antispoof;
+        if (Decision ?) then (Approuver)
+            :#C8E6C9: Verified + FCM;
+        else (Rejeter)
+            :#FFCDD2: Rejected + Motif + FCM;
+        endif
+    }
+fork again
+    partition "Config Surge Pricing" {
+        :Multiplicateur actuel (Redis cache);
+        :Creer regle calendaire (Aid/Fetes);
+        :Activer -> Redis TTL 60s;
+    }
+fork again
+    partition "Gestion utilisateurs" {
+        :Filtre: role/statut/wilaya;
+        :Suspendre / Debloquer;
+        :Traiter litiges conducteurs;
+    }
+end fork
+stop
+@enduml
