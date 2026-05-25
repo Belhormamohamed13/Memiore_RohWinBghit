@@ -48,12 +48,12 @@ La labellisation de \textit{RohWinBghit} suit un processus en quatre étapes~: (
 
 \textit{RohWinBghit} naît d'un constat simple~: en Algérie, voyager d'une wilaya à une autre reste cher, imprévisible et peu sûr. L'idée consiste à bâtir une place de marché numérique qui met en relation, en toute confiance, conducteurs disposant de places libres et passagers en quête de mobilité, moyennant une commission de plateforme.
 
-La valeur générée se décline sur trois axes~:
-\begin{itemize}
-  \item \textbf{Pour le passager~:} prix jusqu'à 40\,\% inférieurs aux tarifs taxi, disponibilité immédiate, sécurité par KYC biométrique.
-  \item \textbf{Pour le conducteur~:} rentabilisation de trajets déjà effectués, visibilité de la demande, paiement sécurisé et rapide.
-  \item \textbf{Pour la société~:} désengorgement routier, réduction de l'empreinte carbone, démocratisation de la mobilité.
-\end{itemize}
+La valeur générée se décline sur trois axes stratégiques.
+\begin{enumerate}
+  \item \textbf{Pour le passager~:} des prix jusqu'à 40\,\% inférieurs aux tarifs des taxis collectifs, une disponibilité immédiate et une sécurité accrue par KYC biométrique.
+  \item \textbf{Pour le conducteur~:} la rentabilisation de trajets déjà programmés, une meilleure visibilité de la demande et un encaissement rapide et sécurisé.
+  \item \textbf{Pour la société~:} le désengorgement des axes routiers, la réduction de l'empreinte carbone et la démocratisation de la mobilité inter-wilayas.
+\end{enumerate}
 
 \subsection{Équipe porteuse}
 
@@ -102,7 +102,7 @@ Cartes interbancaires en circulation & 21,9~M & GIE Monétique 2024~\cite{gie_mo
 \hline
 Croissance du paiement Internet (2023$\rightarrow$2024) & +179\,\% & GIE Monétique 2024~\cite{gie_monetique_2024} \\
 \hline
-Nombre de wilayas (décret 2019) & 58 (puis 69 depuis 2022) & Journal Officiel 2022 \\
+Nombre de wilayas (décret 2022) & 69 & Journal Officiel 2022 \\
 \hline
 Coût moyen d'un trajet Tlemcen-Oran (taxi collectif) & 700--900~DZD & Enquête terrain (avril 2026) \\
 \hline
@@ -163,13 +163,13 @@ L'analyse comparative (chapitre~1, tableau~\ref{tab:comparatif}) a montré que l
 
 \subsection{Stratégie marketing}
 
-La stratégie de mise sur le marché s'appuie sur quatre leviers principaux~:
-\begin{itemize}
-  \item \textbf{Ambassadeurs universitaires~:} recrutement d'étudiants ambassadeurs dans les campus de Tlemcen, Oran, Alger et Constantine.
-  \item \textbf{Communication digitale~:} campagnes TikTok et Instagram ciblant les 18--35 ans.
-  \item \textbf{Partenariats institutionnels~:} conventions avec les CROUS universitaires et certaines entreprises employeurs.
-  \item \textbf{Programme de parrainage~:} tout nouvel utilisateur parrainé bénéficie d'un crédit de 200~DZD utilisable sur son premier trajet.
-\end{itemize}
+La stratégie de mise sur le marché s'appuie sur quatre leviers complémentaires.
+\begin{enumerate}
+  \item \textbf{Ambassadeurs universitaires~:} recrutement d'étudiants ambassadeurs dans les campus de Tlemcen, Oran, Alger et Constantine pour capter le segment universitaire.
+  \item \textbf{Communication digitale~:} campagnes TikTok et Instagram ciblant les 18--35 ans, s'appuyant sur l'adoption massive des réseaux sociaux en Algérie\,\cite{DataReportal2025}.
+  \item \textbf{Partenariats institutionnels~:} conventions avec les CROUS universitaires et certaines entreprises employeurs pour stimuler la demande régulière.
+  \item \textbf{Programme de parrainage~:} attribution d'un crédit de 200~DZD à tout nouvel utilisateur parrainé, utilisable dès son premier trajet.
+\end{enumerate}
 
 \section{Plan de production et organisation}
 
@@ -287,11 +287,21 @@ CAC moyen (coût d'acquisition utilisateur) & 350~DZD & Benchmark digital Algér
   \label{tab:hypotheses}
 \end{table}
 
-\paragraph{Méthode de calcul des revenus.} Le prévisionnel de \textit{commission sur trajets} de l'année~\textit{n} s'obtient par la formule~:
-\begin{center}
-\small
-Revenu\textsubscript{n} = Utilisateurs\textsubscript{actifs,n} $\times$ Fréquence $\times$ Panier $\times$ Commission
-\end{center}
+Le prévisionnel de commission sur les trajets de l'année~$n$ est donné par~:
+
+\begin{equation}
+  R_n = U_n \times f \times p \times c
+  \label{eq:revenus}
+\end{equation}
+
+\noindent où~:
+\begin{itemize}[leftmargin=2cm, label={}]
+  \item $R_n$ désigne le revenu de commission annuel de l'année~$n$ (en DZD)~;
+  \item $U_n$ est le nombre moyen d'utilisateurs actifs mensuels sur l'année~$n$~;
+  \item $f$ est la fréquence moyenne d'utilisation (hypothèse~: $f = 2{,}5$ trajets/mois/utilisateur)~;
+  \item $p$ est le panier moyen par trajet (hypothèse~: $p = 800$~DZD)~;
+  \item $c$ est le taux de commission de la plateforme (hypothèse~: $c = 12\,\%$).
+\end{itemize}
 
 En appliquant cette formule aux hypothèses du tableau, avec une base d'utilisateurs actifs visée à 50\,000 à M12 (objectif cumul acquisition moins \textit{churn}), le revenu annuel théorique de commission se situe autour de 14,4~MDZD. L'écart avec la projection retenue (6~MDZD en année~1) s'explique par l'étalement de la montée en charge sur 12~mois~: la base d'utilisateurs actifs \textit{moyenne} sur l'année reste inférieure à l'objectif de fin de période.
 
@@ -330,7 +340,7 @@ Divers et imprévus (10\,\%) & 1\,405\,000 \\
 La clarté du modèle de monétisation est un critère déterminant pour l'accès aux dispositifs de financement publics (label CNL, fonds ANVREDET) et aux investisseurs privés. \textit{RohWinBghit} combine quatre sources de revenus, ordonnées par priorité de déploiement~:
 
 \begin{enumerate}
-  \item \textbf{Commission sur trajets (12\,\%)}~: prélevée automatiquement sur chaque transaction confirmée. Ce taux est positionné entre BlaBlaCar (15\,\%) et les groupes Facebook informels (0\,\%), assurant une valeur perçue positive pour le conducteur. En phase bêta, la commission est réduite à 8\,\% pour accélérer l'acquisition.
+  \item \textbf{Commission sur trajets (12\,\%)}~: prélevée automatiquement sur chaque transaction confirmée. Ce taux est positionné entre BlaBlaCar (15\,\%)\,\cite{blablacar_report_2023} et les groupes Facebook informels (0\,\%), assurant une valeur perçue positive pour le conducteur. En phase bêta, la commission est réduite à 8\,\% pour accélérer l'acquisition.
   \item \textbf{Abonnement Premium conducteur (1\,500~DZD/mois)}~: commissions réduites à 8\,\%, badge «~Conducteur Vérifié Pro~», accès à la carte thermique détaillée de la demande, priorité dans les résultats de recherche. Modèle freemium classique à fort taux de conversion pour les conducteurs réguliers.
   \item \textbf{Publicité locale ciblée (in-app)}~: espaces publicitaires réservés aux annonceurs locaux (services auto, agences de voyage, hôtels sur les axes principaux). CPM estimé à 2\,000~DZD pour une audience qualifiée.
   \item \textbf{Partenariats B2B}~: conventions tarifaires avec universités (transport des étudiants), entreprises (covoiturage salarial), et hôtels partenaires sur les axes à forte fréquentation.
@@ -442,18 +452,16 @@ Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
 
 Dans l'optique de l'obtention du label CNL et pour garantir la valorisation future de la startup lors d'éventuelles levées de fonds (Série~A), une stratégie stricte de protection des actifs immatériels a été intégrée dès la conception. La propriété intellectuelle représente le fossé défensif (\textit{moat}) du projet face aux concurrents.
 
-\begin{itemize}
-\item
-  \textbf{Dépôt de marque INAPI :} l'identité visuelle, incluant le nom de marque « RohWinBghit », sa transcription arabe « \textarabic{روح وين بغيت} », ainsi que le logotype distinctif, font l'objet d'une procédure de dépôt officielle auprès de l'Institut National Algérien de la Propriété Industrielle (INAPI), assurant l'exclusivité d'exploitation commerciale sur le territoire national.
-\item
-  \textbf{Protection par droits d'auteur ONDA :} l'architecture logicielle, répartie sur les quatre sous-projets (back-end Express, mobile React Native, front-end web React/Vite et microservice FastAPI), fait l'objet d'un dépôt par enveloppe numérique horodatée auprès de l'Office National des Droits d'Auteur et des Droits Voisins (ONDA), conférant une date certaine de création.
-\item
-  \textbf{Perspectives de brevetabilité :} l'implémentation logicielle spécifique du pipeline de fusion asymétrique des scores biométriques (couplant l'extraction vectorielle InsightFace à l'analyse de profondeur pour le KYC) constitue une méthode technique susceptible d'obtenir un brevet d'invention. Dépôt planifié pour le deuxième trimestre 2026.
-\item
-  \textbf{Souveraineté des données :} le choix d'exécuter les modèles d'IA sur un microservice Python interne (FastAPI), plutôt que de sous-traiter à des API cloud étrangères (AWS Rekognition, Google Vision API), garantit la souveraineté technologique totale. Aucune donnée biométrique d'un citoyen algérien ne quitte l'infrastructure souveraine de la plateforme. Le chiffrement AES-256-GCM sécurise les données au repos, tandis que le transport utilise TLS.
-\end{itemize}
+La protection et la valorisation des actifs immatériels reposent sur quatre piliers juridiques et techniques.
+\begin{enumerate}
+  \item \textbf{Dépôt de marque INAPI :} l'identité visuelle, incluant le nom de marque « RohWinBghit », sa transcription arabe « \textarabic{روح وين بغيت} », ainsi que le logotype distinctif, font l'objet d'une procédure de dépôt officielle auprès de l'Institut National Algérien de la Propriété Industrielle (INAPI), assurant l'exclusivité d'exploitation commerciale sur le territoire national.
+  \item \textbf{Protection par droits d'auteur ONDA :} l'architecture logicielle, répartie sur les quatre sous-projets (back-end Express, mobile React Native, front-end web React/Vite et microservice FastAPI), fait l'objet d'un dépôt par enveloppe numérique horodatée auprès de l'Office National des Droits d'Auteur et des Droits Voisins (ONDA), conférant une date certaine de création.
+  \item \textbf{Perspectives de brevetabilité :} l'implémentation logicielle spécifique du pipeline de fusion asymétrique des scores biométriques (couplant l'extraction vectorielle InsightFace à l'analyse de profondeur pour le KYC) constitue une méthode technique susceptible d'obtenir un brevet d'invention. Dépôt planifié pour le deuxième trimestre 2026.
+  \item \textbf{Souveraineté des données :} le choix d'exécuter les modèles d'IA sur un microservice Python interne (FastAPI), plutôt que de sous-traiter à des API cloud étrangères (AWS Rekognition, Google Vision API), garantit la souveraineté technologique totale. Aucune donnée biométrique d'un citoyen algérien ne quitte l'infrastructure souveraine de la plateforme. Le chiffrement AES-256-GCM sécurise les données au repos, tandis que le transport utilise TLS.
+\end{enumerate}
 
 \section{Feuille de route stratégique (Roadmap 18 mois)}
+\label{sec:roadmap}
 
 La stratégie de déploiement de RohWinBghit est articulée autour d'une feuille de route stricte s'étendant sur dix-huit mois, subdivisée en quatre phases d'exécution interconnectées.
 
@@ -471,7 +479,7 @@ La stratégie de déploiement de RohWinBghit est articulée autour d'une feuille
 \hline
 \textbf{Phase 3} --- Expansion & Mois 10--15 & Couverture 20 wilayas, 10~000 utilisateurs actifs, franchissement seuil de rentabilité, lancement abonnement Premium, premières offres B2B, recrutement 5--8 collaborateurs. \\
 \hline
-\textbf{Phase 4} --- Scale National & Mois 16--18 & Couverture 58 wilayas, 50~000 utilisateurs, modèles IA prédictifs (suggestion d'itinéraires), anti-spoofing deepfake, audit Série~A, études d'expansion MENA. \\
+\textbf{Phase 4} --- Scale National & Mois 16--18 & Couverture 69 wilayas, 50~000 utilisateurs, modèles IA prédictifs (suggestion d'itinéraires), anti-spoofing deepfake, audit Série~A, études d'expansion MENA. \\
 \hline
 \end{tabularx}
   \caption{Feuille de route stratégique --- Déploiement RohWinBghit sur 18 mois}
@@ -485,7 +493,7 @@ Au terme de cette feuille de route, l'entreprise structurera l'audit complet de 
 
 Une question récurrente lors des soutenances de projets à forte ambition numérique est la suivante~: \textit{"Comment l'application tiendra-t-elle si 100\,000~Algériens l'utilisent demain~?"}. Loin d'être une formalité rhétorique, cette question touche au cœur des décisions d'architecture qui ont guidé la conception de \textit{RohWinBghit}.
 
-L'architecture stateless du \textit{back-end} NestJS/Express (chaque requête porte en elle-même son contexte via JWT) est précisément choisie pour permettre la \textbf{montée en charge horizontale} sans reconfiguration~: il suffit d'ajouter de nouvelles instances du service derrière un répartiteur de charge Nginx ou AWS ALB. Le tableau~\ref{tab:scalabilite} détaille la correspondance entre paliers d'utilisation et configurations d'infrastructure adaptées.
+L'architecture stateless du \textit{back-end} Express.js à organisation modulaire inspirée de NestJS (chaque requête porte en elle-même son contexte via JWT) est précisément choisie pour permettre la \textbf{montée en charge horizontale} sans reconfiguration~: il suffit d'ajouter de nouvelles instances du service derrière un répartiteur de charge Nginx ou AWS ALB. Le tableau~\ref{tab:scalabilite} détaille la correspondance entre paliers d'utilisation et configurations d'infrastructure adaptées.
 
 \begin{table}[H]
 \centering
@@ -509,14 +517,30 @@ L'architecture stateless du \textit{back-end} NestJS/Express (chaque requête po
 \end{table}
 
 Les goulots d'étranglement potentiels ont été anticipés dès la phase de conception~:
-\begin{itemize}
+Les goulots d'étranglement potentiels ont été anticipés et résolus dès la phase de conception.
+\begin{enumerate}
   \item \textbf{PostgreSQL~:} index GiST sur les coordonnées géographiques, mise en cache des requêtes de recherche via Redis (TTL 30~s), partitionnement par date sur les tables \texttt{trips} et \texttt{bookings} prévu au-delà de 1~M de lignes.
-  \item \textbf{Service IA (KYC)~:} le microservice FastAPI est conçu sans état et horizontalement scalable~; les pics de charge sont absorbés par la file asynchrone BullMQ qui écrête les requêtes de vérification d'identité.
+  \item \textbf{Service IA (KYC)~:} le microservice FastAPI is conçu sans état et horizontalement scalable~; les pics de charge sont absorbés par la file asynchrone BullMQ qui écrête les requêtes de vérification d'identité.
   \item \textbf{WebSocket~:} l'adaptateur Socket.IO Redis permet de distribuer les événements en temps réel entre plusieurs instances, éliminant le \textit{Single Point of Failure} de la connexion persistante.
-\end{itemize}
+\end{enumerate}
 
 Cette préparation architecturale permet à \textit{RohWinBghit} de croitre sans rupture technique jusqu'à l'échelle nationale.
 
 \section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
 
-Ce chapitre a démontré que \textit{RohWinBghit} dépasse le simple exercice académique~: le projet dispose d'un marché clairement identifié, d'une proposition de valeur différenciante, d'un modèle économique viable et d'un prototype fonctionnel. Les projections financières suggèrent un retour sur investissement dès la deuxième année, sous réserve d'une exécution commerciale rigoureuse. Le chapitre final dresse le bilan de ce travail et ouvre sur ses perspectives d'évolution.
+Ce chapitre a établi que RohWinBghit dépasse le cadre du 
+seul exercice académique. Le projet dispose d'un marché 
+clairement identifié — plus de 250~millions de voyages 
+inter-wilayas estimés par an, 1,9~million d'étudiants 
+mobiles, un taux de pénétration smartphone supérieur à 
+75\,\% — d'une proposition de valeur différenciante 
+articulée autour du KYC biométrique et du paiement local, 
+et d'un modèle économique dont les projections indiquent un 
+retour à l'équilibre dès le deuxième trimestre de la 
+deuxième année d'exploitation. La conformité aux critères 
+de l'Arrêté interministériel n\textsuperscript{o}~1275 a 
+été établie point par point (tableau~\ref{tab:arrete1275}), 
+ouvrant la voie à une demande de labellisation CNL et à la 
+création d'une SARL dans le cadre du mécanisme 
+«~Un diplôme, une Startup~».

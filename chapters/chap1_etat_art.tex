@@ -21,23 +21,23 @@ Le covoiturage (\textit{carpooling}, \textit{ridesharing}) désigne le partage d
 
 \subsection{Bénéfices observés}
 
-Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturage produit une triple valeur~:
-\begin{itemize}
-  \item \textbf{Économique~:} mutualisation des frais (carburant, péages, amortissement). Les études européennes estiment à environ 40\,\% l'économie réalisée par passager sur un trajet longue distance~\cite{blablacar_report_2023}.
-  \item \textbf{Sociale~:} accessibilité accrue aux zones mal desservies, lien intergénérationnel, démocratisation des déplacements pour les étudiants et les actifs à faibles revenus.
-  \item \textbf{Environnementale~:} réduction du nombre de véhicules en circulation. L'\textsc{ademe} estime qu'un passager covoituré régulièrement évite en moyenne 110~kg de CO\textsubscript{2} par an~\cite{ademe_2022}.
-\end{itemize}
+Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturage produit une triple valeur.
+\begin{enumerate}
+  \item \textbf{Bénéfice économique~:} la mutualisation des frais (carburant, péages, amortissement). Les études européennes estiment à environ 40\,\% l'économie réalisée par passager sur un trajet longue distance~\cite{blablacar_report_2023}.
+  \item \textbf{Bénéfice social~:} une accessibilité accrue aux zones mal desservies, le renforcement du lien intergénérationnel et la démocratisation des déplacements pour les étudiants et les actifs à faibles revenus.
+  \item \textbf{Bénéfice environnemental~:} la réduction du nombre de véhicules en circulation. L'\textsc{ademe} estime qu'un passager covoituré régulièrement évite en moyenne 110~kg de CO\textsubscript{2} par an~\cite{ademe_2022}.
+\end{enumerate}
 
 \section{Situation du transport inter-wilayas en Algérie}
 \label{sec:transport-algerie}
 
-L'Algérie présente une géographie singulière~: un territoire de plus de 2,38~millions de km\textsuperscript{2}, structuré en 58~wilayas, et marqué par une concentration urbaine sur le littoral. Les déplacements inter-wilayas restent donc fortement dépendants de la voiture individuelle et de l'autocar, dans un contexte où le réseau ferroviaire ne dessert qu'une part limitée du territoire. Plusieurs constats récurrents émergent du terrain~:
-\begin{itemize}
-  \item Une forte demande étudiante hebdomadaire entre wilayas universitaires (Tlemcen, Oran, Constantine, Sétif, Alger) et wilayas d'origine.
-  \item Une offre d'autocars saturée aux périodes de pointe, avec un confort et une ponctualité inégaux.
-  \item Un coût du carburant relativement bas, mais un coût total de possession d'un véhicule en hausse, qui rend la mutualisation économiquement attractive.
-  \item Une absence persistante de plateforme nationale offrant une expérience comparable aux standards internationaux pour les longues distances.
-\end{itemize}
+L'Algérie présente une géographie singulière~: un territoire de plus de 2,38~millions de km\textsuperscript{2}, structuré en 69~wilayas, et marqué par une concentration urbaine sur le littoral. Les déplacements inter-wilayas restent donc fortement dépendants de la voiture individuelle et de l'autocar, dans un contexte où le réseau ferroviaire ne dessert qu'une part limitée du territoire. Quatre constats majeurs structurent le diagnostic de ce secteur.
+\begin{enumerate}
+  \item \textbf{Demande étudiante forte.} Les flux hebdomadaires entre les wilayas universitaires (Tlemcen, Oran, Constantine, Sétif, Alger) et les wilayas d'origine sont particulièrement intenses.
+  \item \textbf{Offre saturée aux périodes de pointe.} Les autocars et taxis collectifs présentent des niveaux de confort et de ponctualité très inégaux.
+  \item \textbf{Attractivité économique de la mutualisation.} Si le carburant demeure peu coûteux, le coût total de possession d'un véhicule individuel est en hausse constante, rendant le partage des frais attractif.
+  \item \textbf{Absence de plateforme nationale de référence.} Il n'existe pas de solution unifiée offrant une expérience de réservation longue distance de niveau international.
+\end{enumerate}
 
 Le segment inter-wilayas constitue de ce fait un espace pertinent pour une plateforme numérique dédiée, complémentaire des solutions urbaines déjà installées (Yassir, Heetch).
 
@@ -111,7 +111,7 @@ Le marché algérien est aujourd'hui couvert par plusieurs acteurs urbains et, p
 \hline
 Couverture en Algérie & Absent & Urbaine & Nationale & Nationale & Nationale & Nationale \\
 \hline
-Inter-wilayas & Oui (Europe) & Non & Oui & Oui (déc.~2025) & Limité & Oui \\
+Inter-wilayas & Oui (Europe) & Non & Oui & Oui (City to City, déc.~2025) & Limité & Oui \\
 \hline
 KYC biométrique & Partiel & Limité & CIN + \textit{selfie} & Documentaire & Non & CIN + liveness + anti-spoof \\
 \hline
@@ -128,7 +128,7 @@ Chiffrement données sensibles & Non doc. & Non doc. & Non doc. & Non doc. & Non
 Langues d'interface & FR / EN & AR / FR & AR / FR & AR / FR & AR / FR & AR / FR / EN \\
 \hline
 \end{tabularx}
-  \caption{Étude comparative des plateformes de mobilité partagée}
+  \caption{Étude comparative des plateformes de mobilité partagée --- État du marché au 1\textsuperscript{er} mai 2026}
   \label{tab:comparatif}
 \end{table}
 
@@ -149,14 +149,13 @@ Ces limites définissent autant d'axes possibles de différenciation pour une pl
 \section{Positionnement stratégique de RohWinBghit}
 \label{sec:positionnement}
 
-Sur la base de l'étude précédente, le projet \textit{RohWinBghit} se positionne comme une plateforme de covoiturage inter-wilayas pensée pour le marché algérien, qui s'inscrit dans la continuité de l'écosystème de mobilité numérique national tout en proposant une approche complémentaire articulée autour de quatre axes~:
-
-\begin{itemize}
+Sur la base de l'étude précédente, le projet \textit{RohWinBghit} se positionne comme une plateforme de covoiturage inter-wilayas pensée pour le marché algérien. Son approche complémentaire s'articule autour de quatre axes stratégiques.
+\begin{enumerate}
   \item \textbf{Sécurité biométrique approfondie.} Pipeline de vérification d'identité combinant OCR, comparaison faciale, détection de vivacité et anti-\textit{spoofing}, avec des seuils de décision différenciés selon le rôle (conducteur~/ passager).
   \item \textbf{Paiement local extensible.} Trois méthodes coexistantes~: règlement en espèces opérationnel, intégration \textsc{cib} et \textit{Edahabia} en environnement \textit{sandbox} dans l'attente de l'homologation \textsc{satim}, architecture extensible (patron \textit{Factory}) ouverte à \textit{Stripe} et \textit{PayPal} pour les usages internationaux.
-  \item \textbf{Couverture nationale et bilingue.} Prise en charge native des 58~wilayas et interface trilingue arabe/français/anglais, alignée avec la diversité linguistique des usagers.
+  \item \textbf{Couverture nationale et bilingue.} Prise en charge native des 69~wilayas et interface trilingue arabe/français/anglais, alignée avec la diversité linguistique des usagers.
   \item \textbf{Outils opérateur.} Interface \textit{web} d'administration dédiée à la modération, à la validation \textsc{kyc}, au suivi statistique et à la journalisation de sécurité.
-\end{itemize}
+\end{enumerate}
 
 Le projet ne prétend pas remplacer les acteurs existants, mais propose une réponse adaptée au contexte local sur le segment inter-wilayas, en s'appuyant sur les retours terrains et les évolutions réglementaires récentes.
 

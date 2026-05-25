@@ -12,7 +12,7 @@ Les objectifs spécifiques énoncés dans l'introduction ont été atteints. Nou
 Le projet a démontré la faisabilité de l'intégration d'un pipeline d'intelligence artificielle complet (OCR, détection de vivacité et anti-\textit{spoofing}) sur une infrastructure souveraine, sans dépendance à des API Cloud externes coûteuses. Ce microservice FastAPI, évalué de manière différenciée selon les rôles (passager/conducteur), prouve qu'un niveau de sécurité biométrique élevé peut être atteint avec des ressources optimisées.
 
 \paragraph{2. Contribution Technique et Architecturale.} 
-L'application d'une démarche d'ingénierie stricte a conduit à la réalisation d'un système distribué résilient. Le back-end NestJS/Express, la modélisation rigoureuse sous PostgreSQL (29 tables) gérée par Knex.js, et l'intégration du temps réel via Socket.IO constituent une base technique solide. De plus, l'implémentation du patron de conception \textit{Strategy/Factory} offre une extensibilité immédiate pour l'intégration de nouvelles méthodes de paiement (CIB, Edahabia, espèces, Stripe).
+L'application d'une démarche d'ingénierie stricte a conduit à la réalisation d'un système distribué résilient. Le back-end Express.js à organisation modulaire inspirée de NestJS, la modélisation rigoureuse sous PostgreSQL (29 tables) gérée par Knex.js, et l'intégration du temps réel via Socket.IO constituent une base technique solide. De plus, l'implémentation du patron de conception \textit{Strategy/Factory} offre une extensibilité immédiate pour l'intégration de nouvelles méthodes de paiement (CIB, Edahabia, espèces, Stripe).
 
 \paragraph{3. Contribution Économique (Arrêté 1275).} 
 S'inscrivant dans le dispositif «~Un diplôme, une Startup~», ce travail ne s'est pas limité à l'exercice informatique. Le Business Model Canvas, adossé à un plan financier prévisionnel sur 36 mois, a prouvé la viabilité économique du modèle. Le seuil de rentabilité est projeté au 10\textsuperscript{ème} mois de la phase d'exploitation, justifiant une demande de labellisation CNL et de financement d'amorçage.
@@ -20,23 +20,20 @@ S'inscrivant dans le dispositif «~Un diplôme, une Startup~», ce travail ne s'
 \paragraph{4. Contribution Sociétale.} 
 En ciblant le segment délaissé du transport inter-wilayas, la plateforme \textit{RohWinBghit} répond à un besoin fondamental de mobilité, notamment pour la population étudiante (1,9~million de personnes). Elle participe à la démocratisation des déplacements à moindre coût, favorise la réduction de l'empreinte carbone par la mutualisation des trajets, et stimule l'adoption de l'inclusion financière par le paiement électronique.
 
-\section*{Limites assumées}
-
-La réalisation d'un tel projet par un binôme de Master comporte des limites que nous assumons avec honnêteté scientifique~:
-\begin{itemize}
-  \item Le taux de réussite des tests d'intégration (69,6\,\%) reste perfectible, lié à la complexité de l'isolation transactionnelle de la base de données entre les scénarios asynchrones, bien que la logique métier centrale (tests unitaires à 100\,\%) et les flux UI (62 écrans) soient validés.
+La réalisation d'un tel projet par un binôme de Master comporte des limites que nous assumons avec honnêteté scientifique.
+\begin{enumerate}
+  \item Le taux de réussite global est de 97,4\,\% (147 tests réussis sur 151), composé de 107~tests unitaires réussis à 100\,\% et de 40~tests d'intégration réussis sur 44 (90,9\,\%). Les échecs d'intégration résiduels sont liés à la complexité de l'isolation transactionnelle de la base de données entre les scénarios asynchrones, bien que la logique métier centrale et les flux UI (62 écrans) soient pleinement validés.
   \item Le pipeline biométrique \textsc{kyc} est un prototype fonctionnel n'ayant pas encore subi d'évaluation formelle (APCER/BPCER) sur des datasets de référence mondiaux.
+  \item Le score d'utilisabilité SUS de 71,6/100 a été obtenu auprès d'un échantillon homogène de 18~étudiants de l'Université de Tlemcen~; ce résultat, bien qu'encourageant, présente un biais de sélection et ne peut être généralisé à l'ensemble des profils d'utilisateurs sans une campagne d'évaluation élargie.
   \item L'absence d'un mode hors-ligne complet limite temporairement l'expérience utilisateur dans les zones rurales à très faible connectivité.
-\end{itemize}
+\end{enumerate}
 
-\section*{Perspectives et horizons futurs}
-
-Les travaux futurs s'articulent autour de trois horizons de maturité~:
-\begin{itemize}
+Les travaux futurs s'articulent autour de trois horizons de maturité.
+\begin{enumerate}
   \item \textbf{À court terme (Lancement local) :} Finalisation de l'homologation SATIM pour les cartes CIB/Edahabia en production, stabilisation du harnais de tests \textit{end-to-end}, et lancement d'un pilote restreint sur l'axe Tlemcen--Oran.
   \item \textbf{À moyen terme (Croissance nationale) :} Déploiement progressif sur les 69 wilayas, développement d'un module d'IA prédictive pour le \textit{surge pricing} contextuel, et lancement de partenariats B2B.
   \item \textbf{À long terme (Scale et Internationalisation) :} Préparation d'un audit de sécurité externe et d'un audit d'infrastructure pour une levée de fonds en Série~A, avec pour objectif d'étudier l'exportation du modèle vers les marchés de la région MENA.
-\end{itemize}
+\end{enumerate}
 
 \section*{Mot de la fin}
 

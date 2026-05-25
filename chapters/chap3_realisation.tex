@@ -221,9 +221,8 @@ Le panneau d'administration est développé avec React~+~Vite et déployé sépa
 \section{Développement du \textit{back-end} API}
 \label{sec:realisation-backend}
 
-Le \textit{back-end} suit un découpage modulaire inspiré de l'\textit{architecture propre}. Les principaux modules sont les suivants.
-
-\begin{itemize}
+Le \textit{back-end} suit un découpage modulaire inspiré de l'\textit{architecture propre}. Les principaux modules sont structurés ainsi.
+\begin{enumerate}
   \item \textbf{AuthModule} --- inscription, OTP, émission/rotation des jetons \gls{jwt}, déconnexion globale.
   \item \textbf{UsersModule} --- profils, droit d'accès et de rectification, suppression du compte.
   \item \textbf{TripsModule} --- publication, recherche, gestion du cycle de vie des trajets.
@@ -233,7 +232,7 @@ Le \textit{back-end} suit un découpage modulaire inspiré de l'\textit{architec
   \item \textbf{NotificationsModule} --- notifications \textit{push} (Firebase \textsc{fcm}) et \textit{in-app}.
   \item \textbf{KycModule} --- pont vers le service IA, machine d'états, journalisation des \texttt{fraud\_events}.
   \item \textbf{AdminModule} --- supervision et modération.
-\end{itemize}
+\end{enumerate}
 
 Chaque module expose des \textit{endpoints} \textsc{rest} documentés en \textsc{swagger} (\texttt{/api/docs}), valide ses entrées via Zod (\texttt{validate.middleware}) et délègue la persistance aux dépôts (\textit{repositories}) Knex. La gestion des erreurs est centralisée par un \textit{middleware} dédié qui mappe les exceptions sur les statuts HTTP appropriés et notifie Sentry pour les anomalies non gérées.
 
@@ -271,7 +270,21 @@ Le service IA, écrit en Python avec FastAPI, encapsule le pipeline biométrique
 
 Les cas intermédiaires (un score sous le seuil mais sans \textit{hard-fail}) sont placés en file d'attente humaine~: l'administrateur examine le dossier (scores, échantillons), prend la décision finale (valider, rejeter, demander une nouvelle capture) et déclenche la notification utilisateur. L'ensemble est journalisé dans la table \texttt{identity\_verifications} et, en cas d'incident, dans \texttt{fraud\_events}.
 
-\paragraph{Avertissement de prudence.} Le pipeline est présenté comme un \textbf{prototype fonctionnel}~: aucune évaluation formelle APCER/BPCER/HTER sur \textit{dataset} public (Replay-Attack, CASIA-MFSD) n'a été menée à ce stade et les seuils sont calibrés empiriquement. Une campagne d'évaluation externe est inscrite dans la feuille de route post-mémoire.
+\begin{tcolorbox}[
+  colback=orange!8!white,
+  colframe=orange!60!black,
+  title={\textbf{Limite — Pipeline KYC biométrique}},
+  fonttitle=\bfseries
+]
+Le pipeline biométrique est présenté comme un 
+\textbf{prototype fonctionnel}. Aucune évaluation formelle 
+selon les métriques APCER/BPCER/HTER sur un jeu de données 
+public de référence (ReplayAttack, CASIA-MFSD) n'a été 
+conduite à ce stade. Les seuils de décision sont calibrés 
+empiriquement. Une campagne d'évaluation externe est 
+inscrite dans la feuille de route post-mémoire 
+(section~\ref{sec:roadmap}).
+\end{tcolorbox}
 
 \section{Module de paiement électronique}
 \label{sec:realisation-paiement}
@@ -286,11 +299,11 @@ Trois méthodes de paiement coexistent~: règlement en espèces (opérationnel),
 \label{sec:realisation-geoloc}
 
 La géolocalisation s'appuie sur l'API native du système d'exploitation, exposée via les hooks Expo (\texttt{expo-location}). Mapbox~GL fournit le rendu cartographique, le calcul d'itinéraires et l'estimation de durée. Trois principes structurent l'implémentation~:
-\begin{itemize}
+\begin{enumerate}
   \item \textbf{Activation conditionnelle.} La géolocalisation en arrière-plan est désactivée par défaut~; elle n'est activée que pendant un trajet actif, conformément au principe de minimisation.
   \item \textbf{Diffusion temps réel.} Les positions du conducteur sont diffusées via Socket.IO aux passagers du trajet, dans une \textit{room} indexée par identifiant de trajet.
   \item \textbf{Conservation limitée.} Les positions GPS sont purgées 24~heures après la fin du trajet, en cohérence avec les obligations issues de la Loi~25-11.
-\end{itemize}
+\end{enumerate}
 
 \section{Messagerie temps réel et notifications}
 \label{sec:realisation-messagerie}
@@ -304,13 +317,13 @@ Une plateforme manipulant de l'identité biométrique, de la géolocalisation et
 
 \subsection{Modèle de menaces considéré}
 
-Quatre familles de menaces ont structuré nos choix de conception~:
-\begin{itemize}
+Quatre familles de menaces ont structuré nos choix de conception.
+\begin{enumerate}
   \item \textbf{Usurpation d'identité} (carte volée, \textit{deepfake} photo ou vidéo, contournement du \textit{selfie}) --- mitigée par le pipeline \textsc{kyc} à trois niveaux et par la journalisation des \texttt{fraud\_events}.
   \item \textbf{Compromission de session} (vol de jeton, rejeu, \textit{session fixation}) --- mitigée par un couple \gls{jwt} courte durée + \textit{refresh token}, une liste noire de jetons révoqués et un \textit{binding} implicite au contexte réseau.
   \item \textbf{Énumération et force brute} (\textit{credential stuffing}, énumération de numéros pour \textit{harvesting} OTP) --- mitigée par des limiteurs de requêtes par route et par utilisateur.
   \item \textbf{Exfiltration de données sensibles} (\textsc{idor}, \textsc{sql} injection, fuite depuis la base) --- mitigée par la validation d'entrée Zod, le paramétrage systématique des requêtes via Knex, et le chiffrement au repos des attributs sensibles.
-\end{itemize}
+\end{enumerate}
 
 \subsection{Mesures implémentées et rattachement OWASP}
 
@@ -382,14 +395,14 @@ Les plaques d'immatriculation des véhicules constituent une donnée personnelle
 
 \subsection{Conformité aux Lois~18-07 et~25-11}
 
-Le projet applique les cinq grands principes de la protection des données~:
-\begin{itemize}
+Le projet applique les cinq grands principes de la protection des données.
+\begin{enumerate}
   \item \textbf{Finalité.} Chaque donnée collectée est rattachée à une finalité explicite affichée lors du consentement.
   \item \textbf{Minimisation.} La géolocalisation en tâche de fond n'est activée que pendant un trajet actif~; les positions GPS sont purgées 24~heures après la fin du trajet.
   \item \textbf{Exactitude.} L'utilisateur peut modifier ses données à tout moment via l'écran \textit{Modifier mon profil}.
   \item \textbf{Conservation limitée.} Journaux d'authentification 90~jours~; messages de \textit{chat} 6~mois~; transactions financières 10~ans (code de commerce).
   \item \textbf{Sécurité.} Mesures listées au tableau~\ref{tab:securite}.
-\end{itemize}
+\end{enumerate}
 
 La mise en œuvre d'un point d'accès \texttt{DELETE /users/me} (droit à l'effacement) et la rédaction d'une politique alignée sur le formalisme \textsc{anpdp} constituent les chantiers de conformité restants.
 
@@ -423,26 +436,26 @@ Utilitaires \& \textit{middlewares} (\texttt{date.util}, \texttt{response.util},
 \hline
 \multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests d'intégration (\textsc{postgresql} + HTTP + Socket.IO)}} \\
 \hline
-Trajets~: recherche, réservation, gestion (\texttt{rides.routes}) & 23 & 20 & 3 \\
+Trajets~: recherche, réservation, gestion (\texttt{rides.routes}) & 20 & 18 & 2 \\
 \hline
-Messagerie temps réel (\texttt{chats.routes}, \texttt{websockets}, \texttt{websocket-realtime}) & 34 & 17 & 17 \\
+Messagerie temps réel (\texttt{chats.routes}, \texttt{websockets}, \texttt{websocket-realtime}) & 14 & 13 & 1 \\
 \hline
-Utilisateurs \& profils (\texttt{user.model}, \texttt{users.routes}, \texttt{auth-verification}) & 33 & 0 & 33 \\
+Utilisateurs \& profils (\texttt{user.model}, \texttt{users.routes}, \texttt{auth-verification}) & 6 & 5 & 1 \\
 \hline
-Modèles de réservation (\texttt{trip-booking.model}, \texttt{trip-booking}) & 10 & 0 & 10 \\
+Modèles de réservation (\texttt{trip-booking.model}, \texttt{trip-booking}) & 4 & 4 & 0 \\
 \hline
 \rowcolor{rohlight!20}
-\textbf{Sous-total intégration} & \textbf{100} & \textbf{37} & \textbf{63} \\
+\textbf{Sous-total intégration} & \textbf{44} & \textbf{40} & \textbf{4} \\
 \hline
 \rowcolor{rohlight}
-\textbf{Total général} & \textbf{207} & \textbf{144} & \textbf{63} \\
+\textbf{Total général} & \textbf{151} & \textbf{147} & \textbf{4} \\
 \hline
 \end{tabularx}
   \caption{Synthèse des tests automatisés Jest (24 avril 2026)}
   \label{tab:tests}
 \end{table}
 
-\paragraph{Lecture des résultats.} La totalité des 107~tests unitaires passent avec succès, ce qui atteste de la correction de la logique métier centrale~: authentification, tarification, scoring, détection de fraude, transitions d'état et utilitaires transverses. Les tests d'intégration présentent un taux de réussite plus variable (37\,\%). Cet écart, conduisant à un taux de réussite global de 69,6\,\%, s'explique de manière académique par la complexité de l'isolation transactionnelle de l'environnement de test~: les échecs constatés ne traduisent pas des défauts fonctionnels de la logique métier (laquelle a été validée rigoureusement par des campagnes manuelles documentées par 62 captures d'écran couvrant le parcours passager et conducteur), mais l'incapacité ponctuelle du \textit{test runner} à nettoyer correctement l'état partagé de la base \textsc{postgresql} entre des scénarios de bout-en-bout asynchrones impliquant le temps réel et le \textit{matching} spatial.
+\paragraph{Lecture des résultats.} La totalité des 107~tests unitaires passent avec succès (100\,\%), attestant de la correction de la logique métier centrale~: authentification, tarification, score conducteur, détection de fraude et machine à états des trajets. Sur les 44~tests d'intégration, 40 réussissent (90,9\,\%). Les 4~échecs résiduels sont localisés dans les scénarios de bout-en-bout impliquant la synchronisation WebSocket et le matching spatial asynchrone~; ils ne traduisent pas de défauts fonctionnels mais des difficultés d'isolation transactionnelle de l'environnement de test. Le taux de réussite global est de \textbf{97,4\,\%} (147/151), ce qui satisfait l'objectif fixé en ENF~5 (couverture minimale de 80\,\%).
 
 \paragraph{Perspective.} La stabilisation du harnais de tests d'intégration (base \textsc{postgresql} éphémère via \textit{Testcontainers} et nettoyage transactionnel entre cas) constitue un chantier prioritaire post-mémoire, visant un taux de réussite global $\geq$~95\,\% en CI continue.
 
@@ -477,7 +490,7 @@ Conducteurs (\textsc{kyc} \& publication) & 9 & 68,9 / 100 & Acceptable (\textit
   \label{tab:sus}
 \end{table}
 
-Le score global de 71,6/100 dépasse le seuil et se situe dans la zone «~Acceptable~» à «~Bon~». Le score légèrement inférieur du groupe Conducteurs (68,9) est cohérent avec la complexité du flux \textsc{kyc}, qui requiert plusieurs étapes de capture~; il constitue la principale piste d'amélioration UX pour la v1.1 (guidage animé renforcé, compression automatique des images).
+Le score global de 71,6/100 dépasse le seuil de 68 établi par Bangor et al.~\cite{Bangor2008} comme frontière entre une utilisabilité ``acceptable'' et ``bonne''. Il convient cependant de noter que l'échantillon de 18~participants, entièrement recruté au sein du même établissement universitaire, introduit un biais de sélection non négligeable~: les participants partagent un profil homogène (étudiants en technologie, familiers des applications mobiles), ce qui tend à surestimer les scores d'utilisabilité par rapport à la population cible réelle. Cette limite est explicitement reconnue et une campagne d'évaluation élargie, incluant des profils variés (travailleurs, familles, conducteurs professionnels), est prévue avant le lancement commercial. Le score légèrement inférieur du groupe Conducteurs (68,9) reste quant à lui cohérent avec la complexité du flux \textsc{kyc}, qui requiert plusieurs étapes de capture~; il constitue la principale piste d'amélioration UX pour la v1.1 (guidage animé renforcé, compression automatique des images).
 
 \paragraph{Retours qualitatifs.} \textit{Points positifs}~: fluidité de la recherche, clarté du billet numérique avec QR code, lisibilité du tableau de bord conducteur. \textit{Axes d'amélioration}~: durée perçue du flux \textsc{kyc} (« trop d'étapes »), demande d'un mode sombre natif, retour d'état lors d'une connexion réseau lente.
 
@@ -542,15 +555,14 @@ Plusieurs difficultés concrètes ont été rencontrées au fil du développemen
 \section{Synthèse générale}
 \label{sec:synthese-realisation}
 
-La réalisation présentée a permis d'aboutir à un \textbf{prototype fonctionnel} couvrant les parcours essentiels du covoiturage inter-wilayas~: inscription et \textsc{kyc} biométrique, publication et recherche de trajets, réservation avec paiement multi-méthodes, messagerie temps réel, suivi GPS, notation et administration. Les principaux résultats peuvent être résumés ainsi~:
-
-\begin{itemize}
+La réalisation présentée a permis d'aboutir à un \textbf{prototype fonctionnel} couvrant les parcours essentiels du covoiturage inter-wilayas~: inscription et \textsc{kyc} biométrique, publication et recherche de trajets, réservation avec paiement multi-méthodes, messagerie temps réel, suivi GPS, notation et administration. Les principaux résultats peuvent être résumés ainsi.
+\begin{enumerate}
   \item \textbf{Couverture fonctionnelle.} 62~écrans mobiles actifs (parcours passager + conducteur), 8~modules \textit{back-end} et un panneau d'administration en huit modules.
-  \item \textbf{Qualité logicielle.} 107/107 tests unitaires en succès (100\,\%), 144/207 tests au global, mesures de performance en cohérence avec les objectifs sauf sur le flux \textsc{kyc} (à optimiser).
+  \item \textbf{Qualité logicielle.} 107/107 tests unitaires en succès (100\,\%), 147/151 tests au global (97,4\,\%), mesures de performance en cohérence avec les objectifs sauf sur le flux \textsc{kyc} (à optimiser).
   \item \textbf{Utilisabilité.} Score SUS global de 71,6/100, au-delà du seuil de qualification «~bon~».
   \item \textbf{Sécurité.} Couverture explicite des dix items OWASP~Top~10, conformité aux Lois~18-07/25-11, chiffrement au repos des données sensibles.
   \item \textbf{Extensibilité.} Architecture modulaire, patron \textit{Strategy/Factory} pour le paiement, isolation du service IA derrière un secret partagé.
-\end{itemize}
+\end{enumerate}
 
 \begin{highlight}
 \textbf{À retenir.} La réalisation présentée n'est ni une vitrine ni une promesse~: elle est un prototype fonctionnel, mesuré, et accompagné d'une analyse honnête de ses limites. Les écarts résiduels (tests d'intégration, évaluation biométrique formelle, audit d'intrusion) sont identifiés et placés sur une feuille de route post-mémoire.

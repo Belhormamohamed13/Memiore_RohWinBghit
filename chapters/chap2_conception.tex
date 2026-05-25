@@ -10,12 +10,12 @@ Le présent chapitre constitue la charnière entre l'étude du contexte menée p
 
 La conception d'une plateforme distribuée requiert une démarche disciplinée. Nous avons retenu une approche itérative inspirée du Processus Unifié (\textsc{up}) allégé (les phases Inception et Élaboration ont été condensées compte tenu du périmètre maîtrisé d'un binôme de Master), combinée à des itérations agiles de type \textit{Scrum} pour la réalisation.
 
-Le recueil des besoins s'est articulé autour de trois axes :
-\begin{itemize}
-  \item \textbf{Enquête utilisateurs :} Un questionnaire (questionnaire en ligne, mars 2026, diffusé via les réseaux sociaux universitaires de Tlemcen et Oran) auprès de 150 personnes a identifié les attentes prioritaires (sécurité, prix, disponibilité).
-  \item \textbf{Étude comparative :} Décomposition fonctionnelle des plateformes concurrentes pour dégager les manques structurels du marché algérien.
-  \item \textbf{Entretiens semi-directifs :} Consultations ciblées avec des conducteurs habitués aux longs trajets.
-\end{itemize}
+Le recueil des besoins s'est articulé autour de trois axes méthodologiques.
+\begin{enumerate}
+  \item \textbf{Enquête utilisateurs :} Un questionnaire en ligne mené en mars 2026 et diffusé via les réseaux sociaux universitaires de Tlemcen et Oran auprès de 150 personnes a permis d'identifier les attentes prioritaires (sécurité, prix, disponibilité).
+  \item \textbf{Étude comparative :} Une décomposition fonctionnelle approfondie des plateformes concurrentes a été réalisée afin de dégager les manques structurels du marché algérien.
+  \item \textbf{Entretiens semi-directifs :} Des consultations ciblées et structurées ont été menées avec des conducteurs habitués aux longs trajets inter-wilayas.
+\end{enumerate}
 
 La modélisation \gls{uml}~2.5 retient quatre vues : fonctionnelle, dynamique, statique et physique.
 
@@ -230,13 +230,13 @@ Le modèle intègre quatre patrons de conception majeurs : \textit{Strategy} et 
 \label{fig:classes}
 \end{figure}
 
-Le modèle est organisé autour de la classe \texttt{User}, qui agrège les informations communes à tous les utilisateurs. La classe \texttt{Role} (passager, conducteur, administrateur) permet à un même utilisateur de cumuler plusieurs rôles via la table d'association \texttt{UserRole}. Le domaine s'articule autour de quatre agrégats~:
-\begin{itemize}
-  \item \textbf{Transport~:} \texttt{Trip}, \texttt{TripRequest}, \texttt{Route}, \texttt{Booking}, \texttt{Vehicle}.
-  \item \textbf{Paiement~:} \texttt{Payment}, \texttt{Wallet}, \texttt{WalletTransaction}, \texttt{SurgePricingRule}.
-  \item \textbf{Identité~:} \texttt{IdentityVerification}, \texttt{FaceEmbedding}, \texttt{FraudEvent}.
-  \item \textbf{Communication~:} \texttt{Chat}, \texttt{Message}, \texttt{Notification}, \texttt{Review}.
-\end{itemize}
+Le modèle est organisé autour de la classe \texttt{User}, qui agrège les informations communes à tous les utilisateurs. La classe \texttt{Role} (passager, conducteur, administrateur) permet à un même utilisateur de cumuler plusieurs rôles via la table d'association \texttt{UserRole}. Le domaine s'articule autour de quatre agrégats principaux.
+\begin{enumerate}
+  \item \textbf{Agrégat Transport~:} regroupe les classes \texttt{Trip}, \texttt{TripRequest}, \texttt{Route}, \texttt{Booking} et \texttt{Vehicle}.
+  \item \textbf{Agrégat Paiement~:} comprend \texttt{Payment}, \texttt{Wallet}, \texttt{WalletTransaction} et \texttt{SurgePricingRule}.
+  \item \textbf{Agrégat Identité~:} réunit \texttt{IdentityVerification}, \texttt{FaceEmbedding} et \texttt{FraudEvent}.
+  \item \textbf{Agrégat Communication~:} rassemble \texttt{Chat}, \texttt{Message}, \texttt{Notification} et \texttt{Review}.
+\end{enumerate}
 
 \subsection{Description des classes}
 
@@ -511,14 +511,15 @@ L'architecture cible suit un découpage \textbf{multi-services} où chaque compo
 \label{fig:archi-globale}
 \end{figure}
 
-\begin{itemize}
+L'architecture globale de la solution s'articule autour de six composants techniques principaux.
+\begin{enumerate}
   \item \textbf{Application mobile} (React~Native, Expo, TypeScript) --- interface principale conducteur/passager.
   \item \textbf{Tableau de bord administrateur} (React + Vite, migration Next.js envisagée) --- modération, validation \textsc{kyc}, statistiques.
   \item \textbf{Back-end API} (NestJS / Node.js) --- logique métier, authentification, persistance, communication temps réel.
   \item \textbf{Service IA} (FastAPI / Python) --- traitement biométrique \textsc{kyc} (OCR, comparaison faciale, vivacité, anti-\textit{spoofing}).
   \item \textbf{Base de données} (\textsc{postgresql}) et \textbf{cache} (Redis).
-  \item \textbf{Notifications push} via Firebase \textsc{fcm}~; cartographie via Mapbox~; stockage des fichiers via Cloudinary.
-\end{itemize}
+  \item \textbf{Services tiers externes} --- notifications push via Firebase \textsc{fcm}, cartographie via Mapbox, et stockage multimédia via Cloudinary.
+\end{enumerate}
 
 L'application mobile dialogue avec le \textit{back-end} principal par API \textsc{rest} et \textit{WebSocket} (Socket.IO). Le \textit{back-end} délègue la vérification d'identité au service IA via une API interne sécurisée. L'ensemble est déployé derrière un \textit{reverse proxy} Nginx assurant la terminaison \textsc{tls} et l'équilibrage de charge, tout en isolant le microservice IA derrière l'en-tête de sécurité \texttt{X-Internal-Secret}, limitant sa surface d'attaque. Sentry s'intègre en tant qu'outil central dans la boucle de rétroaction opérationnelle pour anticiper les anomalies de production.
 
@@ -538,7 +539,7 @@ users & $\sim$100~k lignes & Comptes utilisateurs \\
 \hline
 roles / user\_roles & 3--5 / $\sim$120~k lignes & Rôles applicatifs et associations \\
 \hline
-wilayas & 58 lignes & Référentiel des wilayas algériennes \\
+wilayas & 69 lignes & Référentiel des wilayas algériennes \\
 \hline
 vehicles & $\sim$15~k lignes & Véhicules déclarés par les conducteurs \\
 \hline
@@ -565,17 +566,40 @@ reviews & $\sim$2~M lignes/an & Avis bidirectionnels \\
   \label{tab:tables}
 \end{table}
 
+\section{Architecture physique et diagramme de déploiement}
+
+La figure~\ref{fig:deploiement} présente le diagramme de 
+déploiement UML~2.5 de la plateforme RohWinBghit. Il formalise 
+la distribution physique des artefacts logiciels sur les nœuds 
+d'exécution : le terminal mobile des utilisateurs, le serveur 
+VPS hébergeant le back-end Express.js et le microservice 
+FastAPI, et les services tiers externes (Mapbox, Firebase FCM, 
+Cloudinary, SATIM sandbox).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{figures/fig_deployment}
+  \caption{Diagramme de déploiement UML~2.5 — RohWinBghit}
+  \label{fig:deploiement}
+\end{figure}
+
+Le reverse proxy Nginx assure la terminaison TLS~1.3 et 
+l'équilibrage de charge entre les instances back-end. 
+L'isolation du microservice IA derrière l'en-tête de sécurité 
+\texttt{X-Internal-Secret} limite explicitement sa surface 
+d'attaque aux seules requêtes internes authentifiées.
+
 \section{Justification des choix de conception}
 \label{sec:justification}
 
 La qualité d'une conception se juge à sa capacité à supporter l'évolution du système. Plusieurs choix structurants méritent ici justification.
 
-\paragraph{Découpage en couches et patrons mobilisés.} Le \textit{back-end} suit un découpage en couches inspiré de l'\textit{architecture propre} (\textit{Clean Architecture})~: modules métier, contrôleurs, services, dépôts (\textit{repositories}), passerelles externes. Trois patrons de conception sont systématiquement mobilisés~:
-\begin{itemize}
-  \item \textbf{\textit{Strategy} et \textit{Factory}} pour le paiement (\texttt{PaymentFactory} résolvant la stratégie \textsc{cib}, \textit{Edahabia} ou espèces), facilitant l'ajout futur de \textit{Stripe} ou \textit{PayPal} sans modification du code appelant.
-  \item \textbf{\textit{Repository}} pour l'accès aux données, isolant la logique métier des particularités du \textsc{sgbd}.
-  \item \textbf{\textit{Observer}} pour la diffusion des événements (réservation confirmée, \textsc{kyc} validé) vers les services de notification et de journalisation.
-\end{itemize}
+\paragraph{Découpage en couches et patrons mobilisés.} Le \textit{back-end} suit un découpage en couches inspiré de l'\textit{architecture propre} (\textit{Clean Architecture})~: modules métier, contrôleurs, services, dépôts (\textit{repositories}), passerelles externes. Trois patrons de conception sont systématiquement mobilisés.
+\begin{enumerate}
+  \item \textbf{Patrons \textit{Strategy} et \textit{Factory}} pour le paiement (\texttt{PaymentFactory} résolvant la stratégie \textsc{cib}, \textit{Edahabia} ou espèces), facilitant l'ajout futur de des passerelles Stripe ou PayPal sans modification du code appelant.
+  \item \textbf{Patron \textit{Repository}} pour l'accès aux données, isolant la logique métier des particularités du \textsc{sgbd}.
+  \item \textbf{Patron \textit{Observer}} pour la diffusion des événements (réservation confirmée, \textsc{kyc} validé) vers les services de notification et de journalisation.
+\end{enumerate}
 
 \paragraph{Conformité aux principes \textsc{solid}.} Chaque module est conçu pour respecter les cinq principes~: responsabilité unique (\textit{SRP}) par séparation contrôleur/service/dépôt~; ouverture/fermeture (\textit{OCP}) via les patrons \textit{Strategy} et \textit{Factory}~; substituabilité de Liskov (\textit{LSP}) par interfaces explicites~; ségrégation d'interface (\textit{ISP}) par contrats fins par cas d'usage~; inversion de dépendance (\textit{DIP}) par injection systématique des dépôts et services externes.
 

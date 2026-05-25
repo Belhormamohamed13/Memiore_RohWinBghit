@@ -25,12 +25,12 @@
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setmainlanguage{french}
-\setotherlanguages{english}
+\setotherlanguages{english,arabic}
 
 % Bypass bidi package entirely to avoid biblatex TOC infinite loops
 \TeXXeTstate=1
 \newfontfamily\arabicfont[Script=Arabic,Scale=1.1,Extension=.ttf,UprightFont=Amiri-Regular,BoldFont=Amiri-Bold,ItalicFont=Amiri-Italic,BoldItalicFont=Amiri-BoldItalic]{Amiri-Regular}
-\newcommand{\textarabic}[1]{{\arabicfont\beginR #1\endR}}
+
 
 % ---------- Mise en page ----------
 \usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=2cm]{geometry}
@@ -60,12 +60,14 @@
 
 % ---------- Listes et mise en forme ----------
 \usepackage{enumitem}
-\usepackage{titletoc}
+% \usepackage{titletoc} % Disabled to prevent bidi conflict causing infinite loop in ToC
 \usepackage{fancyhdr}
 \usepackage{float}
 \usepackage{caption}
 \captionsetup[figure]{labelfont={it,bf},textfont=it,labelsep=endash,font=small}
 \captionsetup[table]{labelfont={it,bf},textfont=it,labelsep=endash,font=small}
+
+\usepackage{subcaption}
 
 % ---------- Titres de chapitres ----------
 \usepackage[explicit]{titlesec}
@@ -159,8 +161,8 @@
 \pagenumbering{roman}
 
 \include{frontmatter/page_garde}
-\include{frontmatter/dedicaces}
 \include{frontmatter/remerciements}
+\include{frontmatter/dedicaces}
 \include{frontmatter/resumes}
 
 \tableofcontents
@@ -187,5 +189,8 @@
 % ==================== PAGES FINALES ====================
 \addcontentsline{toc}{chapter}{Bibliographie et webographie}
 \printbibliography[title={Bibliographie et webographie}]
+
+\appendix
+\include{chapters/annexes}
 
 \end{document}
