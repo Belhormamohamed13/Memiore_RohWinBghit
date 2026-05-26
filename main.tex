@@ -104,6 +104,14 @@
 % Supprimer l'espace vertical par défaut avant le titre
 \titlespacing*{\chapter}{0pt}{0pt}{0pt}
 
+% Style normal pour les chapitres non numérotés standard (Remerciements, Dédicaces, Résumés, TOC...)
+\titleformat{name=\chapter,numberless}[block]
+  {\normalfont\color{rohblue}\Huge\bfseries}
+  {}
+  {0pt}
+  {#1}
+\titlespacing*{name=\chapter,numberless}{0pt}{10pt}{20pt}
+
 % Patch pour que le contenu commence page suivante
 \patchcmd{\chapter}
   {\if@openright\cleardoublepage\else\clearpage\fi}
