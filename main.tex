@@ -73,12 +73,58 @@
 
 % ---------- Titres de chapitres ----------
 \usepackage[explicit]{titlesec}
+\usepackage{tikz}
+\usepackage{etoolbox}
+
+% Redéfinition complète de la page d'ouverture de chapitre
 \titleformat{\chapter}[display]
-  {\normalfont\huge\bfseries\color{rohblue}}
-  {\filleft\Large\scshape Chapitre \thechapter}
+  {\normalfont\color{rohblue}}
+  {}
   {0pt}
-  {\vspace{0.4em}\filleft\Huge #1\vspace{-0.3em}\color{rohblue}\titlerule[1pt]}
-\titlespacing*{\chapter}{0pt}{10pt}{40pt}
+  {%
+    \thispagestyle{empty}%
+    \vspace*{\fill}%
+    \begin{center}
+      % Ligne décorative haute
+      \rule{\textwidth}{1.5pt}\\[1.5em]
+      % Numéro du chapitre
+      {\fontsize{16}{20}\selectfont\scshape
+       \chaptertitlename~\thechapter}\\[1em]
+      % Filet séparateur
+      \rule{0.4\textwidth}{0.6pt}\\[1.5em]
+      % Titre du chapitre (grand, gras)
+      {\fontsize{22}{28}\selectfont\bfseries #1}\\[1.5em]
+      % Ligne décorative basse
+      \rule{\textwidth}{1.5pt}
+    \end{center}
+    \vspace*{\fill}
+    \clearpage
+  }
+
+% Supprimer l'espace vertical par défaut avant le titre
+\titlespacing*{\chapter}{0pt}{0pt}{0pt}
+
+% Patch pour que le contenu commence page suivante
+\patchcmd{\chapter}
+  {\if@openright\cleardoublepage\else\clearpage\fi}
+  {\if@openright\cleardoublepage\else\clearpage\fi}
+  {}{}
+
+% Commande personnalisée pour chapitres étoilés
+\newcommand{\chapterstar}[1]{%
+  \clearpage
+  \thispagestyle{empty}%
+  \vspace*{\fill}
+  \begin{center}
+    \color{rohblue}%
+    \rule{\textwidth}{1.5pt}\\[1.5em]
+    {\fontsize{22}{28}\selectfont\bfseries #1}\\[1.5em]
+    \rule{\textwidth}{1.5pt}
+  \end{center}
+  \vspace*{\fill}
+  \clearpage
+  \addcontentsline{toc}{chapter}{#1}
+}
 
 \titleformat{\section}
   {\color{rohblue}\Large\bfseries}{\thesection}{0.6em}{#1}
@@ -90,10 +136,19 @@
 % ---------- En-têtes / pieds de page ----------
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\nouppercase{\leftmark}}
-\fancyhead[R]{\thepage}
+\fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+\renewcommand{\footrulewidth}{0pt}
+
+% Style plain = pages de chapitre, TDM, etc.
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+\AtBeginDocument{\pagestyle{fancy}}
 
 % Hyperref moved to the top
 
@@ -158,9 +213,10 @@
 
 % =====================================================================
 \begin{document}
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 % ==================== PAGES LIMINAIRES ====================
-\pagenumbering{roman}
 
 \include{frontmatter/page_garde}
 \include{frontmatter/remerciements}
@@ -178,8 +234,6 @@
 \clearpage
 
 % ==================== CORPS DU MÉMOIRE ====================
-\pagenumbering{arabic}
-\setcounter{page}{1}
 
 \include{chapters/introduction_generale}
 \include{chapters/chap1_etat_art}
@@ -189,8 +243,8 @@
 \include{chapters/conclusion_generale}
 
 % ==================== PAGES FINALES ====================
-\addcontentsline{toc}{chapter}{Bibliographie et webographie}
-\printbibliography[title={Bibliographie et webographie}]
+\chapterstar{Bibliographie et webographie}
+\printbibliography[heading=none]
 
 % \appendix
 % \include{chapters/annexes}
