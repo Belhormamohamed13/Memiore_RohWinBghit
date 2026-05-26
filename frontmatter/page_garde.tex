@@ -2,77 +2,90 @@
 \thispagestyle{empty}
 \begin{center}
 
-% En-tête institutionnel bilingue
-{\large\textbf{\textarabic{الجمهورية الجزائرية الديمقراطية الشعبية}}}\\[2pt]
-{\small REPUBLIQUE ALGERIENNE DEMOCRATIQUE ET POPULAIRE}\\[6pt]
-{\large\textbf{\textarabic{وزارة التعليم العالي والبحث العلمي}}}\\[2pt]
-{\small Ministère de l'Enseignement Supérieur et de la Recherche Scientifique}\\[10pt]
-
-\begin{minipage}{0.45\textwidth}\centering
-\textbf{\textarabic{جامعة أبو بكر بلقايد -- تلمسان}}\\[2pt]
-Université Abou Bekr Belkaïd -- Tlemcen
+% Green banner at the top (LaTeX-based)
+\definecolor{univgreen}{HTML}{137333}
+\definecolor{univgold}{HTML}{F4B400}
+\begin{tcolorbox}[
+  colback=univgreen,
+  colframe=univgreen,
+  arc=1mm,
+  boxrule=0pt,
+  left=15pt,
+  right=15pt,
+  top=6pt,
+  bottom=6pt,
+  width=\textwidth
+]
+\begin{minipage}{0.42\textwidth}
+  \fontsize{12}{14}\selectfont\bfseries\color{white} Université Abou Bekr Belkaïd\\[2pt]
+  \fontsize{9}{11}\selectfont\color{univgold}\textbf{Tlemcen -- Algérie}
 \end{minipage}
 \hfill
-\begin{minipage}{0.45\textwidth}\centering
-\textbf{\textarabic{كلية العلوم}}\\[2pt]
-Faculté des Sciences
+\begin{minipage}{0.12\textwidth}\centering
+  \includegraphics[height=1.2cm]{figures/logo_universite}
 \end{minipage}
+\hfill
+\begin{minipage}{0.42\textwidth}\flushright
+  \fontsize{14}{16}\selectfont\bfseries\color{white}\textarabic{جامعة أبي بكر بلقايد}\\[2pt]
+  \fontsize{10}{12}\selectfont\color{univgold}\textbf{\textarabic{تلمسان -- الجزائر}}
+\end{minipage}
+\end{tcolorbox}
+\vspace{0.2cm}
 
-\vfill
-\begin{center}
-  \includegraphics[width=3.5cm]{figures/logo_universite}
-\end{center}
-\vspace{0.5cm}
+{\small\bfseries REPUBLIQUE ALGERIENNE DEMOCRATIQUE ET POPULAIRE}\\[0.1cm]
+{\small\bfseries Université Abou Bekr Belkaïd -- Tlemcen}\\[0.05cm]
+{\small\bfseries Faculté des Sciences}\\[0.05cm]
+{\small\bfseries Département d'Informatique}\\[0.3cm]
 
-\rule{\textwidth}{1.5pt}\\[4pt]
-{\Large\bfseries\color{rohblue} Département d'Informatique}\\
-\rule{\textwidth}{0.6pt}
+{\large\bfseries Mémoire de fin d'études}\\[0.1cm]
+{\small Pour l'obtention du diplôme de Master en Informatique}\\[0.1cm]
+{\small Dans le cadre de la résolution 1275}\\[0.1cm]
+{\small\textbf{Option : Génie Logiciel (GL)}}\\[0.3cm]
 
-\vfill
+{\large\itshape Thème}\\[0.1cm]
 
-{\large Mémoire présenté en vue de l'obtention du diplôme de}\\[6pt]
-{\LARGE\bfseries Master en Génie Logiciel}\\[0.6cm]
-
-\begin{tcolorbox}[enhanced,colback=rohlight,colframe=rohblue,boxrule=1pt,arc=3pt]
+\begin{tcolorbox}[enhanced,colback=white,colframe=rohblue,boxrule=1.2pt,arc=4pt,width=0.95\textwidth,top=4pt,bottom=4pt]
 \centering
-{\Huge\bfseries\color{rohblue} RohWinBghit}\\[6pt]
-{\large\textit{\textarabic{روح وين بغيت}}}\\[10pt]
-{\large\bfseries
-  Conception et réalisation d'une plateforme mobile 
-  multiplateforme intelligente \\[0.3em]
-  de covoiturage inter-wilayas sécurisée \\[0.3em]
+{\LARGE\bfseries\color{rohblue} RohWinBghit}\\[3pt]
+{\large\textit{\textarabic{روح وين بغيت}}}\\[5pt]
+{\normalsize\bfseries
+  Conception et réalisation d'une plateforme mobile\\
+  multiplateforme intelligente\\
+  de covoiturage inter-wilayas sécurisée\\
   adaptée au contexte algérien}
 \end{tcolorbox}
 
-\vfill
+\vspace{0.4cm}
 
-\begin{minipage}{0.48\textwidth}\centering
-\textbf{\large Réalisé par :}\\[4pt]
-AHMED BACHA Djamel Eddine\\
-BELHORMA Sidi Mohammed Reduane
-\end{minipage}%
+\begin{minipage}[t]{0.48\textwidth}
+\fontsize{10}{12}\selectfont
+\textbf{Réalisé par :}\\
+- AHMED BACHA Djamel Eddine\\
+- BELHORMA Sidi Mohammed Reduane
+\end{minipage}
 \hfill
-\begin{minipage}{0.48\textwidth}\centering
-\textbf{\large Encadré par :}\\[4pt]
-M\textsuperscript{me} BENLEDGHEM Rafika\\
+\begin{minipage}[t]{0.48\textwidth}
+\fontsize{10}{12}\selectfont
+\textbf{Encadré par :}\\
+- M\textsuperscript{me} BENLEDGHEM Rafika\\
 \textit{Maître de Conférences, Univ. Tlemcen}
+\end{minipage}
+
+\vspace{0.4cm}
+
+\begin{minipage}{0.9\textwidth}\centering
+\fontsize{10}{12}\selectfont
+\textbf{Soutenu publiquement le 28 mai 2026 devant le jury composé de :}\\[0.1cm]
+\begin{tabular}{lll}
+- M. \dotfill & MCA & (Président) \\
+- M\textsuperscript{me} BENLEDGHEM Rafika & MCB & (Encadrante) \\
+- M. \dotfill & MCB & (Examinateur) \\
+\end{tabular}
 \end{minipage}
 
 \vfill
 
-{\large\bfseries Soutenu publiquement devant le jury :}\\[8pt]
-\begin{tabular}{lll}
-\toprule
-\textbf{Nom et prénom} & \textbf{Grade} & \textbf{Qualité} \\
-\midrule
-M. \dotfill & MCA & Président \\
-Mme BENLEDGHEM Rafika & MCB & Encadrante \\
-M. \dotfill & MCB & Examinateur \\
-\bottomrule
-\end{tabular}
+{\large\textbf{Année universitaire : 2025 / 2026}}
 
-\vfill
-\rule{0.6\textwidth}{0.4pt}\\[4pt]
-{\large\bfseries Année universitaire : 2025 / 2026}
 \end{center}
 \end{titlepage}
