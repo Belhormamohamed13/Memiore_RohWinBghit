@@ -10,7 +10,7 @@
 \documentclass[12pt,a4paper,oneside]{report}
 
 % ---------- Encodage et langues ----------
-% ---------- Hyperliens ----------
+\usepackage{xr-hyper}
 \usepackage{hyperref}
 \hypersetup{
   colorlinks=true,
@@ -20,6 +20,7 @@
   pdftitle={RohWinBghit — Mémoire Master GL},
   pdfauthor={AHMED BACHA D. \& BELHORMA S.M.R.}
 }
+\externaldocument{annexes_standalone}
 
 % ---------- Encodage et langues ----------
 \usepackage{fontspec}
@@ -190,7 +191,7 @@
 \addcontentsline{toc}{chapter}{Bibliographie et webographie}
 \printbibliography[title={Bibliographie et webographie}]
 
-\appendix
-\include{chapters/annexes}
+% \appendix
+% \include{chapters/annexes}
 
 \end{document}
