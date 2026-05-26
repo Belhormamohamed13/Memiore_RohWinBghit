@@ -413,39 +413,122 @@ Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
 
 \begin{table}[H]
 \centering
-\footnotesize
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+\begin{tcolorbox}[
+  enhanced,
+  colback=white,
+  colframe=rohblue,
+  arc=6pt,
+  boxrule=1.5pt,
+  boxsep=2pt,
+  left=2pt, right=2pt, top=4pt, bottom=4pt,
+  toptitle=8pt, bottomtitle=8pt,
+  title=\textbf{\large Business Model Canvas --- RohWinBghit},
+  coltitle=white,
+  colbacktitle=rohblue,
+  center title
+]
+\renewcommand{\arraystretch}{1.6}
+\noindent
+\begin{tabularx}{\linewidth}{ >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X }
+
+\textcolor{rohblue}{\faHandshake\ \textbf{Partenaires clés}} &
+\textcolor{rohblue}{\faCogs\ \textbf{Activités clés}} &
+\textcolor{rohblue}{\faGem\ \textbf{Proposition de valeur}} &
+\textcolor{rohblue}{\faHeart\ \textbf{Relation clients}} &
+\textcolor{rohblue}{\faUsers\ \textbf{Segments clients}} \\[2pt]
+
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Mapbox, Firebase, Cloudinary
+  \item Établissements universitaires
+  \item Assureurs auto locaux (MAMA, CAAR)
+  \item CIB/Edahabia (SATIM/Chargily)
+  \item Incubateurs (ANVREDET, CATI)
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Développement mobile \& back-end
+  \item Modération \& validation KYC
+  \item Appariement intelligent
+  \item Maintenance infrastructure
+  \item Support client
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Covoiturage inter-wilayas sécurisé
+  \item Identité vérifiée par KYC biométrique (IA)
+  \item Économie partagée (frais divisés)
+  \item Messagerie et géolocalisation
+  \item Paiement électronique local
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Self-service (application intuitive)
+  \item Confiance mutuelle (notation)
+  \item Support client réactif
+  \item Communauté active
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Étudiants universitaires mobiles
+  \item Travailleurs pendulaires
+  \item Familles sans véhicule
+  \item Conducteurs (amortir les coûts)
+  \item Voyageurs occasionnels
+\end{itemize} \\[15pt]
+
+\cline{2-2} \cline{4-4}
+
+&
+\textcolor{rohblue}{\faTools\ \textbf{Ressources clés}} &
+&
+\textcolor{rohblue}{\faPaperPlane\ \textbf{Canaux}} &
+\\
+
+&
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Équipe produit \& tech
+  \item Algorithmes (matching, KYC)
+  \item Stack PostgreSQL \& Redis
+  \item Image de marque
+\end{itemize} &
+&
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item App Store, Play Store
+  \item Réseaux sociaux
+  \item Bouche-à-oreille
+  \item Recommandations
+\end{itemize}
+\\[15pt]
 \hline
-\cellcolor{rohlight}\textbf{Partenaires clés} &
-\cellcolor{rohlight}\textbf{Activités clés} &
-\cellcolor{rohlight}\textbf{Proposition de valeur} &
-\cellcolor{rohlight}\textbf{Relation clients} &
-\cellcolor{rohlight}\textbf{Segments clients} \\
-\small Mapbox, Firebase, Cloudinary, universités, assureurs, CIB, Edahabia, incubateurs ANVREDET~/~CATI &
-\small Développement mobile \& back-end, KYC, modération, appariement, support client &
-\small Covoiturage inter-wilayas sécurisé, vérifié par KYC biométrique, prix partagé, suivi temps réel &
-\small Notifications push, chat temps réel, évaluations bidirectionnelles, support multicanal &
-\small Étudiants, travailleurs, familles, conducteurs occasionnels et réguliers, diaspora \\
-\hline
- &
-\cellcolor{rohlight}\textbf{Ressources clés} &
- &
-\cellcolor{rohlight}\textbf{Canaux} &
- \\
- &
-\small Équipe produit, code source, marque, base utilisateurs vérifiés, stack React Native~/~Express.js &
- &
-\small Application mobile (iOS/Android), réseaux sociaux, campus universitaires, bouche-à-oreille &
- \\
-\hline
-\multicolumn{2}{|p{0.39\linewidth}|}{\cellcolor{rohlight}\textbf{Structure de coûts}} &
-\multicolumn{3}{p{0.59\linewidth}|}{\cellcolor{rohlight}\textbf{Sources de revenus}} \\
-\multicolumn{2}{|p{0.39\linewidth}|}{\small Masse salariale, hébergement cloud, services tiers, marketing, KYC, conformité juridique} &
-\multicolumn{3}{p{0.59\linewidth}|}{\small Commission 12\,\% sur trajets, abonnement Premium conducteur, publicité in-app, partenariats B2B, API payante} \\
-\hline
+\multicolumn{2}{p{\dimexpr0.4\linewidth-2\tabcolsep-1.2pt\relax}|}{\textcolor{rohblue}{\faCoins\ \textbf{Structure de coûts}}} &
+\multicolumn{3}{p{\dimexpr0.6\linewidth-2\tabcolsep\relax}}{\textcolor{rohblue}{\faCreditCard\ \textbf{Sources de revenus}}} \\[2pt]
+
+\multicolumn{2}{p{\dimexpr0.4\linewidth-2\tabcolsep-1.2pt\relax}|}{
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Masse salariale (tech/support)
+  \item Hébergement VPS (Scaleway/Hetzner)
+  \item API payantes (Mapbox, FCM, OTP)
+  \item Acquisition client et marketing
+  \item Conformité juridique
+\end{itemize}
+} &
+\multicolumn{3}{p{\dimexpr0.6\linewidth-2\tabcolsep\relax}}{
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Commission de 12\,\% sur trajets
+  \item Abonnement Premium conducteurs
+  \item Publicité in-app
+  \item Partenariats B2B (ex-assurance)
+\end{itemize}
+} \\[6pt]
+
 \end{tabularx}
-  \caption{Business Model Canvas de RohWinBghit}
+\end{tcolorbox}
+\caption{Business Model Canvas de RohWinBghit}
 \end{table}
 
 \section{Propriété intellectuelle et conformité juridique}
