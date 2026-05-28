@@ -5,185 +5,178 @@
 % Projet : RohWinBghit — Plateforme de covoiturage inter-wilayas
 % Université Abou Bekr Belkaïd — Tlemcen
 % Année universitaire : 2025 / 2026
-% Compilation : xelatex main.tex (deux passes) puis biber puis xelatex x2
 % =====================================================================
-\documentclass[12pt,a4paper,oneside]{report}
+\documentclass[12pt, a4paper, oneside]{report}
 
-% ---------- Encodage et langues ----------
-\usepackage{xr-hyper}
-\usepackage{hyperref}
-\hypersetup{
-  colorlinks=true,
-  linkcolor=rohblue,
-  citecolor=rohblue,
-  urlcolor=rohblue,
-  pdftitle={RohWinBghit — Mémoire Master GL},
-  pdfauthor={AHMED BACHA D. \& BELHORMA S.M.R.}
-}
-\externaldocument{annexes_standalone}
-
-% ---------- Encodage et langues ----------
+% ── Encodage et langue ─────────────────────────────
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setmainlanguage{french}
-\setotherlanguages{english,arabic}
+\setotherlanguages{english, arabic}
 
-% Bypass bidi package entirely to avoid biblatex TOC infinite loops
+% Robust font setup for Amiri
+\newfontfamily\arabicfont[
+  Script=Arabic,
+  Scale=1.1,
+  Extension=.ttf,
+  UprightFont=Amiri-Regular,
+  BoldFont=Amiri-Bold,
+  ItalicFont=Amiri-Italic,
+  BoldItalicFont=Amiri-BoldItalic
+]{Amiri-Regular}
 \TeXXeTstate=1
-\newfontfamily\arabicfont[Script=Arabic,Scale=1.1,Extension=.ttf,UprightFont=Amiri-Regular,BoldFont=Amiri-Bold,ItalicFont=Amiri-Italic,BoldItalicFont=Amiri-BoldItalic]{Amiri-Regular}
 
+% ── Mise en page ───────────────────────────────────
+\usepackage[
+  top=2.5cm, bottom=2.5cm,
+  left=3cm,  right=2.5cm
+]{geometry}
 
-% ---------- Mise en page ----------
-\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=2cm]{geometry}
-\setlength{\headheight}{15.21004pt}
-\addtolength{\topmargin}{-3.21004pt}
+% ── Typographie ────────────────────────────────────
+\usepackage{microtype}
 \usepackage{setspace}
 \onehalfspacing
-% \usepackage{parskip} % Désactivé pour éviter le double espacement (retrait + saut de ligne)
 \setlength{\parindent}{1.25em}
-\usepackage{microtype}
 
-% ---------- Graphisme et couleurs ----------
-\usepackage{graphicx}
-\graphicspath{{figures/}}
-\usepackage[table]{xcolor}
-\usepackage{fontawesome5}
-\definecolor{rohblue}{RGB}{30,80,150}
-\definecolor{rohlight}{RGB}{235,242,250}
-\definecolor{rohaccent}{RGB}{200,60,60}
+% ── Couleurs ───────────────────────────────────────
+\usepackage{xcolor}
+\definecolor{chapcolor}{RGB}{0, 71, 133}
+\definecolor{seccolor}{RGB}{30, 30, 30}
+\definecolor{subseccolor}{RGB}{80, 80, 80}
+\definecolor{linecolor}{RGB}{0, 71, 133}
 
-% ---------- Tableaux ----------
-\usepackage{array}
-\usepackage{tabularx}
-\usepackage{longtable}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{colortbl}
+% Synonyms for compatibility with existing chapters
+\definecolor{rohblue}{RGB}{0, 71, 133}
+\definecolor{rohlight}{RGB}{235, 242, 250}
+\definecolor{rohaccent}{RGB}{200, 60, 60}
 
-% ---------- Listes et mise en forme ----------
-\usepackage{enumitem}
-% \usepackage{titletoc} % Disabled to prevent bidi conflict causing infinite loop in ToC
+% ── En-têtes et pieds de page ──────────────────────
 \usepackage{fancyhdr}
-\usepackage{float}
-\usepackage{caption}
-\captionsetup[figure]{labelfont={it,bf},textfont=it,labelsep=endash,font=small}
-\captionsetup[table]{labelfont={it,bf},textfont=it,labelsep=endash,font=small}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape\leftmark}
+\fancyhead[R]{\small\itshape RohWinBghit}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
 
-\usepackage{subcaption}
+\AtBeginDocument{\pagestyle{fancy}}
 
-% ---------- Titres de chapitres ----------
+% ── Table des matières ─────────────────────────────
+\usepackage{tocloft}
+\renewcommand{\cftchappresnum}{Chapitre~}
+\renewcommand{\cftchapaftersnum}{~—}
+\setlength{\cftchapnumwidth}{7em}
+\renewcommand{\cftchapfont}{\bfseries\color{chapcolor}}
+\renewcommand{\cftchappagefont}{\bfseries\color{chapcolor}}
+\renewcommand{\cftchapleader}{%
+  \color{chapcolor}\cftdotfill{\cftchapdotsep}}
+\setlength{\cftbeforechapskip}{0.8em}
+\renewcommand{\cftsecfont}{\color{seccolor}}
+\renewcommand{\cftsecpagefont}{\color{seccolor}}
+\setlength{\cftsecindent}{2em}
+\renewcommand{\cftsubsecfont}{\small\color{subseccolor}}
+\setlength{\cftsubsecindent}{4em}
+
+% ── Titres de chapitres ────────────────────────────
 \usepackage[explicit]{titlesec}
-\usepackage{tikz}
 \usepackage{etoolbox}
 
-% Redéfinition complète de la page d'ouverture de chapitre
+% Page dédiée pour chaque chapitre numéroté
 \titleformat{\chapter}[display]
-  {\normalfont\color{rohblue}}
+  {\normalfont}
   {}
   {0pt}
   {%
     \thispagestyle{empty}%
-    \vspace*{\fill}%
+    \vspace*{\fill}
     \begin{center}
-      % Ligne décorative haute
-      \rule{\textwidth}{1.5pt}\\[1.5em]
-      % Numéro du chapitre
-      {\fontsize{16}{20}\selectfont\scshape
-       \chaptertitlename~\thechapter}\\[1em]
-      % Filet séparateur
-      \rule{0.4\textwidth}{0.6pt}\\[1.5em]
-      % Titre du chapitre (grand, gras)
-      {\fontsize{22}{28}\selectfont\bfseries #1}\\[1.5em]
-      % Ligne décorative basse
-      \rule{\textwidth}{1.5pt}
+      \noindent\rule{\textwidth}{2pt}\\[1em]
+      {\color{chapcolor}\fontsize{13}{16}
+       \scshape\chaptertitlename~\thechapter}
+      \\[0.6em]
+      \noindent\rule{0.35\textwidth}{0.5pt}
+      \\[1em]
+      {\color{chapcolor}\fontsize{20}{26}
+       \bfseries #1}
+      \\[1em]
+      \noindent\rule{\textwidth}{2pt}
     \end{center}
     \vspace*{\fill}
     \clearpage
   }
-
-% Supprimer l'espace vertical par défaut avant le titre
 \titlespacing*{\chapter}{0pt}{0pt}{0pt}
 
-% Style normal pour les chapitres non numérotés standard (Remerciements, Dédicaces, Résumés, TOC...)
+% Style initial pour les chapitres non numérotés standard (Remerciements, Dédicaces...)
+% Permet de ne pas occuper de page dédiée pour les pages liminaires
 \titleformat{name=\chapter,numberless}[block]
-  {\normalfont\color{rohblue}\Huge\bfseries}
+  {\normalfont\color{chapcolor}\Huge\bfseries}
   {}
   {0pt}
   {#1}
 \titlespacing*{name=\chapter,numberless}{0pt}{10pt}{20pt}
 
-% Patch pour que le contenu commence page suivante
-\patchcmd{\chapter}
-  {\if@openright\cleardoublepage\else\clearpage\fi}
-  {\if@openright\cleardoublepage\else\clearpage\fi}
-  {}{}
-
-% Commande personnalisée pour chapitres étoilés
-\newcommand{\chapterstar}[1]{%
-  \clearpage
-  \thispagestyle{empty}%
-  \vspace*{\fill}
-  \begin{center}
-    \color{rohblue}%
-    \rule{\textwidth}{1.5pt}\\[1.5em]
-    {\fontsize{22}{28}\selectfont\bfseries #1}\\[1.5em]
-    \rule{\textwidth}{1.5pt}
-  \end{center}
-  \vspace*{\fill}
-  \clearpage
-  \addcontentsline{toc}{chapter}{#1}
+% ── Figures et tableaux ────────────────────────────
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{
+  font=small,
+  labelfont={bf, color=chapcolor},
+  labelsep=period
 }
 
-\titleformat{\section}
-  {\color{rohblue}\Large\bfseries}{\thesection}{0.6em}{#1}
-\titleformat{\subsection}
-  {\color{rohblue!85}\large\bfseries}{\thesubsection}{0.6em}{#1}
-\titleformat{\subsubsection}
-  {\color{rohblue!70}\normalsize\bfseries}{\thesubsubsection}{0.6em}{#1}
-
-% ---------- En-têtes / pieds de page ----------
-\pagestyle{fancy}
-\fancyhf{}
-\fancyfoot[C]{\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0pt}
-
-% Style plain = pages de chapitre, TDM, etc.
-\fancypagestyle{plain}{
-  \fancyhf{}
-  \fancyfoot[C]{\thepage}
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
+% ── Autres packages requis ─────────────────────────
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=chapcolor,
+  citecolor=chapcolor,
+  urlcolor=chapcolor,
+  pdftitle={RohWinBghit — Mémoire de Master},
+  pdfauthor={AHMED BACHA \& BELHORMA}
 }
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
 
-\AtBeginDocument{\pagestyle{fancy}}
-
-% Hyperref moved to the top
-
-% ---------- Code source ----------
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{multirow}
 \usepackage{listings}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+
+% Listings setup
 \lstset{
   basicstyle=\ttfamily\small,
-  keywordstyle=\color{rohblue}\bfseries,
+  keywordstyle=\color{chapcolor}\bfseries,
   commentstyle=\color{gray}\itshape,
   stringstyle=\color{rohaccent},
   numbers=left, numberstyle=\tiny\color{gray},
-  frame=single, rulecolor=\color{rohblue!30},
+  frame=single, rulecolor=\color{chapcolor!30},
   breaklines=true, showstringspaces=false,
   tabsize=2
 }
 
-% ---------- Encadrés ----------
-\usepackage{tcolorbox}
-\tcbuselibrary{skins,breakable}
+% Custom boxes
 \newtcolorbox{highlight}[1][]{
   enhanced, breakable,
-  colback=rohlight, colframe=rohblue,
+  colback=rohlight, colframe=chapcolor,
   boxrule=0.5pt, arc=2pt,
   left=8pt,right=8pt,top=5pt,bottom=5pt,
   #1
 }
-% Encadré vert : exigences fonctionnelles
 \definecolor{funcgreen}{RGB}{200,230,201}
 \definecolor{funcgreendark}{RGB}{46,125,50}
 \newtcolorbox{funcreq}[1][]{
@@ -196,7 +189,6 @@
   colbacktitle=funcgreendark,
   #1
 }
-% Encadré orange : exigences non fonctionnelles
 \definecolor{nonfuncorange}{RGB}{255,224,178}
 \definecolor{nonfuncorangedark}{RGB}{230,81,0}
 \newtcolorbox{nonfuncreq}[1][]{
@@ -210,51 +202,100 @@
   #1
 }
 
-% ---------- Bibliographie ----------
-\usepackage[backend=biber,style=ieee,sorting=none]{biblatex}
+% ── Bibliographie ──────────────────────────────────
+\usepackage[backend=biber, style=ieee, sorting=none]{biblatex}
 \addbibresource{biblio.bib}
 
-% ---------- Acronymes ----------
+% ── Acronymes ──────────────────────────────────────
 \usepackage[acronym,nonumberlist]{glossaries}
 \makeglossaries
 \input{frontmatter/acronymes}
 
-% =====================================================================
-\begin{document}
+% ── Numérotation ───────────────────────────────────
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
-% ==================== PAGES LIMINAIRES ====================
+% =====================================================================
+\begin{document}
 
-\include{frontmatter/page_garde}
+% ══════════════════════════════════════════════════
+%  PAGES LIMINAIRES
+% ══════════════════════════════════════════════════
+\include{frontmatter/garde}
 \include{frontmatter/remerciements}
 \include{frontmatter/dedicaces}
-\include{frontmatter/resumes}
+\include{frontmatter/resume}
+\include{frontmatter/abstract}
 
-\tableofcontents
-\clearpage
-\listoffigures
-\clearpage
-\listoftables
-\clearpage
-\glsaddall
+% Configuration des glossaires pour ne pas forcer de nouvelle page dédiée
 \printglossary[type=\acronymtype,title={Liste des abréviations},toctitle={Liste des abréviations}]
 \clearpage
 
-% ==================== CORPS DU MÉMOIRE ====================
+% ══════════════════════════════════════════════════
+%  LISTES ET TABLE DES MATIÈRES
+% ══════════════════════════════════════════════════
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+\clearpage
 
-\include{chapters/introduction_generale}
-\include{chapters/chap1_etat_art}
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+\clearpage
+
+\tableofcontents
+\clearpage
+
+% Redéfinition du style des chapitres non numérotés après les pages liminaires
+% afin que l'Introduction et la Conclusion occupent une page dédiée
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont}
+  {}
+  {0pt}
+  {%
+    \thispagestyle{empty}%
+    \vspace*{\fill}
+    \begin{center}
+      \noindent\rule{\textwidth}{2pt}\\[1.5em]
+      {\color{chapcolor}\fontsize{20}{26}
+       \bfseries #1}
+      \\[1.5em]
+      \noindent\rule{\textwidth}{2pt}
+    \end{center}
+    \vspace*{\fill}
+    \clearpage
+  }
+\titlespacing*{name=\chapter,numberless}{0pt}{0pt}{0pt}
+
+% ══════════════════════════════════════════════════
+%  CONTENU PRINCIPAL
+% ══════════════════════════════════════════════════
+\include{chapters/introduction}
+\include{chapters/chap1_existant}
 \include{chapters/chap2_conception}
 \include{chapters/chap3_realisation}
-\include{chapters/chap4_business_plan}
-\include{chapters/conclusion_generale}
+\include{chapters/chap4_tests}
+\include{chapters/conclusion}
 
-% ==================== PAGES FINALES ====================
-\chapterstar{Bibliographie et webographie}
-\printbibliography[heading=none]
+% ══════════════════════════════════════════════════
+%  BIBLIOGRAPHIE
+% ══════════════════════════════════════════════════
+\printbibliography[
+  title={Bibliographie et Webographie},
+  heading=bibintoc
+]
 
-% \appendix
-% \include{chapters/annexes}
+% ══════════════════════════════════════════════════
+%  ANNEXES
+% ══════════════════════════════════════════════════
+\appendix
+\chapter*{Annexes}
+\addcontentsline{toc}{chapter}{Annexes}
+
+\include{annexes/annexe_a}
+\include{annexes/annexe_b}
+\include{annexes/annexe_c}
+\include{annexes/annexe_d}
+\include{annexes/annexe_e}
+\include{annexes/annexe_f}
 
 \end{document}

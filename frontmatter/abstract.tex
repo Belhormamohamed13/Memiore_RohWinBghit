@@ -1,0 +1,13 @@
+% ==================== RÉSUMÉ ANGLAIS ====================
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\thispagestyle{plain}
+
+This thesis presents the design and implementation of \textit{RohWinBghit}, a mobile carpooling platform tailored to the Algerian inter-wilaya transportation market. It addresses a real societal issue~: the absence of a secure, trusted digital solution for long-distance travel between Algeria's 69~wilayas, characterised by high fares, inconsistent availability and a pervasive lack of user trust.
+
+The proposed architecture combines a \textit{React Native}~0.81 mobile application (Expo SDK~54), an Express.js back-end with modular organization inspired by NestJS (built on Knex.js and PostgreSQL), a Redis cache layer, and a dedicated \textit{FastAPI} AI service for biometric identity verification (KYC) featuring liveness detection and an anti-\textit{spoofing} module. The application provides OTP authentication, real-time booking, Mapbox-based GPS tracking, Socket.IO instant messaging, an experimental dynamic pricing mechanism, a fraud-detection module and a multi-method payment engine implemented through a \textit{Strategy/Factory} pattern: cash settlement is fully operational, while CIB and Edahabia are integrated in \textit{sandbox} mode pending SATIM clearance.
+
+Experimental validation relies on an automated \textit{Jest} suite: 151~tests (107~unit tests and 44~integration tests), with 147~successful, yielding an overall success rate of 97.4\,\%, complemented by a manual validation campaign covering 62~distinct application screens.
+
+\vspace{0.3cm}
+\textbf{Keywords:} carpooling, React Native, Express.js, Knex.js, biometric verification, PostgreSQL, Redis, artificial intelligence, mobile payment, Algeria, inter-wilaya, 69 wilayas.

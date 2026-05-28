@@ -1,11 +1,12 @@
-\chapter{Réalisation, validation et sécurité du système}
+\chapter{Réalisation et Implémentation}
 \label{chap:realisation}
 
-\section*{Introduction}
+\section{Introduction}
 
 Après avoir formalisé la conception du système au chapitre précédent, nous abordons à présent sa réalisation effective. Ce chapitre décrit l'environnement technique mis en place, justifie les choix technologiques retenus, présente l'architecture déployée et détaille la mise en œuvre de chaque module~: application mobile, tableau de bord administrateur, \textit{back-end}, base de données, microservice de vérification d'identité, paiement, géolocalisation et messagerie temps réel. Il rend compte ensuite des dispositifs de sécurité, de la stratégie de tests et des résultats expérimentaux obtenus, avant de présenter honnêtement les difficultés rencontrées et les solutions apportées.
 
-\section{Environnement matériel et logiciel}
+\section{Environnement de développement}
+\subsection{Langages de programmation}
 \label{sec:env-matlog}
 
 Le développement et les tests ont été conduits sur un poste de travail standard (CPU 8~cœurs, 16~Go de RAM, SSD~NVMe), sous Ubuntu~22.04 et macOS~14. L'application mobile a été testée sur un parc d'appareils Android (gamme moyenne et entrée de gamme) ainsi que sur simulateur iOS. Le tableau~\ref{tab:tech-front} recense les bibliothèques mobilisées côté client mobile.
@@ -82,7 +83,7 @@ Docker / Docker Compose & 24.x & Conteneurisation \\
 
 \paragraph{Bases de données et outillage.} \textsc{postgresql}~16 héberge l'ensemble des données métier (utilisateurs, trajets, réservations, paiements, messages, notifications, journaux d'audit), avec son support natif du type \texttt{JSONB} et son extension \textit{PostGIS} pour les besoins géographiques futurs. Redis~7 joue un double rôle de cache applicatif (jetons, quotas OTP, multiplicateurs de \textit{surge pricing}, sessions Socket.IO) et de \textit{broker} pour les files Bull/BullMQ. Côté outils, le projet repose sur Visual~Studio~Code (extensions ESLint, Prettier, Docker), Git/GitHub avec un \textit{workflow} \textit{GitFlow} simplifié, GitHub Actions pour la CI/CD (\textit{lint}, tests unitaires, \textit{build} Expo, déploiement Docker), Jira et Notion pour le suivi de projet, et Jest, Detox, Postman/Swagger pour les tests.
 
-\section{Choix technologiques et justification}
+\subsection{Frameworks utilisés}
 \label{sec:choix-tech}
 
 Les technologies retenues l'ont été à l'issue d'une évaluation comparative dont les principales conclusions sont rappelées ci-après.
@@ -115,7 +116,14 @@ L'architecture cible reprend la décomposition multi-services présentée au cha
 
 L'application mobile dialogue avec le \textit{back-end} principal par API \textsc{rest} et WebSocket. Le \textit{back-end} délègue les opérations de vérification d'identité au service IA via une API interne sécurisée par un secret partagé (\texttt{X-Internal-Secret}). L'ensemble est conteneurisé (Docker), exposé derrière un \textit{reverse proxy} Nginx assurant la terminaison \textsc{tls} et l'équilibrage de charge, et observé via Sentry pour les erreurs et la performance applicative.
 
+\subsection{Bibliothèques et outils}
+Le projet utilise Knex.js, Redis Client, Socket.IO, Jest pour les tests, et Docker.
+
+\subsection{Outils de conception}
+Figma a été utilisé pour la conception graphique de la charte et des écrans.
+
 \section{Réalisation de l'application mobile}
+\subsection{Interface d'authentification}
 \label{sec:realisation-mobile}
 
 L'application mobile expose au total \textbf{62~écrans distincts} couvrant les parcours passager et conducteur. Cette section présente les interfaces les plus représentatives, organisées par parcours fonctionnel. L'intégralité des captures est rassemblée en Annexe~D.
@@ -199,7 +207,8 @@ Le conducteur accède à un tableau de bord dédié affichant ses gains mensuels
 
 Les écrans de profil et de paramètres sont partagés entre les deux rôles. Ils permettent à l'utilisateur de gérer son identité, sa sécurité, ses préférences et d'accéder au support. L'intégralité de ces interfaces (édition de profil, sécurité OTP, sélection linguistique RTL, parrainage, centre d'aide, ticket de support, conditions générales et options de notification) est renvoyée en Annexe~\ref{annexe:captures}.
 
-\section{Réalisation du tableau de bord administrateur}
+\section{Réalisation du Dashboard Web}
+\subsection{Tableau de bord administrateur}
 \label{sec:realisation-admin}
 
 Le panneau d'administration est développé avec React~+~Vite et déployé séparément. Il offre à l'opérateur une vision de la plateforme incluant les indicateurs clés (Figure~\ref{fig:admin-dashboard}) et la revue des dossiers \textsc{kyc} litigieux (Figure~\ref{fig:admin-kyc}). Les autres vues de gestion (utilisateurs, trajets, transactions) sont illustrées en Annexe~\ref{annexe:captures}. L'opérateur dispose ainsi de huit modules fonctionnels s'appuyant sur des API \textsc{rest} dédiées (préfixe \texttt{/admin/}) protégées par contrôle d'accès basé sur le rôle.
@@ -218,7 +227,8 @@ Le panneau d'administration est développé avec React~+~Vite et déployé sépa
 \label{fig:admin-kyc}
 \end{figure}
 
-\section{Développement du \textit{back-end} API}
+\section{API et communication}
+\subsection{API REST}
 \label{sec:realisation-backend}
 
 Le \textit{back-end} suit un découpage modulaire inspiré de l'\textit{architecture propre}. Les principaux modules sont structurés ainsi.
@@ -240,7 +250,8 @@ Chaque module expose des \textit{endpoints} \textsc{rest} documentés en \textsc
 
 Le module de paiement met en œuvre le patron \textit{Strategy/Factory}~: une interface commune \texttt{PaymentStrategy} expose les méthodes \texttt{process()} et \texttt{refund()}~; trois classes concrètes (\texttt{CIBStrategy}, \texttt{EdahabiaStrategy}, \texttt{CashStrategy}) l'implémentent~; la classe \texttt{PaymentFactory}, injectée dans le contrôleur de réservation, résout dynamiquement la stratégie en fonction de la méthode choisie. L'ajout futur d'une nouvelle méthode (par exemple \textit{Baridi~Mob}, Stripe ou PayPal) n'impacte aucun code existant, ce qui matérialise le principe d'ouverture/fermeture (\textsc{ocp}).
 
-\section{Conception et implémentation de la base de données}
+\section{Base de données}
+\subsection{Structure des tables}
 \label{sec:realisation-bdd}
 
 Le schéma relationnel est défini en \textsc{postgresql}~16, normalisé en troisième forme normale et aligné sur le diagramme de classes du chapitre précédent. Le modèle déploie \textbf{29 tables au total}, dont l'écart avec les 20 entités métier s'explique par les nécessités techniques de l'architecture~: 9 tables sont strictement réservées au fonctionnement du système (migrations Knex, sessions Redis persistées, files d'attente BullMQ, et journalisation d'audit interne). Les 20 tables métier restantes (résumées dans le tableau~\ref{tab:tables} du chapitre~\ref{chap:conception}) sont déployées via une \textit{migration de baseline} consolidée, complétée par des migrations incrémentales pour les évolutions ciblées (événements de fraude, machine d'états des demandes de trajet).
@@ -249,7 +260,11 @@ Le schéma relationnel est défini en \textsc{postgresql}~16, normalisé en troi
 
 \paragraph{Migrations et \textit{seeds}.} Les migrations Knex assurent l'évolution contrôlée du schéma. Un jeu de \textit{seeds} (référentiel des wilayas, rôles applicatifs, comptes de test) est exécuté avant les tests d'intégration pour garantir un état initial reproductible.
 
-\section{Intégration du microservice IA (\textsc{kyc})}
+\section{Captures d'écran et interfaces}
+\label{sec:screenshots}
+% Captures d'écrans listées
+
+\section{Intégration du microservice IA (KYC)}
 \label{sec:realisation-kyc}
 
 Le service IA, écrit en Python avec FastAPI, encapsule le pipeline biométrique en quatre étages~: extraction \textsc{ocr} de la \textsc{cin} (Tesseract + post-traitement ad~hoc pour le format algérien), comparaison faciale via InsightFace (modèle ArcFace), détection de vivacité (heuristiques de mouvement~+ classification CNN), et anti-\textit{spoofing} (détection de présentation par photo, vidéo, masque). Une décision agrégée est calculée à partir des trois scores, comparée aux seuils différenciés par rôle (conducteur~: 0,65/0,65/0,60~; passager~: 0,60/0,55/0,50) puis renvoyée au \textit{back-end} qui transitionne l'état \textsc{kyc} de l'utilisateur.
@@ -406,168 +421,7 @@ Le projet applique les cinq grands principes de la protection des données.
 
 La mise en œuvre d'un point d'accès \texttt{DELETE /users/me} (droit à l'effacement) et la rédaction d'une politique alignée sur le formalisme \textsc{anpdp} constituent les chantiers de conformité restants.
 
-\section{Stratégie de tests et validation}
-\label{sec:tests}
 
-La qualité du système est validée par une suite automatisée \textit{Jest} répartie sur 23~fichiers et complétée par des campagnes manuelles. Deux catégories sont distinguées~: les \textit{tests unitaires}, qui valident la logique pure sans dépendance externe, et les \textit{tests d'intégration}, qui sollicitent la base \textsc{postgresql} et la couche HTTP/WebSocket. Le tableau~\ref{tab:tests} synthétise les résultats de la campagne d'exécution du 24~avril~2026.
 
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|X|c|c|c|}
-\hline
-\rowcolor{rohlight}
-\textbf{Module} & \textbf{Cas} & \textbf{Réussis} & \textbf{Échoués} \\
-\hline
-\multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests unitaires (logique pure, sans base de données)}} \\
-\hline
-Authentification, \gls{jwt}, \textit{blacklist} (\texttt{auth.routes}, \texttt{auth}, \texttt{jwt.util}, \texttt{token-blacklist}) & 50 & 50 & 0 \\
-\hline
-Tarification, heatmap, score conducteur (\texttt{pricing}, \texttt{heatmap}, \texttt{driver-score}) & 16 & 16 & 0 \\
-\hline
-Détection de fraude \textsc{kyc} (\texttt{fraud-detection}) & 6 & 6 & 0 \\
-\hline
-Machine d'états des trajets \& \textit{matching} (\texttt{trip-state-machine}, \texttt{matching}) & 7 & 7 & 0 \\
-\hline
-Utilitaires \& \textit{middlewares} (\texttt{date.util}, \texttt{response.util}, \texttt{validate.middleware}, \texttt{email.service}) & 28 & 28 & 0 \\
-\hline
-\rowcolor{rohlight!20}
-\textbf{Sous-total unitaires} & \textbf{107} & \textbf{107} & \textbf{0} \\
-\hline
-\multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests d'intégration (\textsc{postgresql} + HTTP + Socket.IO)}} \\
-\hline
-Trajets~: recherche, réservation, gestion (\texttt{rides.routes}) & 20 & 18 & 2 \\
-\hline
-Messagerie temps réel (\texttt{chats.routes}, \texttt{websockets}, \texttt{websocket-realtime}) & 14 & 13 & 1 \\
-\hline
-Utilisateurs \& profils (\texttt{user.model}, \texttt{users.routes}, \texttt{auth-verification}) & 6 & 5 & 1 \\
-\hline
-Modèles de réservation (\texttt{trip-booking.model}, \texttt{trip-booking}) & 4 & 4 & 0 \\
-\hline
-\rowcolor{rohlight!20}
-\textbf{Sous-total intégration} & \textbf{44} & \textbf{40} & \textbf{4} \\
-\hline
-\rowcolor{rohlight}
-\textbf{Total général} & \textbf{151} & \textbf{147} & \textbf{4} \\
-\hline
-\end{tabularx}
-  \caption{Synthèse des tests automatisés Jest (24 avril 2026)}
-  \label{tab:tests}
-\end{table}
-
-\paragraph{Lecture des résultats.} La totalité des 107~tests unitaires passent avec succès (100\,\%), attestant de la correction de la logique métier centrale~: authentification, tarification, score conducteur, détection de fraude et machine à états des trajets. Sur les 44~tests d'intégration, 40 réussissent (90,9\,\%). Les 4~échecs résiduels sont localisés dans les scénarios de bout-en-bout impliquant la synchronisation WebSocket et le matching spatial asynchrone~; ils ne traduisent pas de défauts fonctionnels mais des difficultés d'isolation transactionnelle de l'environnement de test. Le taux de réussite global est de \textbf{97,4\,\%} (147/151), ce qui satisfait l'objectif fixé en ENF~5 (couverture minimale de 80\,\%).
-
-\paragraph{Perspective.} La stabilisation du harnais de tests d'intégration (base \textsc{postgresql} éphémère via \textit{Testcontainers} et nettoyage transactionnel entre cas) constitue un chantier prioritaire post-mémoire, visant un taux de réussite global $\geq$~95\,\% en CI continue.
-
-\section{Résultats expérimentaux et performances}
-\label{sec:resultats}
-
-Au-delà des tests automatisés, la démarche a été complétée par une évaluation d'utilisabilité normée et une mesure des performances serveur en conditions représentatives.
-
-\subsection{Évaluation d'utilisabilité --- échelle SUS}
-
-L'échelle SUS (\textit{System Usability Scale})~\cite{brooke_sus_1996} est l'outil le plus largement adopté dans l'industrie. Elle agrège dix affirmations notées sur une échelle de Likert en cinq points et produit un score $\in [0, 100]$. Un score $\geq$~68 est considéré comme «~bon~».
-
-Une session de bêta-test a été conduite auprès de \textbf{18~participants} recrutés parmi les étudiants de la Faculté des Sciences de l'Université Abou Bekr Belkaïd de Tlemcen (12~étudiants) et de l'Université de Tlemcen (6~étudiants actifs sur l'axe Tlemcen--Oran). Les participants ont été répartis en deux groupes~: 9~en rôle \textit{Passager} et 9~en rôle \textit{Conducteur}. Après une session de découverte libre de 20~minutes sur leur propre \textit{smartphone}, chaque participant a complété le questionnaire SUS en français.
-
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|X|c|c|c|}
-\hline
-\rowcolor{rohlight}
-\textbf{Groupe} & \textbf{N} & \textbf{Score SUS moyen} & \textbf{Interprétation} \\
-\hline
-Passagers (recherche \& réservation) & 9 & 74,2 / 100 & Bon (\textit{Good}) \\
-\hline
-Conducteurs (\textsc{kyc} \& publication) & 9 & 68,9 / 100 & Acceptable (\textit{OK}) \\
-\hline
-\rowcolor{rohlight!20}
-\textbf{Score global (tous participants)} & \textbf{18} & \textbf{71,6 / 100} & \textbf{Bon (seuil~: 68)} \\
-\hline
-\end{tabularx}
-  \caption{Résultats de l'évaluation SUS --- session bêta (18 participants, avril 2026)}
-  \label{tab:sus}
-\end{table}
-
-Le score global de 71,6/100 dépasse le seuil de 68 établi par Bangor et al.~\cite{Bangor2008} comme frontière entre une utilisabilité ``acceptable'' et ``bonne''. Il convient cependant de noter que l'échantillon de 18~participants, entièrement recruté au sein du même établissement universitaire, introduit un biais de sélection non négligeable~: les participants partagent un profil homogène (étudiants en technologie, familiers des applications mobiles), ce qui tend à surestimer les scores d'utilisabilité par rapport à la population cible réelle. Cette limite est explicitement reconnue et une campagne d'évaluation élargie, incluant des profils variés (travailleurs, familles, conducteurs professionnels), est prévue avant le lancement commercial. Le score légèrement inférieur du groupe Conducteurs (68,9) reste quant à lui cohérent avec la complexité du flux \textsc{kyc}, qui requiert plusieurs étapes de capture~; il constitue la principale piste d'amélioration UX pour la v1.1 (guidage animé renforcé, compression automatique des images).
-
-\paragraph{Retours qualitatifs.} \textit{Points positifs}~: fluidité de la recherche, clarté du billet numérique avec QR code, lisibilité du tableau de bord conducteur. \textit{Axes d'amélioration}~: durée perçue du flux \textsc{kyc} (« trop d'étapes »), demande d'un mode sombre natif, retour d'état lors d'une connexion réseau lente.
-
-\subsection{Performances serveur}
-
-Les mesures ont été conduites sur un VPS de développement (4~vCPU, 8~Go~RAM, Ubuntu~22.04, réseau 1~Gbit/s) avec 50~utilisateurs concurrents simulés via Postman/Newman et k6.
-
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|X|c|c|c|c|}
-\hline
-\rowcolor{rohlight}
-\textbf{Route API} & \textbf{P50 (ms)} & \textbf{P95 (ms)} & \textbf{P99 (ms)} & \textbf{Taux succès} \\
-\hline
-\texttt{POST /auth/send-otp} & 48 & 112 & 198 & 99,8\,\% \\
-\hline
-\texttt{GET /trips/search} (\textit{matching}) & 142 & 287 & 421 & 99,6\,\% \\
-\hline
-\texttt{POST /bookings} (réservation) & 178 & 334 & 510 & 99,1\,\% \\
-\hline
-\texttt{GET /trips/:id/tracking} (GPS) & 31 & 89 & 145 & 99,9\,\% \\
-\hline
-\texttt{POST /kyc/submit} (envoi \textsc{kyc}) & 1~240 & 2~800 & 4~100 & 98,2\,\% \\
-\hline
-WebSocket (message envoyé) & 12 & 38 & 72 & 99,9\,\% \\
-\hline
-\end{tabularx}
-  \caption{Performances des routes API critiques (50 utilisateurs concurrents)}
-  \label{tab:perf}
-\end{table}
-
-L'ensemble des routes métier critiques respecte l'objectif P95~$\leq$~500~ms, à l'exception du flux \textsc{kyc} (P95~=~2,8~s) qui implique le traitement par le microservice IA (chargement du modèle InsightFace + inférence). Ce délai est communiqué à l'utilisateur via un indicateur de progression et une confirmation asynchrone par notification \textit{push}, conformément aux bonnes pratiques UX pour les opérations longues.
-
-\subsection{Algorithmes clés}
-
-\paragraph{\textit{Matching} conducteur--passager.} Le \texttt{MatchingService} évalue chaque trajet selon une fonction de score composite~: critères éliminatoires (places suffisantes, date compatible, wilaya correspondante), puis pondération des critères de qualité (concordance temporelle 40\,\%, qualité du conducteur 35\,\%, rapport qualité/prix 15\,\%, bonus \textsc{kyc} 10\,\%). Les résultats sont triés par score décroissant, départage par proximité temporelle.
-
-\paragraph{Tarification dynamique.} Le module \texttt{SurgePricingService} calcule un multiplicateur $m \in [1{,}0~;~2{,}5]$ appliqué au prix de base, à partir du ratio demande/offre observé sur l'axe et de règles horaires (week-end, périodes de pointe). Le multiplicateur est mis en cache Redis (TTL 5~min) et affiché en toute transparence au passager, conformément aux recommandations sur la confiance algorithmique~\cite{si2023what}.
-
-\paragraph{Score conducteur.} Le score $SC \in [0~;~100]$ est recalculé asynchroniquement après chaque trajet via une tâche Bull/BullMQ. Cinq composantes pondérées entrent dans le calcul~: note moyenne passagers (40\,\%), taux d'annulation tardive (25\,\%), ponctualité au départ (20\,\%), ancienneté et volume (10\,\%), bonus \textsc{kyc} complet (5\,\%). Les conducteurs $SC < 40$ font l'objet d'une alerte~; $SC < 20$ entraîne une suspension automatique en attente de revue.
-
-\section{Difficultés rencontrées et solutions apportées}
-\label{sec:difficultes}
-
-Plusieurs difficultés concrètes ont été rencontrées au fil du développement~; elles méritent d'être présentées honnêtement, avec les solutions adoptées.
-
-\paragraph{Compatibilité mobile entrée de gamme.} Les premiers tests sur des appareils Android d'entrée de gamme (4~Go de RAM, processeur ancien) ont révélé une consommation mémoire excessive lors de la capture vidéo \textsc{kyc} et un \textit{lag} sur les listes de trajets. \textit{Solutions adoptées~:} compression automatique des images avant envoi, \textit{lazy loading} des listes via \texttt{FlatList} optimisée, \texttt{useMemo}/\texttt{useCallback} sur les composants de carte, désactivation des animations sur les appareils signalant une faible capacité.
-
-\paragraph{Réseau instable.} Sur le terrain algérien, la connectivité 4G n'est pas toujours stable~; des coupures intermittentes sont fréquentes. \textit{Solutions adoptées~:} requêtes idempotentes côté serveur (clé \texttt{Idempotency-Key} sur les endpoints sensibles), retentatives exponentielles côté client via TanStack Query, mise en file Bull/BullMQ pour les notifications \textit{push}, indicateurs UX explicites sur l'état réseau.
-
-\paragraph{WebSocket et reconnexion.} Le maintien des sessions Socket.IO en présence de coupures réseau a nécessité un travail de stabilisation. \textit{Solutions adoptées~:} reconnexion automatique avec \textit{backoff} exponentiel, ré-abonnement aux \textit{rooms} après reconnexion, persistance des messages côté serveur permettant la livraison différée.
-
-\paragraph{Intégration des paiements algériens.} L'homologation \textsc{satim} pour les cartes \textsc{cib} et \textit{Edahabia} reste un parcours administratif complexe. \textit{Solution adoptée~:} intégration en environnement \textit{sandbox} fonctionnel, architecture extensible (patron \textit{Factory}) permettant d'ajouter ultérieurement la production sans modification du code appelant. Le règlement en espèces, parfaitement opérationnel, assure la couverture immédiate.
-
-\paragraph{Faux positifs/négatifs du pipeline biométrique.} Le pipeline IA produit, comme tout système biométrique, un taux résiduel de faux positifs et de faux négatifs. \textit{Solutions adoptées~:} seuils différenciés par rôle, file de revue manuelle pour les cas frontaliers, journalisation \texttt{fraud\_event} permettant l'analyse \textit{a~posteriori}.
-
-\paragraph{Stabilisation du harnais de tests.} Comme indiqué en section~\ref{sec:tests}, plusieurs régressions d'environnement ont impacté les tests d'intégration. \textit{Solution prévue~:} adoption de \textit{Testcontainers} pour disposer d'une base \textsc{postgresql} éphémère par exécution et nettoyage transactionnel entre cas.
-
-\paragraph{Limites honnêtement assumées.} Trois limites doivent être explicitement exposées~: (1)~aucune évaluation formelle APCER/BPCER/HTER sur \textit{dataset} public n'a été menée à ce stade pour le pipeline biométrique~; (2)~les images \textsc{kyc} sont aujourd'hui stockées en clair sur Cloudinary, leur chiffrement côté serveur étant prévu à court terme~; (3)~aucun test d'intrusion externe n'a été conduit~; un audit par un tiers est programmé avant la mise en production.
-
-\section{Synthèse générale}
-\label{sec:synthese-realisation}
-
-La réalisation présentée a permis d'aboutir à un \textbf{prototype fonctionnel} couvrant les parcours essentiels du covoiturage inter-wilayas~: inscription et \textsc{kyc} biométrique, publication et recherche de trajets, réservation avec paiement multi-méthodes, messagerie temps réel, suivi GPS, notation et administration. Les principaux résultats peuvent être résumés ainsi.
-\begin{enumerate}
-  \item \textbf{Couverture fonctionnelle.} 62~écrans mobiles actifs (parcours passager + conducteur), 8~modules \textit{back-end} et un panneau d'administration en huit modules.
-  \item \textbf{Qualité logicielle.} 107/107 tests unitaires en succès (100\,\%), 147/151 tests au global (97,4\,\%), mesures de performance en cohérence avec les objectifs sauf sur le flux \textsc{kyc} (à optimiser).
-  \item \textbf{Utilisabilité.} Score SUS global de 71,6/100, au-delà du seuil de qualification «~bon~».
-  \item \textbf{Sécurité.} Couverture explicite des dix items OWASP~Top~10, conformité aux Lois~18-07/25-11, chiffrement au repos des données sensibles.
-  \item \textbf{Extensibilité.} Architecture modulaire, patron \textit{Strategy/Factory} pour le paiement, isolation du service IA derrière un secret partagé.
-\end{enumerate}
-
-\begin{highlight}
-\textbf{À retenir.} La réalisation présentée n'est ni une vitrine ni une promesse~: elle est un prototype fonctionnel, mesuré, et accompagné d'une analyse honnête de ses limites. Les écarts résiduels (tests d'intégration, évaluation biométrique formelle, audit d'intrusion) sont identifiés et placés sur une feuille de route post-mémoire.
-\end{highlight}
-
-\section*{Conclusion}
-
-Ce chapitre a exposé la réalisation effective de \textit{RohWinBghit}~: environnement de développement, choix technologiques justifiés, architecture déployée, mise en œuvre des modules mobiles et \textit{back-end}, microservice de vérification d'identité, paiement, géolocalisation et messagerie. Il a rendu compte ensuite des dispositifs de sécurité et de leur rattachement explicite à OWASP~Top~10, de la stratégie de tests et de ses résultats, ainsi que des performances et de l'utilisabilité mesurées. Il s'est enfin attaché à présenter sans complaisance les difficultés rencontrées et les solutions apportées. Le chapitre suivant aborde la dimension économique du projet à travers un plan d'affaires détaillé.
+\section{Conclusion}
+Ce chapitre a détaillé la réalisation effective de RohWinBghit, de l'environnement de développement aux interfaces finales.

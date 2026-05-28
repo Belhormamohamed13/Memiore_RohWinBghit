@@ -1,11 +1,11 @@
-\chapter{Analyse et conception de la solution}
+\chapter{Analyse des Besoins et Conception}
 \label{chap:conception}
 
-\section*{Introduction}
+\section{Introduction}
 
 Le présent chapitre constitue la charnière entre l'étude du contexte menée précédemment et la phase de réalisation. Il rend compte de la démarche d'analyse retenue, recense les acteurs du système, formalise les exigences fonctionnelles et non fonctionnelles, puis présente la modélisation \gls{uml} complète de la plateforme \textit{RohWinBghit}. Cette modélisation est complétée par une justification explicite des choix de conception (architecture, patrons, base de données) ainsi qu'une analyse des risques techniques anticipés. Notre objectif est de produire une spécification suffisamment précise pour piloter la phase d'implémentation tout en préservant la lisibilité attendue d'un document académique.
 
-\section{Méthodologie d'analyse adoptée}
+\section{Analyse des besoins}
 \label{sec:methodologie}
 
 La conception d'une plateforme distribuée requiert une démarche disciplinée. Nous avons retenu une approche itérative inspirée du Processus Unifié (\textsc{up}) allégé (les phases Inception et Élaboration ont été condensées compte tenu du périmètre maîtrisé d'un binôme de Master), combinée à des itérations agiles de type \textit{Scrum} pour la réalisation.
@@ -17,9 +17,20 @@ Le recueil des besoins s'est articulé autour de trois axes méthodologiques.
   \item \textbf{Entretiens semi-directifs :} Des consultations ciblées et structurées ont été menées avec des conducteurs habitués aux longs trajets inter-wilayas.
 \end{enumerate}
 
-La modélisation \gls{uml}~2.5 retient quatre vues : fonctionnelle, dynamique, statique et physique.
+\subsection{Architecture Frontend}
+L'application mobile utilise React Native avec Expo.
 
-\section{Identification des acteurs du système}
+\subsection{Architecture Backend}
+Le backend est organisé en microservices Express.js/Node.js.
+
+\subsection{Architecture Microservices}
+Comprend le service de KYC (FastAPI) et de notification.
+
+\subsection{Architecture Base de données}
+PostgreSQL avec réplication et cache Redis.
+
+
+\section{Identification des acteurs}
 \label{sec:acteurs}
 
 Le système met en relation trois acteurs humains et plusieurs acteurs techniques externes. Le tableau~\ref{tab:acteurs} récapitule leurs rôles respectifs.
@@ -50,15 +61,32 @@ Le système met en relation trois acteurs humains et plusieurs acteurs technique
   \label{tab:acteurs}
 \end{table}
 
-\section{Recueil et formalisation des besoins}
+\subsection{Besoins fonctionnels}
+\label{sec:exigences-fonc}
 \label{sec:recueil-besoins}
 
 La consolidation des besoins repose sur le croisement des trois sources d'analyse précédentes (questionnaire, étude comparative, entretiens). Les retours convergents ont été regroupés en thèmes (sécurité, transparence tarifaire, simplicité, communication, support local), puis traduits en exigences exploitables. Les exigences les plus fréquemment citées concernent la \textit{confiance dans le conducteur}, la \textit{visibilité du prix avant réservation}, la \textit{disponibilité d'un canal de discussion direct} et la \textit{prise en charge des moyens de paiement locaux}.
 
-Cette consolidation a abouti à deux familles d'exigences~: les besoins fonctionnels, présentés en section~\ref{sec:exigences-fonc}, et les besoins non fonctionnels, présentés en section~\ref{sec:exigences-nonfonc}.
+\section{User Stories}
+\label{sec:user-stories}
 
-\section{Exigences fonctionnelles}
-\label{sec:exigences-fonc}
+Afin de mieux spécifier les besoins fonctionnels, nous modélisons les exigences sous forme d'User Stories regroupées par acteur.
+
+\subsection{User Stories Conducteur}
+\label{sec:us-conducteur}
+Le conducteur inter-wilayas souhaite pouvoir publier des trajets, accepter ou refuser des réservations de passagers, configurer son profil de véhicule, et recevoir ses gains.
+
+\subsection{User Stories Passager}
+\label{sec:us-passager}
+Le passager souhaite pouvoir rechercher un trajet inter-wilayas par filtres (date, wilaya), réserver une place en ligne, payer en toute sécurité (espèces ou e-paiement), et communiquer en temps réel avec le conducteur.
+
+\subsection{User Stories Administrateur}
+\label{sec:us-admin}
+L'administrateur souhaite pouvoir valider les dossiers KYC des utilisateurs (carte d'identité, liveness), modérer les trajets signalés et superviser les transactions financières.
+
+
+
+% Exigences fonctionnelles déplacées
 
 Les exigences fonctionnelles décrivent ce que le système doit \textit{faire}. Nous les avons regroupées dans un tableau synthétique pour faciliter la traçabilité avec les cas d'utilisation présentés ultérieurement.
 
@@ -91,7 +119,7 @@ EF3.1 & Haute & Tableau de bord, statistiques et gestion KYC manuel & Administra
   \label{tab:exigences-fonc}
 \end{table}
 
-\section{Exigences non fonctionnelles}
+\subsection{Besoins non fonctionnels}
 \label{sec:exigences-nonfonc}
 
 Les exigences non fonctionnelles caractérisent la \textit{qualité} attendue du système. Elles ont été dérivées de la revue systématique de Sogbe~\textit{et~al.}~\cite{sogbe_public_transport_2024} sur les déterminants de la satisfaction dans les systèmes de transport des pays en développement, qui identifie la fiabilité, la sécurité perçue, la transparence tarifaire et l'accessibilité linguistique comme leviers prioritaires.
@@ -128,7 +156,9 @@ Respect de la \textbf{Loi~25-11}~\cite{loi2511_2025} sur la protection des donn�
 Application native Android/iOS via React~Native et Expo, internationalisation systématique des libellés.
 \end{nonfuncreq}
 
-\section{Diagramme global des cas d'utilisation}
+\section{Diagrammes des cas d'utilisation}
+\label{sec:uc-global}
+\subsection{Diagramme global}
 \label{sec:cu-global}
 
 Les diagrammes de cas d'utilisation formalisent les interactions visibles entre les acteurs et les fonctionnalités du système. La figure~\ref{fig:uc-global} présente, sur une même vue, les trois acteurs humains et leurs cas d'utilisation principaux.
@@ -175,7 +205,17 @@ Tableau de bord et statistiques & Administrateur & UC-DASHBOARD \\
   \label{tab:tracabilite}
 \end{table}
 
-\section{Description textuelle des cas d'utilisation majeurs}
+\subsection{Gestion des trajets}
+\label{sec:uc-trajets}
+Description détaillée de la gestion des trajets.
+
+\subsection{Réservation}
+\label{sec:uc-reservation}
+Description détaillée de la réservation.
+
+\subsection{Paiement}
+\label{sec:uc-paiement}
+Description détaillée du paiement.
 \label{sec:cu-textuel}
 
 Les fiches descriptives ci-dessous formalisent les six cas d'utilisation les plus structurants. Elles suivent un canevas standard~: acteur principal, pré-conditions, scénario nominal, scénarios alternatifs, post-conditions.
@@ -218,8 +258,19 @@ Les fiches descriptives ci-dessous formalisent les six cas d'utilisation les plu
 \textit{Acteur~:} administrateur.
 \textit{Scénario nominal~:} consultation de la file d'attente \textit{pending\_review}, examen du dossier, validation ou rejet motivé, notification de l'utilisateur.
 
-\section{Diagramme de classes détaillé}
+\section{Diagrammes de classes}
 \label{sec:classes}
+\subsection{Gestion des utilisateurs}
+Classes d'utilisateurs et rôles.
+
+\subsection{Gestion des trajets}
+Classes représentant les trajets.
+
+\subsection{Gestion des réservations}
+Classes de réservations.
+
+\subsection{Gestion des paiements}
+Classes pour le traitement des paiements.
 
 Le modèle intègre quatre patrons de conception majeurs : \textit{Strategy} et \textit{Factory} pour les paiements (\texttt{PaymentFactory}, \texttt{CashStrategy}, \texttt{CibStrategy}, \texttt{EdahabiaStrategy}), \textit{Repository} pour l'isolation de l'accès aux données (\texttt{UserRepository}, \texttt{TripRepository}), et \textit{Observer} pour la diffusion des événements (\texttt{NotificationService}). La figure~\ref{fig:classes} représente la structure statique du domaine, optimisée pour une projection directe vers un schéma relationnel \textsc{postgresql} normalisé en troisième forme normale.
 
@@ -437,8 +488,19 @@ Le passage du diagramme de classes au schéma relationnel suit les règles class
 \texttt{Review}(\underline{id}, \#tripId, \#authorId, \#targetId, rating, comment, createdAt)
 \end{highlight}
 
-\section{Diagrammes de séquence essentiels}
+\section{Diagrammes de séquences}
 \label{sec:sequences}
+\subsection{Authentification}
+Séquence d'authentification par code OTP.
+
+\subsection{Réservation d'un trajet}
+Séquence de réservation.
+
+\subsection{Paiement électronique}
+Séquence de paiement.
+
+\subsection{Notifications temps réel}
+Séquence de notifications push.
 
 Les séquences clés de la plateforme modélisent l'orchestration technique des processus transactionnels et sécuritaires majeurs.
 
@@ -492,15 +554,29 @@ Le scénario inverse de la publication classique permet au passager d'exprimer u
 
 Cinq phases structurent le flux~: soumission de la demande avec délai d'expiration de 24~heures, interrogation de la base par le \texttt{MatchingService}, diffusion des notifications \textit{push} aux conducteurs éligibles, réception de la première proposition compatible, transition de la demande vers le statut \textit{matched}.
 
-\section{Diagramme d'activité principal}
+\section{Modélisation BPMN}
+\label{sec:bpmn}
+
+Pour modéliser précisément le comportement métier de la plateforme, nous utilisons la notation standard BPMN.
+
+\subsection{Publication d'un trajet}
+Le processus commence par l'annonce du trajet par le conducteur, le calcul de l'itinéraire, la définition des places disponibles et la publication.
+
+\subsection{Réservation d'un trajet}
+Le passager sélectionne le trajet, effectue la réservation, ce qui suspend la place dans l'attente de la confirmation du conducteur.
+
+\subsection{Validation du paiement}
+Le paiement est validé en ligne (CIB/Edahabia) via la passerelle, puis mis sous séquestre jusqu'à la fin effective du voyage.
+
 \label{sec:activite}
 
 Le parcours global d'un utilisateur sur la plateforme, depuis l'authentification jusqu'à la fin du trajet, est représenté procéduralement par un diagramme d'activité disponible en Annexe~\ref{annexe:activite_global} (figure~\ref{fig:activite-booking}). Ce diagramme complète les diagrammes de séquence en exposant la totalité des branchements et des boucles sous une forme synthétique.
 
 Après authentification et vérification \textsc{kyc} biométrique, l'utilisateur est orienté vers l'une des deux branches selon son rôle. \textbf{Côté conducteur}, il déclare un véhicule, publie un covoiturage, reçoit les demandes de réservation et décide pour chacune (accepter ou refuser) en boucle jusqu'à épuisement de la file. \textbf{Côté passager}, il recherche un trajet, soumet une réservation et attend la décision du conducteur~; en cas de refus, il peut relancer une recherche. Le flux converge en fin de parcours sur le trajet effectif (suivi GPS, chat temps réel), la clôture du covoiturage et la notation mutuelle. Trois branches mènent respectivement à l'exécution \textsc{cib}, \textit{Edahabia} ou en espèces. Les nœuds de décision matérialisent les ruptures possibles (places insuffisantes, paiement échoué, conducteur ne confirmant pas dans le délai), chacune associée à un message d'erreur explicite et à une compensation (libération de places, remboursement, file d'attente).
 
-\section{Architecture logique de la solution}
+\section{Architecture du système}
 \label{sec:architecture}
+\subsection{Architecture générale}
 
 L'architecture cible suit un découpage \textbf{multi-services} où chaque composant communique via des interfaces explicitement définies (figure~\ref{fig:archi-globale}).
 
@@ -566,7 +642,8 @@ reviews & $\sim$2~M lignes/an & Avis bidirectionnels \\
   \label{tab:tables}
 \end{table}
 
-\section{Architecture physique et diagramme de déploiement}
+\section{Modèle de données}
+\label{sec:modele-donnees}
 
 La figure~\ref{fig:deploiement} présente le diagramme de 
 déploiement UML~2.5 de la plateforme RohWinBghit. Il formalise 
@@ -629,6 +706,6 @@ La conception présentée vise un équilibre explicite entre \textit{ambition fo
 \textbf{À retenir.} Le système repose sur trois acteurs humains, cinq agrégats métier et une architecture multi-services. La traçabilité besoins~$\leftrightarrow$~cas d'utilisation est complète, les choix techniques (NestJS, \textsc{postgresql}, React~Native, FastAPI) sont justifiés par les contraintes du domaine, et les risques principaux sont assortis de mitigations explicites.
 \end{highlight}
 
-\section*{Conclusion}
+\section{Conclusion}
 
 Ce chapitre a formalisé la démarche d'analyse, l'identification des acteurs, les exigences fonctionnelles et non fonctionnelles, ainsi que la modélisation \gls{uml} complète de \textit{RohWinBghit}. Il s'est efforcé d'aller au-delà de la simple description en fournissant une matrice de traçabilité, une justification explicite des choix de conception et une analyse des risques techniques. Cet ensemble constitue le cadre méthodologique sur lequel s'appuie la phase de réalisation présentée dans le chapitre suivant.

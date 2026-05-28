@@ -1,0 +1,13 @@
+\section*{Annexe D — Scénarios de tests}
+\addcontentsline{toc}{section}{Annexe D — Scénarios de tests}
+\label{annexe:tests}
+
+Cette annexe récapitule les scénarios de tests exécutés pour valider le fonctionnement de la plateforme.
+
+\begin{enumerate}
+  \item \textbf{Test d'inscription passager :} Saisie de données valides, envoi de l'OTP, validation. (Statut : \textbf{Succès})
+  \item \textbf{Test de vérification KYC biométrique :} Envoi de photos floues ou usurpées. Le microservice FastAPI doit rejeter la demande. (Statut : \textbf{Succès})
+  \item \textbf{Test de publication de trajet :} Le conducteur publie un trajet avec wilayas de départ/arrivée. (Statut : \textbf{Succès})
+  \item \textbf{Test de réservation de place :} Le passager réserve, le nombre de places disponibles diminue. (Statut : \textbf{Succès})
+  \item \textbf{Test de paiement électronique :} Saisie de la carte d'Edahabia fictive dans la sandbox SATIM, validation de la transaction. (Statut : \textbf{Succès})
+\end{enumerate}

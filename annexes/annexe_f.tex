@@ -1,0 +1,88 @@
+\section*{Annexe F — Documentation API et Code}
+\addcontentsline{toc}{section}{Annexe F — Documentation API}
+\label{annexe:api}
+
+\subsection*{Extrait du schéma SQL PostgreSQL}
+\label{annexe:sql}
+
+\begin{lstlisting}[language=SQL,caption={Extrait de la création des tables principales (identifiants UUID v4)}]
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE users (
+  id                   UUID          PRIMARY KEY DEFAULT uuid_generate_v4(),
+  phone                VARCHAR(20)   UNIQUE NOT NULL,
+  email                VARCHAR(120)  UNIQUE,
+  first_name           VARCHAR(80)   NOT NULL,
+  last_name            VARCHAR(80)   NOT NULL,
+  date_of_birth        DATE,
+  password             VARCHAR(120)  NOT NULL,
+  role                 VARCHAR(20)   NOT NULL DEFAULT 'passenger',
+  verification_status  VARCHAR(20)   NOT NULL DEFAULT 'pending',
+  is_verified          BOOLEAN       NOT NULL DEFAULT false,
+  wilaya_code          INT,
+  created_at           TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+
+CREATE TABLE trips (
+  id                UUID           PRIMARY KEY DEFAULT uuid_generate_v4(),
+  driver_id         UUID           NOT NULL REFERENCES users(id),
+  vehicle_id        UUID           NOT NULL REFERENCES vehicles(id),
+  from_wilaya_id    INT            NOT NULL REFERENCES wilayas(id),
+  to_wilaya_id      INT            NOT NULL REFERENCES wilayas(id),
+  from_city         VARCHAR(120)   NOT NULL,
+  to_city           VARCHAR(120)   NOT NULL,
+  departure_date    DATE           NOT NULL,
+  departure_time    TIME           NOT NULL,
+  price_per_seat    NUMERIC(10,2)  NOT NULL,
+  available_seats   SMALLINT       NOT NULL,
+  total_seats       SMALLINT       NOT NULL,
+  status            VARCHAR(20)    NOT NULL DEFAULT 'active',
+  created_at        TIMESTAMPTZ    NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_trips_route_date ON trips
+  (from_wilaya_id, to_wilaya_id, departure_date);
+\end{lstlisting}
+
+
+
+\subsection*{Extrait de code --- Factory de paiement}
+\label{annexe:factory}
+
+\begin{lstlisting}[language=Java,caption={Implémentation Node.js du patron \textit{Strategy/Factory} (extrait de \texttt{backend/src/services/patterns/payment/payment.factory.js})}]
+const CIBStrategy      = require('./cib.strategy');
+const EdahabiaStrategy = require('./edahabia.strategy');
+const CashStrategy     = require('./cash.strategy');
+
+class PaymentFactory {
+  constructor(config = {}) {
+    this.strategies = new Map();
+    this.registerStrategy('cib',      new CIBStrategy(config.cib));
+    this.registerStrategy('edahabia', new EdahabiaStrategy(config.edahabia));
+    this.registerStrategy('cash',     new CashStrategy(config.cash));
+  }
+
+  registerStrategy(method, strategy) {
+    this.strategies.set(method.toLowerCase(), strategy);
+  }
+
+  getStrategy(method) {
+    const strategy = this.strategies.get(method.toLowerCase());
+    if (!strategy) throw new Error(`Payment method not supported: ${method}`);
+    return strategy;
+  }
+
+  async processPayment(method, paymentData) {
+    return await this.getStrategy(method).process(paymentData);
+  }
+
+  async refundPayment(method, refundData) {
+    return await this.getStrategy(method).refund(refundData);
+  }
+}
+
+module.exports = PaymentFactory;
+\end{lstlisting}
+
+L'ajout d'une nouvelle méthode de paiement (p.~ex.~Baridi~Mob) consiste à créer une classe \texttt{BaridiStrategy} implémentant l'interface \texttt{process()} / \texttt{refund()}, puis à l'enregistrer dans la factory via \texttt{registerStrategy('baridi', ...)}~: aucun code existant n'est modifié, conformément au principe ouvert/fermé (OCP).
+
