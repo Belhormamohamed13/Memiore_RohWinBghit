@@ -701,15 +701,38 @@ Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
 
 \section{Propriété intellectuelle et conformité juridique}
 
-Dans l'optique de l'obtention du label CNL et pour garantir la valorisation future de la startup lors d'éventuelles levées de fonds (Série~A), une stratégie stricte de protection des actifs immatériels a été intégrée dès la conception. La propriété intellectuelle représente le fossé défensif (\textit{moat}) du projet face aux concurrents.
+Dans l'optique de l'obtention du label CNL et pour garantir la valorisation future de la startup lors d'éventuelles levées de fonds (Série~A), une stratégie stricte de protection des actifs immatériels et de conformité réglementaire a été intégrée dès la conception. La propriété intellectuelle et la conformité représentent le fossé défensif (\textit{moat}) et contractuel du projet face aux concurrents.
 
-La protection et la valorisation des actifs immatériels reposent sur quatre piliers juridiques et techniques.
-\begin{enumerate}
+\subsection{Propriété intellectuelle}
+\label{sec:propriete-intellectuelle}
+
+La protection et la valorisation des actifs immatériels reposent sur trois piliers juridiques et techniques :
+\begin{enumerate}[leftmargin=1.8em]
   \item \textbf{Dépôt de marque INAPI :} l'identité visuelle, incluant le nom de marque « RohWinBghit », sa transcription arabe « \textarabic{روح وين بغيت} », ainsi que le logotype distinctif, font l'objet d'une procédure de dépôt officielle auprès de l'Institut National Algérien de la Propriété Industrielle (INAPI), assurant l'exclusivité d'exploitation commerciale sur le territoire national.
   \item \textbf{Protection par droits d'auteur ONDA :} l'architecture logicielle, répartie sur les quatre sous-projets (back-end Express, mobile React Native, front-end web React/Vite et microservice FastAPI), fait l'objet d'un dépôt par enveloppe numérique horodatée auprès de l'Office National des Droits d'Auteur et des Droits Voisins (ONDA), conférant une date certaine de création.
   \item \textbf{Perspectives de brevetabilité :} l'implémentation logicielle spécifique du pipeline de fusion asymétrique des scores biométriques (couplant l'extraction vectorielle InsightFace à l'analyse de profondeur pour le KYC) constitue une méthode technique susceptible d'obtenir un brevet d'invention. Dépôt planifié pour le deuxième trimestre 2026.
-  \item \textbf{Souveraineté des données :} le choix d'exécuter les modèles d'IA sur un microservice Python interne (FastAPI), plutôt que de sous-traiter à des API cloud étrangères (AWS Rekognition, Google Vision API), garantit la souveraineté technologique totale. Aucune donnée biométrique d'un citoyen algérien ne quitte l'infrastructure souveraine de la plateforme. Le chiffrement AES-256-GCM sécurise les données au repos, tandis que le transport utilise TLS.
 \end{enumerate}
+
+\subsection{Conformité à la Loi 18-05 relative au commerce électronique}
+\label{sec:conformite-loi1805}
+
+En tant que plateforme numérique proposant une mise en relation transactionnelle assortie d'un module de paiement électronique, \textit{RohWinBghit} est soumise aux dispositions de la \textbf{Loi n\textsuperscript{o}~18-05 du 10 mai 2018 relative au commerce électronique}~\cite{loi1805_2018}. La plateforme respecte scrupuleusement ce cadre légal à travers plusieurs mécanismes intégrés :
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{Obligation d'information et transparence (Article 10) :} Les informations d'identification de l'émetteur (raison sociale, registre de commerce, identifiant fiscal, coordonnées) sont rendues accessibles en permanence dans l'application. Les tarifs des trajets sont indiqués en dinars algériens (DZD) toutes taxes comprises, incluant le détail des frais de service de la plateforme.
+  \item \textbf{Contrat électronique (Articles 11 à 13) :} La réservation d'un trajet par le passager donne lieu à l'émission d'un contrat électronique récapitulant les obligations des deux parties (wilayas de départ/arrivée, horaire, identité du conducteur). Ce contrat est validé par un mécanisme de double clic (consentement et validation de paiement) et archivé de façon inaltérable en base de données.
+  \item \textbf{Sécurisation des transactions de paiement (Article 22) :} L'intégration exclusive de la passerelle officielle de la SATIM pour les cartes CIB et Edahabia assure que les données de paiement sensibles du client ne transitent jamais en clair sur le serveur de la plateforme. Le protocole 3D-Secure et le chiffrement TLS 1.3 garantissent la confidentialité et l'irrévocabilité de la transaction électronique.
+\end{itemize}
+
+\subsection{Conformité aux Lois 18-07 et 25-11 sur la protection des données personnelles}
+\label{sec:conformite-donnees-perso}
+
+La manipulation de données d'identité, de numéros de téléphone et de données biométriques (selfies, caractéristiques faciales) place \textit{RohWinBghit} sous le contrôle de l'Autorité Nationale de Protection des Données à Caractère Personnel (ANPDP), conformément à la \textbf{Loi n\textsuperscript{o}~18-07} et son actualisation par la \textbf{Loi n\textsuperscript{o}~25-11 du 25 mai 2025}~\cite{loi2511_2025}. Plusieurs garanties techniques et organisationnelles ont été implémentées :
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{Déclaration préalable et consentement (Articles 14 et 15) :} Une déclaration formelle de traitement de données biométriques est déposée auprès de l'ANPDP. De plus, aucun traitement KYC n'est initié sans le consentement préalable, libre et éclairé de l'utilisateur, matérialisé par une case à cocher explicite sur l'écran d'introduction du parcours KYC.
+  \item \textbf{Souveraineté territoriale et non-exportation :} Le choix d'exécuter les modèles d'IA sur un microservice Python interne (FastAPI), plutôt que de sous-traiter à des API cloud étrangères (AWS Rekognition, Google Vision API), garantit la souveraineté technologique totale. Aucune donnée biométrique d'un citoyen algérien ne quitte l'infrastructure souveraine de la plateforme. 
+  \item \textbf{Sécurité physique et logique (Article 35) :} Les documents d'identité stockés sont chiffrés au repos via l'algorithme AES-256-GCM. Les vecteurs faciaux (\textit{Face Embeddings}) sont hashés sous PostgreSQL et comparés en mémoire vive sans persistance d'images brutes non nécessaires. De plus, les sessions et tokens expirés sont purgés automatiquement de la base Redis (politique de TTL de 24 heures) pour minimiser la surface d'attaque en cas d'intrusion.
+  \item \textbf{Droit d'accès et de rectification (Articles 31 et 32) :} L'utilisateur dispose depuis son interface de profil d'un accès direct à ses données personnelles et peut demander la suppression définitive de son compte, ce qui déclenche une routine de suppression en cascade ou d'anonymisation des données historiques non soumises à une obligation légale de conservation.
+\end{itemize}
 
 \section{Feuille de route stratégique (Roadmap 18 mois)}
 \label{sec:roadmap}

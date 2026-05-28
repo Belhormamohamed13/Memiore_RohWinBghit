@@ -115,6 +115,16 @@ US-05 & Admin & En tant qu'administrateur, je veux consulter la file d'attente d
 \label{tab:user-stories}
 \end{table}
 
+Chaque User Story a été validée selon la grille d'évaluation \textbf{INVEST} (Indépendante, Négociable, Valeureuse, Estimable, Suffisamment petite, Testable) pour garantir sa qualité et son intégrabilité agile :
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{I (Indépendante) :} Les histoires sont isolables fonctionnellement (par exemple, la publication d'un trajet \texttt{US-01} peut être estimée et réalisée sans dépendance stricte immédiate avec le paiement \texttt{US-04}).
+  \item \textbf{N (Négociable) :} Les détails d'implémentation (comme le choix précis du prestataire d'OCR ou de la solution de push SMS) restent flexibles et font l'objet d'un affinement technique avec les développeurs lors des séances de \textit{Backlog Refinement}.
+  \item \textbf{V (Valeureuse / Value) :} Chaque story apporte une valeur immédiate et démontrable à l'un des utilisateurs finaux (passager, conducteur ou administrateur).
+  \item \textbf{E (Estimable) :} Grâce à un périmètre précis et des critères d'acceptation univoques, chaque story a pu être estimée en Story Points par l'équipe lors des planifications de sprint.
+  \item \textbf{S (Suffisamment petite / Small) :} Le périmètre est conçu pour que la réalisation d'une story n'excède pas la durée d'un unique sprint de 2 semaines.
+  \item \textbf{T (Testable) :} Les critères d'acceptation explicites (ex. validation SATIM pour \texttt{US-04}) fournissent un cadre immédiat pour l'écriture de tests fonctionnels automatisés et manuels.
+\end{itemize}
+
 \subsection{Besoins non fonctionnels}
 \label{sec:exigences-nonfonc}
 
@@ -255,7 +265,7 @@ Le modèle intègre quatre patrons de conception majeurs : \textit{Strategy} et 
 \label{fig:classes}
 \end{figure}
 
-Le modèle est organisé autour de la classe \texttt{User}, qui agrège les informations communes à tous les utilisateurs. La classe \texttt{Role} (passager, conducteur, administrateur) permet à un même utilisateur de cumuler plusieurs rôles via la table d'association \texttt{UserRole}. Le domaine s'articule autour de quatre agrégats principaux.
+Le modèle est structuré selon une approche orientée objet standard, où la classe \texttt{User} est modélisée comme une classe mère abstraite encapsulant les informations d'identité et de session communes à tous les membres. Les comportements et attributs spécifiques sont matérialisés dans trois sous-classes concrètes qui héritent de \texttt{User} : \texttt{Passenger} (qui modélise les méthodes de paiement et de réservation), \texttt{Driver} (qui regroupe la gestion des trajets, des véhicules et le score de conduite) et \texttt{Admin} (en charge de la modération et de la revue documentaire). Le domaine s'articule autour de quatre agrégats principaux.
 \begin{enumerate}
   \item \textbf{Agrégat Transport~:} regroupe les classes \texttt{Trip}, \texttt{TripRequest}, \texttt{Route}, \texttt{Booking} et \texttt{Vehicle}.
   \item \textbf{Agrégat Paiement~:} comprend \texttt{Payment}, \texttt{Wallet}, \texttt{WalletTransaction} et \texttt{SurgePricingRule}.
@@ -265,7 +275,7 @@ Le modèle est organisé autour de la classe \texttt{User}, qui agrège les info
 
 \subsection{Description des classes}
 
-Le tableau~\ref{tab:classes} synthétise les dix-sept classes principales, leurs attributs et leurs méthodes métier clés.
+Le tableau~\ref{tab:classes} synthétise la classe mère abstraite, les sous-classes concrètes et les autres entités principales du domaine, avec leurs attributs et leurs méthodes métier clés.
 
 \begin{table}[H]
 \centering
@@ -275,9 +285,13 @@ Le tableau~\ref{tab:classes} synthétise les dix-sept classes principales, leurs
 \rowcolor{rohlight}
 \textbf{Classe} & \textbf{Attributs principaux} & \textbf{Méthodes métier} \\
 \hline
-\texttt{User} & id, phone, email, firstName, lastName, dateOfBirth, verificationStatus, createdAt & register(), verifyOtp(), completeKyc(), updateProfile() \\
+\texttt{User} (\textit{Abstraite}) & id, phone, email, firstName, lastName, verificationStatus, createdAt & register(), verifyOtp(), completeKyc() \\
 \hline
-\texttt{Role} & id, name, permissions & hasPermission(), assignToUser() \\
+\texttt{Passenger} & paymentMethods, averagePassengerRating & reserveTrip(), cancelReservation() \\
+\hline
+\texttt{Driver} & driverScore, vehicleId, verificationId & publishTrip(), manageBooking() \\
+\hline
+\texttt{Admin} & adminLevel & moderateReview(), reviewKyc() \\
 \hline
 \texttt{Vehicle} & id, driverId, brand, model, licensePlate, color, seatsAvailable & register(), update(), deactivate() \\
 \hline

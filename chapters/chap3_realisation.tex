@@ -226,6 +226,44 @@ Chaque module expose des \textit{endpoints} \textsc{rest} documentés en \textsc
 
 Le module de paiement met en œuvre le patron de conception \textit{Strategy/Factory}~: une interface commune \texttt{PaymentStrategy} expose les méthodes \texttt{process()} et \texttt{refund()}~; trois classes concrètes (\texttt{CIBStrategy}, \texttt{EdahabiaStrategy}, \texttt{CashStrategy}) l'implémentent~; la classe \texttt{PaymentFactory}, injectée dans le contrôleur de réservation, résout dynamiquement la stratégie en fonction de la méthode choisie. L'ajout futur d'une nouvelle méthode (par exemple \textit{Baridi~Mob}, Stripe ou PayPal) n'impacte aucun code existant, ce qui matérialise le principe d'ouverture/fermeture (\textsc{ocp}).
 
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|l|X|l|}
+\hline
+\rowcolor{rohlight}
+\textbf{Méthode} & \textbf{Endpoint} & \textbf{Description} & \textbf{Authentification} \\
+\hline
+\texttt{POST} & \texttt{/api/auth/send-otp} & Envoi du code OTP par SMS & Publique \\
+\hline
+\texttt{POST} & \texttt{/api/auth/verify-otp} & Validation OTP et génération des jetons JWT & Publique \\
+\hline
+\texttt{POST} & \texttt{/api/kyc/submit} & Soumission des documents KYC (recto/verso + vidéo) & JWT (Utilisateur) \\
+\hline
+\texttt{GET} & \texttt{/api/trips/search} & Recherche multicritère de trajets inter-wilayas & Publique \\
+\hline
+\texttt{POST} & \texttt{/api/trips} & Publication d'un trajet inter-wilayas & JWT (Conducteur) \\
+\hline
+\texttt{POST} & \texttt{/api/bookings} & Réservation d'un trajet avec calcul de surge pricing & JWT (Passager) \\
+\hline
+\texttt{POST} & \texttt{/api/payments/process} & Exécution de la transaction de paiement (CIB/Edahabia) & JWT (Passager) \\
+\hline
+\texttt{GET} & \texttt{/api/admin/kyc/pending} & Récupération de la file d'attente KYC manuel & JWT (Administrateur) \\
+\hline
+\texttt{POST} & \texttt{/api/admin/kyc/verify} & Approbation ou rejet motivé d'un dossier KYC & JWT (Administrateur) \\
+\hline
+\end{tabularx}
+\caption{Synthèse des principaux points de terminaison de l'API REST}
+\label{tab:api-endpoints}
+\end{table}
+
+\paragraph{Sécurité des tokens et politiques CORS.} Pour se prémunir contre les failles courantes de sécurité, le serveur implémente des règles strictes :
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{Signature des jetons :} Les jetons d'accès et de rafraîchissement sont signés avec l'algorithme \texttt{HS256} (HMAC avec SHA-256) en utilisant des secrets de 256 bits distincts et stockés dans des variables d'environnement sécurisées.
+  \item \textbf{CORS (Cross-Origin Resource Sharing) :} Le middleware CORS est configuré de façon blanche restrictive. Seuls les domaines approuvés (notamment l'URL d'origine du tableau de bord administrateur web) et les méthodes HTTP nécessaires (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) sont autorisés. Les en-têtes personnalisés (\texttt{Authorization}, \texttt{Content-Type}) sont contrôlés, et l'option \texttt{credentials: true} est activée pour sécuriser les cookies HTTP-Only contenant les refresh tokens.
+  \item \textbf{Protection contre le rejeu :} Chaque refresh token contient un identifiant unique de session stocké dans Redis. En cas de suspicion de faille (ex. jeton réutilisé), le serveur invalide instantanément la totalité des jetons émis pour cet utilisateur.
+\end{itemize}
+
 \subsection{Authentification JWT et cycle de vie des sessions}
 \label{sec:api-jwt}
 
@@ -258,6 +296,30 @@ Le modèle déploie \textbf{29 tables au total}, dont l'écart avec les 20 entit
 \label{sec:relations-entites}
 
 Les intégrités référentielles sont strictement configurées en base de données. Les relations pivots reposent sur des contraintes de clés étrangères avec comportement en cascade ciblé. Notamment, la table d'association \texttt{UserRole} lie la table \texttt{users} et \texttt{roles} avec une règle \texttt{ON DELETE CASCADE}, garantissant qu'un retrait d'utilisateur nettoie ses rôles affectés. À l'inverse, pour protéger l'historique financier et les audits, la suppression d'un utilisateur ou d'un trajet est bloquée par un \texttt{ON DELETE RESTRICT} s'il existe des transactions ou des réservations associées dans \texttt{bookings} et \texttt{payments}.
+
+\subsection{Modèle Logique de Données (MLD)}
+\label{sec:mld}
+
+Afin de matérialiser la structure relationnelle en PostgreSQL 16, le schéma est décrit par le modèle logique de données (MLD) suivant, respectant la troisième forme normale (3NF) et garantissant l'intégrité référentielle par clés primaires (\underline{CP}) et clés étrangères (\#CE) :
+
+\begin{highlight}
+\small
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{USERS} (\underline{id} : UUID, phone : VARCHAR, email : VARCHAR, password\_hash : VARCHAR, first\_name : VARCHAR, last\_name : VARCHAR, identity\_status : VARCHAR, created\_at : TIMESTAMPTZ)
+  \item \textbf{PASSENGERS} (\underline{user\_id} : UUID \#CE(USERS.id), average\_passenger\_rating : NUMERIC)
+  \item \textbf{DRIVERS} (\underline{user\_id} : UUID \#CE(USERS.id), driver\_score : NUMERIC, active\_vehicle\_id : UUID)
+  \item \textbf{ADMINS} (\underline{user\_id} : UUID \#CE(USERS.id), admin\_level : VARCHAR)
+  \item \textbf{VEHICLES} (\underline{id} : UUID, driver\_id : UUID \#CE(DRIVERS.user\_id), brand : VARCHAR, model : VARCHAR, license\_plate : VARCHAR, color : VARCHAR, seats\_available : INTEGER, is\_verified : BOOLEAN)
+  \item \textbf{TRIPS} (\underline{id} : UUID, driver\_id : UUID \#CE(DRIVERS.user\_id), vehicle\_id : UUID \#CE(VEHICLES.id), origin\_wilaya\_id : INTEGER \#CE(WILAYAS.code), destination\_wilaya\_id : INTEGER \#CE(WILAYAS.code), departure\_at : TIMESTAMPTZ, price\_per\_seat : NUMERIC, available\_seats : INTEGER, status : VARCHAR)
+  \item \textbf{BOOKINGS} (\underline{id} : UUID, trip\_id : UUID \#CE(TRIPS.id), passenger\_id : UUID \#CE(PASSENGERS.user\_id), seats : INTEGER, total\_price : NUMERIC, status : VARCHAR, created\_at : TIMESTAMPTZ)
+  \item \textbf{PAYMENTS} (\underline{id} : UUID, booking\_id : UUID \#CE(BOOKINGS.id), method : VARCHAR, amount : NUMERIC, status : VARCHAR, transaction\_ref : VARCHAR, created\_at : TIMESTAMPTZ)
+  \item \textbf{IDENTITY\_VERIFICATIONS} (\underline{id} : UUID, user\_id : UUID \#CE(USERS.id), id\_front\_url : VARCHAR, id\_back\_url : VARCHAR, video\_url : VARCHAR, face\_match\_score : NUMERIC, liveness\_score : NUMERIC, antispoof\_score : NUMERIC, status : VARCHAR, reviewed\_by : UUID \#CE(ADMINS.user\_id), created\_at : TIMESTAMPTZ)
+  \item \textbf{FRAUD\_EVENTS} (\underline{id} : UUID, user\_id : UUID \#CE(USERS.id), verification\_id : UUID \#CE(IDENTITY\_VERIFICATIONS.id), event\_type : VARCHAR, severity : VARCHAR, reason : TEXT, created\_at : TIMESTAMPTZ)
+  \item \textbf{WALLETS} (\underline{id} : UUID, user\_id : UUID \#CE(USERS.id), balance : NUMERIC, currency : VARCHAR)
+  \item \textbf{WALLET\_TRANSACTIONS} (\underline{id} : UUID, wallet\_id : UUID \#CE(WALLETS.id), type : VARCHAR, amount : NUMERIC, reference : VARCHAR, created\_at : TIMESTAMPTZ)
+  \item \textbf{WILAYAS} (\underline{code} : INTEGER, name : VARCHAR, latitude : NUMERIC, longitude : NUMERIC)
+\end{itemize}
+\end{highlight}
 
 \subsection{Optimisation des requêtes}
 \label{sec:optimisation-requetes}

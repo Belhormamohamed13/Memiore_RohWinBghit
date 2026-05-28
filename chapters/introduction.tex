@@ -10,40 +10,46 @@ La mobilité intercité constitue l'un des défis structurels majeurs de l'Algé
 \section*{I.2 Problématique}
 \addcontentsline{toc}{section}{I.2 Problématique}
 
-Cette fragmentation de l'offre de transport, confrontée à une demande étudiante et professionnelle croissante, soulève un défi technologique et organisationnel majeur. Elle conduit naturellement à la question centrale de notre recherche~: comment concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée au contexte algérien, capable simultanément d'instaurer un climat de confiance via une vérification d'identité biométrique rigoureuse, de garantir la disponibilité de l'offre, et de supporter les moyens de paiement locaux (CIB, Edahabia, espèces), tout en s'appuyant sur une architecture distribuée et maintenable~?
+Cette fragmentation de l'offre de transport interurbain, confrontée à une demande estudiantine et professionnelle en forte croissance, soulève un défi d'ingénierie logicielle et de confiance sociétale majeur. La problématique centrale de ce travail de recherche s'énonce ainsi : \textit{Comment concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée aux contraintes socio-économiques, logistiques et financières de l'Algérie, capable de lever le frein de la confiance grâce à un système automatisé de vérification d'identité par intelligence artificielle (KYC), tout en garantissant des performances réseau optimales et l'interopérabilité avec les systèmes de paiement locaux ?}
 
 \section*{I.3 Objectifs du projet}
 \addcontentsline{toc}{section}{I.3 Objectifs du projet}
 
-Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}, littéralement \textit{«~va où tu veux~»}) est conçu comme une plateforme mobile intelligente offrant une expérience sécurisée (KYC biométrique), une géolocalisation en temps réel, et un moteur de paiement hybride. Ce mémoire poursuit les objectifs suivants~:
-\subsection*{I.3.1 Objectif général}
-\addcontentsline{toc}{subsection}{I.3.1 Objectif général}
-
-Le but principal de ce travail est de concevoir et de réaliser une plateforme mobile innovante de covoiturage pour les déplacements inter-wilayas en Algérie. Cette plateforme, baptisée \textit{RohWinBghit}, vise à offrir une solution de transport économique, fiable et hautement sécurisée pour tous les usagers.
-
-\subsection*{I.3.2 Objectifs spécifiques}
-\addcontentsline{toc}{subsection}{I.3.2 Objectifs spécifiques}
-
-Pour atteindre cet objectif général, nous visons les objectifs spécifiques suivants :
-\begin{enumerate}[leftmargin=1.8em]
-  \item Analyser l'état de l'art du covoiturage et positionner la solution face aux acteurs existants.
-  \item Formaliser les besoins et concevoir une architecture logicielle distribuée (UML).
-  \item Développer une application mobile (React Native) adossée à un back-end Node.js et un microservice IA (FastAPI) pour le KYC.
-  \item Évaluer la viabilité économique du projet par un plan d'affaires.
-\end{enumerate}
+Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) propose de concevoir, développer et évaluer une plateforme logicielle complète. Pour assurer l'efficacité de ce projet de fin d'études mené dans le cadre de l'Arrêté interministériel n\textsuperscript{o}~1275 sur une période de 9~mois (d'octobre 2025 à juin 2026), nos objectifs ont été formulés selon la grille méthodologique \textbf{SMART} (Spécifique, Mesurable, Atteignable, Réaliste, Temporellement défini) :
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{Objectif Général (SMART) :} Concevoir et développer un prototype opérationnel de plateforme de covoiturage inter-wilayas (application mobile et infrastructure de services) destiné aux 1,7~million d'étudiants et jeunes actifs algériens, garantissant un score d'utilisabilité (SUS) de niveau supérieur ou égal à 70/100 et des temps de réponse médians des services transactionnels inférieurs à 200~ms.
+  \item \textbf{Objectif Spécifique 1 (Analyse et Conception - S.M.A.R.T.) :} Mener sous 4~semaines une étude comparative de 3 concurrents indirects et formaliser les exigences fonctionnelles et non fonctionnelles du système, débouchant sur une modélisation UML (diagrammes de cas d'utilisation, de classes et de séquences) et un schéma relationnel de base de données en 3NF comportant 29~tables.
+  \item \textbf{Objectif Spécifique 2 (Développement du Core Mobile et Back-end - S.M.A.R.T.) :} Développer sous 16~semaines une application mobile multiplateforme (React Native/Expo) et son API back-end (Express.js), prenant en charge la publication et la réservation de trajets, avec affichage cartographique (Mapbox) et une tarification dynamique mise en cache sous Redis.
+  \item \textbf{Objectif Spécifique 3 (Intégration d'un Service de Confiance Biométrique - S.M.A.R.T.) :} Développer et intégrer sous 6~semaines un microservice IA (FastAPI/Python) réalisant la vérification d'identité KYC (reconnaissance de documents par OCR, comparaison faciale InsightFace et détection de vivacité) avec un taux de réussite unifié de validation automatique supérieur à 95\,\%.
+  \item \textbf{Objectif Spécifique 4 (Paiement et Validation - S.M.A.R.T.) :} Intégrer un système de paiement multi-méthodes (espèces et cartes CIB/Edahabia en sandbox SATIM) et valider le système sous 4~semaines par un harnais de 107 tests unitaires (couverture minimale de 80\,\%), une évaluation d'utilisabilité SUS auprès de 18 participants, et un plan d'affaires sur 3 ans sous le cadre réglementaire de l'Arrêté 1275.
+\end{itemize}
 
 \section*{I.4 Méthodologie de travail}
 \addcontentsline{toc}{section}{I.4 Méthodologie de travail}
 
-\subsection*{I.4.1 Méthode Agile Scrum}
-\addcontentsline{toc}{subsection}{I.4.1 Méthode Agile Scrum}
+\subsection*{I.4.1 Justification du cadre de travail Agile Scrum}
+\addcontentsline{toc}{subsection}{I.4.1 Justification du cadre de travail Agile Scrum}
 
-Pour concevoir et développer cette application mobile complexe, nous avons opté pour la méthodologie agile Scrum. Cette méthode collaborative permet de découper le projet en itérations courtes et d'adapter en continu le produit aux besoins réels.
+Le développement d'un système distribué combinant du mobile multiplateforme, de la communication temps réel par WebSocket et de l'inférence biométrique par IA présente de forts risques d'intégration et une incertitude importante quant aux flux utilisateurs. Pour y faire face, nous avons opté pour le cadre de travail agile \textbf{Scrum}. Contrairement aux approches prédictives traditionnelles (cycle en V), Scrum permet un développement incrémental, l'adaptation continue du backlog de produit en fonction des tests d'utilisabilité précoces, et des boucles de rétroaction rapides indispensables à la réussite d'un projet de startup sous l'Arrêté 1275.
 
-\subsection*{I.4.2 Organisation des sprints}
-\addcontentsline{toc}{subsection}{I.4.2 Organisation des sprints}
+\subsection*{I.4.2 Rôles, Artefacts et Cérémonies Scrum}
+\addcontentsline{toc}{subsection}{I.4.2 Rôles, Artefacts et Cérémonies Scrum}
 
-Le développement a été organisé en sprints successifs de deux semaines. Chaque sprint s'ouvre par une phase de planification et se clôture par une revue de sprint et une rétrospective, permettant de suivre précisément la vélocité de l'équipe à travers l'outil Jira.
+Pour s'adapter à la taille de notre équipe (un binôme de Master), les rôles Scrum ont été répartis de manière hybride et collaborative :
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{Product Owner / Développeur :} Assure le recueil des besoins utilisateurs, la rédaction des user stories et la validation des critères d'acceptation, tout en participant au développement du back-end et de l'application mobile.
+  \item \textbf{Scrum Master / Développeur :} Veille au respect des pratiques agiles, élimine les obstacles techniques et organisationnels, et coordonne le développement du microservice IA et l'intégration des API tiers.
+\end{itemize}
+
+Le cycle de développement a été cadencé en \textbf{sprints de 2 semaines} (10 jours ouvrés), rythmés par les cérémonies Scrum standard :
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{Sprint Planning (Planification de Sprint) :} Séance de 2 heures en début de sprint pour sélectionner les user stories prioritaires du Product Backlog et estimer l'effort en Story Points (suite de Fibonacci).
+  \item \textbf{Daily Scrum (Mêlée Quotidienne) :} Réunion debout de 15 minutes pour faire le point sur le travail de la veille, planifier la journée et identifier les blocages.
+  \item \textbf{Sprint Review (Revue de Sprint) :} Démonstration de l'incrément de produit potentiellement livrable à la fin de chaque sprint pour obtenir des retours d'expérience directs.
+  \item \textbf{Sprint Retrospective (Rétrospective) :} Analyse réflexive de l'équipe sur son fonctionnement pour identifier des axes d'amélioration continue du processus de travail.
+\end{itemize}
+
+Les artefacts Scrum --- le \textbf{Product Backlog} (liste ordonnée des besoins), le \textbf{Sprint Backlog} (tâches engagées pour le sprint en cours) et l'\textbf{Incrément} (somme des éléments terminés respectant la Définition de Terminé) --- ont été modélisés et suivis rigoureusement via la plateforme de gestion de projet \textbf{Jira}, matérialisant visuellement notre vélocité.
 
 \subsection*{I.4.3 Cadre institutionnel (Arrêté 1275)}
 \addcontentsline{toc}{subsection}{I.4.3 Cadre institutionnel (Arrêté 1275)}

@@ -28,7 +28,7 @@ skinparam class {
 title Diagramme de classes — RohWinBghit\n(Vue domaine, alignée sur le schéma PostgreSQL)
 
 ' ===== IDENTITÉ (bleu) =====
-class User <<Identity>> {
+abstract class User <<Identity>> {
   + id : UUID
   + phone : String
   + email : String
@@ -36,11 +36,35 @@ class User <<Identity>> {
   + last_name : String
   + role : String
   + identity_status : String
-  + driver_score : Float
+  + created_at : Date
   --
   + register()
   + verifyOtp()
   + completeKyc()
+}
+
+class Passenger <<Identity>> {
+  + payment_methods : List
+  + average_passenger_rating : Float
+  --
+  + reserveTrip()
+  + cancelReservation()
+}
+
+class Driver <<Identity>> {
+  + driver_score : Float
+  + vehicle_id : UUID
+  + identity_verification_id : UUID
+  --
+  + publishTrip()
+  + manageBooking()
+}
+
+class Admin <<Identity>> {
+  + admin_level : String
+  --
+  + moderateReview()
+  + reviewKyc()
 }
 
 class IdentityVerification <<Identity>> {
@@ -197,15 +221,19 @@ class Review <<Comm>> {
 }
 
 ' ===== RELATIONS =====
-User "1" -- "0..*" Vehicle : "possède"
-User "1" -- "0..*" Trip : "conduit"
-User "1" -- "0..*" Booking : "réserve"
-User "1" -- "0..*" TripRequest : "demande"
+User <|-- Passenger
+User <|-- Driver
+User <|-- Admin
+
+Driver "1" -- "0..*" Vehicle : "possède"
+Driver "1" -- "0..*" Trip : "conduit"
+Passenger "1" -- "0..*" Booking : "réserve"
+Passenger "1" -- "0..*" TripRequest : "demande"
 User "1" -- "0..1" Wallet : "détient"
 User "1" -- "0..*" Notification : "reçoit"
 User "1" -- "0..*" IdentityVerification : "soumet"
 User "1" -- "0..*" FraudEvent : "déclenche"
-User "1" -- "0..*" Review : "écrit"
+User "1" -- "0..*" Review : "écrit/reçoit"
 
 IdentityVerification "1" -- "0..1" FraudEvent : "peut générer"
 
