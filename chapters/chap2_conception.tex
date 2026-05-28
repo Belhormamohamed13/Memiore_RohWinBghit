@@ -17,19 +17,6 @@ Le recueil des besoins s'est articulé autour de trois axes méthodologiques.
   \item \textbf{Entretiens semi-directifs :} Des consultations ciblées et structurées ont été menées avec des conducteurs habitués aux longs trajets inter-wilayas.
 \end{enumerate}
 
-\subsection{Architecture Frontend}
-L'application mobile utilise React Native avec Expo.
-
-\subsection{Architecture Backend}
-Le backend est organisé en microservices Express.js/Node.js.
-
-\subsection{Architecture Microservices}
-Comprend le service de KYC (FastAPI) et de notification.
-
-\subsection{Architecture Base de données}
-PostgreSQL avec réplication et cache Redis.
-
-
 \section{Identification des acteurs}
 \label{sec:acteurs}
 
@@ -61,32 +48,13 @@ Le système met en relation trois acteurs humains et plusieurs acteurs technique
   \label{tab:acteurs}
 \end{table}
 
-\subsection{Besoins fonctionnels}
-\label{sec:exigences-fonc}
+\section{Recueil des besoins}
 \label{sec:recueil-besoins}
 
 La consolidation des besoins repose sur le croisement des trois sources d'analyse précédentes (questionnaire, étude comparative, entretiens). Les retours convergents ont été regroupés en thèmes (sécurité, transparence tarifaire, simplicité, communication, support local), puis traduits en exigences exploitables. Les exigences les plus fréquemment citées concernent la \textit{confiance dans le conducteur}, la \textit{visibilité du prix avant réservation}, la \textit{disponibilité d'un canal de discussion direct} et la \textit{prise en charge des moyens de paiement locaux}.
 
-\section{User Stories}
-\label{sec:user-stories}
-
-Afin de mieux spécifier les besoins fonctionnels, nous modélisons les exigences sous forme d'User Stories regroupées par acteur.
-
-\subsection{User Stories Conducteur}
-\label{sec:us-conducteur}
-Le conducteur inter-wilayas souhaite pouvoir publier des trajets, accepter ou refuser des réservations de passagers, configurer son profil de véhicule, et recevoir ses gains.
-
-\subsection{User Stories Passager}
-\label{sec:us-passager}
-Le passager souhaite pouvoir rechercher un trajet inter-wilayas par filtres (date, wilaya), réserver une place en ligne, payer en toute sécurité (espèces ou e-paiement), et communiquer en temps réel avec le conducteur.
-
-\subsection{User Stories Administrateur}
-\label{sec:us-admin}
-L'administrateur souhaite pouvoir valider les dossiers KYC des utilisateurs (carte d'identité, liveness), modérer les trajets signalés et superviser les transactions financières.
-
-
-
-% Exigences fonctionnelles déplacées
+\subsection{Besoins fonctionnels}
+\label{sec:exigences-fonc}
 
 Les exigences fonctionnelles décrivent ce que le système doit \textit{faire}. Nous les avons regroupées dans un tableau synthétique pour faciliter la traçabilité avec les cas d'utilisation présentés ultérieurement.
 
@@ -117,6 +85,34 @@ EF3.1 & Haute & Tableau de bord, statistiques et gestion KYC manuel & Administra
 \end{tabularx}
   \caption{Exigences fonctionnelles principales}
   \label{tab:exigences-fonc}
+\end{table}
+
+\subsection{User Stories}
+\label{sec:user-stories}
+
+Afin de mieux spécifier les besoins fonctionnels, nous modélisons les exigences sous forme d'User Stories détaillées regroupées par rôle d'acteur (tableau~\ref{tab:user-stories}).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|l|X|X|l|}
+\hline
+\rowcolor{rohlight}
+\textbf{ID} & \textbf{Acteur} & \textbf{Description (En tant que... je veux... afin de...)} & \textbf{Critères d'acceptation} & \textbf{Priorité} \\
+\hline
+US-01 & Conducteur & En tant que conducteur vérifié, je veux publier un trajet inter-wilayas avec les wilayas de départ/arrivée, l'heure et le prix, afin d'attirer des passagers et diviser mes frais. & - Sélection obligatoire des 69 wilayas.\newline - Véhicule pré-enregistré valide.\newline - Prix dans les limites recommandées. & Haute \\
+\hline
+US-02 & Conducteur & En tant que conducteur, je veux pouvoir accepter ou rejeter chaque demande de réservation de passager, afin de contrôler la composition de mon équipage. & - Notification instantanée de réservation.\newline - Actions d'acceptation/refus simples.\newline - Libération automatique des places en cas de refus. & Haute \\
+\hline
+US-03 & Passager & En tant que passager, je veux rechercher un trajet par wilaya de départ, de destination et par date, avec des filtres avancés (prix, avis), afin de planifier mon voyage. & - Formulaire intuitif trilingue.\newline - Tri par prix, note et heure.\newline - Affichage clair du statut KYC du conducteur. & Haute \\
+\hline
+US-04 & Passager & En tant que passager vérifié, je veux réserver une place et payer via Edahabia, CIB ou espèces, afin de sécuriser mon trajet longue distance. & - Intégration de la sandbox SATIM.\newline - Notification push du conducteur.\newline - Remboursement automatique si refus. & Haute \\
+\hline
+US-05 & Admin & En tant qu'administrateur, je veux consulter la file d'attente des vérifications KYC et valider ou rejeter les dossiers litigieux, afin de garantir la sécurité. & - Comparaison visuelle des documents.\newline - Affichage des scores InsightFace/Liveness.\newline - Notification automatique de rejet/validation. & Critique \\
+\hline
+\end{tabularx}
+\caption{User Stories détaillées et critères d'acceptation}
+\label{tab:user-stories}
 \end{table}
 
 \subsection{Besoins non fonctionnels}
@@ -205,17 +201,6 @@ Tableau de bord et statistiques & Administrateur & UC-DASHBOARD \\
   \label{tab:tracabilite}
 \end{table}
 
-\subsection{Gestion des trajets}
-\label{sec:uc-trajets}
-Description détaillée de la gestion des trajets.
-
-\subsection{Réservation}
-\label{sec:uc-reservation}
-Description détaillée de la réservation.
-
-\subsection{Paiement}
-\label{sec:uc-paiement}
-Description détaillée du paiement.
 \label{sec:cu-textuel}
 
 Les fiches descriptives ci-dessous formalisent les six cas d'utilisation les plus structurants. Elles suivent un canevas standard~: acteur principal, pré-conditions, scénario nominal, scénarios alternatifs, post-conditions.
@@ -260,17 +245,6 @@ Les fiches descriptives ci-dessous formalisent les six cas d'utilisation les plu
 
 \section{Diagrammes de classes}
 \label{sec:classes}
-\subsection{Gestion des utilisateurs}
-Classes d'utilisateurs et rôles.
-
-\subsection{Gestion des trajets}
-Classes représentant les trajets.
-
-\subsection{Gestion des réservations}
-Classes de réservations.
-
-\subsection{Gestion des paiements}
-Classes pour le traitement des paiements.
 
 Le modèle intègre quatre patrons de conception majeurs : \textit{Strategy} et \textit{Factory} pour les paiements (\texttt{PaymentFactory}, \texttt{CashStrategy}, \texttt{CibStrategy}, \texttt{EdahabiaStrategy}), \textit{Repository} pour l'isolation de l'accès aux données (\texttt{UserRepository}, \texttt{TripRepository}), et \textit{Observer} pour la diffusion des événements (\texttt{NotificationService}). La figure~\ref{fig:classes} représente la structure statique du domaine, optimisée pour une projection directe vers un schéma relationnel \textsc{postgresql} normalisé en troisième forme normale.
 
@@ -490,17 +464,6 @@ Le passage du diagramme de classes au schéma relationnel suit les règles class
 
 \section{Diagrammes de séquences}
 \label{sec:sequences}
-\subsection{Authentification}
-Séquence d'authentification par code OTP.
-
-\subsection{Réservation d'un trajet}
-Séquence de réservation.
-
-\subsection{Paiement électronique}
-Séquence de paiement.
-
-\subsection{Notifications temps réel}
-Séquence de notifications push.
 
 Les séquences clés de la plateforme modélisent l'orchestration technique des processus transactionnels et sécuritaires majeurs.
 

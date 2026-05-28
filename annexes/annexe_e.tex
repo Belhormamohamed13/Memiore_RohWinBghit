@@ -1,20 +1,53 @@
-\section*{Annexe E — Manuel utilisateur}
-\addcontentsline{toc}{section}{Annexe E — Manuel utilisateur}
+\chapter{Manuel utilisateur}
 \label{annexe:manuel}
 
-\subsection*{Pour le Passager}
+Ce manuel a pour but de guider les utilisateurs (passagers et conducteurs) ainsi que les administrateurs de la plateforme \textit{RohWinBghit} à travers ses différentes fonctionnalités.
+
+\section{Guide du Passager}
+\label{sec:guide-passager}
+
+\subsection{Inscription et connexion}
+Lors du premier lancement de l'application, vous devez créer votre compte. Saisissez votre numéro de téléphone. Un code de validation à usage unique (OTP) vous est envoyé par SMS. Après sa saisie et sa validation, complétez vos informations de profil (nom, prénom et adresse email). Pour les connexions ultérieures, la saisie du numéro de téléphone et la validation par SMS sont requises pour garantir la sécurité.
+
+\subsection{Vérification d'identité (KYC)}
+Pour pouvoir réserver un trajet, vous devez obligatoirement valider votre identité. Accédez à votre profil et sélectionnez « Vérification d'identité ».
 \begin{enumerate}
-  \item Téléchargez l'application mobile RohWinBghit.
-  \item Inscrivez-vous avec votre numéro de téléphone et validez le code OTP reçu par SMS.
-  \item Effectuez la vérification de votre identité (capture de votre carte d'identité nationale et selfie de vivacité).
-  \item Recherchez un trajet en spécifiant la wilaya de départ, la wilaya d'arrivée et la date.
-  \item Réservez et payez en ligne ou choisissez le paiement en espèces.
+  \item Cadrez le recto de votre Carte d'Identité Nationale (CIN) dans la zone indiquée et déclenchez la capture. Répétez l'opération pour le verso.
+  \item Réalisez le selfie vidéo demandé en effectuant les mouvements affichés à l'écran pour prouver votre présence physique (détection de vivacité).
+  \item Soumettez le dossier. Le traitement automatique prend moins de deux minutes. Si les scores de validation sont insuffisants mais corrects, votre dossier sera réorienté vers une revue manuelle par un administrateur.
 \end{enumerate}
 
-\subsection*{Pour le Conducteur}
-\begin{enumerate}
-  \item Basculez en mode conducteur depuis votre profil.
-  \item Ajoutez les informations de votre véhicule (marque, modèle, année, photo d'immatriculation).
-  \item Publiez un trajet en définissant les villes de passage, le nombre de places et le prix suggéré.
-  \item Validez les demandes de réservation des passagers.
-\end{enumerate}
+\subsection{Recherche et réservation}
+Sur l'écran d'accueil, indiquez votre wilaya de départ, votre wilaya d'arrivée et la date souhaitée du déplacement. Les résultats s'affichent instantanément. Vous pouvez trier ou filtrer les propositions selon le prix, le niveau de confort du véhicule ou la note du conducteur. Une fois le trajet choisi, sélectionnez le nombre de places et validez votre moyen de paiement (espèces, CIB ou Edahabia).
+
+\subsection{Messagerie et suivi temps réel}
+Une fois la réservation confirmée, accédez au chat intégré pour communiquer en toute sécurité avec le conducteur sans divulguer votre numéro de téléphone. Le jour du départ, suivez la position GPS du véhicule en temps réel sur la carte intégrée pour connaître son heure précise d'arrivée (ETA).
+
+\section{Guide du Conducteur}
+\label{sec:guide-conducteur}
+
+\subsection{Enregistrement d'un véhicule}
+Pour passer en mode conducteur, accédez aux paramètres de votre profil. Enregistrez votre véhicule en renseignant la marque, le modèle, l'année et la couleur. Vous devez téléverser une photo lisible de la plaque d'immatriculation (qui sera chiffrée par AES-256 en base de données) ainsi que vos documents réglementaires (carte grise, assurance en cours de validité et contrôle technique).
+
+\subsection{Publication d'un trajet}
+Sélectionnez « Publier un trajet ». Indiquez votre point de départ, votre destination finale, les wilayas de transit par lesquelles vous passerez, la date et l'heure de départ. Le système vous propose un tarif recommandé par place basé sur la distance et les frais de route. Définissez le nombre de places disponibles et publiez le trajet.
+
+\subsection{Gestion des réservations et portefeuille}
+Vous recevrez des notifications push pour chaque demande de réservation. Vous pouvez consulter le profil du passager (son badge KYC et ses notes précédentes) avant d'accepter. À la fin du trajet, confirmez la clôture du voyage. Vos gains (déduits de la commission de la plateforme) sont crédités sur votre portefeuille virtuel. Vous pouvez demander un retrait vers votre compte bancaire à tout moment.
+
+\section{Schéma général de navigation applicative}
+\label{sec:navigation-schema}
+
+Le schéma ci-dessous présente l'enchaînement logique des écrans majeurs de la plateforme :
+
+\begin{verbatim}
+[Passager]
+Accueil/Recherche -> Résultats -> Détails Trajet -> Paiement -> Billet/Suivi GPS
+   |
+   +--> Profil -> Vérification KYC (Capture CIN -> Selfie Vivacité)
+
+[Conducteur]
+Tableau de bord -> Publication Trajet -> Gestion Réservations -> Démarrage -> Gains
+   |
+   +--> Véhicules -> Ajouter Véhicule (Saisie et téléversement documents)
+\end{verbatim}

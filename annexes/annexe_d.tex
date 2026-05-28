@@ -1,13 +1,30 @@
-\section*{Annexe D — Scénarios de tests}
-\addcontentsline{toc}{section}{Annexe D — Scénarios de tests}
+\chapter{Scénarios de tests}
 \label{annexe:tests}
 
-Cette annexe récapitule les scénarios de tests exécutés pour valider le fonctionnement de la plateforme.
+Cette annexe récapitule de manière détaillée les scénarios de tests exécutés pour valider le fonctionnement de la plateforme \textit{RohWinBghit}.
 
-\begin{enumerate}
-  \item \textbf{Test d'inscription passager :} Saisie de données valides, envoi de l'OTP, validation. (Statut : \textbf{Succès})
-  \item \textbf{Test de vérification KYC biométrique :} Envoi de photos floues ou usurpées. Le microservice FastAPI doit rejeter la demande. (Statut : \textbf{Succès})
-  \item \textbf{Test de publication de trajet :} Le conducteur publie un trajet avec wilayas de départ/arrivée. (Statut : \textbf{Succès})
-  \item \textbf{Test de réservation de place :} Le passager réserve, le nombre de places disponibles diminue. (Statut : \textbf{Succès})
-  \item \textbf{Test de paiement électronique :} Saisie de la carte d'Edahabia fictive dans la sandbox SATIM, validation de la transaction. (Statut : \textbf{Succès})
-\end{enumerate}
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|l|p{2.5cm}|p{2.2cm}|p{3.2cm}|p{3.2cm}|c|}
+\hline
+\rowcolor{rohlight}
+\textbf{ID} & \textbf{Scénario} & \textbf{Préconditions} & \textbf{Étapes} & \textbf{Résultat Attendu} & \textbf{Statut} \\
+\hline
+TS-01 & Inscription passager & Aucune session active & 1. Saisie nom, téléphone.\newline 2. Envoi OTP.\newline 3. Validation OTP. & Compte passager créé en base, JWT émis et stocké. & \textbf{Succès} \\
+\hline
+TS-02 & Vérification KYC & Compte créé, documents prêts & 1. Soumission CIN recto/verso.\newline 2. Capture faciale.\newline 3. Exécution pipeline. & Extraction OCR validée, similarité faciale $>$ 0,60, statut passe à validé. & \textbf{Succès} \\
+\hline
+TS-03 & Publication de trajet & Conducteur KYC validé, véhicule enregistré & 1. Sélection départ/arrivée.\newline 2. Saisie date et prix.\newline 3. Soumission. & Trajet enregistré en base PostgreSQL avec statut \texttt{active}. & \textbf{Succès} \\
+\hline
+TS-04 & Réservation de place & Trajet existant avec places libres & 1. Recherche trajet.\newline 2. Sélection de places.\newline 3. Réservation. & Nombre de places diminué de 1, notification envoyée au conducteur. & \textbf{Succès} \\
+\hline
+TS-05 & Paiement électronique & Réservation initiée & 1. Choix Edahabia.\newline 2. Saisie carte sandbox.\newline 3. Validation SATIM. & Débit simulé avec succès, statut réservation mis à \texttt{confirmed}. & \textbf{Succès} \\
+\hline
+TS-06 & Messagerie WebSocket & Trajet réservé & 1. Ouverture chat.\newline 2. Envoi message.\newline 3. Vérification réception. & Message délivré instantanément via Socket.IO, persisté en base. & \textbf{Succès} \\
+\hline
+\end{tabularx}
+\caption{Matrice des scénarios de tests fonctionnels et d'intégration}
+\label{tab:test-matrix}
+\end{table}

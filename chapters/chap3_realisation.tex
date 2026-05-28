@@ -123,14 +123,155 @@ Le projet utilise Knex.js, Redis Client, Socket.IO, Jest pour les tests, et Dock
 Figma a été utilisé pour la conception graphique de la charte et des écrans.
 
 \section{Réalisation de l'application mobile}
-\subsection{Interface d'authentification}
 \label{sec:realisation-mobile}
 
-L'application mobile expose au total \textbf{62~écrans distincts} couvrant les parcours passager et conducteur. Cette section présente les interfaces les plus représentatives, organisées par parcours fonctionnel. L'intégralité des captures est rassemblée en Annexe~D.
+L'application mobile est construite avec le framework React Native (et l'environnement Expo CLI), en s'appuyant sur TypeScript pour la modélisation typée des échanges. Elle implémente une architecture modulaire et expose un ensemble de 62 écrans opérationnels pour les rôles passager, conducteur et les paramètres partagés.
+
+Pour une description ergonomique exhaustive et une analyse détaillée de chacun de ces parcours avec leurs figures et captures d'écran associées, le lecteur est invité à se référer à la section~\ref{sec:screenshots} (« Captures d'écran et interfaces ») de ce chapitre, ainsi qu'au guide de l'Annexe~\ref{annexe:captures}.
+
+\section{Réalisation du Dashboard Web}
+\label{sec:dashboard-web}
+
+Le panneau d'administration est développé avec React (Vite, TypeScript, Tailwind CSS) et déployé de manière indépendante pour les opérateurs et modérateurs. Il communique avec le back-end via des API REST dédiées sous le préfixe \texttt{/admin/}, protégées par un contrôle d'accès basé sur les rôles (RBAC).
+
+\subsection{Tableau de bord administrateur}
+\label{sec:realisation-admin}
+
+Il offre à l'opérateur une vision consolidée de l'état de la plateforme, incluant les indicateurs clés de performance (KPIs) en temps réel, les graphiques d'activité et les alertes (Figure~\ref{fig:admin-dashboard}). L'administrateur peut également procéder à la revue manuelle des dossiers \textsc{kyc} litigieux placés en attente (Figure~\ref{fig:admin-kyc}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{assets/admin_dashboard.png}
+\caption{Tableau de bord administrateur --- KPIs, graphiques et alertes en temps réel}
+\label{fig:admin-dashboard}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{assets/admin_kyc.png}
+\caption{Revue manuelle des dossiers \textsc{kyc} litigieux}
+\label{fig:admin-kyc}
+\end{figure}
+
+\subsection{Gestion des utilisateurs}
+\label{sec:admin-users}
+
+Ce module permet de lister, rechercher et consulter les profils détaillés des passagers et conducteurs (Figure~\ref{fig:admin-users}). L'administrateur peut activer, suspendre ou révoquer des comptes, et consulter l'historique de leurs trajets, transactions et signalements.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{assets/admin_users.png}
+\caption{Module d'administration --- Gestion des utilisateurs}
+\label{fig:admin-users}
+\end{figure}
+
+\subsection{Supervision des trajets}
+\label{sec:admin-trips}
+
+Le module de supervision des trajets permet de suivre en temps réel l'ensemble des covoiturages programmés, actifs, terminés ou annulés sur le territoire national (Figure~\ref{fig:admin-trips}). Les détails de l'itinéraire, du véhicule et de l'état de chargement sont visibles.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{assets/admin_trips.png}
+\caption{Module d'administration --- Supervision des trajets}
+\label{fig:admin-trips}
+\end{figure}
+
+\subsection{Suivi des paiements}
+\label{sec:admin-payments}
+
+Ce module est dédié au suivi analytique et comptable des flux financiers de la plateforme (Figure~\ref{fig:admin-payments}). Il affiche les transactions e-paiement (sandbox SATIM) et espèces, gère les portefeuilles virtuels et retrace l'historique des commissions prélevées.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{assets/admin_payments.png}
+\caption{Module d'administration --- Suivi des transactions}
+\label{fig:admin-payments}
+\end{figure}
+
+\subsection{Statistiques et rapports}
+\label{sec:admin-reports}
+
+L'opérateur peut générer des rapports périodiques de performance et analyser les statistiques de réservation (Figure~\ref{fig:admin-bookings}), permettant de mesurer la croissance de la plateforme et d'ajuster les règles de tarification dynamique.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{assets/admin_bookings.png}
+\caption{Module d'administration --- Statistiques des réservations}
+\label{fig:admin-bookings}
+\end{figure}
+
+\section{API et communication}
+\label{sec:api-communication}
+
+Le système s'appuie sur une interface de programmation (API) robuste pour orchestrer les échanges de données entre l'application mobile, le tableau de bord web et les services d'infrastructure.
+
+\subsection{Architecture de l'API REST}
+\label{sec:api-rest-arch}
+
+Le \textit{back-end} suit un découpage modulaire inspiré de l'\textit{architecture propre}. Les principaux modules sont les suivants~:
+\begin{enumerate}
+  \item \textbf{AuthModule} --- inscription, OTP, émission/rotation des jetons \gls{jwt}, déconnexion globale.
+  \item \textbf{UsersModule} --- profils, droit d'accès et de rectification, suppression du compte.
+  \item \textbf{TripsModule} --- publication, recherche, gestion du cycle de vie des trajets.
+  \item \textbf{BookingsModule} --- réservation, annulation, billet numérique avec QR code.
+  \item \textbf{PaymentsModule} --- paiement multi-méthodes via le patron \textit{Strategy/Factory}.
+  \item \textbf{ChatModule} --- messagerie temps réel Socket.IO et persistance \textsc{postgresql}.
+  \item \textbf{NotificationsModule} --- notifications \textit{push} (Firebase \textsc{fcm}) et \textit{in-app}.
+  \item \textbf{KycModule} --- pont vers le service IA, machine d'états, journalisation des \texttt{fraud\_events}.
+  \item \textbf{AdminModule} --- supervision et modération.
+\end{enumerate}
+
+Chaque module expose des \textit{endpoints} \textsc{rest} documentés en \textsc{swagger} (\texttt{/api/docs}), valide ses entrées via Zod (\texttt{validate.middleware}) et délègue la persistance aux dépôts (\textit{repositories}) Knex. La gestion des erreurs est centralisée par un \textit{middleware} dédié qui mappe les exceptions sur les statuts HTTP appropriés et notifie Sentry pour les anomalies non gérées.
+
+Le module de paiement met en œuvre le patron de conception \textit{Strategy/Factory}~: une interface commune \texttt{PaymentStrategy} expose les méthodes \texttt{process()} et \texttt{refund()}~; trois classes concrètes (\texttt{CIBStrategy}, \texttt{EdahabiaStrategy}, \texttt{CashStrategy}) l'implémentent~; la classe \texttt{PaymentFactory}, injectée dans le contrôleur de réservation, résout dynamiquement la stratégie en fonction de la méthode choisie. L'ajout futur d'une nouvelle méthode (par exemple \textit{Baridi~Mob}, Stripe ou PayPal) n'impacte aucun code existant, ce qui matérialise le principe d'ouverture/fermeture (\textsc{ocp}).
+
+\subsection{Authentification JWT et cycle de vie des sessions}
+\label{sec:api-jwt}
+
+L'authentification de chaque requête HTTP s'appuie sur le protocole \gls{jwt}. À l'issue d'une authentification réussie, le serveur émet un couple de jetons~: un \textit{access token} d'une durée de validité de 1~heure et un \textit{refresh token} d'une durée de validité de 7~jours. Le client mobile stocke ces jetons dans le trousseau sécurisé de l'appareil (SecureStore Expo). L'accès à toute ressource protégée requiert la transmission de l'access token dans l'en-tête \texttt{Authorization: Bearer <token>}. 
+Lorsque l'access token expire, l'application mobile sollicite de manière transparente l'endpoint de renouvellement en transmettant le refresh token. En cas de déconnexion, le refresh token concerné est immédiatement inscrit dans une liste noire (\textit{blacklist}) persistée dans Redis pour invalider définitivement la session avant son expiration naturelle. L'utilisateur peut également forcer la déconnexion de l'ensemble de ses sessions actives via la route \texttt{/auth/sessions/logout-all}, qui nettoie la totalité des refresh tokens associés à son identifiant en base de données.
+
+\subsection{WebSocket temps réel pour la messagerie et le suivi}
+\label{sec:api-websocket}
+
+La communication temps réel repose sur le framework Socket.IO. Elle permet la transmission instantanée des messages de chat et la diffusion continue des coordonnées GPS des conducteurs en cours de trajet. Le serveur organise les connexions persistantes par groupes virtuels (\textit{rooms}) indexés par identifiant de trajet (\texttt{trip\_id}). Un utilisateur se connectant au socket rejoint automatiquement la room du trajet auquel il est rattaché.
+Les positions GPS du conducteur, transmises toutes les 5 secondes via le canal \texttt{driver:location\_update}, sont redistribuées à l'ensemble des passagers de la même room via le canal \texttt{passenger:location\_sync}. Cette architecture évite le rafraîchissement périodique par sondage HTTP (\textit{polling}), préservant ainsi la batterie des appareils mobiles et limitant la consommation de données cellulaires. Les messages de messagerie transitent par la room du trajet et sont simultanément persistés en base de données pour permettre aux utilisateurs de récupérer leur historique en cas de déconnexion temporaire.
+
+\subsection{Intégration de la cartographie et géolocalisation}
+\label{sec:api-geoloc-mapping}
+
+L'intégration de la cartographie s'appuie sur le SDK Mapbox GL côté client mobile, permettant un rendu fluide des cartes vectorielles. Le calcul d'itinéraires et l'estimation de la durée du trajet (ETA) sont assurés par l'appel à l'API de routage de Mapbox en arrière-plan.
+Lors de la publication d'un trajet par le conducteur, le serveur appelle l'API Mapbox Directions pour obtenir le tracé exact, la distance en kilomètres et le temps de parcours estimé en tenant compte du trafic typique. Ces données permettent ensuite au service de tarification d'évaluer le prix de base suggéré. Pendant le trajet, les coordonnées GPS relevées by le récepteur de l'appareil mobile sont transmises de manière asymétrique~: le conducteur les transmet en arrière-plan au serveur via Socket.IO, tandis que l'application du passager reçoit ces coordonnées pour mettre à jour en temps réel le marqueur représentant le véhicule sur sa carte locale et recalculer dynamiquement le temps d'attente estimé restant.
+
+\section{Base de données}
+\label{sec:database-impl}
+
+Le schéma relationnel est défini en \textsc{postgresql}~16, normalisé en troisième forme normale et aligné sur le diagramme de classes.
+
+\subsection{Structure des tables}
+\label{sec:realisation-bdd}
+
+Le modèle déploie \textbf{29 tables au total}, dont l'écart avec les 20 entités métier s'explique par les nécessités techniques de l'architecture~: 9 tables sont strictement réservées au fonctionnement du système (migrations Knex, sessions Redis persistées, files d'attente BullMQ, et journalisation d'audit interne). Les 20 tables métier restantes (résumées dans le dictionnaire de données du chapitre~\ref{chap:conception}) sont déployées via une \textit{migration de baseline} consolidée, complétée par des migrations incrémentales pour les évolutions ciblées (événements de fraude, machine d'états des demandes de trajet). Les migrations Knex assurent l'évolution contrôlée du schéma. Un jeu de \textit{seeds} (référentiel des wilayas, rôles applicatifs, comptes de test) est exécuté avant les tests d'intégration pour garantir un état initial reproductible.
+
+\subsection{Relations entre les entités}
+\label{sec:relations-entites}
+
+Les intégrités référentielles sont strictement configurées en base de données. Les relations pivots reposent sur des contraintes de clés étrangères avec comportement en cascade ciblé. Notamment, la table d'association \texttt{UserRole} lie la table \texttt{users} et \texttt{roles} avec une règle \texttt{ON DELETE CASCADE}, garantissant qu'un retrait d'utilisateur nettoie ses rôles affectés. À l'inverse, pour protéger l'historique financier et les audits, la suppression d'un utilisateur ou d'un trajet est bloquée par un \texttt{ON DELETE RESTRICT} s'il existe des transactions ou des réservations associées dans \texttt{bookings} et \texttt{payments}.
+
+\subsection{Optimisation des requêtes}
+\label{sec:optimisation-requetes}
+
+Les colonnes sollicitées dans les filtres de recherche et jointures sont indexées en base. Les index de type \texttt{B-Tree} sont appliqués sur les couples \texttt{(originWilayaId, destinationWilayaId)} et la date \texttt{departureAt} pour accélérer la recherche des trajets (passant d'un coût $O(N)$ à $O(\log N)$). Un index unique est configuré sur \texttt{phone} pour accélérer l'authentification. De plus, les règles de tarification dynamique et les sessions d'authentification actives sont stockées dans Redis avec une politique d'expiration (TTL de 5 minutes pour le surge pricing et 24 heures pour les sessions) pour alléger la charge sur PostgreSQL.
+
+\section{Captures d'écran et interfaces}
+\label{sec:screenshots}
+
+L'application mobile expose au total \textbf{62~écrans distincts} couvrant les parcours passager et conducteur. Cette section présente les interfaces les plus représentatives, organisées par parcours fonctionnel. L'intégralité des captures est rassemblée en Annexe~\ref{annexe:captures}.
 
 \subsection{Parcours \textsc{kyc} --- vérification biométrique d'identité}
 
-La vérification \textsc{kyc} est le prérequis de toute action sensible (publication d'un trajet, réservation, paiement). Elle se déroule en trois étapes guidées~: introduction, capture de la \textsc{cin} et capture faciale avec détection de vivacité (Figure~\ref{fig:kyc-screens}). Les autres interfaces et états associés (dossier en attente, rejet) sont déportés dans le catalogue complet des captures en Annexe~\ref{annexe:captures}.
+La vérification \textsc{kyc} est le prérequis de toute action sensible (publication d'un trajet, réservation, paiement). Elle se déroule en trois étapes guidées~: introduction, capture de la \textsc{cin} et capture faciale avec détection de vivacité.
 
 \begin{figure}[H]
 \centering
@@ -153,116 +294,290 @@ La vérification \textsc{kyc} est le prérequis de toute action sensible (public
 \label{fig:kyc-screens}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_30_verif_pending.png}
+    {\footnotesize \textbf{3.2a} --- Statut \textit{en attente} (passager)\\Indicateur de progression, délai estimé.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_30_verif_pending.png}
+    {\footnotesize \textbf{3.2b} --- Statut \textit{en attente} (conducteur)\\Même pipeline, seuils plus stricts (0,65 vs 0,60).\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_31_verif_rejected.png}
+    {\footnotesize \textbf{3.2c} --- \textsc{kyc} rejeté\\Motif affiché, bouton de re-soumission activé.\par}
+\end{minipage}
+\caption{Parcours \textsc{kyc} biométrique --- états de vérification}
+\label{fig:kyc-states}
+\end{figure}
+
 \subsection{Parcours passager --- recherche et réservation}
 
-Le parcours passager commence par l'écran d'accueil qui agrège les suggestions personnalisées, les trajets récents et le bloc de recherche rapide (Figure~\ref{fig:passenger-search}). Les autres étapes clés (détail du trajet, billet numérique, suivi GPS temps réel, historique des trajets, création et gestion de demandes de trajets inverses, méthodes de paiement et profil public) sont reportées en Annexe~\ref{annexe:captures}.
+Le parcours passager commence par l'écran d'accueil qui agrège les suggestions personnalisées, les trajets récents et le bloc de recherche rapide.
 
 \begin{figure}[H]
 \centering
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_01_tab_home.png}
-    {\footnotesize \textbf{3.2a} --- Tableau de bord passager\\Suggestions de trajets, raccourcis de recherche.\par}
+    {\footnotesize \textbf{3.3a} --- Tableau de bord passager\\Suggestions de trajets, raccourcis de recherche.\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_02_tab_search.png}
-    {\footnotesize \textbf{3.2b} --- Recherche (formulaire)\\Wilaya départ/arrivée, date, places.\par}
+    {\footnotesize \textbf{3.3b} --- Recherche (formulaire)\\Wilaya départ/arrivée, date, places.\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_08_search_results.png}
-    {\footnotesize \textbf{3.2c} --- Résultats de recherche\\Filtre prix/note/confort, tri.\par}
+    {\footnotesize \textbf{3.3c} --- Résultats de recherche\\Filtre prix/note/confort, tri.\par}
 \end{minipage}
 \caption{Parcours passager --- accueil, recherche et résultats}
 \label{fig:passenger-search}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_09_trip_details.png}
+    {\footnotesize \textbf{3.4a} --- Détail du trajet\\Profil conducteur, itinéraire, badge \textsc{kyc}.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_10_ticket.png}
+    {\footnotesize \textbf{3.4b} --- Billet numérique\\QR code unique, récapitulatif, accès au chat.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_26_live_tracking.png}
+    {\footnotesize \textbf{3.4c} --- Suivi GPS temps réel\\Position conducteur, ETA, bouton SOS.\par}
+\end{minipage}
+\caption{Parcours passager --- détail trajet, billet et suivi GPS}
+\label{fig:passenger-booking}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_03_tab_trips.png}
+    {\footnotesize \textbf{3.5a} --- Mes trajets\\Historique~: à venir / passés / annulés.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_06_trips_upcoming.png}
+    {\footnotesize \textbf{3.5b} --- Trajets à venir\\Détails de la réservation, bouton annulation.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_07_trips_past.png}
+    {\footnotesize \textbf{3.5c} --- Trajets passés\\Accès à la notation post-trajet.\par}
+\end{minipage}
+\caption{Parcours passager --- gestion des trajets}
+\label{fig:passenger-trips}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_11_create_trip_request.png}
+    {\footnotesize \textbf{3.6a} --- Créer une demande de trajet\\\textit{Matching} inverse~: le passager publie son besoin.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_12_my_trip_requests.png}
+    {\footnotesize \textbf{3.6b} --- Mes demandes de trajet\\Suivi en attente / matchées / expirées.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_04_tab_messages.png}
+    {\footnotesize \textbf{3.6c} --- Messagerie\\Chat Socket.IO, sans échange de numéro.\par}
+\end{minipage}
+\caption{Parcours passager --- demandes de trajet et messagerie}
+\label{fig:passenger-requests}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_15_payment_methods.png}
+    {\footnotesize \textbf{3.7a} --- Méthodes de paiement\\\textsc{cib}, \textit{Edahabia} (\textit{sandbox}), espèces.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_16_add_card.png}
+    {\footnotesize \textbf{3.7b} --- Ajout d'une carte\\Formulaire \textsc{cib}/\textit{Edahabia}, validation \textsc{satim}.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_13_public_profile.png}
+    {\footnotesize \textbf{3.7c} --- Profil public passager\\Note, historique, badge \textsc{kyc} vérifié.\par}
+\end{minipage}
+\caption{Parcours passager --- paiement et profil public}
+\label{fig:passenger-misc}
+\end{figure}
+
 \subsection{Parcours conducteur --- publication et gestion}
 
-Le conducteur accède à un tableau de bord dédié affichant ses gains mensuels, le nombre de trajets effectués, sa note moyenne et ses demandes de réservation en attente (Figure~\ref{fig:driver-main}). Les interfaces secondaires (recherche inverse de demandes passagers, historique financier détaillé des gains, gestion du portefeuille, liste et ajout de véhicules chiffrés, gestion documentaire des assurances/cartes grises et notifications) sont regroupées en Annexe~\ref{annexe:captures}.
+Le conducteur accède à un tableau de bord dédié affichant ses gains mensuels, le nombre de trajets effectués, sa note moyenne et ses demandes de réservation en attente.
 
 \begin{figure}[H]
 \centering
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/d_01_tab_dashboard.png}
-    {\footnotesize \textbf{3.3a} --- Tableau de bord conducteur\\KPIs personnels, alertes \textsc{kyc}.\par}
+    {\footnotesize \textbf{3.8a} --- Tableau de bord conducteur\\KPIs personnels, alertes \textsc{kyc}.\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/d_03_tab_publish.png}
-    {\footnotesize \textbf{3.3b} --- Publication d'un trajet\\Formulaire complet, prix suggéré.\par}
+    {\footnotesize \textbf{3.8b} --- Publication d'un trajet\\Formulaire complet, prix suggéré.\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/d_06_trip_manage.png}
-    {\footnotesize \textbf{3.3c} --- Gestion du trajet\\Liste des passagers, démarrer/terminer.\par}
+    {\footnotesize \textbf{3.8c} --- Gestion du trajet\\Liste des passagers, démarrer/terminer.\par}
 \end{minipage}
 \caption{Parcours conducteur --- tableau de bord, publication et gestion}
 \label{fig:driver-main}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_02_tab_trips.png}
+    {\footnotesize \textbf{3.9a} --- Mes trajets (conducteur)\\Trajets actifs, passés, annulés.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_12_trip_requests.png}
+    {\footnotesize \textbf{3.9b} --- Demandes de trajet\\\textit{Matching} inverse vers conducteur.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_07_earnings.png}
+    {\footnotesize \textbf{3.9c} --- Gains du mois\\Récapitulatif par trajet, courbe de revenus.\par}
+\end{minipage}
+\caption{Parcours conducteur --- trajets, demandes et gains}
+\label{fig:driver-trips}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_11_wallet.png}
+    {\footnotesize \textbf{3.10a} --- Portefeuille conducteur\\Solde, historique, retrait bancaire.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_13_vehicles_list.png}
+    {\footnotesize \textbf{3.10b} --- Liste des véhicules\\Véhicules enregistrés, sélection.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_08_add_vehicle.png}
+    {\footnotesize \textbf{3.10c} --- Ajout d'un véhicule\\Plaque chiffrée AES-256, places, marque.\par}
+\end{minipage}
+\caption{Parcours conducteur --- portefeuille et gestion des véhicules}
+\label{fig:driver-wallet}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_10_documents.png}
+    {\footnotesize \textbf{3.11a} --- Documents du véhicule\\Assurance, carte grise, contrôle technique.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_14_public_profile.png}
+    {\footnotesize \textbf{3.11b} --- Profil public conducteur\\Note, trajets, véhicule, badge \textsc{kyc} Pro.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_26_notifications.png}
+    {\footnotesize \textbf{3.11c} --- Notifications\\Réservations, confirmations, alertes admin.\par}
+\end{minipage}
+\caption{Parcours conducteur --- documents, profil et notifications}
+\label{fig:driver-docs}
+\end{figure}
+
 \subsection{Profil et paramètres (commun passager / conducteur)}
 
-Les écrans de profil et de paramètres sont partagés entre les deux rôles. Ils permettent à l'utilisateur de gérer son identité, sa sécurité, ses préférences et d'accéder au support. L'intégralité de ces interfaces (édition de profil, sécurité OTP, sélection linguistique RTL, parrainage, centre d'aide, ticket de support, conditions générales et options de notification) est renvoyée en Annexe~\ref{annexe:captures}.
-
-\section{Réalisation du Dashboard Web}
-\subsection{Tableau de bord administrateur}
-\label{sec:realisation-admin}
-
-Le panneau d'administration est développé avec React~+~Vite et déployé séparément. Il offre à l'opérateur une vision de la plateforme incluant les indicateurs clés (Figure~\ref{fig:admin-dashboard}) et la revue des dossiers \textsc{kyc} litigieux (Figure~\ref{fig:admin-kyc}). Les autres vues de gestion (utilisateurs, trajets, transactions) sont illustrées en Annexe~\ref{annexe:captures}. L'opérateur dispose ainsi de huit modules fonctionnels s'appuyant sur des API \textsc{rest} dédiées (préfixe \texttt{/admin/}) protégées par contrôle d'accès basé sur le rôle.
+Les écrans de profil et de paramètres sont partagés entre les deux rôles. Ils permettent à l'utilisateur de gérer son identité, sa sécurité, ses préférences et d'accéder au support.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\linewidth]{assets/admin_dashboard.png}
-\caption{Tableau de bord administrateur --- KPIs, graphiques et alertes en temps réel}
-\label{fig:admin-dashboard}
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_14_edit_profile.png}
+    {\footnotesize \textbf{3.12a} --- Modifier mon profil\\Nom, photo, wilaya, droit de rectification.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_18_security_phone.png}
+    {\footnotesize \textbf{3.12b} --- Sécurité du compte\\Numéro, sessions actives, déconnexion.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_19_change_phone_otp.png}
+    {\footnotesize \textbf{3.12c} --- Changement de numéro OTP\\Vérification \textsc{sms} avant mise à jour.\par}
+\end{minipage}
+\caption{Profil et sécurité du compte}
+\label{fig:profile-security}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\linewidth]{assets/admin_kyc.png}
-\caption{Revue manuelle des dossiers \textsc{kyc} litigieux}
-\label{fig:admin-kyc}
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_20_language_select.png}
+    {\footnotesize \textbf{3.13a} --- Sélection de la langue\\Arabe (RTL), français, anglais via i18next.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_21_referral.png}
+    {\footnotesize \textbf{3.13b} --- Programme de parrainage\\Code unique, crédit 200~DZD par parrainé.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_22_help_center.png}
+    {\footnotesize \textbf{3.13c} --- Centre d'aide\\FAQ, signalement, support multicanal.\par}
+\end{minipage}
+\caption{Paramètres --- langue, parrainage et aide}
+\label{fig:settings-lang}
 \end{figure}
 
-\section{API et communication}
-\subsection{API REST}
-\label{sec:realisation-backend}
-
-Le \textit{back-end} suit un découpage modulaire inspiré de l'\textit{architecture propre}. Les principaux modules sont structurés ainsi.
-\begin{enumerate}
-  \item \textbf{AuthModule} --- inscription, OTP, émission/rotation des jetons \gls{jwt}, déconnexion globale.
-  \item \textbf{UsersModule} --- profils, droit d'accès et de rectification, suppression du compte.
-  \item \textbf{TripsModule} --- publication, recherche, gestion du cycle de vie des trajets.
-  \item \textbf{BookingsModule} --- réservation, annulation, billet numérique avec QR code.
-  \item \textbf{PaymentsModule} --- paiement multi-méthodes via le patron \textit{Strategy/Factory}.
-  \item \textbf{ChatModule} --- messagerie temps réel Socket.IO et persistance \textsc{postgresql}.
-  \item \textbf{NotificationsModule} --- notifications \textit{push} (Firebase \textsc{fcm}) et \textit{in-app}.
-  \item \textbf{KycModule} --- pont vers le service IA, machine d'états, journalisation des \texttt{fraud\_events}.
-  \item \textbf{AdminModule} --- supervision et modération.
-\end{enumerate}
-
-Chaque module expose des \textit{endpoints} \textsc{rest} documentés en \textsc{swagger} (\texttt{/api/docs}), valide ses entrées via Zod (\texttt{validate.middleware}) et délègue la persistance aux dépôts (\textit{repositories}) Knex. La gestion des erreurs est centralisée par un \textit{middleware} dédié qui mappe les exceptions sur les statuts HTTP appropriés et notifie Sentry pour les anomalies non gérées.
-
-\subsection{Patron \textit{Strategy/Factory} pour les paiements}
-
-Le module de paiement met en œuvre le patron \textit{Strategy/Factory}~: une interface commune \texttt{PaymentStrategy} expose les méthodes \texttt{process()} et \texttt{refund()}~; trois classes concrètes (\texttt{CIBStrategy}, \texttt{EdahabiaStrategy}, \texttt{CashStrategy}) l'implémentent~; la classe \texttt{PaymentFactory}, injectée dans le contrôleur de réservation, résout dynamiquement la stratégie en fonction de la méthode choisie. L'ajout futur d'une nouvelle méthode (par exemple \textit{Baridi~Mob}, Stripe ou PayPal) n'impacte aucun code existant, ce qui matérialise le principe d'ouverture/fermeture (\textsc{ocp}).
-
-\section{Base de données}
-\subsection{Structure des tables}
-\label{sec:realisation-bdd}
-
-Le schéma relationnel est défini en \textsc{postgresql}~16, normalisé en troisième forme normale et aligné sur le diagramme de classes du chapitre précédent. Le modèle déploie \textbf{29 tables au total}, dont l'écart avec les 20 entités métier s'explique par les nécessités techniques de l'architecture~: 9 tables sont strictement réservées au fonctionnement du système (migrations Knex, sessions Redis persistées, files d'attente BullMQ, et journalisation d'audit interne). Les 20 tables métier restantes (résumées dans le tableau~\ref{tab:tables} du chapitre~\ref{chap:conception}) sont déployées via une \textit{migration de baseline} consolidée, complétée par des migrations incrémentales pour les évolutions ciblées (événements de fraude, machine d'états des demandes de trajet).
-
-\paragraph{Indexation et contraintes.} Les colonnes les plus sollicitées en lecture (couples \texttt{(originWilayaId, destinationWilayaId)}, \texttt{departureAt}, \texttt{userId}) sont indexées via \texttt{btree}. Les contraintes d'intégrité référentielle sont appliquées sur les clés étrangères avec stratégies de \texttt{ON DELETE CASCADE} pour les agrégats et \texttt{ON DELETE RESTRICT} pour les références transactionnelles. Les contraintes \texttt{CHECK} valident les bornes des montants, des notes et des compteurs de places.
-
-\paragraph{Migrations et \textit{seeds}.} Les migrations Knex assurent l'évolution contrôlée du schéma. Un jeu de \textit{seeds} (référentiel des wilayas, rôles applicatifs, comptes de test) est exécuté avant les tests d'intégration pour garantir un état initial reproductible.
-
-\section{Captures d'écran et interfaces}
-\label{sec:screenshots}
-% Captures d'écrans listées
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_23_contact_support.png}
+    {\footnotesize \textbf{3.14a} --- Contacter le support\\Chat en direct, email, formulaire de litige.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_24_terms_legal.png}
+    {\footnotesize \textbf{3.14b} --- Conditions générales\\CGU, politique conformité Loi~25-11.\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/p_25_notifications.png}
+    {\footnotesize \textbf{3.14c} --- Préférences de notification\\Contrôle granulaire \textit{push}/email.\par}
+\end{minipage}
+\caption{Paramètres --- support, mentions légales et notifications}
+\label{fig:settings-legal}
+\end{figure}
 
 \section{Intégration du microservice IA (KYC)}
 \label{sec:realisation-kyc}
@@ -304,7 +619,7 @@ inscrite dans la feuille de route post-mémoire
 \section{Module de paiement électronique}
 \label{sec:realisation-paiement}
 
-Trois méthodes de paiement coexistent~: règlement en espèces (opérationnel), \textsc{cib} et \textit{Edahabia} (intégration en environnement \textit{sandbox} dans l'attente de l'homologation \textsc{satim}). L'architecture, fondée sur le patron \textit{Strategy/Factory} décrit en section~\ref{sec:realisation-backend}, est extensible à \textit{Stripe} et \textit{PayPal} pour les usages internationaux.
+Trois méthodes de paiement coexistent~: règlement en espèces (opérationnel), \textsc{cib} et \textit{Edahabia} (intégration en environnement \textit{sandbox} dans l'attente de l'homologation \textsc{satim}). L'architecture, fondée sur le patron \textit{Strategy/Factory} décrit en section~\ref{sec:api-rest-arch}, est extensible à \textit{Stripe} et \textit{PayPal} pour les usages internationaux.
 
 \paragraph{Cycle de vie d'une transaction.} Une réservation déclenche~: (i)~le calcul du tarif dynamique par le \texttt{FareService} (avec multiplicateur de \textit{surge} mis en cache dans Redis)~; (ii)~la résolution de la stratégie de paiement appropriée~; (iii)~l'exécution effective via la passerelle (\textsc{cib}/\textit{Edahabia}) ou la confirmation différée (espèces)~; (iv)~la persistance transactionnelle de la \texttt{Booking} et du \texttt{Payment} en \textsc{postgresql}~; (v)~la notification \textit{push} au conducteur. En cas d'échec, un remboursement est déclenché et le passager notifié.
 
@@ -421,7 +736,39 @@ Le projet applique les cinq grands principes de la protection des données.
 
 La mise en œuvre d'un point d'accès \texttt{DELETE /users/me} (droit à l'effacement) et la rédaction d'une politique alignée sur le formalisme \textsc{anpdp} constituent les chantiers de conformité restants.
 
+\section{Difficultés rencontrées et solutions apportées}
+\label{sec:difficultes}
 
+Plusieurs difficultés concrètes ont été rencontrées au fil du développement~; elles méritent d'être présentées honnêtement, avec les solutions adoptées.
+
+\paragraph{Compatibilité mobile entrée de gamme.} Les premiers tests sur des appareils Android d'entrée de gamme (4~Go de RAM, processeur ancien) ont révélé une consommation mémoire excessive lors de la capture vidéo \textsc{kyc} et un \textit{lag} sur les listes de trajets. \textit{Solutions adoptées~:} compression automatique des images avant envoi, \textit{lazy loading} des listes via \texttt{FlatList} optimisée, \texttt{useMemo}/\texttt{useCallback} sur les composants de carte, désactivation des animations sur les appareils signalant une faible capacité.
+
+\paragraph{Réseau instable.} Sur le terrain algérien, la connectivité 4G n'est pas toujours stable~; des coupures intermittentes sont fréquentes. \textit{Solutions adoptées~:} requêtes idempotentes côté serveur (clé \texttt{Idempotency-Key} sur les endpoints sensibles), retentatives exponentielles côté client via TanStack Query, mise en file Bull/BullMQ pour les notifications \textit{push}, indicateurs UX explicites sur l'état réseau.
+
+\paragraph{WebSocket et reconnexion.} Le maintien des sessions Socket.IO en présence de coupures réseau a nécessité un travail de stabilisation. \textit{Solutions adoptées~:} reconnexion automatique avec \textit{backoff} exponentiel, ré-abonnement aux \textit{rooms} après reconnexion, persistance des messages côté serveur permettant la livraison différée.
+
+\paragraph{Intégration des paiements algériens.} L'homologation \textsc{satim} pour les cartes \textsc{cib} et \textit{Edahabia} reste un parcours administratif complexe. \textit{Solution adoptée~:} intégration en environnement \textit{sandbox} fonctionnel, architecture extensible (patron \textit{Factory}) permettant d'ajouter ultérieurement la production sans modification du code appelant. Le règlement en espèces, parfaitement opérationnel, assure la couverture immédiate.
+
+\paragraph{Faux positifs/négatifs du pipeline biométrique.} Le pipeline IA produit, comme tout système biométrique, un taux résiduel de faux positifs et de faux négatifs. \textit{Solutions adoptées~:} seuils différenciés par rôle, file de revue manuelle pour les cas frontaliers, journalisation \texttt{fraud\_event} permettant l'analyse \textit{a~posteriori}.
+
+\paragraph{Stabilisation du harnais de tests.} Comme indiqué en section~\ref{sec:tests-app}, plusieurs régressions d'environnement ont impacté les tests d'intégration. \textit{Solution prévue~:} adoption de \textit{Testcontainers} pour disposer d'une base \textsc{postgresql} éphémère par exécution et nettoyage transactionnel entre cas.
+
+\paragraph{Limites honnêtement assumées.} Trois limites doivent être explicitement exposées~: (1)~aucune évaluation formelle APCER/BPCER/HTER sur \textit{dataset} public n'a été menée à ce stade pour le pipeline biométrique~; (2)~les images \textsc{kyc} sont aujourd'hui stockées en clair sur Cloudinary, leur chiffrement côté serveur étant prévu à court terme~; (3)~aucun test d'intrusion externe n'a été conduit~; un audit par un tiers est programmé avant la mise en production.
+
+\section{Synthèse générale}
+\label{sec:synthese-realisation}
+La réalisation présentée a permis d'aboutir à un \textbf{prototype fonctionnel} couvrant les parcours essentiels du covoiturage inter-wilayas~: inscription et \textsc{kyc} biométrique, publication et recherche de trajets, réservation avec paiement multi-méthodes, messagerie temps réel, suivi GPS, notation et administration. Les principaux résultats peuvent être résumés ainsi~:
+\begin{enumerate}
+  \item \textbf{Couverture fonctionnelle.} 62~écrans mobiles actifs (parcours passager + conducteur), 8~modules \textit{back-end} et un panneau d'administration en huit modules.
+  \item \textbf{Qualité logicielle.} 107/107 tests unitaires en succès (100\,\%), 147/151 tests au global (97,4\,\%), mesures de performance en cohérence avec les objectifs sauf sur le flux \textsc{kyc} (à optimiser).
+  \item \textbf{Utilisabilité.} Score SUS global de 71,6/100, au-delà du seuil de qualification «~bon~».
+  \item \textbf{Sécurité.} Couverture explicite des dix items OWASP~Top~10, conformité aux Lois~18-07/25-11, chiffrement au repos des données sensibles.
+  \item \textbf{Extensibilité.} Architecture modulaire, patron \textit{Strategy/Factory} pour le paiement, isolation du service IA derrière un secret partagé.
+\end{enumerate}
+
+\begin{highlight}
+\textbf{À retenir.} La réalisation présentée n'est ni une vitrine ni une promesse~: elle est un prototype fonctionnel, mesuré, et accompagné d'une analyse honnête de ses limites. Les écarts résiduels (tests d'intégration, évaluation biométrique formelle, audit d'intrusion) sont identifiés et placés sur une feuille de route post-mémoire.
+\end{highlight}
 
 \section{Conclusion}
-Ce chapitre a détaillé la réalisation effective de RohWinBghit, de l'environnement de développement aux interfaces finales.
+Ce chapitre a exposé la réalisation effective de \textit{RohWinBghit}~: environnement de développement, choix technologiques justifiés, architecture déployée, mise en œuvre des modules mobiles et \textit{back-end}, microservice de vérification d'identité, paiement, géolocalisation et messagerie. Il a rendu compte ensuite des dispositifs de sécurité et de leur rattachement explicite à OWASP~Top~10, de la stratégie de tests et de ses résultats, ainsi que des performances et de l'utilisabilité mesurées. Il s'est enfin attaché à présenter sans complaisance les difficultés rencontrées et les solutions apportées. Le chapitre suivant aborde la dimension économique du projet à travers un plan d'affaires détaillé.

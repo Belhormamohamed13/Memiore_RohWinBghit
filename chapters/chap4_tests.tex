@@ -6,24 +6,23 @@ Ce chapitre détaille la validation de la plateforme \textit{RohWinBghit} à tra
 
 \section{Tests de l'application}
 \label{sec:tests-app}
-La qualité du système est validée par une suite automatisée \textit{Jest} répartie sur 23 fichiers et complétée par des campagnes manuelles.
+La validation de la plateforme \textit{RohWinBghit} repose sur une stratégie de tests rigoureuse combinant des tests automatisés Jest et des campagnes de tests manuels. Deux catégories principales de tests automatisés sont distinguées~: les tests unitaires, qui valident la logique pure sans dépendance externe, et les tests d'intégration, qui sollicitent la base PostgreSQL et la couche HTTP/WebSocket. Le tableau~\ref{tab:tests} synthétise les résultats de la campagne d'exécution du 24~avril~2026.
 
-\subsection{Tests fonctionnels}
-Valident la logique pure métier (authentification, états de réservation).
+\subsection{Tests unitaires et fonctionnels}
+\label{sec:tests-unitaires}
+Les tests unitaires et fonctionnels valident la logique métier isolée (authentification, calculs de tarification, scoring conducteur, etc.). La totalité des 107~tests unitaires passent avec succès (100\,\%), attestant de la correction de la logique métier centrale (tableau~\ref{tab:tests}).
 
 \subsection{Tests d'intégration}
-Valident l'accès à la base de données PostgreSQL et les requêtes HTTP/WebSocket.
+\label{sec:tests-integration}
+Les tests d'intégration valident l'accès à la base de données PostgreSQL et les requêtes HTTP/WebSocket à travers les différents services (trajets, messagerie, profils). Sur les 44~tests d'intégration, 40 réussissent (90,9\,\%). Les 4~échecs résiduels sont localisés dans les scénarios de bout-en-bout impliquant la synchronisation WebSocket et le matching spatial asynchrone~; ils ne traduisent pas de défauts fonctionnels mais des difficultés d'isolation transactionnelle de l'environnement de test (tableau~\ref{tab:tests}).
 
-\subsection{Tests utilisateurs}
-Une session de bêta-test a été conduite auprès de 18 participants recrutés parmi les étudiants de l'Université Abou Bekr Belkaïd de Tlemcen.
+\subsection{Tests utilisateurs et d'utilisabilité}
+\label{sec:tests-utilisateurs}
+Une session de bêta-test a été conduite auprès de 18~participants recrutés parmi les étudiants de la Faculté des Sciences de l'Université Abou Bekr Belkaïd de Tlemcen. Les tests utilisateurs ont permis d'évaluer l'utilisabilité du système via l'échelle SUS (\textit{System Usability Scale}), comme détaillé à la section~\ref{sec:resultats-tests}.
 
 \subsection{Tests de performance}
-Mesurent les temps de réponse de l'API sous charge.
-
-% Stratégie de tests
-\label{sec:tests}
-
-La qualité du système est validée par une suite automatisée \textit{Jest} répartie sur 23~fichiers et complétée par des campagnes manuelles. Deux catégories sont distinguées~: les \textit{tests unitaires}, qui valident la logique pure sans dépendance externe, et les \textit{tests d'intégration}, qui sollicitent la base \textsc{postgresql} et la couche HTTP/WebSocket. Le tableau~\ref{tab:tests} synthétise les résultats de la campagne d'exécution du 24~avril~2026.
+\label{sec:tests-performance}
+Les tests de performance mesurent les temps de réponse de l'API sous charge simulée. Les résultats de ces tests en conditions de charge sont exposés en détail à la section~\ref{sec:performances-serveur}.
 
 \begin{table}[H]
 \centering
@@ -110,6 +109,7 @@ Le score global de 71,6/100 dépasse le seuil de 68 établi par Bangor et al.~\c
 \paragraph{Retours qualitatifs.} \textit{Points positifs}~: fluidité de la recherche, clarté du billet numérique avec QR code, lisibilité du tableau de bord conducteur. \textit{Axes d'amélioration}~: durée perçue du flux \textsc{kyc} (« trop d'étapes »), demande d'un mode sombre natif, retour d'état lors d'une connexion réseau lente.
 
 \subsection{Performances serveur}
+\label{sec:performances-serveur}
 
 Les mesures ont été conduites sur un VPS de développement (4~vCPU, 8~Go~RAM, Ubuntu~22.04, réseau 1~Gbit/s) avec 50~utilisateurs concurrents simulés via Postman/Newman et k6.
 
@@ -148,44 +148,7 @@ L'ensemble des routes métier critiques respecte l'objectif P95~$\leq$~500~ms, �
 
 \paragraph{Score conducteur.} Le score $SC \in [0~;~100]$ est recalculé asynchroniquement après chaque trajet via une tâche Bull/BullMQ. Cinq composantes pondérées entrent dans le calcul~: note moyenne passagers (40\,\%), taux d'annulation tardive (25\,\%), ponctualité au départ (20\,\%), ancienneté et volume (10\,\%), bonus \textsc{kyc} complet (5\,\%). Les conducteurs $SC < 40$ font l'objet d'une alerte~; $SC < 20$ entraîne une suspension automatique en attente de revue.
 
-% Difficultés déplacées
-\label{sec:difficultes}
 
-Plusieurs difficultés concrètes ont été rencontrées au fil du développement~; elles méritent d'être présentées honnêtement, avec les solutions adoptées.
-
-\paragraph{Compatibilité mobile entrée de gamme.} Les premiers tests sur des appareils Android d'entrée de gamme (4~Go de RAM, processeur ancien) ont révélé une consommation mémoire excessive lors de la capture vidéo \textsc{kyc} et un \textit{lag} sur les listes de trajets. \textit{Solutions adoptées~:} compression automatique des images avant envoi, \textit{lazy loading} des listes via \texttt{FlatList} optimisée, \texttt{useMemo}/\texttt{useCallback} sur les composants de carte, désactivation des animations sur les appareils signalant une faible capacité.
-
-\paragraph{Réseau instable.} Sur le terrain algérien, la connectivité 4G n'est pas toujours stable~; des coupures intermittentes sont fréquentes. \textit{Solutions adoptées~:} requêtes idempotentes côté serveur (clé \texttt{Idempotency-Key} sur les endpoints sensibles), retentatives exponentielles côté client via TanStack Query, mise en file Bull/BullMQ pour les notifications \textit{push}, indicateurs UX explicites sur l'état réseau.
-
-\paragraph{WebSocket et reconnexion.} Le maintien des sessions Socket.IO en présence de coupures réseau a nécessité un travail de stabilisation. \textit{Solutions adoptées~:} reconnexion automatique avec \textit{backoff} exponentiel, ré-abonnement aux \textit{rooms} après reconnexion, persistance des messages côté serveur permettant la livraison différée.
-
-\paragraph{Intégration des paiements algériens.} L'homologation \textsc{satim} pour les cartes \textsc{cib} et \textit{Edahabia} reste un parcours administratif complexe. \textit{Solution adoptée~:} intégration en environnement \textit{sandbox} fonctionnel, architecture extensible (patron \textit{Factory}) permettant d'ajouter ultérieurement la production sans modification du code appelant. Le règlement en espèces, parfaitement opérationnel, assure la couverture immédiate.
-
-\paragraph{Faux positifs/négatifs du pipeline biométrique.} Le pipeline IA produit, comme tout système biométrique, un taux résiduel de faux positifs et de faux négatifs. \textit{Solutions adoptées~:} seuils différenciés par rôle, file de revue manuelle pour les cas frontaliers, journalisation \texttt{fraud\_event} permettant l'analyse \textit{a~posteriori}.
-
-\paragraph{Stabilisation du harnais de tests.} Comme indiqué en section~\ref{sec:tests}, plusieurs régressions d'environnement ont impacté les tests d'intégration. \textit{Solution prévue~:} adoption de \textit{Testcontainers} pour disposer d'une base \textsc{postgresql} éphémère par exécution et nettoyage transactionnel entre cas.
-
-\paragraph{Limites honnêtement assumées.} Trois limites doivent être explicitement exposées~: (1)~aucune évaluation formelle APCER/BPCER/HTER sur \textit{dataset} public n'a été menée à ce stade pour le pipeline biométrique~; (2)~les images \textsc{kyc} sont aujourd'hui stockées en clair sur Cloudinary, leur chiffrement côté serveur étant prévu à court terme~; (3)~aucun test d'intrusion externe n'a été conduit~; un audit par un tiers est programmé avant la mise en production.
-
-% Synthèse déplacée
-\label{sec:synthese-realisation}
-
-La réalisation présentée a permis d'aboutir à un \textbf{prototype fonctionnel} couvrant les parcours essentiels du covoiturage inter-wilayas~: inscription et \textsc{kyc} biométrique, publication et recherche de trajets, réservation avec paiement multi-méthodes, messagerie temps réel, suivi GPS, notation et administration. Les principaux résultats peuvent être résumés ainsi.
-\begin{enumerate}
-  \item \textbf{Couverture fonctionnelle.} 62~écrans mobiles actifs (parcours passager + conducteur), 8~modules \textit{back-end} et un panneau d'administration en huit modules.
-  \item \textbf{Qualité logicielle.} 107/107 tests unitaires en succès (100\,\%), 147/151 tests au global (97,4\,\%), mesures de performance en cohérence avec les objectifs sauf sur le flux \textsc{kyc} (à optimiser).
-  \item \textbf{Utilisabilité.} Score SUS global de 71,6/100, au-delà du seuil de qualification «~bon~».
-  \item \textbf{Sécurité.} Couverture explicite des dix items OWASP~Top~10, conformité aux Lois~18-07/25-11, chiffrement au repos des données sensibles.
-  \item \textbf{Extensibilité.} Architecture modulaire, patron \textit{Strategy/Factory} pour le paiement, isolation du service IA derrière un secret partagé.
-\end{enumerate}
-
-\begin{highlight}
-\textbf{À retenir.} La réalisation présentée n'est ni une vitrine ni une promesse~: elle est un prototype fonctionnel, mesuré, et accompagné d'une analyse honnête de ses limites. Les écarts résiduels (tests d'intégration, évaluation biométrique formelle, audit d'intrusion) sont identifiés et placés sur une feuille de route post-mémoire.
-\end{highlight}
-
-% Conclusion déplacée
-
-Ce chapitre a exposé la réalisation effective de \textit{RohWinBghit}~: environnement de développement, choix technologiques justifiés, architecture déployée, mise en œuvre des modules mobiles et \textit{back-end}, microservice de vérification d'identité, paiement, géolocalisation et messagerie. Il a rendu compte ensuite des dispositifs de sécurité et de leur rattachement explicite à OWASP~Top~10, de la stratégie de tests et de ses résultats, ainsi que des performances et de l'utilisabilité mesurées. Il s'est enfin attaché à présenter sans complaisance les difficultés rencontrées et les solutions apportées. Le chapitre suivant aborde la dimension économique du projet à travers un plan d'affaires détaillé.
 
 \section{Déploiement de l'application}
 \label{sec:deploiement}
@@ -804,7 +767,6 @@ L'architecture stateless du \textit{back-end} Express.js à organisation modulai
   \label{tab:scalabilite}
 \end{table}
 
-Les goulots d'étranglement potentiels ont été anticipés dès la phase de conception~:
 Les goulots d'étranglement potentiels ont été anticipés et résolus dès la phase de conception.
 \begin{enumerate}
   \item \textbf{PostgreSQL~:} index GiST sur les coordonnées géographiques, mise en cache des requêtes de recherche via Redis (TTL 30~s), partitionnement par date sur les tables \texttt{trips} et \texttt{bookings} prévu au-delà de 1~M de lignes.
@@ -815,7 +777,6 @@ Les goulots d'étranglement potentiels ont été anticipés et résolus dès la 
 Cette préparation architecturale permet à \textit{RohWinBghit} de croitre sans rupture technique jusqu'à l'échelle nationale.
 
 % Conclusion business déplacée
-\addcontentsline{toc}{section}{Conclusion}
 
 Ce chapitre a établi que RohWinBghit dépasse le cadre du 
 seul exercice académique. Le projet dispose d'un marché 
@@ -836,20 +797,25 @@ création d'une SARL dans le cadre du mécanisme
 \section{Perspectives d'amélioration}
 \label{sec:perspectives-amelioration}
 
-\subsection{Intelligence artificielle}
-Intégration d'un module d'IA pour optimiser les itinéraires et détecter les comportements inhabituels.
+\subsection{Intelligence artificielle et prédiction de la demande}
+\label{sec:perspectives-ai}
+L'intégration de modèles d'apprentissage automatique (\textit{machine learning}) en production permettra d'affiner l'estimation de la demande de covoiturage. En entraînant des modèles de régression (tels que XGBoost ou des réseaux de neurones récurrents LSTM) sur l'historique des trajets et des données calendaires algériennes (fêtes nationales, vacances universitaires, conditions météorologiques), le système pourra anticiper les flux de voyageurs inter-wilayas. Ces prédictions serviront à ajuster dynamiquement les coefficients de \textit{surge pricing} et à suggérer aux conducteurs des horaires de départ optimaux pour maximiser leur taux d'occupation.
 
-\subsection{Matching intelligent}
-Algorithme d'appariement avancé basé sur la notation, les détours acceptés et les wilayas de transit.
+\subsection{Algorithme de matching spatial avancé}
+\label{sec:perspectives-matching}
+Le matching actuel repose sur une correspondance stricte entre wilayas de départ et d'arrivée. Une évolution majeure consistera à implémenter un algorithme de matching sur graphe routier (en s'appuyant sur l'extension PostGIS de PostgreSQL et le moteur OSRM). Cet algorithme calculera l'intersection géométrique des itinéraires pour proposer à un passager des conducteurs effectuant un trajet plus long mais transitant par sa wilaya de départ et sa destination. Le système évaluera le détour temporel imposé au conducteur et ajustera automatiquement le prix de la place en conséquence.
 
-\subsection{Paiement CCP / BaridiMob}
-Automatisation de la validation des virements BaridiMob par reconnaissance optique des reçus.
+\subsection{Automatisation de la validation BaridiMob (OCR)}
+\label{sec:perspectives-baridimob}
+Pour élargir l'inclusion financière des utilisateurs dépourvus de cartes de paiement classiques (CIB/Edahabia), l'intégration de BaridiMob est planifiée. Afin d'éviter la validation manuelle chronophage des virements par le support client, un pipeline de reconnaissance optique de caractères (OCR) basé sur un réseau de neurones convolutifs (CNN) sera déployé sur le service IA. Ce modèle analysera la capture d'écran du reçu de transaction BaridiMob téléversée par le passager, en extraira le numéro de transaction, le montant et la date, puis interrogera la base pour valider automatiquement la réservation après vérification de cohérence.
 
-\subsection{Système anti-fraude}
-Détection de comptes multiples et analyse comportementale des réservations suspectes.
+\subsection{Système anti-fraude et analyse comportementale}
+\label{sec:perspectives-antifraude}
+La sécurité sera renforcée par le déploiement d'un module d'analyse comportementale en temps réel. En corrélant les empreintes matérielles des appareils (\textit{device fingerprinting}), les adresses IP et l'historique des transactions, ce module détectera les tentatives de création de comptes multiples (sybils) visant à contourner des rejets KYC ou des suspensions. De plus, un algorithme d'apprentissage non supervisé (de type Isolation Forest) identifiera les schémas de réservation suspects, comme les réservations en boucle suivies d'annulations systématiques, caractéristiques de comportements malveillants ou d'attaques par déni de service.
 
-\subsection{Recommandation de trajets}
-Moteur de recommandation basé sur l'historique de déplacement de l'utilisateur.
+\subsection{Moteur de recommandation personnalisé}
+\label{sec:perspectives-recommandation}
+Un moteur de recommandation basé sur le filtrage collaboratif et le filtrage basé sur le contenu (\textit{Content-Based Filtering}) sera intégré pour personnaliser l'écran d'accueil des passagers. En analysant les habitudes de déplacement individuelles (wilayas favorites, créneaux horaires préférentiels, tolérance aux détours), le système proposera de manière proactive des suggestions de trajets dès l'ouverture de l'application. Cette approche réduira le parcours utilisateur de la recherche à la réservation de quatre à deux étapes, augmentant ainsi le taux de conversion global de la plateforme.
 
 \section{Conclusion}
 Ce chapitre a exposé les validations rigoureuses subies par la plateforme RohWinBghit, son schéma de déploiement sécurisé, ainsi que les fondations économiques et financières de la startup associée.
