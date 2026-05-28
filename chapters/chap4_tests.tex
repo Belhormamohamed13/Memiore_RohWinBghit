@@ -72,6 +72,37 @@ Modèles de réservation (\texttt{trip-booking.model}, \texttt{trip-booking}) & 
 
 \paragraph{Perspective.} La stabilisation du harnais de tests d'intégration (base \textsc{postgresql} éphémère via \textit{Testcontainers} et nettoyage transactionnel entre cas) constitue un chantier prioritaire post-mémoire, visant un taux de réussite global $\geq$~95\,\% en CI continue.
 
+\subsection{Scénarios de tests d'intégration et d'acceptation}
+\label{sec:scenarios-tests}
+
+Pour compléter les tests automatisés Jest, une matrice de scénarios de tests d'intégration et d'acceptation fonctionnelle a été définie et exécutée manuellement. Le tableau~\ref{tab:test-matrix} récapitule ces scénarios clés, décrivant pour chacun les préconditions, les étapes opératoires, le résultat attendu et le statut d'exécution constaté.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|l|p{2.5cm}|p{2.2cm}|p{3.2cm}|p{3.2cm}|c|}
+\hline
+\rowcolor{rohlight}
+\textbf{ID} & \textbf{Scénario} & \textbf{Préconditions} & \textbf{Étapes} & \textbf{Résultat Attendu} & \textbf{Statut} \\
+\hline
+TS-01 & Inscription passager & Aucune session active & 1. Saisie nom, téléphone.\newline 2. Envoi OTP.\newline 3. Validation OTP. & Compte passager créé en base, JWT émis et stocké. & \textbf{Succès} \\
+\hline
+TS-02 & Vérification KYC & Compte créé, documents prêts & 1. Soumission CIN recto/verso.\newline 2. Capture faciale.\newline 3. Exécution pipeline. & Extraction OCR validée, similarité faciale $>$ 0,60, statut passe à validé. & \textbf{Succès} \\
+\hline
+TS-03 & Publication de trajet & Conducteur KYC validé, véhicule enregistré & 1. Sélection départ/arrivée.\newline 2. Saisie date et prix.\newline 3. Soumission. & Trajet enregistré en base PostgreSQL avec statut \texttt{active}. & \textbf{Succès} \\
+\hline
+TS-04 & Réservation de place & Trajet existant avec places libres & 1. Recherche trajet.\newline 2. Sélection de places.\newline 3. Réservation. & Nombre de places diminué de 1, notification envoyée au conducteur. & \textbf{Succès} \\
+\hline
+TS-05 & Paiement électronique & Réservation initiée & 1. Choix Edahabia.\newline 2. Saisie carte sandbox.\newline 3. Validation SATIM. & Débit simulé avec succès, statut réservation mis à \texttt{confirmed}. & \textbf{Succès} \\
+\hline
+TS-06 & Messagerie WebSocket & Trajet réservé & 1. Ouverture chat.\newline 2. Envoi message.\newline 3. Vérification réception. & Message délivré instantanément via Socket.IO, persisté en base. & \textbf{Succès} \\
+\hline
+\end{tabularx}
+\caption{Matrice des scénarios de tests fonctionnels et d'intégration}
+\label{tab:test-matrix}
+\end{table}
+
 \section{Résultats des tests}
 \label{sec:resultats-tests}
 \label{sec:resultats}
@@ -310,8 +341,11 @@ Le projet se distingue par plusieurs aspects innovants~:
 \end{itemize}
 
 \subsection{Analyse stratégique du marché}
+\label{sec:analyse-strategique}
 
-\subsection{Segmentation du marché}
+L'introduction de \textit{RohWinBghit} sur le marché algérien repose sur une compréhension fine de la structure de l'offre et de la demande. Nous analysons ci-après la segmentation de notre clientèle cible ainsi que le positionnement concurrentiel de la plateforme face aux solutions de transport existantes.
+
+\subsubsection{Segmentation du marché}
 
 Le marché cible a été segmenté en cinq groupes d'utilisateurs~:
 \begin{enumerate}
@@ -322,7 +356,7 @@ Le marché cible a été segmenté en cinq groupes d'utilisateurs~:
   \item \textbf{Diaspora algérienne} de passage --- visiteurs réguliers cherchant un transport fiable.
 \end{enumerate}
 
-\subsection{Analyse de la concurrence}
+\subsubsection{Analyse de la concurrence}
 
 L'analyse comparative (chapitre~1, tableau~\ref{tab:comparatif}) a montré que le segment inter-wilayas demeure sous-servi~: un seul acteur algérien (Nroho) y est présent, et aucun acteur international ne s'y est encore positionné. La menace concurrentielle principale viendrait d'une extension de Yassir ou de Heetch depuis le segment urbain, où leur maturité d'usage est désormais attestée par la littérature~\cite{naim_yassir_2024}, ou de l'entrée d'un acteur international (BlaBlaCar, inDrive). Notre proposition de différenciation repose sur trois leviers complémentaires~: la couverture nationale native des 69~wilayas, l'approfondissement du pipeline KYC biométrique (vivacité + anti-\textit{spoofing} avec seuils différenciés par rôle), et l'adaptation culturelle trilingue AR/FR/EN. L'analyse des avis utilisateurs des principales plateformes de \textit{ride-hailing} menée par Amri~\textit{et al.}~\cite{amri_ride_hailing_2024} met par ailleurs en évidence la centralité des préoccupations de sécurité et de transparence tarifaire dans le choix d'adoption, deux axes explicitement couverts par notre proposition.
 
@@ -350,7 +384,7 @@ Contrairement à un produit industriel, \textit{RohWinBghit} est un produit num�
   \item \textbf{Opérations clients~:} support, modération, traitement des litiges.
 \end{enumerate}
 
-Les figures suivantes illustrent respectivement le processus métier du passager (Figure~\ref{fig:proc-passenger}) et celui de l'administrateur (Figure~\ref{fig:proc-admin}). Le parcours opérationnel du conducteur est quant à lui documenté par les captures d'écran correspondantes en Annexe~\ref{annexe:captures}.
+Les figures suivantes illustrent respectivement le processus métier du passager (Figure~\ref{fig:proc-passenger}) et celui de l'administrateur (Figure~\ref{fig:proc-admin}). Le parcours opérationnel du conducteur est quant à lui documenté par les captures d'écran correspondantes de la section~\ref{sec:screenshots} du chapitre~3.
 
 \textbf{Description du parcours conducteur.} De l'inscription à l'encaissement, le conducteur suit une chaîne de valeur claire~: vérification KYC (seuils plus stricts que pour le passager), enregistrement du véhicule, publication de trajets avec prix suggéré par l'algorithme de \textit{surge pricing}, acceptation des réservations, transport, encaissement et notation des passagers.
 

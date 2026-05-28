@@ -6,6 +6,9 @@
 Toute démarche d'ingénierie logicielle commence par une lecture attentive du terrain sur lequel la solution est appelée à s'inscrire. Le présent chapitre poursuit cette ambition à propos du projet \textit{RohWinBghit}, plateforme mobile de covoiturage inter-wilayas pensée pour l'Algérie. Nous y replaçons d'abord le projet dans la trajectoire plus large de la mobilité numérique mondiale, avant d'examiner les particularités du transport longue distance en Algérie et les opportunités offertes par un marché numérique en pleine expansion. Nous menons une étude approfondie de l'état de l'art pour positionner le covoiturage dans le contexte algérien.
 
 \section{Présentation du domaine du covoiturage}
+\label{sec:presentation-domaine}
+
+Cette section présente le domaine du covoiturage et son évolution sous l'influence des technologies numériques. Nous abordons d'abord le concept de mobilité intelligente, avant de définir le transport collaboratif et d'analyser ses enjeux dans le contexte algérien.
 
 \subsection{Mobilité intelligente}
 \label{sec:mobilite-numerique}
@@ -17,11 +20,13 @@ Cette convergence \textit{réseau + terminal} a redéfini l'architecture des ser
 \subsection{Transport collaboratif}
 \label{sec:definition-covoiturage}
 
-\subsection{Concept et origine}
+Le transport collaboratif s'est développé comme une alternative durable aux modes de déplacement individuels. Cette sous-section définit ses concepts fondateurs, ses bénéfices et ses enjeux sur le territoire national.
+
+\subsubsection{Concept et origine}
 
 Le covoiturage (\textit{carpooling}, \textit{ridesharing}) désigne le partage d'un véhicule privé entre un conducteur et un ou plusieurs passagers réalisant un trajet similaire, moyennant un partage des frais. Apparu dès la Seconde Guerre mondiale aux États-Unis, sous l'effet du rationnement de carburant, il s'est structuré dans les années~1970 en réponse au choc pétrolier, avant de prendre sa forme contemporaine au cours des années~2000 avec l'émergence d'Internet, puis du \textit{smartphone}~\cite{chan_carpooling_2012}. L'arrivée de plateformes telles que \textit{BlaBlaCar} (France, 2006) a marqué l'industrialisation du modèle, en facilitant la mise en relation à grande échelle et en introduisant des mécanismes de confiance numérique.
 
-\subsection{Bénéfices observés}
+\subsubsection{Bénéfices observés}
 
 Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturage produit une triple valeur.
 \begin{enumerate}
@@ -30,7 +35,7 @@ Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturag
   \item \textbf{Bénéfice environnemental~:} la réduction du nombre de véhicules en circulation. L'\textsc{ademe} estime qu'un passager covoituré régulièrement évite en moyenne 110~kg de CO\textsubscript{2} par an~\cite{ademe_2022}.
 \end{enumerate}
 
-\subsection{Enjeux du covoiturage en Algérie}
+\subsubsection{Enjeux du covoiturage en Algérie}
 \label{sec:transport-algerie}
 
 L'Algérie présente une géographie singulière~: un territoire de plus de 2,38~millions de km\textsuperscript{2}, structuré en 69~wilayas, et marqué par une concentration urbaine sur le littoral. Les déplacements inter-wilayas restent donc fortement dépendants de la voiture individuelle et de l'autocar, dans un contexte où le réseau ferroviaire ne dessert qu'une part limitée du territoire. Quatre constats majeurs structurent le diagnostic de ce secteur.
@@ -55,11 +60,13 @@ Le contexte démographique renforce cette opportunité~: le pays compte plus de 
 \subsection{Technologies clés mobilisées}
 \label{sec:technologies}
 
-\subsection{Développement mobile multiplateforme}
+Le déploiement d'une plateforme de covoiturage moderne nécessite l'intégration de plusieurs briques technologiques interconnectées. Nous passons en revue les technologies de développement mobile, de vérification biométrique, de paiement et de géolocalisation.
+
+\subsubsection{Développement mobile multiplateforme}
 
 Le développement mobile s'organise aujourd'hui autour de deux grandes approches~: le \textit{natif} (Swift pour iOS, Kotlin pour Android) et le \textit{multiplateforme}. Dans cette seconde catégorie, les frameworks \textit{React Native} (Meta, 2015), \textit{Flutter} (Google, 2017) et \textit{Ionic} dominent l'écosystème. \textit{React Native} s'impose comme une solution de référence lorsque l'on recherche un compromis entre performance proche du natif, large écosystème JavaScript/TypeScript et délai réduit de mise sur le marché. Son modèle de \textit{pont} JavaScript-natif permet de mutualiser jusqu'à 95\,\% du code entre iOS et Android tout en exposant les capacités matérielles (GPS, caméra, notifications, stockage sécurisé) requises par une application de covoiturage.
 
-\subsection{Vérification d'identité par intelligence artificielle (KYC)}
+\subsubsection{Vérification d'identité par intelligence artificielle (KYC)}
 
 La vérification \gls{kyc} est devenue une étape incontournable pour toute plateforme manipulant des paiements ou organisant la rencontre physique entre inconnus. Elle repose sur trois briques techniques complémentaires~:
 \begin{itemize}
@@ -68,11 +75,11 @@ La vérification \gls{kyc} est devenue une étape incontournable pour toute plat
   \item \textbf{Détection de vivacité} (\textit{liveness detection}), destinée à empêcher les attaques par présentation (photo imprimée, vidéo rejouée, masque). Les approches modernes reposent sur des réseaux de neurones convolutifs entraînés sur des bases de référence telles que \textit{CASIA-FASD} ou \textit{CelebA-Spoof}~\cite{boulkenafet_liveness_2017}.
 \end{itemize}
 
-\subsection{Paiement électronique local}
+\subsubsection{Paiement électronique local}
 
 À l'échelle internationale, le paiement mobile s'est démocratisé via des solutions comme \textit{Apple~Pay}, \textit{Google~Pay}, \textit{Stripe} ou \textit{PayPal}. Pour le marché algérien, l'enjeu pratique réside dans l'intégration native des moyens de paiement locaux (CIB, Edahabia, Baridi~Mob), seule à même d'assurer une couverture financière suffisante pour les usagers réels.
 
-\subsection{Géolocalisation et messagerie temps réel}
+\subsubsection{Géolocalisation et messagerie temps réel}
 
 La précision GPS sub-métrique offerte par les \textit{smartphones} actuels, combinée à des services de cartographie tels que \textit{Mapbox} ou \textit{Google~Maps}, rend possible le suivi de trajet en temps réel et le calcul d'itinéraires optimisés. Côté communication, les protocoles \textit{WebSocket} (\textit{Socket.IO}) permettent une messagerie bidirectionnelle à faible latence, indispensable au chat conducteur--passager et aux notifications de statut.
 
@@ -81,7 +88,12 @@ La précision GPS sub-métrique offerte par les \textit{smartphones} actuels, co
 
 Plusieurs plateformes de mobilité partagée opèrent aujourd'hui aux échelles internationale, régionale ou nationale. Pour positionner notre projet, nous avons retenu un échantillon représentatif et comparé ces plateformes selon huit critères jugés déterminants~: couverture géographique, présence sur le segment inter-wilayas, vérification d'identité, paiements locaux, messagerie temps réel, tarification dynamique, chiffrement des données et langues d'interface.
 
-\subsection{BlaBlaCar}
+\subsection{Acteurs internationaux}
+\label{sec:acteurs-internationaux}
+
+Afin de positionner notre projet, nous analysons d'abord les solutions qui dominent le marché mondial du covoiturage et du transport partagé.
+
+\subsubsection{BlaBlaCar}
 \label{sec:blablacar}
 \textbf{BlaBlaCar} (France, 2006) reste la référence européenne du covoiturage longue distance, avec une présence dans 22~pays et plus de 100~millions d'utilisateurs cumulés. Son modèle, fondé sur le paiement en ligne et les notations croisées, n'est cependant pas adapté au contexte algérien (carte bancaire internationale requise, absence d'implantation locale). \textbf{IdVroom} (France), filiale de la \textsc{sncf}, s'est concentrée sur le covoiturage domicile--travail à l'échelle française. \textbf{Uber~Pool}, \textbf{Lyft~Shared} et \textbf{Via} (États-Unis) couvrent quant à eux le segment urbain partagé, sans offre inter-wilayas pertinente pour notre marché cible.
 
@@ -91,11 +103,11 @@ Dans cette section, nous examinons les principaux acteurs de transport opérant 
 
 Le marché algérien est aujourd'hui couvert par plusieurs acteurs urbains et, plus récemment, par deux acteurs sur le segment inter-wilayas.
 
-\subsection{Yassir}
+\subsubsection{Yassir}
 \label{sec:yassir}
 Yassir est le leader du VTC en Algérie... Application algérienne fondée en 2017, \textit{Yassir} est devenue le leader local du \textsc{vtc} urbain. Une étude empirique récente conduite à Ali~Menjeli (Constantine) a montré que son adoption a réduit le temps d'attente moyen et transformé les pratiques de mobilité, y compris parmi les catégories les plus précaires~\cite{naim_yassir_2024}. Sa portée reste cependant urbaine.
 
-\subsection{Heetch}
+\subsubsection{Heetch}
 \label{sec:heetch}
 Heetch est un acteur urbain... Acteur français implanté en Algérie depuis 2020, également centré sur le segment urbain.
 
@@ -103,11 +115,11 @@ Heetch est un acteur urbain... Acteur français implanté en Algérie depuis 202
 
 \paragraph{Melaygo.} Application algérienne lancée en 2019, positionnée sur le partage de trajets et le partage des frais. Son interface et sa base d'utilisateurs sont restées limitées.
 
-\subsection{Nroho}
+\subsubsection{Nroho}
 \label{sec:nroho}
 Nroho est une plateforme algérienne... Startup algérienne récente (publiée par Moussa Boussekine), labellisée par le Ministère de l'Économie du Savoir, des Start-up et des Micro-entreprises, et lauréate du 2\textsuperscript{e}~prix à l'\textit{IsDB Pitch Competition} de la Banque Islamique de Développement (axe durabilité). L'application revendique plus de 2~000~utilisateurs actifs (note 4,5/5) et propose une vérification d'identité par scan de \textsc{cin} et \textit{selfie}, un \textit{matching} par affinités, un suivi GPS temps réel, un règlement en espèces et un bouton SOS. Selon les éléments publiquement disponibles, certaines briques restent perfectibles, notamment l'intégration native des paiements électroniques et la profondeur du pipeline biométrique.
 
-\subsection{inDrive}
+\subsubsection{inDrive}
 \label{sec:indrive}
 inDrive est très populaire en Algérie... Acteur international d'origine kazakhstanaise, classé \textbf{application de mobilité partagée \#1 en Algérie} au troisième trimestre 2025 selon \textit{Sensor Tower}~\cite{sensortower_algeria_2025}. En décembre~2025, inDrive a étendu son offre vers le covoiturage inter-wilayas (service \textit{City~to~City}), avec une dizaine d'axes initiaux (Alger--Tizi~Ouzou, Alger--Oran, Alger--Tipaza, Rouiba--Béjaïa\dots)~\cite{indrive_interwilaya_2025}. Les tarifs annoncés s'échelonnent de 520 à 1~050~DZD pour les courts trajets et démarrent à 1~300~DZD au-delà. La vérification d'identité est documentaire (non biométrique) et le paiement reste majoritairement en espèces.
 

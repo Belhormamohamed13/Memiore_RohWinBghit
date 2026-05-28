@@ -127,7 +127,61 @@ Figma a été utilisé pour la conception graphique de la charte et des écrans.
 
 L'application mobile est construite avec le framework React Native (et l'environnement Expo CLI), en s'appuyant sur TypeScript pour la modélisation typée des échanges. Elle implémente une architecture modulaire et expose un ensemble de 62 écrans opérationnels pour les rôles passager, conducteur et les paramètres partagés.
 
-Pour une description ergonomique exhaustive et une analyse détaillée de chacun de ces parcours avec leurs figures et captures d'écran associées, le lecteur est invité à se référer à la section~\ref{sec:screenshots} (« Captures d'écran et interfaces ») de ce chapitre, ainsi qu'au guide de l'Annexe~\ref{annexe:captures}.
+Pour une description ergonomique exhaustive et une analyse détaillée de chacun de ces parcours avec leurs figures et captures d'écran associées, le lecteur est invité à se référer à la section~\ref{sec:screenshots} (« Captures d'écran et interfaces ») de ce chapitre.
+
+\subsection{Guide opératoire et parcours utilisateur (Manuel utilisateur)}
+\label{sec:manuel-utilisateur}
+
+Cette sous-section présente le guide opératoire détaillé décrivant l'enchaînement des étapes pour les deux rôles de la plateforme.
+
+\subsubsection{Parcours Passager}
+\label{sec:manuel-passager}
+
+\paragraph{Inscription et connexion.}
+Lors du premier lancement de l'application, vous devez créer votre compte en saisissant votre numéro de téléphone. Un code de validation à usage unique (OTP) vous est envoyé par SMS. Après sa saisie et sa validation, complétez vos informations de profil (nom, prénom et adresse email). Pour les connexions ultérieures, la saisie du numéro de téléphone et la validation par SMS sont requises pour garantir la sécurité.
+
+\paragraph{Vérification d'identité (KYC).}
+Pour pouvoir réserver un trajet, vous devez obligatoirement valider votre identité. Accédez à votre profil et sélectionnez « Vérification d'identité » :
+\begin{enumerate}
+  \item Cadrez le recto de votre Carte d'Identité Nationale (CIN) dans la zone indiquée et déclenchez la capture. Répétez l'opération pour le verso.
+  \item Réalisez le selfie vidéo demandé en effectuant les mouvements affichés à l'écran pour prouver votre présence physique (détection de vivacité).
+  \item Soumettez le dossier. Le traitement automatique prend moins de deux minutes. Si les scores de validation sont insuffisants mais corrects, votre dossier sera réorienté vers une revue manuelle par un administrateur.
+\end{enumerate}
+
+\paragraph{Recherche et réservation.}
+Sur l'écran d'accueil, indiquez votre wilaya de départ, votre wilaya d'arrivée et la date souhaitée du déplacement. Les résultats s'affichent instantanément. Vous pouvez trier ou filtrer les propositions selon le prix, le niveau de confort du véhicule ou la note du conducteur. Une fois le trajet choisi, sélectionnez le nombre de places et validez votre moyen de paiement (espèces, CIB ou Edahabia).
+
+\paragraph{Messagerie et suivi temps réel.}
+Une fois la réservation confirmée, accédez au chat intégré pour communiquer en toute sécurité avec le conducteur sans divulguer votre numéro de téléphone. Le jour du départ, suivez la position GPS du véhicule en temps réel sur la carte intégrée pour connaître son heure précise d'arrivée (ETA).
+
+\subsubsection{Parcours Conducteur}
+\label{sec:manuel-conducteur}
+
+\paragraph{Enregistrement d'un véhicule.}
+Pour passer en mode conducteur, accédez aux paramètres de votre profil. Enregistrez votre véhicule en renseignant la marque, le modèle, l'année et la couleur. Vous devez téléverser une photo lisible de la plaque d'immatriculation (qui sera chiffrée par AES-256 en base de données) ainsi que vos documents réglementaires (carte grise, assurance en cours de validité et contrôle technique).
+
+\paragraph{Publication d'un trajet.}
+Sélectionnez « Publier un trajet ». Indiquez votre point de départ, votre destination finale, les wilayas de transit par lesquelles vous passerez, la date et l'heure de départ. Le système vous propose un tarif recommandé par place basé sur la distance et les frais de route. Définissez le nombre de places disponibles et publiez le trajet.
+
+\paragraph{Gestion des réservations et portefeuille.}
+Vous recevrez des notifications push pour chaque demande de réservation. Vous pouvez consulter le profil du passager (son badge KYC et ses notes précédentes) avant d'accepter. À la fin du trajet, confirmez la clôture du voyage. Vos gains (déduits de la commission de la plateforme) sont crédités sur votre portefeuille virtuel. Vous pouvez demander un retrait vers votre compte bancaire à tout moment.
+
+\subsubsection{Schéma général de navigation applicative}
+\label{sec:navigation-schema}
+
+Le schéma ci-dessous présente l'enchaînement logique des écrans majeurs de la plateforme :
+
+\begin{verbatim}
+[Passager]
+Accueil/Recherche -> Résultats -> Détails Trajet -> Paiement -> Billet/Suivi GPS
+   |
+   +--> Profil -> Vérification KYC (Capture CIN -> Selfie Vivacité)
+
+[Conducteur]
+Tableau de bord -> Publication Trajet -> Gestion Réservations -> Démarrage -> Gains
+   |
+   +--> Véhicules -> Ajouter Véhicule (Saisie et téléversement documents)
+\end{verbatim}
 
 \section{Réalisation du Dashboard Web}
 \label{sec:dashboard-web}
@@ -321,6 +375,50 @@ Afin de matérialiser la structure relationnelle en PostgreSQL 16, le schéma es
 \end{itemize}
 \end{highlight}
 
+\subsection{Schéma SQL de création des tables}
+\label{sec:schema-sql-creation}
+
+Pour concrétiser physiquement la base de données relationnelle PostgreSQL, le script SQL suivant présente la création des tables principales de la plateforme, notamment la table des utilisateurs (\texttt{users}) et la table des trajets (\texttt{trips}) avec leurs index et contraintes de clés étrangères associées.
+
+\begin{lstlisting}[language=SQL,caption={Extrait de la création des tables principales (identifiants UUID v4)}]
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE users (
+  id                   UUID          PRIMARY KEY DEFAULT uuid_generate_v4(),
+  phone                VARCHAR(20)   UNIQUE NOT NULL,
+  email                VARCHAR(120)  UNIQUE,
+  first_name           VARCHAR(80)   NOT NULL,
+  last_name            VARCHAR(80)   NOT NULL,
+  date_of_birth        DATE,
+  password             VARCHAR(120)  NOT NULL,
+  role                 VARCHAR(20)   NOT NULL DEFAULT 'passenger',
+  verification_status  VARCHAR(20)   NOT NULL DEFAULT 'pending',
+  is_verified          BOOLEAN       NOT NULL DEFAULT false,
+  wilaya_code          INT,
+  created_at           TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+
+CREATE TABLE trips (
+  id                UUID           PRIMARY KEY DEFAULT uuid_generate_v4(),
+  driver_id         UUID           NOT NULL REFERENCES users(id),
+  vehicle_id        UUID           NOT NULL REFERENCES vehicles(id),
+  from_wilaya_id    INT            NOT NULL REFERENCES wilayas(id),
+  to_wilaya_id      INT            NOT NULL REFERENCES wilayas(id),
+  from_city         VARCHAR(120)   NOT NULL,
+  to_city           VARCHAR(120)   NOT NULL,
+  departure_date    DATE           NOT NULL,
+  departure_time    TIME           NOT NULL,
+  price_per_seat    NUMERIC(10,2)  NOT NULL,
+  available_seats   SMALLINT       NOT NULL,
+  total_seats       SMALLINT       NOT NULL,
+  status            VARCHAR(20)    NOT NULL DEFAULT 'active',
+  created_at        TIMESTAMPTZ    NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_trips_route_date ON trips
+  (from_wilaya_id, to_wilaya_id, departure_date);
+\end{lstlisting}
+
 \subsection{Optimisation des requêtes}
 \label{sec:optimisation-requetes}
 
@@ -329,7 +427,7 @@ Les colonnes sollicitées dans les filtres de recherche et jointures sont index�
 \section{Captures d'écran et interfaces}
 \label{sec:screenshots}
 
-L'application mobile expose au total \textbf{62~écrans distincts} couvrant les parcours passager et conducteur. Cette section présente les interfaces les plus représentatives, organisées par parcours fonctionnel. L'intégralité des captures est rassemblée en Annexe~\ref{annexe:captures}.
+L'application mobile expose au total \textbf{62~écrans distincts} couvrant les parcours passager et conducteur. Cette section présente les interfaces les plus représentatives, organisées par parcours fonctionnel (voir les figures~\ref{fig:kyc-screens} à~\ref{fig:settings-legal}).
 
 \subsection{Parcours \textsc{kyc} --- vérification biométrique d'identité}
 
@@ -686,6 +784,46 @@ Trois méthodes de paiement coexistent~: règlement en espèces (opérationnel),
 \paragraph{Cycle de vie d'une transaction.} Une réservation déclenche~: (i)~le calcul du tarif dynamique par le \texttt{FareService} (avec multiplicateur de \textit{surge} mis en cache dans Redis)~; (ii)~la résolution de la stratégie de paiement appropriée~; (iii)~l'exécution effective via la passerelle (\textsc{cib}/\textit{Edahabia}) ou la confirmation différée (espèces)~; (iv)~la persistance transactionnelle de la \texttt{Booking} et du \texttt{Payment} en \textsc{postgresql}~; (v)~la notification \textit{push} au conducteur. En cas d'échec, un remboursement est déclenché et le passager notifié.
 
 \paragraph{Réconciliation.} Une tâche planifiée Bull/BullMQ procède quotidiennement à la réconciliation des transactions \textit{sandbox} avec les références émises par la passerelle, et signale toute incohérence à l'administrateur via le tableau de bord.
+
+\paragraph{Implémentation du patron Strategy/Factory.}
+Afin d'isoler l'orchestration des flux de paiement et de garantir l'extensibilité du module conformément au principe ouvert/fermé (OCP), l'implémentation repose sur une fabrique (\texttt{PaymentFactory}) enregistrant les différentes stratégies disponibles. L'extrait de code~\ref{lst:payment-factory} présente la structure Node.js de cette fabrique.
+
+\begin{lstlisting}[language=Java,caption={Implémentation Node.js du patron \textit{Strategy/Factory} (extrait de \texttt{backend/src/services/patterns/payment/payment.factory.js})},label={lst:payment-factory}]
+const CIBStrategy      = require('./cib.strategy');
+const EdahabiaStrategy = require('./edahabia.strategy');
+const CashStrategy     = require('./cash.strategy');
+
+class PaymentFactory {
+  constructor(config = {}) {
+    this.strategies = new Map();
+    this.registerStrategy('cib',      new CIBStrategy(config.cib));
+    this.registerStrategy('edahabia', new EdahabiaStrategy(config.edahabia));
+    this.registerStrategy('cash',     new CashStrategy(config.cash));
+  }
+
+  registerStrategy(method, strategy) {
+    this.strategies.set(method.toLowerCase(), strategy);
+  }
+
+  getStrategy(method) {
+    const strategy = this.strategies.get(method.toLowerCase());
+    if (!strategy) throw new Error(`Payment method not supported: ${method}`);
+    return strategy;
+  }
+
+  async processPayment(method, paymentData) {
+    return await this.getStrategy(method).process(paymentData);
+  }
+
+  async refundPayment(method, refundData) {
+    return await this.getStrategy(method).refund(refundData);
+  }
+}
+
+module.exports = PaymentFactory;
+\end{lstlisting}
+
+L'ajout d'une nouvelle méthode de paiement (p.~ex.~Baridi~Mob) consiste simplement à créer une classe \texttt{BaridiStrategy} implémentant l'interface commune, puis à l'enregistrer dans la fabrique via \texttt{registerStrategy('baridi', ...)} sans modifier le code de la classe \texttt{PaymentFactory}, garantissant la conformité avec le principe d'ouverture/fermeture.
 
 \section{Géolocalisation et cartographie}
 \label{sec:realisation-geoloc}
