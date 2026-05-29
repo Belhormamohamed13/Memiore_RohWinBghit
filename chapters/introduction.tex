@@ -10,51 +10,39 @@ La mobilité intercité constitue l'un des défis structurels majeurs de l'Algé
 \section*{I.2 Problématique}
 \addcontentsline{toc}{section}{I.2 Problématique}
 
-Cette fragmentation de l'offre de transport interurbain, confrontée à une demande estudiantine et professionnelle en forte croissance, soulève un défi d'ingénierie logicielle et de confiance sociétale majeur. La problématique centrale de ce travail de recherche s'énonce ainsi : \textit{Comment concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée aux contraintes socio-économiques, logistiques et financières de l'Algérie, capable de lever le frein de la confiance grâce à un système automatisé de vérification d'identité par intelligence artificielle (KYC), tout en garantissant des performances réseau optimales et l'interopérabilité avec les systèmes de paiement locaux ?}
+Cette fragmentation de l'offre de transport interurbain, confrontée à une demande estudiantine et professionnelle en forte croissance, soulève un défi d'ingénierie logicielle et de confiance sociétale majeur. La problématique centrale de ce travail s'énonce ainsi : \textit{Comment concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée aux contraintes socio-économiques, logistiques et financières de l'Algérie, capable de lever le frein de la confiance grâce à un système automatisé de vérification d'identité par intelligence artificielle (KYC), tout en garantissant des performances réseau optimales et l'interopérabilité avec les systèmes de paiement locaux ?}
 
 \section*{I.3 Objectifs du projet}
 \addcontentsline{toc}{section}{I.3 Objectifs du projet}
 
-Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) propose de concevoir, développer et évaluer une plateforme logicielle complète. Pour assurer l'efficacité de ce projet de fin d'études mené dans le cadre de l'Arrêté interministériel n\textsuperscript{o}~1275 sur une période de 9~mois (d'octobre 2025 à juin 2026), nos objectifs ont été formulés selon la grille méthodologique \textbf{SMART} (Spécifique, Mesurable, Atteignable, Réaliste, Temporellement défini) :
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{Objectif Général (SMART) :} Concevoir et développer un prototype opérationnel de plateforme de covoiturage inter-wilayas (application mobile et infrastructure de services) destiné aux 1,7~million d'étudiants et jeunes actifs algériens, garantissant un score d'utilisabilité (SUS) de niveau supérieur ou égal à 70/100 et des temps de réponse médians des services transactionnels inférieurs à 200~ms.
-  \item \textbf{Objectif Spécifique 1 (Analyse et Conception - S.M.A.R.T.) :} Mener sous 4~semaines une étude comparative de 3 concurrents indirects et formaliser les exigences fonctionnelles et non fonctionnelles du système, débouchant sur une modélisation UML (diagrammes de cas d'utilisation, de classes et de séquences) et un schéma relationnel de base de données en 3NF comportant 29~tables.
-  \item \textbf{Objectif Spécifique 2 (Développement du Core Mobile et Back-end - S.M.A.R.T.) :} Développer sous 16~semaines une application mobile multiplateforme (React Native/Expo) et son API back-end (Express.js), prenant en charge la publication et la réservation de trajets, avec affichage cartographique (Mapbox) et une tarification dynamique mise en cache sous Redis.
-  \item \textbf{Objectif Spécifique 3 (Intégration d'un Service de Confiance Biométrique - S.M.A.R.T.) :} Développer et intégrer sous 6~semaines un microservice IA (FastAPI/Python) réalisant la vérification d'identité KYC (reconnaissance de documents par OCR, comparaison faciale InsightFace et détection de vivacité) avec un taux de réussite unifié de validation automatique supérieur à 95\,\%.
-  \item \textbf{Objectif Spécifique 4 (Paiement et Validation - S.M.A.R.T.) :} Intégrer un système de paiement multi-méthodes (espèces et cartes CIB/Edahabia en sandbox SATIM) et valider le système sous 4~semaines par un harnais de 107 tests unitaires (couverture minimale de 80\,\%), une évaluation d'utilisabilité SUS auprès de 18 participants, et un plan d'affaires sur 3 ans sous le cadre réglementaire de l'Arrêté 1275.
-\end{itemize}
+Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) propose de concevoir, développer et évaluer une plateforme logicielle complète. Les objectifs ont été formulés selon la grille \textbf{SMART} et sont synthétisés dans le tableau ci-dessous.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\rowcolor{rohlight}
+\textbf{Objectif} & \textbf{Livrable} & \textbf{Délai} \\
+\hline
+\textbf{OG} --- Prototype opérationnel & Application mobile + infrastructure de services, SUS $\geq$ 70/100 & 9 mois \\
+\hline
+\textbf{OS1} --- Analyse et conception & Étude comparative, modélisation UML, schéma 3NF & 4 sem. \\
+\hline
+\textbf{OS2} --- Mobile et back-end & Application React~Native/Expo + API Express.js, cartographie Mapbox & 16 sem. \\
+\hline
+\textbf{OS3} --- Service KYC biométrique & Microservice FastAPI (OCR, comparaison faciale, liveness) & 6 sem. \\
+\hline
+\textbf{OS4} --- Paiement et validation & Paiement multi-méthodes (CIB/Edahabia en sandbox, espèces), tests automatisés & 4 sem. \\
+\hline
+\end{tabularx}
+\caption{Objectifs du projet selon la grille SMART}
+\end{table}
 
 \section*{I.4 Méthodologie de travail}
 \addcontentsline{toc}{section}{I.4 Méthodologie de travail}
 
-\subsection*{I.4.1 Justification du cadre de travail Agile Scrum}
-\addcontentsline{toc}{subsection}{I.4.1 Justification du cadre de travail Agile Scrum}
-
-Le développement d'un système distribué combinant du mobile multiplateforme, de la communication temps réel par WebSocket et de l'inférence biométrique par IA présente de forts risques d'intégration et une incertitude importante quant aux flux utilisateurs. Pour y faire face, nous avons opté pour le cadre de travail agile \textbf{Scrum}. Contrairement aux approches prédictives traditionnelles (cycle en V), Scrum permet un développement incrémental, l'adaptation continue du backlog de produit en fonction des tests d'utilisabilité précoces, et des boucles de rétroaction rapides indispensables à la réussite d'un projet de startup sous l'Arrêté 1275.
-
-\subsection*{I.4.2 Rôles, Artefacts et Cérémonies Scrum}
-\addcontentsline{toc}{subsection}{I.4.2 Rôles, Artefacts et Cérémonies Scrum}
-
-Pour s'adapter à la taille de notre équipe (un binôme de Master), les rôles Scrum ont été répartis de manière hybride et collaborative :
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{Product Owner / Développeur :} Assure le recueil des besoins utilisateurs, la rédaction des user stories et la validation des critères d'acceptation, tout en participant au développement du back-end et de l'application mobile.
-  \item \textbf{Scrum Master / Développeur :} Veille au respect des pratiques agiles, élimine les obstacles techniques et organisationnels, et coordonne le développement du microservice IA et l'intégration des API tiers.
-\end{itemize}
-
-Le cycle de développement a été cadencé en \textbf{sprints de 2 semaines} (10 jours ouvrés), rythmés par les cérémonies Scrum standard :
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{Sprint Planning (Planification de Sprint) :} Séance de 2 heures en début de sprint pour sélectionner les user stories prioritaires du Product Backlog et estimer l'effort en Story Points (suite de Fibonacci).
-  \item \textbf{Daily Scrum (Mêlée Quotidienne) :} Réunion debout de 15 minutes pour faire le point sur le travail de la veille, planifier la journée et identifier les blocages.
-  \item \textbf{Sprint Review (Revue de Sprint) :} Démonstration de l'incrément de produit potentiellement livrable à la fin de chaque sprint pour obtenir des retours d'expérience directs.
-  \item \textbf{Sprint Retrospective (Rétrospective) :} Analyse réflexive de l'équipe sur son fonctionnement pour identifier des axes d'amélioration continue du processus de travail.
-\end{itemize}
-
-Les artefacts Scrum --- le \textbf{Product Backlog} (liste ordonnée des besoins), le \textbf{Sprint Backlog} (tâches engagées pour le sprint en cours) et l'\textbf{Incrément} (somme des éléments terminés respectant la Définition de Terminé) --- ont été modélisés et suivis rigoureusement via la plateforme de gestion de projet \textbf{Jira}, matérialisant visuellement notre vélocité.
-
-\subsection*{I.4.3 Cadre institutionnel (Arrêté 1275)}
-\addcontentsline{toc}{subsection}{I.4.3 Cadre institutionnel (Arrêté 1275)}
-
-Ce travail s'inscrit dans le cadre du mécanisme national «~Un diplôme, une Startup~» (Arrêté interministériel n\textsuperscript{o}~1275 du MESRS). Il propose une solution innovante répondant aux critères d'éligibilité par son ancrage technologique (IA, tarification dynamique), sa viabilité économique, et son intégration de l'écosystème financier algérien. Les aspects juridiques et le plan de développement de la startup sont détaillés dans l'étude technico-économique.
+Le développement d'un système distribué combinant du mobile multiplateforme, de la communication temps réel et de l'inférence biométrique présente de forts risques d'intégration. Pour y faire face, nous avons opté pour le cadre de travail agile \textbf{Scrum}, organisé en sprints de deux semaines. Les rôles Scrum ont été répartis de manière hybride au sein du binôme (Product Owner/Développeur et Scrum Master/Développeur), et les artefacts (Product Backlog, Sprint Backlog, Incrément) ont été suivis via \textbf{Jira}. Ce cadre itératif a permis l'adaptation continue du produit en fonction des retours précoces des utilisateurs.
 
 \section*{I.5 Structure du mémoire}
 \addcontentsline{toc}{section}{I.5 Structure du mémoire}
@@ -62,11 +50,10 @@ Ce travail s'inscrit dans le cadre du mécanisme national «~Un diplôme, une St
 Ce mémoire s'articule autour de quatre chapitres~:
 
 \begin{itemize}[leftmargin=1.8em]
-  \item Le \textbf{Chapitre~1 --- Étude de l'Existant et Analyse Comparative} dresse l'état de l'art du covoiturage et positionne \textit{RohWinBghit} face aux solutions concurrentes à travers une étude comparative.
-  \item Le \textbf{Chapitre~2 --- Analyse des Besoins et Conception} détaille la méthodologie, les exigences fonctionnelles et non fonctionnelles, ainsi que la modélisation UML du système.
-  \item Le \textbf{Chapitre~3 --- Réalisation et Implémentation} documente l'implémentation technique, l'architecture des microservices, les tests et les validations de sécurité.
-  \item Le \textbf{Chapitre~4 --- Tests, Déploiement et Étude Technico-Économique} présente l'étude de faisabilité, incluant le Business Model Canvas et les projections financières.
+  \item Le \textbf{Chapitre~1 --- Étude de l'Existant et Analyse Comparative} dresse l'état de l'art du covoiturage et positionne \textit{RohWinBghit} face aux solutions concurrentes.
+  \item Le \textbf{Chapitre~2 --- Analyse des Besoins et Conception} détaille les exigences fonctionnelles et non fonctionnelles, ainsi que la modélisation UML du système.
+  \item Le \textbf{Chapitre~3 --- Réalisation et Implémentation} documente l'implémentation technique, l'architecture, les tests et la sécurité.
+  \item Le \textbf{Chapitre~4 --- Tests, Déploiement et Étude Technico-Économique} présente la validation, le déploiement et l'étude de faisabilité économique.
 \end{itemize}
 
-Enfin, la \textbf{conclusion générale} dresse le bilan des réalisations, discute les difficultés rencontrées et dessine les perspectives d'évolution du projet.
-
+Enfin, la \textbf{conclusion générale} dresse le bilan des réalisations, discute les limites et dessine les perspectives.

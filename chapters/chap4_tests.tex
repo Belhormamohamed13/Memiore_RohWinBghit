@@ -2,27 +2,16 @@
 \label{chap:tests-deploiement}
 
 \section{Introduction}
-Ce chapitre détaille la validation de la plateforme \textit{RohWinBghit} à travers une campagne de tests unitaires, d'intégration, utilisateurs et de performance. Il présente ensuite la stratégie de déploiement sur l'infrastructure cloud, puis l'étude technico-économique dans le cadre de la Résolution 1275, détaillant le modèle de revenus, l'analyse SWOT et les projections financières.
+Ce chapitre valide la plateforme \textit{RohWinBghit} à travers une campagne de tests automatisés, une évaluation d'utilisabilité et des mesures de performance. Il présente ensuite la stratégie de déploiement, puis l'étude technico-économique dans le cadre de l'Arrêté~1275.
+
+% ================================================================
+%  PARTIE I --- TESTS ET VALIDATION
+% ================================================================
 
 \section{Tests de l'application}
 \label{sec:tests-app}
-La validation de la plateforme \textit{RohWinBghit} repose sur une stratégie de tests rigoureuse combinant des tests automatisés Jest et des campagnes de tests manuels. Deux catégories principales de tests automatisés sont distinguées~: les tests unitaires, qui valident la logique pure sans dépendance externe, et les tests d'intégration, qui sollicitent la base PostgreSQL et la couche HTTP/WebSocket. Le tableau~\ref{tab:tests} synthétise les résultats de la campagne d'exécution du 24~avril~2026.
 
-\subsection{Tests unitaires et fonctionnels}
-\label{sec:tests-unitaires}
-Les tests unitaires et fonctionnels valident la logique métier isolée (authentification, calculs de tarification, scoring conducteur, etc.). La totalité des 107~tests unitaires passent avec succès (100\,\%), attestant de la correction de la logique métier centrale (tableau~\ref{tab:tests}).
-
-\subsection{Tests d'intégration}
-\label{sec:tests-integration}
-Les tests d'intégration valident l'accès à la base de données PostgreSQL et les requêtes HTTP/WebSocket à travers les différents services (trajets, messagerie, profils). Sur les 44~tests d'intégration, 40 réussissent (90,9\,\%). Les 4~échecs résiduels sont localisés dans les scénarios de bout-en-bout impliquant la synchronisation WebSocket et le matching spatial asynchrone~; ils ne traduisent pas de défauts fonctionnels mais des difficultés d'isolation transactionnelle de l'environnement de test (tableau~\ref{tab:tests}).
-
-\subsection{Tests utilisateurs et d'utilisabilité}
-\label{sec:tests-utilisateurs}
-Une session de bêta-test a été conduite auprès de 18~participants recrutés parmi les étudiants de la Faculté des Sciences de l'Université Abou Bekr Belkaïd de Tlemcen. Les tests utilisateurs ont permis d'évaluer l'utilisabilité du système via l'échelle SUS (\textit{System Usability Scale}), comme détaillé à la section~\ref{sec:resultats-tests}.
-
-\subsection{Tests de performance}
-\label{sec:tests-performance}
-Les tests de performance mesurent les temps de réponse de l'API sous charge simulée. Les résultats de ces tests en conditions de charge sont exposés en détail à la section~\ref{sec:performances-serveur}.
+La validation repose sur une stratégie combinant tests automatisés Jest et campagnes de tests manuels. Le tableau~\ref{tab:tests} synthétise les résultats du 24~avril~2026.
 
 \begin{table}[H]
 \centering
@@ -32,30 +21,30 @@ Les tests de performance mesurent les temps de réponse de l'API sous charge sim
 \rowcolor{rohlight}
 \textbf{Module} & \textbf{Cas} & \textbf{Réussis} & \textbf{Échoués} \\
 \hline
-\multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests unitaires (logique pure, sans base de données)}} \\
+\multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests unitaires (logique pure)}} \\
 \hline
-Authentification, \gls{jwt}, \textit{blacklist} (\texttt{auth.routes}, \texttt{auth}, \texttt{jwt.util}, \texttt{token-blacklist}) & 50 & 50 & 0 \\
+Authentification, \gls{jwt}, \textit{blacklist} & 50 & 50 & 0 \\
 \hline
-Tarification, heatmap, score conducteur (\texttt{pricing}, \texttt{heatmap}, \texttt{driver-score}) & 16 & 16 & 0 \\
+Tarification, heatmap, score conducteur & 16 & 16 & 0 \\
 \hline
-Détection de fraude \textsc{kyc} (\texttt{fraud-detection}) & 6 & 6 & 0 \\
+Détection de fraude \textsc{kyc} & 6 & 6 & 0 \\
 \hline
-Machine d'états des trajets \& \textit{matching} (\texttt{trip-state-machine}, \texttt{matching}) & 7 & 7 & 0 \\
+Machine d'états des trajets \& \textit{matching} & 7 & 7 & 0 \\
 \hline
-Utilitaires \& \textit{middlewares} (\texttt{date.util}, \texttt{response.util}, \texttt{validate.middleware}, \texttt{email.service}) & 28 & 28 & 0 \\
+Utilitaires \& \textit{middlewares} & 28 & 28 & 0 \\
 \hline
 \rowcolor{rohlight!20}
 \textbf{Sous-total unitaires} & \textbf{107} & \textbf{107} & \textbf{0} \\
 \hline
 \multicolumn{4}{|l|}{\cellcolor{rohlight!40}\textit{Tests d'intégration (\textsc{postgresql} + HTTP + Socket.IO)}} \\
 \hline
-Trajets~: recherche, réservation, gestion (\texttt{rides.routes}) & 20 & 18 & 2 \\
+Trajets~: recherche, réservation, gestion & 20 & 18 & 2 \\
 \hline
-Messagerie temps réel (\texttt{chats.routes}, \texttt{websockets}, \texttt{websocket-realtime}) & 14 & 13 & 1 \\
+Messagerie temps réel & 14 & 13 & 1 \\
 \hline
-Utilisateurs \& profils (\texttt{user.model}, \texttt{users.routes}, \texttt{auth-verification}) & 6 & 5 & 1 \\
+Utilisateurs \& profils & 6 & 5 & 1 \\
 \hline
-Modèles de réservation (\texttt{trip-booking.model}, \texttt{trip-booking}) & 4 & 4 & 0 \\
+Modèles de réservation & 4 & 4 & 0 \\
 \hline
 \rowcolor{rohlight!20}
 \textbf{Sous-total intégration} & \textbf{44} & \textbf{40} & \textbf{4} \\
@@ -68,52 +57,43 @@ Modèles de réservation (\texttt{trip-booking.model}, \texttt{trip-booking}) & 
   \label{tab:tests}
 \end{table}
 
-\paragraph{Lecture des résultats.} La totalité des 107~tests unitaires passent avec succès (100\,\%), attestant de la correction de la logique métier centrale~: authentification, tarification, score conducteur, détection de fraude et machine à états des trajets. Sur les 44~tests d'intégration, 40 réussissent (90,9\,\%). Les 4~échecs résiduels sont localisés dans les scénarios de bout-en-bout impliquant la synchronisation WebSocket et le matching spatial asynchrone~; ils ne traduisent pas de défauts fonctionnels mais des difficultés d'isolation transactionnelle de l'environnement de test. Le taux de réussite global est de \textbf{97,4\,\%} (147/151), ce qui satisfait l'objectif fixé en ENF~5 (couverture minimale de 80\,\%).
+Les 107~tests unitaires passent à 100\,\%. Sur les 44~tests d'intégration, 40 réussissent (90,9\,\%). Les 4~échecs résiduels sont localisés dans les scénarios de synchronisation WebSocket et de matching spatial asynchrone~; ils traduisent des difficultés d'isolation transactionnelle de l'environnement de test, non des défauts fonctionnels. Le taux de réussite global est de \textbf{97,4\,\%} (147/151), satisfaisant l'objectif ENF~5 ($\geq$~80\,\%). La stabilisation du harnais via \textit{Testcontainers} est un chantier prioritaire post-mémoire.
 
-\paragraph{Perspective.} La stabilisation du harnais de tests d'intégration (base \textsc{postgresql} éphémère via \textit{Testcontainers} et nettoyage transactionnel entre cas) constitue un chantier prioritaire post-mémoire, visant un taux de réussite global $\geq$~95\,\% en CI continue.
-
-\subsection{Scénarios de tests d'intégration et d'acceptation}
+\subsection{Scénarios de tests fonctionnels}
 \label{sec:scenarios-tests}
-
-Pour compléter les tests automatisés Jest, une matrice de scénarios de tests d'intégration et d'acceptation fonctionnelle a été définie et exécutée manuellement. Le tableau~\ref{tab:test-matrix} récapitule ces scénarios clés, décrivant pour chacun les préconditions, les étapes opératoires, le résultat attendu et le statut d'exécution constaté.
 
 \begin{table}[H]
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|l|p{2.5cm}|p{2.2cm}|p{3.2cm}|p{3.2cm}|c|}
+\begin{tabularx}{\textwidth}{|l|p{2.5cm}|p{3.5cm}|p{3.5cm}|c|}
 \hline
 \rowcolor{rohlight}
-\textbf{ID} & \textbf{Scénario} & \textbf{Préconditions} & \textbf{Étapes} & \textbf{Résultat Attendu} & \textbf{Statut} \\
+\textbf{ID} & \textbf{Scénario} & \textbf{Étapes} & \textbf{Résultat Attendu} & \textbf{Statut} \\
 \hline
-TS-01 & Inscription passager & Aucune session active & 1. Saisie nom, téléphone.\newline 2. Envoi OTP.\newline 3. Validation OTP. & Compte passager créé en base, JWT émis et stocké. & \textbf{Succès} \\
+TS-01 & Inscription passager & Saisie téléphone $\to$ OTP $\to$ Validation & Compte créé, JWT émis & \textbf{Succès} \\
 \hline
-TS-02 & Vérification KYC & Compte créé, documents prêts & 1. Soumission CIN recto/verso.\newline 2. Capture faciale.\newline 3. Exécution pipeline. & Extraction OCR validée, similarité faciale $>$ 0,60, statut passe à validé. & \textbf{Succès} \\
+TS-02 & Vérification KYC & CIN recto/verso $\to$ Capture faciale $\to$ Pipeline IA & Similarité faciale $>$ 0,60, statut validé & \textbf{Succès} \\
 \hline
-TS-03 & Publication de trajet & Conducteur KYC validé, véhicule enregistré & 1. Sélection départ/arrivée.\newline 2. Saisie date et prix.\newline 3. Soumission. & Trajet enregistré en base PostgreSQL avec statut \texttt{active}. & \textbf{Succès} \\
+TS-03 & Publication de trajet & Sélection wilayas $\to$ Date et prix $\to$ Soumission & Trajet enregistré, statut \texttt{active} & \textbf{Succès} \\
 \hline
-TS-04 & Réservation de place & Trajet existant avec places libres & 1. Recherche trajet.\newline 2. Sélection de places.\newline 3. Réservation. & Nombre de places diminué de 1, notification envoyée au conducteur. & \textbf{Succès} \\
+TS-04 & Réservation de place & Recherche $\to$ Sélection $\to$ Réservation & Places diminuées, notification conducteur & \textbf{Succès} \\
 \hline
-TS-05 & Paiement électronique & Réservation initiée & 1. Choix Edahabia.\newline 2. Saisie carte sandbox.\newline 3. Validation SATIM. & Débit simulé avec succès, statut réservation mis à \texttt{confirmed}. & \textbf{Succès} \\
+TS-05 & Paiement électronique & Choix Edahabia $\to$ Carte sandbox $\to$ Validation & Débit simulé, statut \texttt{confirmed} & \textbf{Succès} \\
 \hline
-TS-06 & Messagerie WebSocket & Trajet réservé & 1. Ouverture chat.\newline 2. Envoi message.\newline 3. Vérification réception. & Message délivré instantanément via Socket.IO, persisté en base. & \textbf{Succès} \\
+TS-06 & Messagerie WebSocket & Ouverture chat $\to$ Envoi $\to$ Vérification réception & Message délivré via Socket.IO, persisté & \textbf{Succès} \\
 \hline
 \end{tabularx}
-\caption{Matrice des scénarios de tests fonctionnels et d'intégration}
+\caption{Matrice des scénarios de tests fonctionnels}
 \label{tab:test-matrix}
 \end{table}
 
 \section{Résultats des tests}
 \label{sec:resultats-tests}
-\label{sec:resultats}
-
-Au-delà des tests automatisés, la démarche a été complétée par une évaluation d'utilisabilité normée et une mesure des performances serveur en conditions représentatives.
 
 \subsection{Évaluation d'utilisabilité --- échelle SUS}
 
-L'échelle SUS (\textit{System Usability Scale})~\cite{brooke_sus_1996} est l'outil le plus largement adopté dans l'industrie. Elle agrège dix affirmations notées sur une échelle de Likert en cinq points et produit un score $\in [0, 100]$. Un score $\geq$~68 est considéré comme «~bon~».
-
-Une session de bêta-test a été conduite auprès de \textbf{18~participants} recrutés parmi les étudiants de la Faculté des Sciences de l'Université Abou Bekr Belkaïd de Tlemcen (12~étudiants) et de l'Université de Tlemcen (6~étudiants actifs sur l'axe Tlemcen--Oran). Les participants ont été répartis en deux groupes~: 9~en rôle \textit{Passager} et 9~en rôle \textit{Conducteur}. Après une session de découverte libre de 20~minutes sur leur propre \textit{smartphone}, chaque participant a complété le questionnaire SUS en français.
+L'échelle SUS~\cite{brooke_sus_1996} agrège dix affirmations en un score $\in [0, 100]$~; un score $\geq$~68 est considéré comme «~bon~»~\cite{Bangor2008}. Une session de bêta-test a été conduite auprès de \textbf{18~participants} (12~étudiants de la Faculté des Sciences de Tlemcen, 6~étudiants actifs sur l'axe Tlemcen--Oran), répartis en deux groupes (9~passagers, 9~conducteurs).
 
 \begin{table}[H]
 \centering
@@ -128,21 +108,21 @@ Passagers (recherche \& réservation) & 9 & 74,2 / 100 & Bon (\textit{Good}) \\
 Conducteurs (\textsc{kyc} \& publication) & 9 & 68,9 / 100 & Acceptable (\textit{OK}) \\
 \hline
 \rowcolor{rohlight!20}
-\textbf{Score global (tous participants)} & \textbf{18} & \textbf{71,6 / 100} & \textbf{Bon (seuil~: 68)} \\
+\textbf{Score global} & \textbf{18} & \textbf{71,6 / 100} & \textbf{Bon (seuil~: 68)} \\
 \hline
 \end{tabularx}
-  \caption{Résultats de l'évaluation SUS --- session bêta (18 participants, avril 2026)}
+  \caption{Résultats de l'évaluation SUS (18 participants, avril 2026)}
   \label{tab:sus}
 \end{table}
 
-Le score global de 71,6/100 dépasse le seuil de 68 établi par Bangor et al.~\cite{Bangor2008} comme frontière entre une utilisabilité ``acceptable'' et ``bonne''. Il convient cependant de noter que l'échantillon de 18~participants, entièrement recruté au sein du même établissement universitaire, introduit un biais de sélection non négligeable~: les participants partagent un profil homogène (étudiants en technologie, familiers des applications mobiles), ce qui tend à surestimer les scores d'utilisabilité par rapport à la population cible réelle. Cette limite est explicitement reconnue et une campagne d'évaluation élargie, incluant des profils variés (travailleurs, familles, conducteurs professionnels), est prévue avant le lancement commercial. Le score légèrement inférieur du groupe Conducteurs (68,9) reste quant à lui cohérent avec la complexité du flux \textsc{kyc}, qui requiert plusieurs étapes de capture~; il constitue la principale piste d'amélioration UX pour la v1.1 (guidage animé renforcé, compression automatique des images).
+L'échantillon, entièrement recruté en milieu universitaire, introduit un biais de sélection non négligeable qu'il convient d'analyser avec rigueur. Les 18~participants sont des étudiants en informatique, c'est-à-dire des \textit{digital natives} habitués à manipuler des interfaces mobiles complexes. Or, le segment cible de \textit{RohWinBghit} inclut également des conducteurs inter-wilayas âgés de 40 à 60~ans, dont le niveau de littératie numérique est structurellement inférieur. Le score SUS de 71,6 obtenu auprès d'un échantillon technophile doit donc être interprété comme une borne supérieure~: il est raisonnable d'anticiper un score significativement plus faible auprès de la population générale. Le score inférieur du groupe conducteurs (68,9 contre 74,2 pour les passagers) confirme cette hypothèse, la différence étant directement imputable à la complexité perçue du parcours \textsc{kyc} biométrique. Trois pistes concrètes d'amélioration \textsc{ux} ont été identifiées~: le traitement asynchrone du \textsc{kyc} en arrière-plan pour éliminer l'attente perçue, l'ajout de tutoriels animés (\textit{overlays}) pour guider les primo-utilisateurs, et l'adoption d'un profilage progressif permettant l'accès aux fonctions de base avant la complétion intégrale de la vérification. Une campagne d'évaluation élargie intégrant des profils démographiques variés est inscrite dans la feuille de route pré-commercialisation.
 
-\paragraph{Retours qualitatifs.} \textit{Points positifs}~: fluidité de la recherche, clarté du billet numérique avec QR code, lisibilité du tableau de bord conducteur. \textit{Axes d'amélioration}~: durée perçue du flux \textsc{kyc} (« trop d'étapes »), demande d'un mode sombre natif, retour d'état lors d'une connexion réseau lente.
+\textit{Retours qualitatifs~:} fluidité de la recherche, clarté du billet QR, lisibilité du dashboard conducteur. \textit{Axes d'amélioration~:} durée perçue du flux \textsc{kyc}, demande de mode sombre, retour d'état lors de connexion lente.
 
 \subsection{Performances serveur}
 \label{sec:performances-serveur}
 
-Les mesures ont été conduites sur un VPS de développement (4~vCPU, 8~Go~RAM, Ubuntu~22.04, réseau 1~Gbit/s) avec 50~utilisateurs concurrents simulés via Postman/Newman et k6.
+Les mesures ont été conduites sur un VPS (4~vCPU, 8~Go~RAM) avec 50~utilisateurs concurrents simulés via k6.
 
 \begin{table}[H]
 \centering
@@ -154,62 +134,79 @@ Les mesures ont été conduites sur un VPS de développement (4~vCPU, 8~Go~RAM, 
 \hline
 \texttt{POST /auth/send-otp} & 48 & 112 & 198 & 99,8\,\% \\
 \hline
-\texttt{GET /trips/search} (\textit{matching}) & 142 & 287 & 421 & 99,6\,\% \\
+\texttt{GET /trips/search} & 142 & 287 & 421 & 99,6\,\% \\
 \hline
-\texttt{POST /bookings} (réservation) & 178 & 334 & 510 & 99,1\,\% \\
+\texttt{POST /bookings} & 178 & 334 & 510 & 99,1\,\% \\
 \hline
-\texttt{GET /trips/:id/tracking} (GPS) & 31 & 89 & 145 & 99,9\,\% \\
+\texttt{GET /trips/:id/tracking} & 31 & 89 & 145 & 99,9\,\% \\
 \hline
-\texttt{POST /kyc/submit} (envoi \textsc{kyc}) & 1~240 & 2~800 & 4~100 & 98,2\,\% \\
+\texttt{POST /kyc/submit} & 1~240 & 2~800 & 4~100 & 98,2\,\% \\
 \hline
-WebSocket (message envoyé) & 12 & 38 & 72 & 99,9\,\% \\
+WebSocket (message) & 12 & 38 & 72 & 99,9\,\% \\
 \hline
 \end{tabularx}
   \caption{Performances des routes API critiques (50 utilisateurs concurrents)}
   \label{tab:perf}
 \end{table}
 
-L'ensemble des routes métier critiques respecte l'objectif P95~$\leq$~500~ms, à l'exception du flux \textsc{kyc} (P95~=~2,8~s) qui implique le traitement par le microservice IA (chargement du modèle InsightFace + inférence). Ce délai est communiqué à l'utilisateur via un indicateur de progression et une confirmation asynchrone par notification \textit{push}, conformément aux bonnes pratiques UX pour les opérations longues.
+Les routes métier respectent l'objectif P95~$\leq$~500~ms, sauf le flux \textsc{kyc} (P95~=~2,8~s) lié au chargement du modèle InsightFace. Ce délai est communiqué via un indicateur de progression et une confirmation asynchrone.
 
-\subsection{Algorithmes clés}
+\subsection{Algorithmes métier clés}
 
-\paragraph{\textit{Matching} conducteur--passager.} Le \texttt{MatchingService} évalue chaque trajet selon une fonction de score composite~: critères éliminatoires (places suffisantes, date compatible, wilaya correspondante), puis pondération des critères de qualité (concordance temporelle 40\,\%, qualité du conducteur 35\,\%, rapport qualité/prix 15\,\%, bonus \textsc{kyc} 10\,\%). Les résultats sont triés par score décroissant, départage par proximité temporelle.
+\paragraph{Matching conducteur--passager.} Le \texttt{MatchingService} évalue chaque trajet candidat par une fonction de score composite. Après application des critères éliminatoires (places disponibles, concordance de date, wilaya de départ et d'arrivée), les trajets restants sont classés selon le score pondéré~:
+$$SC = 0{,}40 \times C_t + 0{,}35 \times Q_c + 0{,}15 \times R_{qp} + 0{,}10 \times B_{\text{kyc}}$$
+où $C_t$ désigne la concordance temporelle (proximité entre l'heure de départ souhaitée et l'heure de départ réelle, normalisée sur $[0; 1]$), $Q_c$ la note moyenne du conducteur sur les 50~derniers trajets, $R_{qp}$ le ratio qualité/prix (inverse du prix par kilomètre, normalisé), et $B_{\text{kyc}}$ le bonus de vérification biométrique ($B_{\text{kyc}} = 1$ si statut \textit{verified}, $0$ sinon). Les coefficients ont été calibrés sur la base des résultats du questionnaire utilisateur (mars~2026), où la ponctualité et la confiance dans le conducteur constituaient les deux facteurs de décision prédominants.
 
-\paragraph{Tarification dynamique.} Le module \texttt{SurgePricingService} calcule un multiplicateur $m \in [1{,}0~;~2{,}5]$ appliqué au prix de base, à partir du ratio demande/offre observé sur l'axe et de règles horaires (week-end, périodes de pointe). Le multiplicateur est mis en cache Redis (TTL 5~min) et affiché en toute transparence au passager, conformément aux recommandations sur la confiance algorithmique~\cite{si2023what}.
+\paragraph{Tarification dynamique (\textit{Surge Pricing}).} Un multiplicateur dynamique $m$ est calculé en temps réel pour chaque couple (wilaya, créneau horaire) selon la formule~:
+$$m = \min\!\left(2{,}5\;; \; 1{,}0 + \alpha \cdot \frac{D_w - S_w}{\max(S_w, 1)}\right), \quad \alpha = 0{,}3$$
+où $D_w$ représente la demande (nombre de recherches) et $S_w$ l'offre (nombre de places publiées) dans la fenêtre temporelle courante. Le coefficient d'amortissement $\alpha = 0{,}3$ garantit une montée progressive du multiplicateur, qui est borné supérieurement à $2{,}5$ pour préserver l'acceptabilité tarifaire~\cite{si2023what}. Le multiplicateur est mis en cache Redis avec un \textsc{ttl} de 5~minutes et affiché en transparence totale à l'utilisateur avant la confirmation de réservation.
 
-\paragraph{Score conducteur.} Le score $SC \in [0~;~100]$ est recalculé asynchroniquement après chaque trajet via une tâche Bull/BullMQ. Cinq composantes pondérées entrent dans le calcul~: note moyenne passagers (40\,\%), taux d'annulation tardive (25\,\%), ponctualité au départ (20\,\%), ancienneté et volume (10\,\%), bonus \textsc{kyc} complet (5\,\%). Les conducteurs $SC < 40$ font l'objet d'une alerte~; $SC < 20$ entraîne une suspension automatique en attente de revue.
+\paragraph{Score conducteur.} Le score conducteur $SC_d \in [0; 100]$ est recalculé de manière asynchrone après chaque trajet via un \textit{worker} Bull/BullMQ, selon la décomposition~:
+$$SC_d = 0{,}40 \times \bar{R} + 0{,}25 \times (1 - \tau_a) + 0{,}20 \times P + 0{,}10 \times A + 0{,}05 \times B_{\text{kyc}}$$
+où $\bar{R}$ désigne la moyenne des notes passagers (normalisée sur $[0; 1]$), $\tau_a$ le taux d'annulation sur les 20~derniers trajets, $P$ le score de ponctualité (ratio des départs à l'heure), $A$ un bonus d'ancienneté (logarithmique en nombre de trajets), et $B_{\text{kyc}}$ le bonus de vérification biométrique.
 
+% ================================================================
+%  PARTIE II --- DÉPLOIEMENT
+% ================================================================
 
-
-\section{Déploiement de l'application}
+\section{Déploiement}
 \label{sec:deploiement}
 
-\subsection{Hébergement Backend}
-Le backend Express.js est dockerisé et déployé sur des serveurs VPS (Hetzner Cloud) sous Ubuntu Server.
+Le backend Express.js est conteneurisé (Docker) et déployé sur un VPS Hetzner Cloud sous Ubuntu Server, derrière un reverse proxy Nginx assurant la terminaison TLS (Let's Encrypt) et l'équilibrage de charge. L'application Android est compilée via Expo Application Services (EAS) et disponible en test fermé sur Google Play Store. Le panneau d'administration React/Vite est servi par Nginx. Le monitoring est assuré par Sentry, les accès sécurisés par clés SSH et les journaux d'accès analysés en continu.
 
-\subsection{Déploiement Mobile}
-L'application Android est compilée sous format AAB/APK via Expo Application Services (EAS) et disponible en test fermé sur Google Play Store.
+\subsection{Matrice de scalabilité de l'infrastructure}
 
-\subsection{Déploiement Dashboard Web}
-Le panneau d'administration en React/Vite est hébergé et servi via Nginx sécurisé.
+Pour garantir la pérennité de la plateforme face à une croissance rapide, une stratégie de mise à l'échelle progressive a été définie (tableau~\ref{tab:scalability}).
 
-\subsection{Sécurité et monitoring}
-Nous configurons le chiffrement SSL/TLS avec Let's Encrypt, définissons des permissions de fichiers strictes par clés SSH, et monitorons les logs d'accès.
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{rohlight}
+\textbf{Phase (Utilisateurs)} & \textbf{Infrastructure} & \textbf{Topologie de la base de données} \\
+\hline
+\textbf{MVP ($<$ 5~000)} & VPS unique (8 vCPU, 16 Go RAM) & PostgreSQL local + sauvegardes distantes \\
+\hline
+\textbf{Croissance (5k -- 50k)} & Docker Swarm (3 nœuds) & PostgreSQL (Primary + 1 Read Replica) \\
+\hline
+\textbf{National ($>$ 500k)} & Cluster Kubernetes (K8s) dédié & Cluster PostgreSQL (Patroni/HAProxy) \\
+\hline
+\end{tabularx}
+  \caption{Matrice d'évolution de l'infrastructure (Scalabilité)}
+  \label{tab:scalability}
+\end{table}
 
+% ================================================================
+%  PARTIE III --- ÉTUDE TECHNICO-ÉCONOMIQUE
+% ================================================================
 
-% Étude technico-économique
-\label{chap:business}
+\section{Étude technico-économique}
+\label{sec:business}
 
-% Intro business déplacée
+Ce mémoire s'inscrivant dans le cadre de l'\textbf{Arrêté interministériel n\textsuperscript{o}~1275} (mécanisme «~Un diplôme, une Startup~»), cette section présente l'étude de faisabilité économique.
 
-Tout projet logiciel, fût-il académique, doit être évalué non seulement sur sa qualité technique mais aussi sur sa viabilité économique et organisationnelle. Ce mémoire s'inscrivant dans le cadre de l'\textbf{Arrêté interministériel n\textsuperscript{o}~1275} (mécanisme «~Un diplôme, une Startup~»), ce chapitre constitue le cœur entrepreneurial du manuscrit. Il conduit une étude technico-économique complète de \textit{RohWinBghit}~: présentation du projet et de son équipe, analyse stratégique (SWOT), analyse de marché, plan commercial, plan de production, plan financier prévisionnel, \textit{Business Model Canvas}, conformité juridique et feuille de route vers le lancement de la startup.
-
-\section{Cadre institutionnel et mécanisme «~Un diplôme, une Startup~»}
-\label{sec:arrete1275}
-
-\subsection{L'Arrêté interministériel n\textsuperscript{o}~1275}
-
-L'Arrêté interministériel n\textsuperscript{o}~1275 vise à transformer l'université algérienne en un vecteur de création d'entreprises innovantes en permettant aux étudiants de Master ou Doctorat de valoriser leur mémoire de fin d'études sous forme de startup viable.
+\subsection{Conformité à l'Arrêté 1275}
 
 \begin{table}[H]
 \centering
@@ -218,99 +215,22 @@ L'Arrêté interministériel n\textsuperscript{o}~1275 vise à transformer l'uni
 \begin{tabularx}{\textwidth}{|p{4cm}|X|p{2.5cm}|}
 \hline
 \rowcolor{rohlight}
-\textbf{Critère Arrêté 1275} & \textbf{Justification RohWinBghit} & \textbf{Statut} \\
+\textbf{Critère} & \textbf{Justification} & \textbf{Statut} \\
 \hline
-Innovation technologique & Pipeline KYC biométrique (liveness detection + anti-spoofing), tarification dynamique (surge pricing), matching algorithmique pondéré & \textcolor{green!60!black}{\textbf{Conforme}} \\
+Innovation technologique & Pipeline KYC biométrique, tarification dynamique, matching algorithmique & \textcolor{green!60!black}{\textbf{Conforme}} \\
 \hline
-Marché algérien identifié & 250~M voyages inter-wilayas/an, 1,9~M étudiants, 46,8~M habitants, marché sous-servi & \textcolor{green!60!black}{\textbf{Conforme}} \\
+Marché algérien identifié & 250~M voyages inter-wilayas/an, 1,9~M étudiants & \textcolor{green!60!black}{\textbf{Conforme}} \\
 \hline
-Équipe étudiante porteuse & 2 étudiants Master GL, Univ. Abou Bekr Belkaïd Tlemcen & \textcolor{green!60!black}{\textbf{Conforme}} \\
+Équipe étudiante & 2 étudiants Master GL, Tlemcen & \textcolor{green!60!black}{\textbf{Conforme}} \\
 \hline
-Prototype fonctionnel & MVP complet~: 62 écrans, 147/151 tests, déployable & \textcolor{green!60!black}{\textbf{Conforme}} \\
+Prototype fonctionnel & 62 écrans, 147/151 tests & \textcolor{green!60!black}{\textbf{Conforme}} \\
 \hline
-Étude économique (BMC + financier) & Business Model Canvas, SWOT, prévisionnel 36 mois, break-even mois 10 & \textcolor{green!60!black}{\textbf{Conforme}} \\
-\hline
-Protection de la PI & Dépôt INAPI (marque), ONDA (code source), brevet KYC en cours & \textcolor{green!60!black}{\textbf{Conforme}} \\
+Étude économique & BMC, SWOT, prévisionnel 36 mois & \textcolor{green!60!black}{\textbf{Conforme}} \\
 \hline
 \end{tabularx}
-  \caption{Conformité du projet RohWinBghit aux critères de l'Arrêté 1275}
+  \caption{Conformité aux critères de l'Arrêté 1275}
   \label{tab:arrete1275}
 \end{table}
-
-\subsection{Parcours de labellisation envisagé}
-
-La labellisation de \textit{RohWinBghit} suit un processus en quatre étapes~: (1)~Dépôt du dossier auprès du Comité National Label (CNL) avec le prototype et le BMC~; (2)~Obtention du label «~Startup~» ouvrant l'accès aux avantages fiscaux et financements~; (3)~Création juridique de la SARL avec un capital de 1~000~000~DZD~; (4)~Incubation universitaire (CATI Tlemcen) pour l'accompagnement opérationnel et technique.
-
-\subsection{Présentation du projet}
-
-\subsection{L'idée et sa valeur}
-
-\textit{RohWinBghit} naît d'un constat simple~: en Algérie, voyager d'une wilaya à une autre reste cher, imprévisible et peu sûr. L'idée consiste à bâtir une place de marché numérique qui met en relation, en toute confiance, conducteurs disposant de places libres et passagers en quête de mobilité, moyennant une commission de plateforme.
-
-La valeur générée se décline sur trois axes stratégiques.
-\begin{enumerate}
-  \item \textbf{Pour le passager~:} des prix jusqu'à 40\,\% inférieurs aux tarifs des taxis collectifs, une disponibilité immédiate et une sécurité accrue par KYC biométrique.
-  \item \textbf{Pour le conducteur~:} la rentabilisation de trajets déjà programmés, une meilleure visibilité de la demande et un encaissement rapide et sécurisé.
-  \item \textbf{Pour la société~:} le désengorgement des axes routiers, la réduction de l'empreinte carbone et la démocratisation de la mobilité inter-wilayas.
-\end{enumerate}
-
-\subsection{Équipe porteuse}
-
-Le projet est porté par deux étudiants en Master Génie Logiciel de l'Université Abou Bekr Belkaïd de Tlemcen, dont les compétences sont complémentaires~:
-
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Membre} & \textbf{Rôle et compétences} \\
-\hline
-AHMED BACHA Djamel Eddine & Responsable \textit{back-end}, architecture, bases de données, sécurité, intégration du service KYC. \\
-\hline
-BELHORMA Sidi Mohammed Reduane & Responsable \textit{front-end} mobile, design \textsc{ui/ux}, intégration Mapbox, internationalisation. \\
-\hline
-\end{tabularx}
-  \caption{Équipe porteuse et rôles}
-\end{table}
-
-\subsection{Données macroéconomiques et contexte de marché (Algérie)}
-
-Les projections financières reposent sur des données officielles locales croisant l'Office National des Statistiques, l'ARPCE~\cite{arpt_2024} et le GIE Monétique~\cite{gie_monetique_2024}, résumées dans le Tableau~\ref{tab:macro-algerie}.
-
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|X|r|l|}
-\hline
-\rowcolor{rohlight}
-\textbf{Indicateur} & \textbf{Valeur} & \textbf{Source} \\
-\hline
-Population algérienne (2024) & 46,8~M habitants & ONS 2024 \\
-\hline
-Étudiants universitaires (2023-2024) & $\sim$1,9~M & Ministère de l'Enseignement Supérieur \\
-\hline
-Taux de motorisation (véhicules/1000 hab.) & $\sim$135 & ONS, Registre National \\
-\hline
-Flux inter-wilayas estimé (voyages/an) & $\geq$250~M & Ministère des Transports (2023) \\
-\hline
-Taux de pénétration smartphone & $>$75\,\% & ARPCE 2024~\cite{arpt_2024} \\
-\hline
-Abonnements Internet mobile actifs & 48~M ($\sim$108/100~hab.) & ARPCE 2024~\cite{arpt_2024} \\
-\hline
-Cartes interbancaires en circulation & 21,9~M & GIE Monétique 2024~\cite{gie_monetique_2024} \\
-\hline
-Croissance du paiement Internet (2023$\rightarrow$2024) & +179\,\% & GIE Monétique 2024~\cite{gie_monetique_2024} \\
-\hline
-Nombre de wilayas (décret 2022) & 69 & Journal Officiel 2022 \\
-\hline
-Coût moyen d'un trajet Tlemcen-Oran (taxi collectif) & 700--900~DZD & Enquête terrain (avril 2026) \\
-\hline
-\end{tabularx}
-  \caption{Indicateurs macroéconomiques algériens pertinents pour RohWinBghit (sources officielles)}
-  \label{tab:macro-algerie}
-\end{table}
-
-Ces indicateurs confirment l'importance du marché adressable (250~M voyages/an) et le fort potentiel de recrutement (motorisation). De plus, l'adoption croissante de la monétique (+179\,\% en un an) réduit progressivement la prépondérance des transactions en espèces.
 
 \subsection{Analyse SWOT}
 
@@ -320,298 +240,60 @@ Ces indicateurs confirment l'importance du marché adressable (250~M voyages/an)
 \hline
  & \textbf{Facteurs positifs} & \textbf{Facteurs négatifs} \\
 \hline
-\textbf{Interne} & \textbf{Forces~:} équipe technique solide, stack moderne, KYC biométrique intégré, couverture nationale, paiement local. & \textbf{Faiblesses~:} ressources financières limitées, absence d'historique et de marque établie, équipe commerciale à constituer. \\
+\textbf{Interne} & \textbf{Forces~:} stack moderne, KYC biométrique intégré, couverture nationale, paiement local. & \textbf{Faiblesses~:} ressources financières limitées, absence de marque établie. \\
 \hline
-\textbf{Externe} & \textbf{Opportunités~:} segment inter-wilayas sous-servi (un seul acteur direct, Nroho), taux de pénétration \textit{smartphone} élevé (75\,\%+), démographie jeune, déploiement 4G/5G généralisé, adoption croissante des cartes interbancaires (+179\,\% de paiement Internet en 2024). & \textbf{Menaces~:} extension de Yassir/Heetch vers le segment longue distance, arrival d'acteurs internationaux (BlaBlaCar, inDrive), évolution réglementaire, dépendance à l'homologation SATIM pour les passerelles CIB / Edahabia. \\
+\textbf{Externe} & \textbf{Opportunités~:} segment inter-wilayas sous-servi, smartphone 75\,\%+, démographie jeune, adoption monétique +179\,\%. & \textbf{Menaces~:} extension de Yassir/Heetch, arrivée d'acteurs internationaux, dépendance à l'homologation SATIM. \\
 \hline
 \end{tabularx}
   \caption{Matrice SWOT du projet RohWinBghit}
 \end{table}
 
-\textbf{Lecture.} La matrice met en évidence les axes stratégiques prioritaires~: capitaliser sur les forces techniques pour conquérir le segment sous-servi avant que les leaders urbains ne l'investissent (stratégie \textit{offensive}), et limiter la dépendance aux passerelles de paiement par diversification (stratégie \textit{défensive}).
+\subsection{Modèle de monétisation}
 
-\subsection{Aspects innovants}
-
-Le projet se distingue par plusieurs aspects innovants~:
-\begin{itemize}
-  \item \textbf{Innovation technologique~:} intégration d'un service IA dédié au KYC biométrique avec détection de vivacité, première application de ce type sur le segment inter-wilayas en Algérie.
-  \item \textbf{Innovation de service~:} mécanisme de \textit{demande de trajet} permettant au passager de publier son besoin quand aucune offre ne correspond, inversant ainsi la logique habituelle des places de marché.
-  \item \textbf{Innovation de modèle~:} patron \textit{Factory} de paiement facilitant l'intégration future de nouvelles méthodes (Baridi Mob, paiement par code QR bancaire).
-  \item \textbf{Innovation culturelle~:} trilinguisme natif (arabe, français, anglais) et interface conçue pour le lectorat arabophone (support RTL, choix typographique adapté).
-\end{itemize}
-
-\subsection{Analyse stratégique du marché}
-\label{sec:analyse-strategique}
-
-L'introduction de \textit{RohWinBghit} sur le marché algérien repose sur une compréhension fine de la structure de l'offre et de la demande. Nous analysons ci-après la segmentation de notre clientèle cible ainsi que le positionnement concurrentiel de la plateforme face aux solutions de transport existantes.
-
-\subsubsection{Segmentation du marché}
-
-Le marché cible a été segmenté en cinq groupes d'utilisateurs~:
+Quatre sources de revenus sont prévues, par priorité de déploiement~:
 \begin{enumerate}
-  \item \textbf{Étudiants universitaires} (18--26 ans) --- segment primaire, très sensibles au prix.
-  \item \textbf{Travailleurs actifs navetteurs} (25--45 ans) --- trajets récurrents, besoin de fiabilité.
-  \item \textbf{Familles} voyageant occasionnellement --- priorité sécurité et confort.
-  \item \textbf{Conducteurs-entrepreneurs} --- recherchent une source de revenu complémentaire.
-  \item \textbf{Diaspora algérienne} de passage --- visiteurs réguliers cherchant un transport fiable.
+  \item \textbf{Commission sur trajets (12\,\%)} prélevée sur chaque transaction confirmée.
+  \item \textbf{Abonnement Premium conducteur (1~500~DZD/mois)}~: commissions réduites, badge Pro, carte thermique.
+  \item \textbf{Publicité locale ciblée (in-app)} pour les annonceurs locaux.
+  \item \textbf{Partenariats B2B} avec universités et entreprises.
 \end{enumerate}
 
-\subsubsection{Analyse de la concurrence}
+\subsection{Prévisionnel financier et Acquisition Client (CAC)}
 
-L'analyse comparative (chapitre~1, tableau~\ref{tab:comparatif}) a montré que le segment inter-wilayas demeure sous-servi~: un seul acteur algérien (Nroho) y est présent, et aucun acteur international ne s'y est encore positionné. La menace concurrentielle principale viendrait d'une extension de Yassir ou de Heetch depuis le segment urbain, où leur maturité d'usage est désormais attestée par la littérature~\cite{naim_yassir_2024}, ou de l'entrée d'un acteur international (BlaBlaCar, inDrive). Notre proposition de différenciation repose sur trois leviers complémentaires~: la couverture nationale native des 69~wilayas, l'approfondissement du pipeline KYC biométrique (vivacité + anti-\textit{spoofing} avec seuils différenciés par rôle), et l'adaptation culturelle trilingue AR/FR/EN. L'analyse des avis utilisateurs des principales plateformes de \textit{ride-hailing} menée par Amri~\textit{et al.}~\cite{amri_ride_hailing_2024} met par ailleurs en évidence la centralité des préoccupations de sécurité et de transparence tarifaire dans le choix d'adoption, deux axes explicitement couverts par notre proposition.
+Le modèle financier repose sur une ambition forte~: atteindre \textbf{50~000 utilisateurs actifs} à la fin de la première année. Cependant, cette croissance requiert une stratégie d'acquisition agressive. 
 
-
-\textbf{Description.} Notre projet occupe le cadran supérieur-droit (couverture inter-wilayas + haut niveau de confiance via KYC biométrique), libre de tout acteur concurrent direct.
-
-\subsection{Stratégie marketing}
-
-La stratégie de mise sur le marché s'appuie sur quatre leviers complémentaires.
-\begin{enumerate}
-  \item \textbf{Ambassadeurs universitaires~:} recrutement d'étudiants ambassadeurs dans les campus de Tlemcen, Oran, Alger et Constantine pour capter le segment universitaire.
-  \item \textbf{Communication digitale~:} campagnes TikTok et Instagram ciblant les 18--35 ans, s'appuyant sur l'adoption massive des réseaux sociaux en Algérie\,\cite{DataReportal2025}.
-  \item \textbf{Partenariats institutionnels~:} conventions avec les CROUS universitaires et certaines entreprises employeurs pour stimuler la demande régulière.
-  \item \textbf{Programme de parrainage~:} attribution d'un crédit de 200~DZD à tout nouvel utilisateur parrainé, utilisable dès son premier trajet.
-\end{enumerate}
-
-\section{Plan de production et organisation}
-
-\subsection{Processus de production}
-
-Contrairement à un produit industriel, \textit{RohWinBghit} est un produit numérique dont la «~production~» recouvre trois macro-processus~:
-\begin{enumerate}
-  \item \textbf{Développement logiciel~:} itérations agiles, revue de code systématique, tests automatisés.
-  \item \textbf{Exploitation~:} supervision de l'infrastructure, astreintes, gestion des incidents.
-  \item \textbf{Opérations clients~:} support, modération, traitement des litiges.
-\end{enumerate}
-
-Les figures suivantes illustrent respectivement le processus métier du passager (Figure~\ref{fig:proc-passenger}) et celui de l'administrateur (Figure~\ref{fig:proc-admin}). Le parcours opérationnel du conducteur est quant à lui documenté par les captures d'écran correspondantes de la section~\ref{sec:screenshots} du chapitre~3.
-
-\textbf{Description du parcours conducteur.} De l'inscription à l'encaissement, le conducteur suit une chaîne de valeur claire~: vérification KYC (seuils plus stricts que pour le passager), enregistrement du véhicule, publication de trajets avec prix suggéré par l'algorithme de \textit{surge pricing}, acceptation des réservations, transport, encaissement et notation des passagers.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\linewidth]{figures/fig_passenger_process.png}
-\caption{Processus métier du passager}
-\label{fig:proc-passenger}
-\end{figure}
-
-\textbf{Description.} Le passager suit un parcours symétrique~: inscription, KYC, recherche, réservation, paiement, voyage et notation. La rigueur de la vérification KYC en amont garantit la qualité des interactions tout au long du parcours.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\linewidth]{figures/fig_admin_process.png}
-\caption{Processus opérationnel de l'administrateur}
-\label{fig:proc-admin}
-\end{figure}
-
-\textbf{Description.} L'administrateur veille à la santé de la plateforme par trois boucles~: modération continue des contenus, traitement des litiges et revue des KYC litigieux. Ces processus garantissent la qualité du service offert aux utilisateurs finaux.
-
-\subsection{Organisation cible à 18 mois}
-
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|l|c|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Fonction} & \textbf{ETP} & \textbf{Rôle} \\
-\hline
-CEO / Produit & 1 & Vision, levée de fonds, partenariats stratégiques. \\
-\hline
-CTO / Back-end & 1 & Architecture, sécurité, pilotage technique. \\
-\hline
-Lead Mobile & 1 & Pilotage de l'application mobile. \\
-\hline
-Développeurs full-stack & 2 & Développement produit. \\
-\hline
-DevOps / SRE & 1 & Infrastructure, CI/CD, observabilité. \\
-\hline
-Responsable Marketing & 1 & Acquisition, communication, partenariats. \\
-\hline
-Support / Modération & 2 & Assistance utilisateurs, litiges, KYC manuel. \\
-\hline
-\textbf{Total} & \textbf{9} & \\
-\hline
-\end{tabularx}
-  \caption{Organisation cible après 18 mois}
-\end{table}
-
-\section{Plan financier}
-
-\subsection{Hypothèses de projection}
-\label{sec:hypotheses}
-
-Les projections présentées dans les sous-sections suivantes reposent sur un ensemble d'hypothèses explicites, calibrées à partir de trois sources~: (i)~les statistiques publiques algériennes (ARPCE 2024, GIE Monétique 2024), (ii)~la littérature académique sur les systèmes de transport dans les pays en développement~\cite{sogbe_public_transport_2024} et sur les comportements des utilisateurs de \textit{ride-hailing}~\cite{amri_ride_hailing_2024}, et (iii)~l'étude empirique régionale la plus proche de notre contexte~\cite{naim_yassir_2024}. Le tableau~\ref{tab:hypotheses} récapitule les paramètres clés.
-
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|l|r|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Paramètre} & \textbf{Valeur retenue} & \textbf{Source / justification} \\
-\hline
-\multicolumn{3}{|l|}{\cellcolor{rohlight!40}\textit{Marché et adoption}} \\
-\hline
-Taux de pénétration \textit{smartphone} en Algérie & 75\,\% & ARPCE 2024~\cite{arpt_2024} \\
-\hline
-Abonnements Internet mobile (2024) & 48~M ($\sim$108/100~hab.) & ARPCE 2024~\cite{arpt_2024} \\
-\hline
-Cartes interbancaires en circulation & 21,9~M & GIE Monétique 2024~\cite{gie_monetique_2024} \\
-\hline
-Croissance du paiement Internet (2023$\rightarrow$2024) & +179\,\% & GIE Monétique 2024~\cite{gie_monetique_2024} \\
-\hline
-\multicolumn{3}{|l|}{\cellcolor{rohlight!40}\textit{Usage par utilisateur}} \\
-\hline
-Panier moyen par trajet inter-wilayas & 800~DZD & Étude terrain Yassir Ali~Menjeli~\cite{naim_yassir_2024} + tarifs taxi collectif observés \\
-\hline
-Fréquence moyenne d'usage (utilisateur actif) & 2,5~trajets/mois & Proxy pays en développement~\cite{sogbe_public_transport_2024} \\
-\hline
-Taux de conversion \textit{install} $\rightarrow$ 1\textsuperscript{er} trajet & 12\,\% & Benchmarks \textit{ride-hailing}~\cite{amri_ride_hailing_2024} \\
-\hline
-Taux de \textit{churn} mensuel (M1--M12) & 8\,\% & Hypothèse conservatrice (benchmarks applications mobilité) \\
-\hline
-\multicolumn{3}{|l|}{\cellcolor{rohlight!40}\textit{Monétisation}} \\
-\hline
-Commission plateforme par trajet confirmé & 12\,\% & Positionnement médian VTC/covoiturage régional \\
-\hline
-Part conducteurs \textit{Premium} à M12 & 3\,\% de la base conducteurs & Hypothèse prudente \textit{low-adoption} \\
-\hline
-ARPU publicitaire conducteur (année~2) & 800~DZD/mois & Hypothèse à mi-chemin des benchmarks Maghreb \\
-\hline
-\multicolumn{3}{|l|}{\cellcolor{rohlight!40}\textit{Coûts}} \\
-\hline
-Coût moyen serveur par 1\,000~utilisateurs actifs/mois & 12~000~DZD & Grille tarifaire VPS régionale + services tiers \\
-\hline
-CAC moyen (coût d'acquisition utilisateur) & 350~DZD & Benchmark digital Algérie 2024 \\
-\hline
-\end{tabularx}
-  \caption{Hypothèses sous-jacentes aux projections financières}
-  \label{tab:hypotheses}
-\end{table}
-
-Le prévisionnel de commission sur les trajets de l'année~$n$ est donné par~:
-
-\begin{equation}
-  R_n = U_n \times f \times p \times c
-  \label{eq:revenus}
-\end{equation}
-
-\noindent où~:
-\begin{itemize}[leftmargin=2cm, label={}]
-  \item $R_n$ désigne le revenu de commission annuel de l'année~$n$ (en DZD)~;
-  \item $U_n$ est le nombre moyen d'utilisateurs actifs mensuels sur l'année~$n$~;
-  \item $f$ est la fréquence moyenne d'utilisation (hypothèse~: $f = 2{,}5$ trajets/mois/utilisateur)~;
-  \item $p$ est le panier moyen par trajet (hypothèse~: $p = 800$~DZD)~;
-  \item $c$ est le taux de commission de la plateforme (hypothèse~: $c = 12\,\%$).
-\end{itemize}
-
-En appliquant cette formule aux hypothèses du tableau, avec une base d'utilisateurs actifs visée à 50\,000 à M12 (objectif cumul acquisition moins \textit{churn}), le revenu annuel théorique de commission se situe autour de 14,4~MDZD. L'écart avec la projection retenue (6~MDZD en année~1) s'explique par l'étalement de la montée en charge sur 12~mois~: la base d'utilisateurs actifs \textit{moyenne} sur l'année reste inférieure à l'objectif de fin de période.
-
-\paragraph{Analyse de sensibilité.} Les postes les plus sensibles sont la fréquence d'usage (élasticité directe sur les revenus) et le CAC (élasticité inverse sur la marge). Un scénario dégradé à fréquence~1,5~trajet/mois et CAC~500~DZD retarde le seuil de rentabilité d'environ 9~mois. Un scénario favorable à fréquence~3,5~trajets/mois et CAC~250~DZD le rapproche de 5~mois. La fourchette de confiance présentée dans le prévisionnel se situe dans le tiers supérieur de cet intervalle, ce qui suppose une exécution commerciale disciplinée.
-
-\subsection{Structure des coûts prévisionnels (année~1)}
-
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|X|r|}
-\hline
-\rowcolor{rohlight}
-\textbf{Poste} & \textbf{Montant (DZD)} \\
-\hline
-Masse salariale (moyenne 4 ETP sur l'année) & 9\,600\,000 \\
-\hline
-Hébergement cloud et infrastructure & 900\,000 \\
-\hline
-Services tiers (Mapbox, Firebase, Cloudinary, SMS) & 750\,000 \\
-\hline
-Marketing et acquisition utilisateurs & 2\,400\,000 \\
-\hline
-Frais juridiques, comptables et assurance & 400\,000 \\
-\hline
-Divers et imprévus (10\,\%) & 1\,405\,000 \\
-\hline
-\rowcolor{rohlight}
-\textbf{Total charges année~1} & \textbf{15\,455\,000} \\
-\hline
-\end{tabularx}
-  \caption{Coûts prévisionnels sur la première année (en DZD)}
-\end{table}
-
-\subsection{Modèle de monétisation détailé}
-
-La clarté du modèle de monétisation est un critère déterminant pour l'accès aux dispositifs de financement publics (label CNL, fonds ANVREDET) et aux investisseurs privés. \textit{RohWinBghit} combine quatre sources de revenus, ordonnées par priorité de déploiement~:
-
-\begin{enumerate}
-  \item \textbf{Commission sur trajets (12\,\%)}~: prélevée automatiquement sur chaque transaction confirmée. Ce taux est positionné entre BlaBlaCar (15\,\%)\,\cite{blablacar_report_2023} et les groupes Facebook informels (0\,\%), assurant une valeur perçue positive pour le conducteur. En phase bêta, la commission est réduite à 8\,\% pour accélérer l'acquisition.
-  \item \textbf{Abonnement Premium conducteur (1\,500~DZD/mois)}~: commissions réduites à 8\,\%, badge «~Conducteur Vérifié Pro~», accès à la carte thermique détaillée de la demande, priorité dans les résultats de recherche. Modèle freemium classique à fort taux de conversion pour les conducteurs réguliers.
-  \item \textbf{Publicité locale ciblée (in-app)}~: espaces publicitaires réservés aux annonceurs locaux (services auto, agences de voyage, hôtels sur les axes principaux). CPM estimé à 2\,000~DZD pour une audience qualifiée.
-  \item \textbf{Partenariats B2B}~: conventions tarifaires avec universités (transport des étudiants), entreprises (covoiturage salarial), et hôtels partenaires sur les axes à forte fréquentation.
-\end{enumerate}
-
-\subsection{Prévisionnel de revenus}
-
-Le modèle repose sur une commission de 12\,\% prélevée sur chaque trajet confirmé, à laquelle s'ajoutent progressivement un abonnement Premium conducteur, des publicités ciblées et des partenariats B2B.
+\paragraph{Le Paradoxe du CAC.} Avec un coût d'acquisition client (CAC) estimé à 350~DZD sur le marché numérique algérien, l'acquisition de 50~000 utilisateurs génère un besoin en financement marketing de \textbf{17~500~000~DZD}. Pour soutenir cette hyper-croissance et financer les coûts opérationnels de la première année (hébergement, salaires, frais juridiques), le projet nécessite impérativement une \textbf{levée de fonds (Seed) initiale de 20~000~000~DZD}.
 
 \begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{|X|r|r|r|}
 \hline
 \rowcolor{rohlight}
-\textbf{Source} & \textbf{Année~1} & \textbf{Année~2} & \textbf{Année~3} \\
+\textbf{Catégorie} & \textbf{Année~1 (DZD)} & \textbf{Année~2 (DZD)} & \textbf{Année~3 (DZD)} \\
 \hline
-Commission sur trajets & 6\,000\,000 & 22\,000\,000 & 65\,000\,000 \\
+\textbf{Revenus (Commissions + Premium)} & 6\,700\,000 & 29\,000\,000 & 92\,000\,000 \\
 \hline
-Abonnement Premium conducteur & 500\,000 & 3\,500\,000 & 12\,000\,000 \\
+\textbf{Dépenses Opérationnelles (OPEX)} & 5\,200\,000 & 12\,500\,000 & 28\,000\,000 \\
 \hline
-Publicité in-app & 200\,000 & 2\,000\,000 & 8\,000\,000 \\
+\textbf{Dépenses Marketing (Acquisition)} & 17\,500\,000 & 8\,500\,000 & 14\,000\,000 \\
 \hline
-Partenariats B2B & 0 & 1\,500\,000 & 7\,000\,000 \\
-\hline
-\rowcolor{rohlight}
-\textbf{Total revenus} & \textbf{6\,700\,000} & \textbf{29\,000\,000} & \textbf{92\,000\,000} \\
-\hline
-\end{tabularx}
-  \caption{Prévisionnel de revenus sur 3 ans}
-\end{table}
-
-\subsection{Seuil de rentabilité et projection trimestrielle}
-
-Sur la base des hypothèses précédentes, le projet présente un résultat d'exploitation négatif en année~1 (couverture partielle des coûts par les revenus), proche de l'équilibre en année~2, et largement bénéficiaire à partir de l'année~3. 
-
-Afin de détailler la montée en charge progressive de la première année, le tableau~\ref{tab:trimestriel} présente l'évolution trimestrielle (Q1 à Q4) des revenus nets projetés. Cette décomposition permet de visualiser l'absorption graduelle des coûts fixes grâce à l'acquisition continue de nouveaux utilisateurs. Le seuil de rentabilité est estimé au début du deuxième trimestre de l'année~2, sous réserve d'une acquisition conforme aux prévisions (50\,000 utilisateurs actifs à 12 mois).
-
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|X|r|r|r|r|r|}
+\rowcolor{rohlight!40}
+\textbf{Résultat Net} & \textbf{-16\,000\,000} & \textbf{+8\,000\,000} & \textbf{+50\,000\,000} \\
 \hline
 \rowcolor{rohlight}
-\textbf{Indicateur} & \textbf{Q1} & \textbf{Q2} & \textbf{Q3} & \textbf{Q4} & \textbf{Total Année 1} \\
-\hline
-Utilisateurs actifs fin période & 5\,000 & 15\,000 & 30\,000 & 50\,000 & 50\,000 \\
-\hline
-Revenus totaux & 500\,000 & 1\,200\,000 & 2\,000\,000 & 3\,000\,000 & 6\,700\,000 \\
-\hline
-Charges d'exploitation & 3\,800\,000 & 3\,800\,000 & 3\,900\,000 & 3\,955\,000 & 15\,455\,000 \\
-\hline
-\rowcolor{rohlight!20}
-\textbf{Résultat net trimestriel} & \textbf{-3\,300\,000} & \textbf{-2\,600\,000} & \textbf{-1\,900\,000} & \textbf{-955\,000} & \textbf{-8\,755\,000} \\
+\textbf{Trésorerie (avec levée 20~M DZD)} & \textbf{+4\,000\,000} & \textbf{+12\,000\,000} & \textbf{+62\,000\,000} \\
 \hline
 \end{tabularx}
-  \caption{Projection trimestrielle de l'année 1 (en DZD)}
-  \label{tab:trimestriel}
+  \caption{Prévisionnel financier et flux de trésorerie sur 3 ans}
 \end{table}
 
-\section{Prototype expérimental et Business Model Canvas}
-
-\subsection{Prototype expérimental}
-
-Le prototype expérimental correspond au \gls{mvp} déjà réalisé et présenté au chapitre~3. Il inclut l'ensemble des fonctionnalités critiques~: authentification OTP, KYC biométrique, publication et réservation de trajet, paiement multi-méthodes, chat temps réel, suivi GPS et panneau d'administration. La couverture de tests unitaires (107/107 réussis, 100\,\%) valide la logique métier centrale, et la validation manuelle par captures d'écran (62~écrans distincts sur le parcours passager et conducteur) confirme la robustesse fonctionnelle en tant que base de déploiement commercial.
+Ce modèle de capital-risque assume une perte nette la première année afin de capturer des parts de marché (stratégie de \textit{Blitzscaling}), avec un franchissement du \textbf{seuil de rentabilité (Break-Even) prévu au 2\textsuperscript{e} trimestre de l'Année~2}. La formule formelle d'évaluation des revenus de commission annuels est~:
+$$R_n = U_n \times f \times p \times c$$
+avec $U_n$ le nombre d'utilisateurs actifs, $f = 2{,}5$ la fréquence mensuelle d'utilisation (trajets/mois), $p = 800$~DZD le panier moyen par trajet, et $c = 0{,}12$ la commission de la plateforme. Pour l'Année~1 avec $U_1 = 50\,000$ utilisateurs actifs en régime permanent~:
+$$R_1 = 50\,000 \times 2{,}5 \times 800 \times 0{,}12 \times 12 = 14\,400\,000 \text{~DZD (estimation haute)}$$
+Le chiffre effectif de 6,7~M~DZD intègre la montée en charge progressive (l'objectif de 50~000 utilisateurs n'étant atteint qu'en fin d'année).
 
 \subsection{Business Model Canvas}
-
-
-Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
 
 \begin{table}[H]
 \centering
@@ -633,77 +315,45 @@ Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
 \noindent
 \begin{tabularx}{\linewidth}{ >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X }
 
-\textcolor{rohblue}{\faHandshake\ \textbf{Partenaires clés}} &
-\textcolor{rohblue}{\faCogs\ \textbf{Activités clés}} &
+\textcolor{rohblue}{\faHandshake\ \textbf{Partenaires}} &
+\textcolor{rohblue}{\faCogs\ \textbf{Activités}} &
 \textcolor{rohblue}{\faGem\ \textbf{Proposition de valeur}} &
 \textcolor{rohblue}{\faHeart\ \textbf{Relation clients}} &
-\textcolor{rohblue}{\faUsers\ \textbf{Segments clients}} \\[2pt]
+\textcolor{rohblue}{\faUsers\ \textbf{Segments}} \\[2pt]
 
 \scriptsize
 \begin{itemize}[leftmargin=0.8em, nosep]
   \item Mapbox, Firebase, Cloudinary
-  \item Établissements universitaires
-  \item Assureurs auto locaux (MAMA, CAAR)
-  \item CIB/Edahabia (SATIM/Chargily)
-  \item Incubateurs (ANVREDET, CATI)
+  \item Universités
+  \item CIB/Edahabia (SATIM)
+  \item Incubateurs (ANVREDET)
 \end{itemize} &
 \scriptsize
 \begin{itemize}[leftmargin=0.8em, nosep]
   \item Développement mobile \& back-end
   \item Modération \& validation KYC
-  \item Appariement intelligent
-  \item Maintenance infrastructure
   \item Support client
 \end{itemize} &
 \scriptsize
 \begin{itemize}[leftmargin=0.8em, nosep]
   \item Covoiturage inter-wilayas sécurisé
-  \item Identité vérifiée par KYC biométrique (IA)
-  \item Économie partagée (frais divisés)
-  \item Messagerie et géolocalisation
+  \item KYC biométrique (IA)
+  \item Économie partagée
   \item Paiement électronique local
 \end{itemize} &
 \scriptsize
 \begin{itemize}[leftmargin=0.8em, nosep]
-  \item Self-service (application intuitive)
+  \item Self-service (app intuitive)
   \item Confiance mutuelle (notation)
-  \item Support client réactif
-  \item Communauté active
+  \item Support réactif
 \end{itemize} &
 \scriptsize
 \begin{itemize}[leftmargin=0.8em, nosep]
-  \item Étudiants universitaires mobiles
+  \item Étudiants universitaires
   \item Travailleurs pendulaires
-  \item Familles sans véhicule
-  \item Conducteurs (amortir les coûts)
-  \item Voyageurs occasionnels
+  \item Conducteurs (amortir coûts)
 \end{itemize} \\[15pt]
 
-\cline{2-2} \cline{4-4}
-
-&
-\textcolor{rohblue}{\faTools\ \textbf{Ressources clés}} &
-&
-\textcolor{rohblue}{\faPaperPlane\ \textbf{Canaux}} &
-\\
-
-&
-\scriptsize
-\begin{itemize}[leftmargin=0.8em, nosep]
-  \item Équipe produit \& tech
-  \item Algorithmes (matching, KYC)
-  \item Stack PostgreSQL \& Redis
-  \item Image de marque
-\end{itemize} &
-&
-\scriptsize
-\begin{itemize}[leftmargin=0.8em, nosep]
-  \item App Store, Play Store
-  \item Réseaux sociaux
-  \item Bouche-à-oreille
-  \item Recommandations
-\end{itemize}
-\\[15pt]
 \hline
 \multicolumn{2}{p{\dimexpr0.4\linewidth-2\tabcolsep-1.2pt\relax}|}{\textcolor{rohblue}{\faCoins\ \textbf{Structure de coûts}}} &
 \multicolumn{3}{p{\dimexpr0.6\linewidth-2\tabcolsep\relax}}{\textcolor{rohblue}{\faCreditCard\ \textbf{Sources de revenus}}} \\[2pt]
@@ -712,10 +362,9 @@ Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
 \scriptsize
 \begin{itemize}[leftmargin=0.8em, nosep]
   \item Masse salariale (tech/support)
-  \item Hébergement VPS (Scaleway/Hetzner)
-  \item API payantes (Mapbox, FCM, OTP)
-  \item Acquisition client et marketing
-  \item Conformité juridique
+  \item Hébergement VPS
+  \item API payantes
+  \item Acquisition client
 \end{itemize}
 } &
 \multicolumn{3}{p{\dimexpr0.6\linewidth-2\tabcolsep\relax}}{
@@ -724,7 +373,7 @@ Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
   \item Commission de 12\,\% sur trajets
   \item Abonnement Premium conducteurs
   \item Publicité in-app
-  \item Partenariats B2B (ex-assurance)
+  \item Partenariats B2B
 \end{itemize}
 } \\[6pt]
 
@@ -733,45 +382,16 @@ Le BMC est complété, ci-dessous, par sa forme tabulaire détaillée.
 \caption{Business Model Canvas de RohWinBghit}
 \end{table}
 
-\section{Propriété intellectuelle et conformité juridique}
+\subsection{Conformité juridique et Propriété Intellectuelle}
 
-Dans l'optique de l'obtention du label CNL et pour garantir la valorisation future de la startup lors d'éventuelles levées de fonds (Série~A), une stratégie stricte de protection des actifs immatériels et de conformité réglementaire a été intégrée dès la conception. La propriété intellectuelle et la conformité représentent le fossé défensif (\textit{moat}) et contractuel du projet face aux concurrents.
+Sur les marchés numériques émergents, la conformité réglementaire absolue ne constitue pas seulement une obligation légale, mais un véritable \textbf{avantage concurrentiel (Moat)}. La plateforme \textit{RohWinBghit} est soumise à deux cadres majeurs~:
 
-\subsection{Propriété intellectuelle}
-\label{sec:propriete-intellectuelle}
+La \textbf{Loi~18-05 relative au commerce électronique}~\cite{loi1805_2018} impose la sécurisation stricte des paiements via le réseau interbancaire \textsc{satim}, l'établissement d'un contrat électronique par double clic, et la transparence tarifaire intégrale envers le consommateur. La \textbf{Loi~25-11 relative à la protection des personnes physiques dans le traitement des données à caractère personnel}~\cite{loi2511_2025} soumet la plateforme à l'autorité de l'\textbf{\textsc{anpdp}}. Le choix architectural fondamental d'isoler le moteur IA biométrique sur un serveur \textbf{souverain local} garantit qu'aucun vecteur facial de citoyen algérien ne transite par des \textsc{api} étrangères (Cloud Vision, AWS Rekognition). Couplé au chiffrement AES-256-GCM des plaques d'immatriculation au repos, cette souveraineté numérique bloque structurellement les acteurs internationaux non conformes souhaitant pénétrer le marché sans investissement en infrastructure locale.
 
-La protection et la valorisation des actifs immatériels reposent sur trois piliers juridiques et techniques :
-\begin{enumerate}[leftmargin=1.8em]
-  \item \textbf{Dépôt de marque INAPI :} l'identité visuelle, incluant le nom de marque « RohWinBghit », sa transcription arabe « \textarabic{روح وين بغيت} », ainsi que le logotype distinctif, font l'objet d'une procédure de dépôt officielle auprès de l'Institut National Algérien de la Propriété Industrielle (INAPI), assurant l'exclusivité d'exploitation commerciale sur le territoire national.
-  \item \textbf{Protection par droits d'auteur ONDA :} l'architecture logicielle, répartie sur les quatre sous-projets (back-end Express, mobile React Native, front-end web React/Vite et microservice FastAPI), fait l'objet d'un dépôt par enveloppe numérique horodatée auprès de l'Office National des Droits d'Auteur et des Droits Voisins (ONDA), conférant une date certaine de création.
-  \item \textbf{Perspectives de brevetabilité :} l'implémentation logicielle spécifique du pipeline de fusion asymétrique des scores biométriques (couplant l'extraction vectorielle InsightFace à l'analyse de profondeur pour le KYC) constitue une méthode technique susceptible d'obtenir un brevet d'invention. Dépôt planifié pour le deuxième trimestre 2026.
-\end{enumerate}
+\paragraph{Protection de la propriété intellectuelle.} Trois démarches de protection sont engagées parallèlement. Le dépôt de la marque \textit{RohWinBghit} auprès de l'\textbf{\textsc{inapi}} (Institut National Algérien de la Propriété Industrielle) confère un droit exclusif d'exploitation commerciale sur le territoire national pour une durée de dix ans renouvelable. Le scellement du code source auprès de l'\textbf{\textsc{onda}} (Office National des Droits d'Auteur et des Droits Voisins) établit une preuve d'antériorité horodatée, opposable en cas de litige de contrefaçon logicielle. Enfin, la combinaison de ces protections avec l'obtention du label startup dans le cadre de l'Arrêté~1275 constitue un triptyque juridique renforçant considérablement la crédibilité du projet auprès des investisseurs institutionnels lors de la levée de fonds Série~A envisagée en Phase~4 de la feuille de route.
 
-\subsection{Conformité à la Loi 18-05 relative au commerce électronique}
-\label{sec:conformite-loi1805}
-
-En tant que plateforme numérique proposant une mise en relation transactionnelle assortie d'un module de paiement électronique, \textit{RohWinBghit} est soumise aux dispositions de la \textbf{Loi n\textsuperscript{o}~18-05 du 10 mai 2018 relative au commerce électronique}~\cite{loi1805_2018}. La plateforme respecte scrupuleusement ce cadre légal à travers plusieurs mécanismes intégrés :
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{Obligation d'information et transparence (Article 10) :} Les informations d'identification de l'émetteur (raison sociale, registre de commerce, identifiant fiscal, coordonnées) sont rendues accessibles en permanence dans l'application. Les tarifs des trajets sont indiqués en dinars algériens (DZD) toutes taxes comprises, incluant le détail des frais de service de la plateforme.
-  \item \textbf{Contrat électronique (Articles 11 à 13) :} La réservation d'un trajet par le passager donne lieu à l'émission d'un contrat électronique récapitulant les obligations des deux parties (wilayas de départ/arrivée, horaire, identité du conducteur). Ce contrat est validé par un mécanisme de double clic (consentement et validation de paiement) et archivé de façon inaltérable en base de données.
-  \item \textbf{Sécurisation des transactions de paiement (Article 22) :} L'intégration exclusive de la passerelle officielle de la SATIM pour les cartes CIB et Edahabia assure que les données de paiement sensibles du client ne transitent jamais en clair sur le serveur de la plateforme. Le protocole 3D-Secure et le chiffrement TLS 1.3 garantissent la confidentialité et l'irrévocabilité de la transaction électronique.
-\end{itemize}
-
-\subsection{Conformité aux Lois 18-07 et 25-11 sur la protection des données personnelles}
-\label{sec:conformite-donnees-perso}
-
-La manipulation de données d'identité, de numéros de téléphone et de données biométriques (selfies, caractéristiques faciales) place \textit{RohWinBghit} sous le contrôle de l'Autorité Nationale de Protection des Données à Caractère Personnel (ANPDP), conformément à la \textbf{Loi n\textsuperscript{o}~18-07} et son actualisation par la \textbf{Loi n\textsuperscript{o}~25-11 du 25 mai 2025}~\cite{loi2511_2025}. Plusieurs garanties techniques et organisationnelles ont été implémentées :
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{Déclaration préalable et consentement (Articles 14 et 15) :} Une déclaration formelle de traitement de données biométriques est déposée auprès de l'ANPDP. De plus, aucun traitement KYC n'est initié sans le consentement préalable, libre et éclairé de l'utilisateur, matérialisé par une case à cocher explicite sur l'écran d'introduction du parcours KYC.
-  \item \textbf{Souveraineté territoriale et non-exportation :} Le choix d'exécuter les modèles d'IA sur un microservice Python interne (FastAPI), plutôt que de sous-traiter à des API cloud étrangères (AWS Rekognition, Google Vision API), garantit la souveraineté technologique totale. Aucune donnée biométrique d'un citoyen algérien ne quitte l'infrastructure souveraine de la plateforme. 
-  \item \textbf{Sécurité physique et logique (Article 35) :} Les documents d'identité stockés sont chiffrés au repos via l'algorithme AES-256-GCM. Les vecteurs faciaux (\textit{Face Embeddings}) sont hashés sous PostgreSQL et comparés en mémoire vive sans persistance d'images brutes non nécessaires. De plus, les sessions et tokens expirés sont purgés automatiquement de la base Redis (politique de TTL de 24 heures) pour minimiser la surface d'attaque en cas d'intrusion.
-  \item \textbf{Droit d'accès et de rectification (Articles 31 et 32) :} L'utilisateur dispose depuis son interface de profil d'un accès direct à ses données personnelles et peut demander la suppression définitive de son compte, ce qui déclenche une routine de suppression en cascade ou d'anonymisation des données historiques non soumises à une obligation légale de conservation.
-\end{itemize}
-
-\section{Feuille de route stratégique (Roadmap 18 mois)}
+\subsection{Feuille de route (18 mois)}
 \label{sec:roadmap}
-
-La stratégie de déploiement de RohWinBghit est articulée autour d'une feuille de route stricte s'étendant sur dix-huit mois, subdivisée en quatre phases d'exécution interconnectées.
 
 \begin{table}[H]
 \centering
@@ -781,98 +401,34 @@ La stratégie de déploiement de RohWinBghit est articulée autour d'une feuille
 \rowcolor{rohlight}
 \textbf{Phase} & \textbf{Période} & \textbf{Objectifs clés} \\
 \hline
-\textbf{Phase 1} --- Fondation & Mois 1--3 & Finalisation MVP production, dépôt CNL, création SARL, dépôt INAPI/ONDA, audit de sécurité final, sécurisation seed funding. \\
+\textbf{Phase 1} --- Fondation & Mois 1--3 & Finalisation MVP, dépôt CNL, création SARL, audit de sécurité. \\
 \hline
-\textbf{Phase 2} --- Lancement Bêta & Mois 4--9 & Déploiement axe Tlemcen--Oran--Alger, 1~000 utilisateurs actifs, 500 conducteurs KYC validés, basculement CIB/Edahabia en production, partenariats universitaires. \\
+\textbf{Phase 2} --- Bêta & Mois 4--9 & Déploiement axe Tlemcen--Oran--Alger, 1~000 utilisateurs, CIB/Edahabia en production. \\
 \hline
-\textbf{Phase 3} --- Expansion & Mois 10--15 & Couverture 20 wilayas, 10~000 utilisateurs actifs, franchissement seuil de rentabilité, lancement abonnement Premium, premières offres B2B, recrutement 5--8 collaborateurs. \\
+\textbf{Phase 3} --- Expansion & Mois 10--15 & 20 wilayas, 10~000 utilisateurs, seuil de rentabilité, Premium. \\
 \hline
-\textbf{Phase 4} --- Scale National & Mois 16--18 & Couverture 69 wilayas, 50~000 utilisateurs, modèles IA prédictifs (suggestion d'itinéraires), anti-spoofing deepfake, audit Série~A, études d'expansion MENA. \\
+\textbf{Phase 4} --- National & Mois 16--18 & 69 wilayas, 50~000 utilisateurs, préparation Série~A. \\
 \hline
 \end{tabularx}
-  \caption{Feuille de route stratégique --- Déploiement RohWinBghit sur 18 mois}
+  \caption{Feuille de route stratégique sur 18 mois}
   \label{tab:roadmap}
 \end{table}
 
-Au terme de cette feuille de route, l'entreprise structurera l'audit complet de ses comptes en préparation d'une levée de fonds majeure en Série~A. Les capitaux visés serviront non seulement à verrouiller le monopole algérien, mais initieront également les études de faisabilité pour une expansion transfrontalière vers les marchés limitrophes du Moyen-Orient et de l'Afrique du Nord (MENA), caractérisés par des déficits d'infrastructures de transport similaires.
-
-\section{Scalabilité et vision d'infrastructure}
-\label{sec:scalabilite}
-
-Une question récurrente lors des soutenances de projets à forte ambition numérique est la suivante~: \textit{"Comment l'application tiendra-t-elle si 100\,000~Algériens l'utilisent demain~?"}. Loin d'être une formalité rhétorique, cette question touche au cœur des décisions d'architecture qui ont guidé la conception de \textit{RohWinBghit}.
-
-L'architecture stateless du \textit{back-end} Express.js à organisation modulaire inspirée de NestJS (chaque requête porte en elle-même son contexte via JWT) est précisément choisie pour permettre la \textbf{montée en charge horizontale} sans reconfiguration~: il suffit d'ajouter de nouvelles instances du service derrière un répartiteur de charge Nginx ou AWS ALB. Le tableau~\ref{tab:scalabilite} détaille la correspondance entre paliers d'utilisation et configurations d'infrastructure adaptées.
-
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|c|l|X|r|}
-\hline
-\rowcolor{rohlight}
-\textbf{Palier} & \textbf{Utilisateurs actifs} & \textbf{Infrastructure} & \textbf{Estimation coût/mois} \\
-\hline
-\textbf{MVP} & jusqu'à 5\,000 & 1 VPS (4~vCPU, 8~Go) + PostgreSQL single node + Redis standalone & $\sim$12\,000~DZD \\
-\hline
-\textbf{Croissance} & 5\,000 -- 50\,000 & 3 instances back-end (Docker Swarm), PostgreSQL réplica lecture, Redis Cluster & $\sim$45\,000~DZD \\
-\hline
-\textbf{Scale national} & 50\,000 -- 500\,000 & Kubernetes (Hetzner/AWS), Aurora PostgreSQL, ElastiCache Redis, CDN & $\sim$180\,000~DZD \\
-\hline
-\textbf{Série~A} & $>$500\,000 & Architecture multi-région, base analytique (Redshift), pipeline ML temps réel & $>$500\,000~DZD \\
-\hline
-\end{tabularx}
-  \caption{Stratégie de scalabilité par palier d'utilisation}
-  \label{tab:scalabilite}
-\end{table}
-
-Les goulots d'étranglement potentiels ont été anticipés et résolus dès la phase de conception.
-\begin{enumerate}
-  \item \textbf{PostgreSQL~:} index GiST sur les coordonnées géographiques, mise en cache des requêtes de recherche via Redis (TTL 30~s), partitionnement par date sur les tables \texttt{trips} et \texttt{bookings} prévu au-delà de 1~M de lignes.
-  \item \textbf{Service IA (KYC)~:} le microservice FastAPI is conçu sans état et horizontalement scalable~; les pics de charge sont absorbés par la file asynchrone BullMQ qui écrête les requêtes de vérification d'identité.
-  \item \textbf{WebSocket~:} l'adaptateur Socket.IO Redis permet de distribuer les événements en temps réel entre plusieurs instances, éliminant le \textit{Single Point of Failure} de la connexion persistante.
-\end{enumerate}
-
-Cette préparation architecturale permet à \textit{RohWinBghit} de croitre sans rupture technique jusqu'à l'échelle nationale.
-
-% Conclusion business déplacée
-
-Ce chapitre a établi que RohWinBghit dépasse le cadre du 
-seul exercice académique. Le projet dispose d'un marché 
-clairement identifié — plus de 250~millions de voyages 
-inter-wilayas estimés par an, 1,9~million d'étudiants 
-mobiles, un taux de pénétration smartphone supérieur à 
-75\,\% — d'une proposition de valeur différenciante 
-articulée autour du KYC biométrique et du paiement local, 
-et d'un modèle économique dont les projections indiquent un 
-retour à l'équilibre dès le deuxième trimestre de la 
-deuxième année d'exploitation. La conformité aux critères 
-de l'Arrêté interministériel n\textsuperscript{o}~1275 a 
-été établie point par point (tableau~\ref{tab:arrete1275}), 
-ouvrant la voie à une demande de labellisation CNL et à la 
-création d'une SARL dans le cadre du mécanisme 
-«~Un diplôme, une Startup~».
+% ================================================================
+%  PERSPECTIVES
+% ================================================================
 
 \section{Perspectives d'amélioration}
 \label{sec:perspectives-amelioration}
 
-\subsection{Intelligence artificielle et prédiction de la demande}
-\label{sec:perspectives-ai}
-L'intégration de modèles d'apprentissage automatique (\textit{machine learning}) en production permettra d'affiner l'estimation de la demande de covoiturage. En entraînant des modèles de régression (tels que XGBoost ou des réseaux de neurones récurrents LSTM) sur l'historique des trajets et des données calendaires algériennes (fêtes nationales, vacances universitaires, conditions météorologiques), le système pourra anticiper les flux de voyageurs inter-wilayas. Ces prédictions serviront à ajuster dynamiquement les coefficients de \textit{surge pricing} et à suggérer aux conducteurs des horaires de départ optimaux pour maximiser leur taux d'occupation.
-
-\subsection{Algorithme de matching spatial avancé}
-\label{sec:perspectives-matching}
-Le matching actuel repose sur une correspondance stricte entre wilayas de départ et d'arrivée. Une évolution majeure consistera à implémenter un algorithme de matching sur graphe routier (en s'appuyant sur l'extension PostGIS de PostgreSQL et le moteur OSRM). Cet algorithme calculera l'intersection géométrique des itinéraires pour proposer à un passager des conducteurs effectuant un trajet plus long mais transitant par sa wilaya de départ et sa destination. Le système évaluera le détour temporel imposé au conducteur et ajustera automatiquement le prix de la place en conséquence.
-
-\subsection{Automatisation de la validation BaridiMob (OCR)}
-\label{sec:perspectives-baridimob}
-Pour élargir l'inclusion financière des utilisateurs dépourvus de cartes de paiement classiques (CIB/Edahabia), l'intégration de BaridiMob est planifiée. Afin d'éviter la validation manuelle chronophage des virements par le support client, un pipeline de reconnaissance optique de caractères (OCR) basé sur un réseau de neurones convolutifs (CNN) sera déployé sur le service IA. Ce modèle analysera la capture d'écran du reçu de transaction BaridiMob téléversée par le passager, en extraira le numéro de transaction, le montant et la date, puis interrogera la base pour valider automatiquement la réservation après vérification de cohérence.
-
-\subsection{Système anti-fraude et analyse comportementale}
-\label{sec:perspectives-antifraude}
-La sécurité sera renforcée par le déploiement d'un module d'analyse comportementale en temps réel. En corrélant les empreintes matérielles des appareils (\textit{device fingerprinting}), les adresses IP et l'historique des transactions, ce module détectera les tentatives de création de comptes multiples (sybils) visant à contourner des rejets KYC ou des suspensions. De plus, un algorithme d'apprentissage non supervisé (de type Isolation Forest) identifiera les schémas de réservation suspects, comme les réservations en boucle suivies d'annulations systématiques, caractéristiques de comportements malveillants ou d'attaques par déni de service.
-
-\subsection{Moteur de recommandation personnalisé}
-\label{sec:perspectives-recommandation}
-Un moteur de recommandation basé sur le filtrage collaboratif et le filtrage basé sur le contenu (\textit{Content-Based Filtering}) sera intégré pour personnaliser l'écran d'accueil des passagers. En analysant les habitudes de déplacement individuelles (wilayas favorites, créneaux horaires préférentiels, tolérance aux détours), le système proposera de manière proactive des suggestions de trajets dès l'ouverture de l'application. Cette approche réduira le parcours utilisateur de la recherche à la réservation de quatre à deux étapes, augmentant ainsi le taux de conversion global de la plateforme.
+Les perspectives d'évolution s'articulent autour de quatre axes~:
+\begin{enumerate}
+  \item \textbf{IA prédictive~:} intégration de modèles d'apprentissage automatique pour l'estimation de la demande et l'optimisation des coefficients de surge pricing.
+  \item \textbf{Matching spatial avancé~:} algorithme sur graphe routier (PostGIS/OSRM) pour proposer des conducteurs transitant par la wilaya du passager, avec ajustement tarifaire du détour.
+  \item \textbf{Intégration BaridiMob~:} pipeline OCR pour la validation automatique des reçus de transaction, élargissant l'inclusion financière.
+  \item \textbf{Anti-fraude comportemental~:} détection des comptes multiples par empreinte matérielle et identification des schémas de réservation suspects par apprentissage non supervisé.
+\end{enumerate}
 
 \section{Conclusion}
-Ce chapitre a exposé les validations rigoureuses subies par la plateforme RohWinBghit, son schéma de déploiement sécurisé, ainsi que les fondations économiques et financières de la startup associée.
+
+Ce chapitre a exposé la validation de la plateforme (97,4\,\% de tests réussis, score SUS de 71,6/100, performances P95 conformes aux objectifs), son schéma de déploiement conteneurisé, et l'étude technico-économique confirmant la viabilité du modèle dans le cadre de l'Arrêté~1275.

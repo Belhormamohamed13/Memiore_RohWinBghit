@@ -1,0 +1,70 @@
+\appendix
+\chapter{Diagrammes UML Détaillés}
+\label{app:diagrammes}
+
+Cette annexe regroupe les diagrammes de séquences et d'activités modélisant l'orchestration technique des processus majeurs de la plateforme \textit{RohWinBghit}.
+
+\section{Diagrammes de séquences}
+\label{sec:app-sequences}
+
+Les séquences clés modélisent l'orchestration technique des processus majeurs. Nous retenons les quatre scénarios les plus structurants.
+
+\subsection{Inscription}
+
+L'inscription repose sur une vérification du numéro de téléphone par code OTP, suivie de la saisie des informations personnelles (figure~\ref{fig:seq-inscription}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{fig_sequence_inscription.png}
+\caption{Séquence --- Inscription d'un nouvel utilisateur}
+\label{fig:seq-inscription}
+\end{figure}
+
+\subsection{Réservation avec paiement multi-méthodes}
+
+La figure~\ref{fig:seq-reservation} expose l'orchestration interne du paiement~: vérification de la disponibilité, calcul du tarif dynamique par le \texttt{FareService} (avec multiplicateur de \textit{surge pricing} mis en cache dans Redis), exécution du paiement via le patron \textit{Strategy/Factory}, persistance transactionnelle et notification au conducteur.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_sequence_booking.png}
+\caption{Séquence --- Réservation avec paiement multi-méthodes (vue technique)}
+\label{fig:seq-reservation}
+\end{figure}
+
+\subsection{Vérification \textsc{kyc} biométrique}
+
+Le flux \textsc{kyc} (figure~\ref{fig:seq-kyc}) constitue le scénario le plus critique~: téléversement du document, capture vidéo de vivacité, traitement asynchrone par le pipeline IA (comparaison faciale InsightFace, détection de vivacité, anti-\textit{spoofing}), décision automatique à trois états (\textit{verified}, \textit{pending\_review}, \textit{rejected}), et éventuelle revue manuelle.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_sequence_kyc.png}
+\caption{Séquence --- Vérification \textsc{kyc} biométrique (3~états de décision)}
+\label{fig:seq-kyc}
+\end{figure}
+
+Les seuils sont différenciés par rôle~: conducteur (score facial $\geq$~0{,}65, vivacité $\geq$~0{,}65, anti-\textit{spoofing} $\geq$~0{,}60)~; passager (0{,}60, 0{,}55, 0{,}50). Un \textit{hard-fail} (score $<$ 0,30) déclenche un rejet immédiat et la consignation d'un événement de fraude.
+
+\subsection{Demande de trajet (\textit{matching} inverse)}
+
+Le scénario inverse permet au passager d'exprimer une demande, à la suite de laquelle le système identifie les conducteurs éligibles (figure~\ref{fig:seq-trip-request}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{fig_sequence_trip_request.png}
+\caption{Séquence --- Demande de trajet (\textit{matching} passager $\to$ conducteurs)}
+\label{fig:seq-trip-request}
+\end{figure}
+
+\section{Diagramme d'activité}
+\label{sec:app-activite}
+
+Le parcours global d'un utilisateur, depuis l'authentification jusqu'à la fin du trajet, est représenté par le diagramme d'activité (figure~\ref{fig:activite-booking}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth,height=0.85\textheight,keepaspectratio]{fig_passenger_flow.png}
+\caption{Diagramme d'activité --- parcours global de la plateforme}
+\label{fig:activite-booking}
+\end{figure}
+
+Après authentification et \textsc{kyc}, l'utilisateur est orienté vers l'une des deux branches selon son rôle. Les nœuds de décision matérialisent les ruptures possibles (places insuffisantes, paiement échoué), chacune associée à une compensation (libération de places, remboursement).

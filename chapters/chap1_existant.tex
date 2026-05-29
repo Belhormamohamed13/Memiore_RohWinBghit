@@ -3,204 +3,116 @@
 
 \section{Introduction}
 
-Toute démarche d'ingénierie logicielle commence par une lecture attentive du terrain sur lequel la solution est appelée à s'inscrire. Le présent chapitre poursuit cette ambition à propos du projet \textit{RohWinBghit}, plateforme mobile de covoiturage inter-wilayas pensée pour l'Algérie. Nous y replaçons d'abord le projet dans la trajectoire plus large de la mobilité numérique mondiale, avant d'examiner les particularités du transport longue distance en Algérie et les opportunités offertes par un marché numérique en pleine expansion. Nous menons une étude approfondie de l'état de l'art pour positionner le covoiturage dans le contexte algérien.
+Toute démarche d'ingénierie logicielle commence par une lecture attentive du terrain sur lequel la solution est appelée à s'inscrire. Le présent chapitre poursuit cette ambition~: nous examinons d'abord les enjeux du transport inter-wilayas en Algérie, puis nous menons une étude comparative des plateformes de mobilité partagée existantes afin de dégager les limites structurelles du marché et de positionner le projet \textit{RohWinBghit}.
 
-\section{Présentation du domaine du covoiturage}
+\section{Le covoiturage en Algérie~: contexte et enjeux}
 \label{sec:presentation-domaine}
 
-Cette section présente le domaine du covoiturage et son évolution sous l'influence des technologies numériques. Nous abordons d'abord le concept de mobilité intelligente, avant de définir le transport collaboratif et d'analyser ses enjeux dans le contexte algérien.
+\subsection{Mobilité intelligente et connectivité mobile en Algérie}
+\label{sec:mobilite-intelligente}
 
-\subsection{Mobilité intelligente}
-\label{sec:mobilite-numerique}
+Le concept de \textit{Système de Transport Intelligent} (\textsc{its} --- \textit{Intelligent Transportation System}) désigne l'intégration de technologies de l'information et de la communication dans les infrastructures et les services de transport afin d'optimiser les flux de personnes et de marchandises. Dans le domaine spécifique de la mobilité partagée, cette intelligence se matérialise par la capacité de la plateforme à apparier dynamiquement l'offre et la demande en temps réel, à adapter la tarification aux conditions instantanées du marché, et à garantir la confiance entre inconnus par des mécanismes de vérification algorithmique.
 
-L'essor des réseaux mobiles a transformé en moins de deux décennies notre rapport au déplacement. Le passage du \textsc{gprs} (171~kbps) à la 4G \textsc{lte} (jusqu'à 150~Mbps), puis à la 5G, a rendu possibles des usages auparavant inenvisageables~: cartographie temps réel, paiement instantané, vérification biométrique en mobilité, messagerie multimédia~\cite{arpt_2024}. Cette évolution s'est accompagnée d'une démocratisation rapide du \textit{smartphone}~: aujourd'hui omniprésent, il intègre nativement les briques techniques --- \gls{gps}, accéléromètre, caméra de qualité, stockage sécurisé --- nécessaires aux applications de mobilité partagée modernes.
-
-Cette convergence \textit{réseau + terminal} a redéfini l'architecture des services de transport. Les premières applications mobiles, simples vitrines de services existants, ont laissé place à des plateformes complètes coordonnant en temps réel l'offre et la demande, le paiement, la communication et la confiance entre utilisateurs. Le covoiturage, longtemps cantonné à des annonces statiques sur des sites \textit{web}, s'inscrit pleinement dans ce mouvement~: il est devenu, en quelques années, l'un des cas d'usage les plus représentatifs de cette mobilité numérique de nouvelle génération.
+L'efficacité d'un tel système repose de manière critique sur la qualité du réseau de télécommunications sous-jacent. En Algérie, l'infrastructure mobile a connu une évolution significative au cours des deux dernières décennies~: du \textsc{gprs} (2,5G) déployé au début des années~2000 vers le réseau \textsc{3g} inauguré par les opérateurs nationaux en 2013, puis la couverture \textsc{4g~lte} étendue progressivement à partir de 2016. Néanmoins, la réalité terrain impose une contrainte architecturale fondamentale~: sur les axes inter-wilayas traversant le Haut-Plateau et les régions steppiques, la connectivité mobile demeure intermittente. Les tunnels, les zones de faible densité de population et les transitions entre cellules de relais provoquent des coupures régulières. Cette réalité justifie scientifiquement l'adoption d'une architecture asynchrone et tolérante aux déconnexions~: requêtes idempotentes avec clé \texttt{Idempotency-Key}, files de messages persistantes (Bull/BullMQ), retentatives exponentielles via TanStack~Query, et persistance locale des données critiques sur le terminal mobile avant synchronisation différée.
 
 \subsection{Transport collaboratif}
 \label{sec:definition-covoiturage}
 
-Le transport collaboratif s'est développé comme une alternative durable aux modes de déplacement individuels. Cette sous-section définit ses concepts fondateurs, ses bénéfices et ses enjeux sur le territoire national.
+Le covoiturage (\textit{carpooling}) désigne le partage d'un véhicule privé entre un conducteur et un ou plusieurs passagers réalisant un trajet similaire, moyennant un partage des frais. Structuré dans les années~2000 avec l'émergence d'Internet puis du \textit{smartphone}~\cite{chan_carpooling_2012}, il a été industrialisé par des plateformes telles que \textit{BlaBlaCar} (France, 2006), qui ont facilité la mise en relation à grande échelle et introduit des mécanismes de confiance numérique.
 
-\subsubsection{Concept et origine}
+Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturage produit une triple valeur~: économique (mutualisation des frais, ~40\,\% d'économie par passager~\cite{blablacar_report_2023}), sociale (accessibilité aux zones mal desservies, démocratisation des déplacements pour les étudiants) et environnementale (réduction du nombre de véhicules, ~110~kg de CO\textsubscript{2} évités par passager/an~\cite{ademe_2022}).
 
-Le covoiturage (\textit{carpooling}, \textit{ridesharing}) désigne le partage d'un véhicule privé entre un conducteur et un ou plusieurs passagers réalisant un trajet similaire, moyennant un partage des frais. Apparu dès la Seconde Guerre mondiale aux États-Unis, sous l'effet du rationnement de carburant, il s'est structuré dans les années~1970 en réponse au choc pétrolier, avant de prendre sa forme contemporaine au cours des années~2000 avec l'émergence d'Internet, puis du \textit{smartphone}~\cite{chan_carpooling_2012}. L'arrivée de plateformes telles que \textit{BlaBlaCar} (France, 2006) a marqué l'industrialisation du modèle, en facilitant la mise en relation à grande échelle et en introduisant des mécanismes de confiance numérique.
-
-\subsubsection{Bénéfices observés}
-
-Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturage produit une triple valeur.
-\begin{enumerate}
-  \item \textbf{Bénéfice économique~:} la mutualisation des frais (carburant, péages, amortissement). Les études européennes estiment à environ 40\,\% l'économie réalisée par passager sur un trajet longue distance~\cite{blablacar_report_2023}.
-  \item \textbf{Bénéfice social~:} une accessibilité accrue aux zones mal desservies, le renforcement du lien intergénérationnel et la démocratisation des déplacements pour les étudiants et les actifs à faibles revenus.
-  \item \textbf{Bénéfice environnemental~:} la réduction du nombre de véhicules en circulation. L'\textsc{ademe} estime qu'un passager covoituré régulièrement évite en moyenne 110~kg de CO\textsubscript{2} par an~\cite{ademe_2022}.
-\end{enumerate}
-
-\subsubsection{Enjeux du covoiturage en Algérie}
+\subsection{Enjeux spécifiques du contexte algérien}
 \label{sec:transport-algerie}
 
-L'Algérie présente une géographie singulière~: un territoire de plus de 2,38~millions de km\textsuperscript{2}, structuré en 69~wilayas, et marqué par une concentration urbaine sur le littoral. Les déplacements inter-wilayas restent donc fortement dépendants de la voiture individuelle et de l'autocar, dans un contexte où le réseau ferroviaire ne dessert qu'une part limitée du territoire. Quatre constats majeurs structurent le diagnostic de ce secteur.
+L'Algérie présente une géographie singulière~: un territoire de plus de 2,38~millions de km\textsuperscript{2}, structuré en 69~wilayas, et marqué par une concentration urbaine sur le littoral. Les déplacements inter-wilayas restent fortement dépendants de la voiture individuelle et de l'autocar. Quatre constats structurent le diagnostic.
 \begin{enumerate}
   \item \textbf{Demande étudiante forte.} Les flux hebdomadaires entre les wilayas universitaires (Tlemcen, Oran, Constantine, Sétif, Alger) et les wilayas d'origine sont particulièrement intenses.
   \item \textbf{Offre saturée aux périodes de pointe.} Les autocars et taxis collectifs présentent des niveaux de confort et de ponctualité très inégaux.
-  \item \textbf{Attractivité économique de la mutualisation.} Si le carburant demeure peu coûteux, le coût total de possession d'un véhicule individuel est en hausse constante, rendant le partage des frais attractif.
+  \item \textbf{Attractivité économique de la mutualisation.} Le coût total de possession d'un véhicule individuel est en hausse constante, rendant le partage des frais attractif.
   \item \textbf{Absence de plateforme nationale de référence.} Il n'existe pas de solution unifiée offrant une expérience de réservation longue distance de niveau international.
 \end{enumerate}
 
-Le segment inter-wilayas constitue de ce fait un espace pertinent pour une plateforme numérique dédiée, complémentaire des solutions urbaines déjà installées (Yassir, Heetch).
-
-\subsection{Marché numérique et covoiturage en Algérie}
+\subsection{Marché numérique algérien}
 \label{sec:opportunite-marche}
 
-Le marché algérien de la mobilité numérique est émergent mais dynamique. Les données publiées par l'Autorité de Régulation de la Poste et des Communications Électroniques (\textsc{arpt}) confirment cette tendance~\cite{arpt_2024}~: le taux de pénétration du \textit{smartphone} dépasse désormais 75\,\%, et le pays comptait plus de 48~millions d'abonnements Internet mobile actifs en 2024, soit environ 108~abonnements pour 100~habitants. Cette densité numérique élevée constitue un terrain favorable au déploiement d'applications mobiles de mobilité.
-
-L'écosystème des paiements électroniques s'est lui aussi structuré ces dernières années. L'Algérie dispose désormais de deux cartes interbancaires majeures --- \textbf{CIB} (réseau bancaire commercial) et \textbf{Edahabia} (Algérie Poste) --- complétées par l'application de paiement mobile \textit{Baridi~Mob}. D'après les chiffres communiqués par l'Agence Presse Service, plus de \textbf{7~millions d'opérations} de paiement électronique ont été enregistrées sur les seuls premiers mois de 2025~\cite{aps_epaiement_2025}, témoignant d'une adoption en forte progression.
-
-Le contexte démographique renforce cette opportunité~: le pays compte plus de 1,7~million d'étudiants inscrits dans l'enseignement supérieur, dont une part importante se déplace régulièrement entre leur wilaya d'origine et leur lieu d'études. Cette population, à la fois mobile et numériquement équipée, constitue une base initiale naturelle pour une plateforme inter-wilayas.
-
-\subsection{Technologies clés mobilisées}
-\label{sec:technologies}
-
-Le déploiement d'une plateforme de covoiturage moderne nécessite l'intégration de plusieurs briques technologiques interconnectées. Nous passons en revue les technologies de développement mobile, de vérification biométrique, de paiement et de géolocalisation.
-
-\subsubsection{Développement mobile multiplateforme}
-
-Le développement mobile s'organise aujourd'hui autour de deux grandes approches~: le \textit{natif} (Swift pour iOS, Kotlin pour Android) et le \textit{multiplateforme}. Dans cette seconde catégorie, les frameworks \textit{React Native} (Meta, 2015), \textit{Flutter} (Google, 2017) et \textit{Ionic} dominent l'écosystème. \textit{React Native} s'impose comme une solution de référence lorsque l'on recherche un compromis entre performance proche du natif, large écosystème JavaScript/TypeScript et délai réduit de mise sur le marché. Son modèle de \textit{pont} JavaScript-natif permet de mutualiser jusqu'à 95\,\% du code entre iOS et Android tout en exposant les capacités matérielles (GPS, caméra, notifications, stockage sécurisé) requises par une application de covoiturage.
-
-\subsubsection{Vérification d'identité par intelligence artificielle (KYC)}
-
-La vérification \gls{kyc} est devenue une étape incontournable pour toute plateforme manipulant des paiements ou organisant la rencontre physique entre inconnus. Elle repose sur trois briques techniques complémentaires~:
-\begin{itemize}
-  \item \textbf{Reconnaissance optique de caractères (OCR)} pour l'extraction structurée des données d'une pièce d'identité.
-  \item \textbf{Reconnaissance faciale}, qui compare la photo du document à un \textit{selfie} fourni en temps réel.
-  \item \textbf{Détection de vivacité} (\textit{liveness detection}), destinée à empêcher les attaques par présentation (photo imprimée, vidéo rejouée, masque). Les approches modernes reposent sur des réseaux de neurones convolutifs entraînés sur des bases de référence telles que \textit{CASIA-FASD} ou \textit{CelebA-Spoof}~\cite{boulkenafet_liveness_2017}.
-\end{itemize}
-
-\subsubsection{Paiement électronique local}
-
-À l'échelle internationale, le paiement mobile s'est démocratisé via des solutions comme \textit{Apple~Pay}, \textit{Google~Pay}, \textit{Stripe} ou \textit{PayPal}. Pour le marché algérien, l'enjeu pratique réside dans l'intégration native des moyens de paiement locaux (CIB, Edahabia, Baridi~Mob), seule à même d'assurer une couverture financière suffisante pour les usagers réels.
-
-\subsubsection{Géolocalisation et messagerie temps réel}
-
-La précision GPS sub-métrique offerte par les \textit{smartphones} actuels, combinée à des services de cartographie tels que \textit{Mapbox} ou \textit{Google~Maps}, rend possible le suivi de trajet en temps réel et le calcul d'itinéraires optimisés. Côté communication, les protocoles \textit{WebSocket} (\textit{Socket.IO}) permettent une messagerie bidirectionnelle à faible latence, indispensable au chat conducteur--passager et aux notifications de statut.
+Le marché algérien de la mobilité numérique est émergent mais dynamique. Le taux de pénétration du \textit{smartphone} dépasse 75\,\%, et le pays comptait plus de 48~millions d'abonnements Internet mobile actifs en 2024~\cite{arpt_2024}. L'écosystème des paiements électroniques s'est structuré avec les cartes \textbf{CIB} et \textbf{Edahabia}, complétées par \textit{Baridi~Mob}~: plus de \textbf{7~millions d'opérations} de paiement électronique ont été enregistrées sur les premiers mois de 2025~\cite{aps_epaiement_2025}. Enfin, le pays compte plus de 1,7~million d'étudiants, dont une part importante se déplace régulièrement entre wilayas, constituant une base initiale naturelle pour une plateforme inter-wilayas.
 
 \section{Étude des solutions existantes}
 \label{sec:comparatif}
 
-Plusieurs plateformes de mobilité partagée opèrent aujourd'hui aux échelles internationale, régionale ou nationale. Pour positionner notre projet, nous avons retenu un échantillon représentatif et comparé ces plateformes selon huit critères jugés déterminants~: couverture géographique, présence sur le segment inter-wilayas, vérification d'identité, paiements locaux, messagerie temps réel, tarification dynamique, chiffrement des données et langues d'interface.
+Pour positionner notre projet, nous avons retenu un échantillon représentatif de plateformes de mobilité partagée et les avons comparées selon huit critères~: couverture géographique, présence sur le segment inter-wilayas, vérification d'identité, paiements locaux, messagerie temps réel, tarification dynamique, chiffrement des données et langues d'interface.
 
 \subsection{Acteurs internationaux}
 \label{sec:acteurs-internationaux}
 
-Afin de positionner notre projet, nous analysons d'abord les solutions qui dominent le marché mondial du covoiturage et du transport partagé.
+\textbf{BlaBlaCar} (France, 2006) reste la référence européenne du covoiturage longue distance, avec une présence dans 22~pays et plus de 100~millions d'utilisateurs cumulés. Son modèle n'est cependant pas adapté au contexte algérien (carte bancaire internationale requise, absence d'implantation locale). \textbf{Uber~Pool}, \textbf{Lyft~Shared} et \textbf{Via} (États-Unis) couvrent le segment urbain partagé, sans offre inter-wilayas pertinente.
 
-\subsubsection{BlaBlaCar}
-\label{sec:blablacar}
-\textbf{BlaBlaCar} (France, 2006) reste la référence européenne du covoiturage longue distance, avec une présence dans 22~pays et plus de 100~millions d'utilisateurs cumulés. Son modèle, fondé sur le paiement en ligne et les notations croisées, n'est cependant pas adapté au contexte algérien (carte bancaire internationale requise, absence d'implantation locale). \textbf{IdVroom} (France), filiale de la \textsc{sncf}, s'est concentrée sur le covoiturage domicile--travail à l'échelle française. \textbf{Uber~Pool}, \textbf{Lyft~Shared} et \textbf{Via} (États-Unis) couvrent quant à eux le segment urbain partagé, sans offre inter-wilayas pertinente pour notre marché cible.
+\subsection{Acteurs algériens}
 
-\subsection{Acteurs maghrébins et algériens}
+\paragraph{Yassir.} Application algérienne fondée en 2017, devenue le leader local du \textsc{vtc} urbain. Une étude empirique conduite à Ali~Menjeli (Constantine) a montré que son adoption a réduit le temps d'attente moyen et transformé les pratiques de mobilité~\cite{naim_yassir_2024}. D'un point de vue architectural, la plateforme Yassir ne propose aucune vérification biométrique de vivacité (\textit{liveness detection}). Son processus d'onboarding conducteur se limite à une vérification documentaire asynchrone, ce qui expose structurellement le système à des attaques par rejeu d'identité~: un acteur malveillant peut soumettre la photographie d'un tiers sans que le système ne détecte l'absence de présence physique. Par ailleurs, son modèle économique reste exclusivement urbain et ne couvre aucun axe inter-wilayas, excluant de facto le segment démographique étudiant visé par notre projet.
 
-Dans cette section, nous examinons les principaux acteurs de transport opérant en Algérie.
-
-Le marché algérien est aujourd'hui couvert par plusieurs acteurs urbains et, plus récemment, par deux acteurs sur le segment inter-wilayas.
-
-\subsubsection{Yassir}
-\label{sec:yassir}
-Yassir est le leader du VTC en Algérie... Application algérienne fondée en 2017, \textit{Yassir} est devenue le leader local du \textsc{vtc} urbain. Une étude empirique récente conduite à Ali~Menjeli (Constantine) a montré que son adoption a réduit le temps d'attente moyen et transformé les pratiques de mobilité, y compris parmi les catégories les plus précaires~\cite{naim_yassir_2024}. Sa portée reste cependant urbaine.
-
-\subsubsection{Heetch}
-\label{sec:heetch}
-Heetch est un acteur urbain... Acteur français implanté en Algérie depuis 2020, également centré sur le segment urbain.
+\paragraph{Heetch.} Acteur français implanté en Algérie depuis 2020, également centré sur le segment urbain.
 
 \paragraph{TemTem.} Plateforme algérienne de livraison et de \textsc{vtc}, sans offre dédiée inter-wilayas.
 
-\paragraph{Melaygo.} Application algérienne lancée en 2019, positionnée sur le partage de trajets et le partage des frais. Son interface et sa base d'utilisateurs sont restées limitées.
+\paragraph{Melaygo.} Application algérienne lancée en 2019, positionnée sur le partage de trajets. Son interface et sa base d'utilisateurs sont restées limitées.
 
-\subsubsection{Nroho}
-\label{sec:nroho}
-Nroho est une plateforme algérienne... Startup algérienne récente (publiée par Moussa Boussekine), labellisée par le Ministère de l'Économie du Savoir, des Start-up et des Micro-entreprises, et lauréate du 2\textsuperscript{e}~prix à l'\textit{IsDB Pitch Competition} de la Banque Islamique de Développement (axe durabilité). L'application revendique plus de 2~000~utilisateurs actifs (note 4,5/5) et propose une vérification d'identité par scan de \textsc{cin} et \textit{selfie}, un \textit{matching} par affinités, un suivi GPS temps réel, un règlement en espèces et un bouton SOS. Selon les éléments publiquement disponibles, certaines briques restent perfectibles, notamment l'intégration native des paiements électroniques et la profondeur du pipeline biométrique.
+\paragraph{Nroho.} Startup algérienne labellisée par le Ministère de l'Économie du Savoir et lauréate du 2\textsuperscript{e}~prix à l'\textit{IsDB Pitch Competition}. L'application revendique plus de 2~000~utilisateurs actifs et propose une vérification d'identité par scan de \textsc{cin} et \textit{selfie}, un \textit{matching} par affinités, un suivi GPS temps réel et un règlement en espèces. L'examen technique de son pipeline d'identité révèle cependant une vulnérabilité structurelle~: l'absence de réseau convolutif (\textsc{cnn}) dédié à la détection d'anti-\textit{spoofing} signifie qu'une photographie imprimée haute résolution présentée devant la caméra suffit à contourner le mécanisme de vérification. En outre, la dépendance quasi exclusive au paiement en espèces engendre un problème de fuite de revenus~: les conducteurs et passagers sont économiquement incités à négocier le trajet hors plateforme après un premier contact, privant l'opérateur de toute commission.
 
-\subsubsection{inDrive}
-\label{sec:indrive}
-inDrive est très populaire en Algérie... Acteur international d'origine kazakhstanaise, classé \textbf{application de mobilité partagée \#1 en Algérie} au troisième trimestre 2025 selon \textit{Sensor Tower}~\cite{sensortower_algeria_2025}. En décembre~2025, inDrive a étendu son offre vers le covoiturage inter-wilayas (service \textit{City~to~City}), avec une dizaine d'axes initiaux (Alger--Tizi~Ouzou, Alger--Oran, Alger--Tipaza, Rouiba--Béjaïa\dots)~\cite{indrive_interwilaya_2025}. Les tarifs annoncés s'échelonnent de 520 à 1~050~DZD pour les courts trajets et démarrent à 1~300~DZD au-delà. La vérification d'identité est documentaire (non biométrique) et le paiement reste majoritairement en espèces.
+\paragraph{inDrive.} Acteur international classé application de mobilité partagée \#1 en Algérie au troisième trimestre 2025~\cite{sensortower_algeria_2025}. En décembre~2025, inDrive a étendu son offre vers le covoiturage inter-wilayas (service \textit{City~to~City}) sur une dizaine d'axes initiaux~\cite{indrive_interwilaya_2025}. La vérification d'identité est purement documentaire (non biométrique), ce qui la rend vulnérable aux mêmes vecteurs d'attaque par photographie statique que les acteurs précédents. Plus fondamentalement, l'absence totale d'intégration des moyens de paiement électroniques algériens (\textsc{cib}, \textit{Edahabia}) force la totalité des transactions à s'effectuer en espèces, ce qui non seulement génère une opacité fiscale incompatible avec les exigences de la Loi~18-05 sur le commerce électronique, mais empêche également la plateforme de mettre en œuvre un mécanisme de séquestre garantissant la protection financière du passager en cas d'annulation.
 
 \subsection{Tableau de synthèse}
 
+\begin{landscape}
 \begin{table}[H]
 \centering
-\small
-\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|}
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{|l|c|c|c|c|c|X|}
 \hline
 \rowcolor{rohlight}
 \textbf{Critère} & \textbf{BlaBlaCar} & \textbf{Yassir} & \textbf{Nroho} & \textbf{inDrive} & \textbf{Melaygo} & \textbf{RohWinBghit} \\
 \hline
-Couverture en Algérie & Absent & Urbaine & Nationale & Nationale & Nationale & Nationale \\
+Couverture en Algérie & Absent & Urbaine & Nationale & Nationale & Nationale & \textbf{Nationale (69 wilayas)} \\
 \hline
-Inter-wilayas & Oui (Europe) & Non & Oui & Oui (City to City, déc.~2025) & Limité & Oui \\
+Focus inter-wilayas & Oui (Europe) & Non & Oui & Oui (City to City) & Limité & \textbf{Oui (natif)} \\
 \hline
-KYC biométrique & Partiel & Limité & CIN + \textit{selfie} & Documentaire & Non & CIN + liveness + anti-spoof \\
+Authentification KYC & Standard & Standard & CIN + \textit{selfie} & Documentaire & Minimale & \textbf{Biométrique (Liveness + Anti-spoof)} \\
 \hline
-Seuils IA différenciés par rôle & Non & Non & Non & Non & Non & Oui (0,65 / 0,60) \\
+Seuils IA par rôle & Non & Non & Non & Non & Non & \textbf{Oui ($\geq 0{,}65$ / $\geq 0{,}60$)} \\
 \hline
-Paiement CIB / Edahabia & Non & Partiel & Non (cash) & Non (cash) & Non & Sandbox + cash \\
+Paiement CIB / Edahabia & Non & Partiel & Non (cash) & Non (cash) & Non & \textbf{Sandbox + espèces} \\
 \hline
-Chat temps réel intégré & Oui & Oui & Oui & Oui & Limité & Oui (Socket.IO) \\
+Messagerie temps réel & Oui & Oui & Oui & Oui & Limité & \textbf{Oui (Socket.IO)} \\
 \hline
-Tarification dynamique & Non & Oui & Non & Non & Non & Oui (prototype) \\
+Tarification dynamique & Non & Oui & Non & Non & Non & \textbf{Oui ($m \in [1{,}0;\; 2{,}5]$)} \\
 \hline
-Chiffrement données sensibles & Non doc. & Non doc. & Non doc. & Non doc. & Non doc. & AES-256-GCM \\
+Chiffrement PII au repos & Non doc. & Non doc. & Non doc. & Non doc. & Non doc. & \textbf{AES-256-GCM} \\
 \hline
-Langues d'interface & FR / EN & AR / FR & AR / FR & AR / FR & AR / FR & AR / FR / EN \\
+Langues d'interface & FR / EN & AR / FR & AR / FR & AR / FR & AR / FR & \textbf{AR / FR / EN} \\
 \hline
 \end{tabularx}
-  \caption{Étude comparative des plateformes de mobilité partagée --- État du marché au 1\textsuperscript{er} mai 2026}
+  \caption{Matrice comparative approfondie des plateformes de mobilité partagée --- État du marché au 1\textsuperscript{er} mai 2026}
   \label{tab:comparatif}
 \end{table}
+\end{landscape}
 
-\section{Limites observées sur le marché actuel}
+\section{Limites du marché et positionnement de RohWinBghit}
 \label{sec:limites}
 
-L'analyse comparative met en évidence cinq limites structurelles majeures (ou lacunes de l'existant) qui freinent l'adoption à grande échelle du covoiturage inter-wilayas en Algérie :
+L'analyse comparative met en évidence cinq limites structurelles majeures qui définissent autant d'axes de différenciation pour notre projet.
 
 \begin{enumerate}[leftmargin=1.8em]
-  \item \textbf{Confiance limitée et faiblesses d'authentification (Lacune 1) :} Hors d'un cercle d'interconnaissance, le covoiturage longue distance reste freiné en Algérie par l'absence de vérification biométrique d'identité. Les plateformes existantes se limitent à une simple déclaration documentaire ou un téléversement de photo sans contrôle de vivacité (\textit{liveness detection}) ni anti-\textit{spoofing}, ce qui laisse la porte ouverte aux usurpations d'identité et aux faux profils.
-  \item \textbf{Paiement électronique non intégré ou déficient (Lacune 2) :} Bien que l'écosystème de paiement en Algérie soit structuré (plus de 16~millions de cartes \textsc{cib} et \textit{Edahabia} en circulation), le règlement en espèces reste la norme quasi-exclusive des plateformes de transport. Cette absence d'intégration native des passerelles de paiement locales (SATIM/Algérie Poste) supprime toute garantie financière de réservation pour le conducteur en cas de désistement tardif et nuit à la traçabilité économique.
-  \item \textbf{Couverture interurbaine parcellaire et rigide (Lacune 3) :} Les leaders historiques (\textit{Yassir}, \textit{Heetch}) concentrent leurs efforts opérationnels sur le VTC urbain de courte distance. Les nouveaux entrants sur la longue distance (\textit{inDrive}, \textit{Nroho}) proposent des lignes géographiques rigides sans gestion fine des arrêts intermédiaires ni flexibilité sur les 69 wilayas, pénalisant les usagers des zones intérieures ou enclavées.
-  \item \textbf{Absence d'outils de modération et d'administration dédiés (Lacune 4) :} Du côté de l'exploitation, les applications souffrent de l'absence de panneaux de contrôle dédiés permettant aux modérateurs de valider manuellement en temps réel les dossiers KYC en attente, de gérer les litiges de covoiturage ou de suivre la conformité réglementaire locale (notamment avec la loi 25-11 sur les données personnelles).
-  \item \textbf{Absence de tarification dynamique et de matching inversé (Lacune 5) :} Les systèmes actuels reposent sur une recherche purement passive et manuelle. Il n'existe aucun moteur de matching intelligent prenant en compte les notes, les affinités et le statut de confiance, ni de mécanisme de tarification dynamique (\textit{surge pricing}) pour réguler l'équilibre offre/demande sur les axes saturés aux heures de pointe (ex. départs universitaires le jeudi). De plus, l'impossibilité pour un passager de publier son besoin (\textit{matching} inversé) force une recherche répétitive.
+  \item \textbf{Confiance limitée (Lacune~1)~:} Les plateformes existantes se limitent à une vérification documentaire sans contrôle de vivacité ni anti-\textit{spoofing}. \textit{RohWinBghit} y répond par un pipeline biométrique à trois niveaux (OCR, comparaison faciale, détection de vivacité) avec des seuils différenciés par rôle.
+  \item \textbf{Paiement électronique non intégré (Lacune~2)~:} Le règlement en espèces reste la norme quasi-exclusive. \textit{RohWinBghit} intègre trois méthodes coexistantes~: espèces (opérationnel), \textsc{cib} et \textit{Edahabia} (sandbox), avec une architecture extensible (patron \textit{Factory}).
+  \item \textbf{Couverture interurbaine parcellaire (Lacune~3)~:} Les acteurs proposent des lignes géographiques rigides. \textit{RohWinBghit} prend en charge nativement les 69~wilayas avec interface trilingue arabe/français/anglais.
+  \item \textbf{Absence d'outils de modération (Lacune~4)~:} Les applications manquent de panneaux de contrôle pour la validation \textsc{kyc} et la gestion des litiges. \textit{RohWinBghit} intègre une interface web d'administration dédiée.
+  \item \textbf{Absence de tarification dynamique et de matching inversé (Lacune~5)~:} Il n'existe aucun moteur de matching intelligent ni mécanisme de \textit{surge pricing}. \textit{RohWinBghit} propose un prototype de tarification dynamique et un mécanisme de demande de trajet (matching inversé).
 \end{enumerate}
 
-Ces limites définissent autant d'axes possibles de différenciation pour une plateforme conçue spécifiquement pour le contexte algérien.
-
-\section{Positionnement stratégique de RohWinBghit}
-\label{sec:positionnement}
-
-Sur la base de l'étude précédente, le projet \textit{RohWinBghit} se positionne comme une plateforme de covoiturage inter-wilayas pensée pour le marché algérien. Son approche complémentaire s'articule autour de quatre axes stratégiques.
-\begin{enumerate}
-  \item \textbf{Sécurité biométrique approfondie.} Pipeline de vérification d'identité combinant OCR, comparaison faciale, détection de vivacité et anti-\textit{spoofing}, avec des seuils de décision différenciés selon le rôle (conducteur~/ passager).
-  \item \textbf{Paiement local extensible.} Trois méthodes coexistantes~: règlement en espèces opérationnel, intégration \textsc{cib} et \textit{Edahabia} en environnement \textit{sandbox} dans l'attente de l'homologation \textsc{satim}, architecture extensible (patron \textit{Factory}) ouverte à \textit{Stripe} et \textit{PayPal} pour les usages internationaux.
-  \item \textbf{Couverture nationale et bilingue.} Prise en charge native des 69~wilayas et interface trilingue arabe/français/anglais, alignée avec la diversité linguistique des usagers.
-  \item \textbf{Outils opérateur.} Interface \textit{web} d'administration dédiée à la modération, à la validation \textsc{kyc}, au suivi statistique et à la journalisation de sécurité.
-\end{enumerate}
-
-Le projet ne prétend pas remplacer les acteurs existants, mais propose une réponse adaptée au contexte local sur le segment inter-wilayas, en s'appuyant sur les retours terrains et les évolutions réglementaires récentes.
-
-\section{Synthèse générale}
-\label{sec:synthese}
-
-Plusieurs constats convergents structurent la justification du projet~:
-\begin{enumerate}
-  \item Un besoin réel et mesurable existe pour une solution de mobilité inter-wilayas en Algérie. L'étude de Boureima~\textit{et~al.}~\cite{mounir_carpooling_developing_2022} sur les barrières et leviers d'adoption du covoiturage en Afrique du Nord identifie la \textbf{confiance entre inconnus} et la \textbf{disponibilité du paiement électronique} comme deux verrous majeurs --- précisément les axes sur lesquels notre proposition se concentre.
-  \item L'arrivée d'inDrive sur le segment inter-wilayas en décembre~2025~\cite{indrive_interwilaya_2025} et la présence durable de Nroho confirment l'existence d'une demande structurée. La recherche académique algérienne converge dans le même sens~\cite{bouzidi_covoiturage_dz_2022}.
-  \item Le cadre réglementaire algérien a été renforcé en 2025 par la \textbf{Loi~25-11} sur la protection des données personnelles~\cite{loi2511_2025}, qui succède à la Loi~18-07. Toute plateforme manipulant des données biométriques est directement concernée par cette évolution~\cite{anpdp_obligations_2026}.
-  \item Les briques technologiques nécessaires --- mobile multiplateforme, IA biométrique, paiement électronique local --- sont aujourd'hui matures et industriellement intégrables.
-  \item Les moyens de paiement locaux (CIB, Edahabia) offrent une voie de monétisation compatible avec la régulation algérienne.
-  \item L'environnement universitaire constitue une base initiale d'utilisateurs cohérente avec le segment visé.
-\end{enumerate}
-
-\begin{highlight}
-\textbf{Synthèse du positionnement.} \textit{RohWinBghit} ambitionne d'être une plateforme algérienne de mobilité partagée inter-wilayas techniquement aboutie~: vérification biométrique à trois niveaux (identité, vivacité, anti-\textit{spoofing}), méthodes de paiement locales (espèces, \textsc{cib}, \textit{Edahabia}), couverture nationale et interface trilingue. Elle s'inscrit dans la continuité de l'écosystème existant (Yassir, Heetch, Nroho, inDrive) et y apporte une proposition spécifiquement pensée pour le segment longue distance.
-\end{highlight}
+Le projet ne prétend pas remplacer les acteurs existants, mais propose une réponse adaptée au contexte local sur le segment inter-wilayas. L'étude de Boureima~\textit{et~al.}~\cite{mounir_carpooling_developing_2022} identifie la confiance entre inconnus et la disponibilité du paiement électronique comme deux verrous majeurs de l'adoption du covoiturage en Afrique du Nord --- précisément les axes sur lesquels notre proposition se concentre. L'arrivée d'inDrive sur ce segment fin~2025~\cite{indrive_interwilaya_2025} et la présence durable de Nroho confirment l'existence d'une demande structurée. Le cadre réglementaire a été renforcé en 2025 par la \textbf{Loi~25-11}~\cite{loi2511_2025} sur la protection des données personnelles, qui concerne directement toute plateforme manipulant des données biométriques~\cite{anpdp_obligations_2026}.
 
 \section{Conclusion}
 
-Ce premier chapitre a replacé le projet \textit{RohWinBghit} dans son contexte global et algérien, à la croisée de la mobilité numérique mondiale, des spécificités du transport inter-wilayas en Algérie et des dynamiques récentes du marché local. L'étude comparative montre que le segment visé n'est pas vierge --- Nroho y opère depuis plusieurs années et inDrive y est entré fin~2025 --- mais qu'il reste perfectible sur plusieurs axes techniques et opérationnels. C'est précisément sur ces axes que notre projet s'efforce d'apporter une contribution mesurée, articulée autour d'un pipeline biométrique, d'un paiement local extensible et d'outils d'administration dédiés. Le chapitre suivant détaille la démarche d'analyse et de conception qui sous-tend cette proposition.
+Ce chapitre a replacé le projet \textit{RohWinBghit} dans son contexte algérien, à la croisée des spécificités du transport inter-wilayas et des dynamiques récentes du marché local. L'étude comparative montre que le segment visé n'est pas vierge, mais qu'il reste perfectible sur plusieurs axes techniques et opérationnels. C'est sur ces axes que notre projet s'efforce d'apporter une contribution, articulée autour d'un pipeline biométrique, d'un paiement local extensible et d'outils d'administration dédiés. Le chapitre suivant détaille la démarche d'analyse et de conception.
