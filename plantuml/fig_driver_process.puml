@@ -1,0 +1,48 @@
+@startuml fig_driver_process
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityBackgroundColor #E8F5E9
+
+start
+:Conducteur ouvre l'application;
+:Saisie du numéro de téléphone;
+:Réception et saisie du code OTP par SMS;
+:Renseignement du profil personnel et enregistrement du véhicule;
+:Initialisation du statut de vérification à "unverified";
+
+partition "Parcours KYC (Mobile)" {
+    :Capture du recto et verso de la carte nationale d'identité (CNI);
+    :Capture vidéo de vivacité (durée de 3 secondes);
+    :Téléversement asynchrone des fichiers vers le microservice FastAPI;
+}
+
+partition "Pipeline d'inférence (FastAPI)" {
+    :Extraction des informations (OCR);
+    :Comparaison faciale (ArcFace);
+    :Détection de vivacité;
+    :Détection anti-spoofing;
+}
+
+if (Évaluation des scores d'inférence) then (Élevés\nS_facial >= 0.65\nS_liveness >= 0.65\nS_antispoof >= 0.60)
+    :Statut passe à "verified"; <<#C8E6C9>>
+    :Publication d'un trajet inter-wilayas;
+    :Réalisation du trajet avec le passager;
+    :Encaissement des revenus (après commission de 12%); <<#C8E6C9>>
+else if (Intermédiaires\nscore >= 0.30) then (Oui)
+    :Dossier placé en file d'attente "pending_review"; <<#FFF9C4>>
+    :Examen manuel des pièces par un administrateur;
+    if (Décision Administrateur) then (Approuver)
+        :Statut passe à "verified"; <<#C8E6C9>>
+        :Publication de trajets autorisée;
+    else (Rejeter)
+        :Rejet de la vérification et notification; <<#FFCDD2>>
+        end
+    endif
+else (Critiques\nscore < 0.30)
+    :Enregistrement de la fraude dans "fraud_events"; <<#FFCDD2>>
+    :Rejet automatique de la demande d'inscription; <<#FFCDD2>>
+    end
+endif
+stop
+@enduml

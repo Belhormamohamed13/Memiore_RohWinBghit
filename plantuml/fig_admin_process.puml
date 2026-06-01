@@ -12,9 +12,9 @@ fork
         :Photos CNI/Permis;
         :Scores InsightFace :8001\nFace / Liveness / Antispoof;
         if (Decision ?) then (Approuver)
-            :#C8E6C9: Verified + FCM;
+            :Verified + FCM; <<#C8E6C9>>
         else (Rejeter)
-            :#FFCDD2: Rejected + Motif + FCM;
+            :Rejected + Motif + FCM; <<#FFCDD2>>
         endif
     }
 fork again

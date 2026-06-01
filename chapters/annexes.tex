@@ -1,70 +1,274 @@
 \appendix
-\chapter{Diagrammes UML Détaillés}
-\label{app:diagrammes}
+\chapter{Annexe A - Business Model Canvas}
+\label{app:business}
 
-Cette annexe regroupe les diagrammes de séquences et d'activités modélisant l'orchestration technique des processus majeurs de la plateforme \textit{RohWinBghit}.
+Ce mémoire s'inscrivant dans le cadre de l'\textbf{Arrêté interministériel n\textsuperscript{o}~1275} (mécanisme «~Un diplôme, une Startup~»), cette annexe présente l'étude de faisabilité économique et le plan de développement commercial pour le projet de startup \textit{RohWinBghit}.
 
-\section{Diagrammes de séquences}
-\label{sec:sequences}
+\section{Description et marché cible}
 
-Les séquences clés modélisent l'orchestration technique des processus majeurs. Nous retenons les quatre scénarios les plus structurants.
+\subsection{Introduction}
 
-\subsection{Inscription}
+Le projet de startup \textit{RohWinBghit} a été conçu en adéquation étroite avec les dispositions et critères d'éligibilité définis par l'\textbf{Arrêté interministériel n\textsuperscript{o}~1275} («~Un diplôme, une Startup~»). Le tableau~\ref{tab:arrete1275} détaille cette conformité.
 
-L'inscription repose sur une vérification du numéro de téléphone par code OTP, suivie de la saisie des informations personnelles (figure~\ref{fig:seq-inscription}).
-
-\begin{figure}[H]
+\begin{table}[!htbp]
 \centering
-\includegraphics[width=0.85\linewidth]{fig_sequence_inscription.png}
-\caption{Séquence --- Inscription d'un nouvel utilisateur}
-\label{fig:seq-inscription}
-\end{figure}
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|p{2.5cm}|}
+\hline
+\rowcolor{rohlight}
+\textbf{Critère} & \textbf{Justification} & \textbf{Statut} \\
+\hline
+Innovation technologique & Pipeline KYC biométrique, tarification dynamique, matching algorithmique & \textcolor{green!60!black}{\textbf{Conforme}} \\
+\hline
+Marché algérien identifié & 250~M voyages inter-wilayas/an, 1,9~M étudiants & \textcolor{green!60!black}{\textbf{Conforme}} \\
+\hline
+Équipe étudiante & 2 étudiants Master GL, Tlemcen & \textcolor{green!60!black}{\textbf{Conforme}} \\
+\hline
+Prototype fonctionnel & 62 écrans, 147/151 tests & \textcolor{green!60!black}{\textbf{Conforme}} \\
+\hline
+Étude économique & BMC, SWOT, prévisionnel 36 mois & \textcolor{green!60!black}{\textbf{Conforme}} \\
+\hline
+\end{tabularx}
+  \caption{Conformité aux critères de l'Arrêté 1275}
+  \label{tab:arrete1275}
+\end{table}
 
-\subsection{Réservation avec paiement multi-méthodes}
+Afin d'assurer le développement et le passage à l'échelle de la plateforme, l'équipe projet a structuré une feuille de route s'étalant sur 18 mois (tableau~\ref{tab:app-roadmap}).
 
-La figure~\ref{fig:seq-reservation} expose l'orchestration interne du paiement~: vérification de la disponibilité, calcul du tarif dynamique par le \texttt{FareService} (avec multiplicateur de \textit{surge pricing} mis en cache dans Redis), exécution du paiement via le patron \textit{Strategy/Factory}, persistance transactionnelle et notification au conducteur.
-
-\begin{figure}[H]
+\begin{table}[!htbp]
 \centering
-\includegraphics[width=0.95\linewidth]{fig_sequence_booking.png}
-\caption{Séquence --- Réservation avec paiement multi-méthodes (vue technique)}
-\label{fig:seq-reservation}
-\end{figure}
+\footnotesize
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{rohlight}
+\textbf{Phase} & \textbf{Période} & \textbf{Objectifs clés} \\
+\hline
+\textbf{Phase 1} --- Fondation & Mois 1--3 & Finalisation MVP, dépôt CNL, création SARL, audit de sécurité. \\
+\hline
+\textbf{Phase 2} --- Bêta & Mois 4--9 & Déploiement axe Tlemcen--Oran--Alger, 1~000 utilisateurs, CIB/Edahabia en production. \\
+\hline
+\textbf{Phase 3} --- Expansion & Mois 10--15 & 20 wilayas, 10~000 utilisateurs, seuil de rentabilité, Premium. \\
+\hline
+\textbf{Phase 4} --- National & Mois 16--18 & 69 wilayas, 50~000 utilisateurs, préparation Série~A. \\
+\hline
+\end{tabularx}
+  \caption{Feuille de route stratégique sur 18 mois}
+  \label{tab:app-roadmap}
+\end{table}
 
-\subsection{Vérification \textsc{kyc} biométrique}
+\subsection{Description}
 
-Le flux \textsc{kyc} (figure~\ref{fig:seq-kyc}) constitue le scénario le plus critique~: téléversement du document, capture vidéo de vivacité, traitement asynchrone par le pipeline IA (comparaison faciale InsightFace, détection de vivacité, anti-\textit{spoofing}), décision automatique à trois états (\textit{verified}, \textit{pending\_review}, \textit{rejected}), et éventuelle revue manuelle.
+\textit{RohWinBghit} est une solution mobile et web de covoiturage inter-wilayas adaptée au contexte socio-économique algérien. L'application met en relation des conducteurs et des passagers effectuant des trajets similaires entre différentes wilayas du pays. La plateforme résout les problèmes de transport interurbain par des fonctionnalités innovantes telles que la vérification biométrique (KYC) par intelligence artificielle, la tarification dynamique basée sur l'offre et la demande, et le support des moyens de paiement électronique locaux (\textit{Edahabia} et \textsc{cib}).
 
-\begin{figure}[H]
+L'évaluation stratégique interne et externe du projet est de plus synthétisée dans la matrice SWOT ci-dessous (tableau~\ref{tab:app-swot}).
+
+\begin{table}[!htbp]
 \centering
-\includegraphics[width=0.95\linewidth]{fig_sequence_kyc.png}
-\caption{Séquence --- Vérification \textsc{kyc} biométrique (3~états de décision)}
-\label{fig:seq-kyc}
-\end{figure}
+\begin{tabularx}{\textwidth}{|>{\columncolor{rohlight}}l|X|X|}
+\hline
+ & \textbf{Facteurs positifs} & \textbf{Facteurs négatifs} \\
+\hline
+\textbf{Interne} & \textbf{Forces~:} stack moderne, KYC biométrique intégré, couverture nationale, paiement local. & \textbf{Faiblesses~:} ressources financières limitées, absence de marque établie. \\
+\hline
+\textbf{Externe} & \textbf{Opportunités~:} segment inter-wilayas sous-servi, smartphone 75\,\%+, démographie jeune, adoption monétique +179\,\%. & \textbf{Menaces~:} extension de Yassir/Heetch, arrivée d'acteurs internationaux, dépendance à l'homologation SATIM. \\
+\hline
+\end{tabularx}
+  \caption{Matrice SWOT du projet RohWinBghit}
+  \label{tab:app-swot}
+\end{table}
 
-Les seuils sont différenciés par rôle~: conducteur (score facial $\geq$~0{,}65, vivacité $\geq$~0{,}65, anti-\textit{spoofing} $\geq$~0{,}60)~; passager (0{,}60, 0{,}55, 0{,}50). Un \textit{hard-fail} (score $<$ 0,30) déclenche un rejet immédiat et la consignation d'un événement de fraude.
+\subsection{Marché cible}
 
-\subsection{Demande de trajet (\textit{matching} inverse)}
+Le marché cible de \textit{RohWinBghit} est structuré autour de deux segments d'utilisateurs distincts mais interdépendants :
+\begin{itemize}
+  \item \textbf{Les Passagers :} Principalement les étudiants universitaires (l'Algérie compte plus de 1,9 million d'étudiants répartis sur de nombreux pôles, notamment Tlemcen, Oran et Alger) et les travailleurs pendulaires effectuant des trajets réguliers inter-wilayas. Ces utilisateurs recherchent une alternative économique, sûre et flexible aux transports traditionnels (taxis collectifs, bus).
+  \item \textbf{Les Conducteurs :} Propriétaires de véhicules particuliers effectuant des trajets inter-wilayas pour des motifs personnels ou professionnels et souhaitant amortir leurs frais de carburant et d'entretien.
+\end{itemize}
 
-Le scénario inverse permet au passager d'exprimer une demande, à la suite de laquelle le système identifie les conducteurs éligibles (figure~\ref{fig:seq-trip-request}).
+\subsection{Analyse de la demande}
 
-\begin{figure}[H]
+La demande de transport interurbain en Algérie est caractérisée par un besoin important de connectivité entre les 69 wilayas. On estime le volume de voyages intercités à plus de 250 millions par an. Les solutions de transport existantes souffrent d'une fragmentation de l'offre, d'horaires rigides, d'incohérences de prix et de lacunes de sécurité. Avec un taux de pénétration des smartphones dépassant 75\% et une numérisation croissante des services publics et financiers, la population, majoritairement jeune, est en demande constante d'applications mobiles simplifiant leur mobilité tout en garantissant un niveau élevé de confiance.
+
+\section{Aspects d'innovation}
+
+\subsection{Introduction}
+
+L'innovation constitue l'un des piliers majeurs du programme d'éligibilité de l'Arrêté 1275. Pour se démarquer de l'existant et capter des parts de marché significatives, \textit{RohWinBghit} déploie des innovations à la fois technologiques, fonctionnelles et juridiques.
+
+\subsection{Différence avec la concurrence}
+
+Contrairement aux plateformes existantes qui reposent sur des modèles de transport urbain traditionnels (taxis) ou des groupes de covoiturage informels sur les réseaux sociaux (sujets à de nombreuses fraudes et agressions), \textit{RohWinBghit} introduit plusieurs barrières à l'entrée et facteurs de différenciation clés :
+\begin{enumerate}
+  \item \textbf{Moteur KYC biométrique souverain :} Un pipeline d'IA combinant OCR de la carte d'identité, comparaison de selfie (ArcFace) et détection active de vivacité pour certifier les profils. Le traitement est hébergé localement sur des serveurs souverains en Algérie, protégeant ainsi les données biométriques des citoyens contre tout transfert à l'étranger.
+  \item \textbf{Paiement électronique intégré :} L'intégration (en sandbox dans ce prototype) des cartes de paiement locales \textsc{cib} et \textit{Edahabia} de la SATIM, en complément du paiement traditionnel en espèces.
+  \item \textbf{Algorithme de tarification dynamique (Surge Pricing) :} Ajustement en temps réel des tarifs basés sur le ratio offre/demande par wilaya et créneau horaire, assurant un équilibre de marché juste.
+\end{enumerate}
+
+\paragraph{Conformité juridique et Propriété Intellectuelle.}
+Sur les marchés numériques émergents, la conformité réglementaire absolue ne constitue pas seulement une obligation légale, mais un véritable avantage compétitif structurel. La plateforme \textit{RohWinBghit} est soumise à deux cadres majeurs : la Loi 18-05 relative au commerce électronique, qui impose la sécurisation des paiements, et la Loi 25-11 relative à la protection des données personnelles (ANPDP). Le choix de l'hébergement local garantit la conformité stricte avec l'ANPDP. 
+Pour protéger son actif immatériel, le projet a initié le dépôt de la marque \textit{RohWinBghit} auprès de l'INAPI (protection pour 10 ans) et le scellement du code source auprès de l'ONDA pour preuve d'antériorité.
+
+\subsection{Impact sur la société}
+
+L'impact de la plateforme est multiple :
+\begin{itemize}
+  \item \textbf{Économique :} Réduction du coût moyen des déplacements inter-wilayas de près de 40\% pour les étudiants, et amortissement des frais de trajet pour les conducteurs.
+  \item \textbf{Social :} Amélioration de la sécurité globale grâce au KYC biométrique, et réduction du stress lié à l'incertitude du voyage grâce au suivi GPS temps réel et au billet QR.
+  \item \textbf{Environnemental :} Mutualisation des trajets permettant de réduire le nombre de véhicules sur les routes nationales, contribuant à une baisse des émissions de gaz à effet de serre.
+\end{itemize}
+
+\section{Modèle économique}
+
+\subsection{Introduction}
+
+Le modèle économique de \textit{RohWinBghit} est conçu pour allier viabilité financière et croissance rapide. Le modèle de capital-risque adopté vise à acquérir une masse critique d'utilisateurs dès la première année (cible de 50 000 utilisateurs actifs). Compte tenu du coût d'acquisition client (CAC) estimé à 350 DZD sur le marché algérien, le besoin en marketing s'élève à 17 500 000 DZD. Le projet requiert ainsi une levée de fonds d'amorçage (Seed) de 20 000 000 DZD pour équilibrer la trésorerie la première année.
+
+\subsection{Description}
+
+La structure globale du modèle économique est représentée par le Business Model Canvas (tableau~\ref{tab:app-bmc}).
+
+\begin{table}[!htbp]
 \centering
-\includegraphics[width=0.95\linewidth]{fig_sequence_trip_request.png}
-\caption{Séquence --- Demande de trajet (\textit{matching} passager $\to$ conducteurs)}
-\label{fig:seq-trip-request}
-\end{figure}
+\begin{tcolorbox}[
+  enhanced,
+  colback=white,
+  colframe=rohblue,
+  arc=6pt,
+  boxrule=1.5pt,
+  boxsep=2pt,
+  left=2pt, right=2pt, top=4pt, bottom=4pt,
+  toptitle=8pt, bottomtitle=8pt,
+  title=\textbf{\large Business Model Canvas --- RohWinBghit},
+  coltitle=white,
+  colbacktitle=rohblue,
+  center title
+]
+\renewcommand{\arraystretch}{1.6}
+\noindent
+\begin{tabularx}{\linewidth}{ >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X | >{\raggedright\arraybackslash}X }
 
-\section{Diagramme d'activité}
-\label{sec:app-activite}
+\textcolor{rohblue}{\faHandshake\ \textbf{Partenaires}} &
+\textcolor{rohblue}{\faCogs\ \textbf{Activités}} &
+\textcolor{rohblue}{\faGem\ \textbf{Proposition de valeur}} &
+\textcolor{rohblue}{\faHeart\ \textbf{Relation clients}} &
+\textcolor{rohblue}{\faUsers\ \textbf{Segments}} \\[2pt]
 
-Le parcours global d'un utilisateur, depuis l'authentification jusqu'à la fin du trajet, est représenté par le diagramme d'activité (figure~\ref{fig:activite-booking}).
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Mapbox, Firebase, Cloudinary
+  \item Universités
+  \item CIB/Edahabia (SATIM)
+  \item Incubateurs (ANVREDET)
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Développement mobile \& back-end
+  \item Modération \& validation KYC
+  \item Support client
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Covoiturage inter-wilayas sécurisé
+  \item KYC biométrique (IA)
+  \item Économie partagée
+  \item Paiement électronique local
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Self-service (app intuitive)
+  \item Confiance mutuelle (notation)
+  \item Support réactif
+\end{itemize} &
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Étudiants universitaires
+  \item Travailleurs pendulaires
+  \item Conducteurs (amortir coûts)
+\end{itemize} \\[15pt]
 
-\begin{figure}[H]
+\hline
+\multicolumn{2}{p{\dimexpr0.4\linewidth-2\tabcolsep-1.2pt\relax}|}{\textcolor{rohblue}{\faCoins\ \textbf{Structure de coûts}}} &
+\multicolumn{3}{p{\dimexpr0.6\linewidth-2\tabcolsep\relax}}{\textcolor{rohblue}{\faCreditCard\ \textbf{Sources de revenus}}} \\[2pt]
+
+\multicolumn{2}{p{\dimexpr0.4\linewidth-2\tabcolsep-1.2pt\relax}|}{
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Masse salariale (tech/support)
+  \item Hébergement VPS
+  \item API payantes
+  \item Acquisition client
+\end{itemize}
+} &
+\multicolumn{3}{p{\dimexpr0.6\linewidth-2\tabcolsep\relax}}{
+\scriptsize
+\begin{itemize}[leftmargin=0.8em, nosep]
+  \item Commission de 12\,\% sur trajets
+  \item Abonnement Premium conducteurs
+  \item Publicité in-app
+  \item Partenariats B2B
+\end{itemize}
+} \\[6pt]
+
+\end{tabularx}
+\end{tcolorbox}
+\caption{Business Model Canvas de RohWinBghit}
+\label{tab:app-bmc}
+\end{table}
+
+\subsubsection{Value proposition (Propositions de valeur)}
+La proposition de valeur de \textit{RohWinBghit} repose sur la fourniture d'une solution de covoiturage inter-wilayas sécurisée, abordable et pratique. Pour les passagers, elle offre des tarifs réduits et une confiance accrue par la vérification KYC biométrique. Pour les conducteurs, elle permet d'amortir leurs frais de déplacement de façon simple et automatisée.
+
+\subsubsection{Customer segments (Clients)}
+Les clients de la plateforme sont segmentés en deux groupes principaux :
+\begin{itemize}
+  \item Les étudiants universitaires et les professionnels pendulaires (passagers).
+  \item Les automobilistes réguliers ou occasionnels effectuant de longs trajets inter-wilayas (conducteurs).
+\end{itemize}
+
+\subsubsection{Customer relationships (Relations)}
+La relation client est automatisée à travers l'application mobile (\textit{self-service} intuitif), enrichie par un système de notation bilatérale pour maintenir la confiance numérique, et épaulée par un support client réactif en cas de litige.
+
+\subsubsection{Channels (Canaux)}
+La distribution s'appuie sur les magasins d'applications mobiles (Google Play Store, Apple App Store), la promotion sur les réseaux sociaux (publicités ciblées Facebook/Instagram et influenceurs locaux), et des campagnes de sensibilisation directes dans les milieux universitaires algériens.
+
+\subsubsection{Key partners (Partenaires Clés)}
+Les partenaires essentiels sont la SATIM (pour l'intégration monétique CIB/Edahabia), les universités algériennes (canaux d'acquisition et hubs de transport), les fournisseurs cartographiques (Mapbox) et l'incubateur universitaire (ANVREDET).
+
+\subsubsection{Key activities (Activités clés)}
+Les activités majeures englobent le développement continu et la maintenance de la plateforme (technique), la modération manuelle des dossiers KYC biométriques litigieux (opérationnel), le support client et la gestion des campagnes marketing.
+
+\subsubsection{Key resources (Ressources clés)}
+Les ressources critiques sont l'équipe de développement et d'exploitation (7 personnes), l'infrastructure serveur souveraine, les algorithmes de matching/pricing et la base de données.
+
+\subsubsection{Cost structure (Coûts)}
+La structure de coûts intègre les dépenses d'investissement initiales (immatriculation, INAPI, ONDA, ordinateurs) s'élevant à 1 798 700 DZD, et les dépenses régulières mensuelles (loyer, salaires, serveurs, marketing) de 742 500 DZD. Le tableau~\ref{tab:cashflow} résume le plan financier prévisionnel sur 3 ans avec la levée de fonds d'amorçage.
+
+\begin{table}[!htbp]
 \centering
-\includegraphics[width=0.85\linewidth,height=0.85\textheight,keepaspectratio]{fig_passenger_flow.png}
-\caption{Diagramme d'activité --- parcours global de la plateforme}
-\label{fig:activite-booking}
-\end{figure}
+\begin{tabularx}{\textwidth}{|X|r|r|r|}
+\hline
+\rowcolor{rohlight}
+\textbf{Catégorie} & \textbf{Année~1 (DZD)} & \textbf{Année~2 (DZD)} & \textbf{Année~3 (DZD)} \\
+\hline
+\textbf{Revenus (Commissions + Premium)} & 6\,700\,000 & 29\,000\,000 & 92\,000\,000 \\
+\hline
+\textbf{Dépenses Opérationnelles (OPEX)} & 5\,200\,000 & 12\,500\,000 & 28\,000\,000 \\
+\hline
+\textbf{Dépenses Marketing (Acquisition)} & 17\,500\,000 & 8\,500\,000 & 14\,000\,000 \\
+\hline
+\rowcolor{rohlight!40}
+\textbf{Résultat Net} & \textbf{-16\,000\,000} & \textbf{+8\,000\,000} & \textbf{+50\,000\,000} \\
+\hline
+\rowcolor{rohlight}
+\textbf{Trésorerie (avec levée 20~M DZD)} & \textbf{+4\,000\,000} & \textbf{+12\,000\,000} & \textbf{+62\,000\,000} \\
+\hline
+\end{tabularx}
+  \caption{Prévisionnel financier et flux de trésorerie sur 3 ans}
+  \label{tab:cashflow}
+\end{table}
 
-Après authentification et \textsc{kyc}, l'utilisateur est orienté vers l'une des deux branches selon son rôle. Les nœuds de décision matérialisent les ruptures possibles (places insuffisantes, paiement échoué), chacune associée à une compensation (libération de places, remboursement).
+\subsubsection{Revenue streams (Revenus)}
+La monétisation s'appuie principalement sur une commission de 12\% prélevée sur chaque trajet réservé. Les autres sources comprennent les abonnements premium pour les conducteurs (1 500 DZD/mois) et la publicité in-app. La formule de commission annuelle s'énonce :
+$$R_n = U_n \times f \times p \times c$$
+avec $U_n$ le nombre d'utilisateurs actifs, $f=2{,}5$ la fréquence mensuelle d'utilisation (trajets/mois), $p=800$~DZD le panier moyen par trajet, et $c=0{,}12$ la commission de la plateforme. Pour l'Année~1, le chiffre d'affaires prévisionnel de 6,7 millions DZD prend en compte la montée en charge progressive vers l'objectif de 50 000 utilisateurs actifs.

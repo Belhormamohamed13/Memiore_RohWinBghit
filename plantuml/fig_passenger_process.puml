@@ -10,21 +10,21 @@ start
 :Recherche Alger -> Constantine;
 :Resultats avec notes conducteurs;
 if (Surge affiche ?) then (Oui)
-    :#FFF3E0: Badge x1.5 : 1500 DA (vs 1000 DA);
+    :Badge x1.5 : 1500 DA (vs 1000 DA); <<#FFF3E0>>
 else (Non)
     :Prix normal : 1000 DA;
 endif
 :Selection trajet + nombre de places;
 fork
-    :#BBDEFB: CIB - Carte bancaire;
+    :CIB - Carte bancaire; <<#BBDEFB>>
 fork again
-    :#C8E6C9: Edahabia - Paiement mobile;
+    :Edahabia - Paiement mobile; <<#C8E6C9>>
 fork again
-    :#FFF9C4: Especes - A la montee;
+    :Especes - A la montee; <<#FFF9C4>>
 end fork
 :Reservation confirmee + QR Code + FCM;
 :Suivi GPS Mapbox + ETA + Chat Socket.IO;
 :Arrivee destination;
-:#C8E6C9: Evaluation conducteur 1-5 etoiles;
+:Evaluation conducteur 1-5 etoiles; <<#C8E6C9>>
 stop
 @enduml

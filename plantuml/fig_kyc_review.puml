@@ -19,9 +19,9 @@ end fork
 note right : Seuils conducteur :\nface >= 0.65\nliveness >= 0.65\nantispoof >= 0.60
 :Notes admin (optionnel);
 if (Decision admin ?) then (Approuver)
-    :#C8E6C9: identity_status = verified\nNotification FCM envoyee;
+    :identity_status = verified\nNotification FCM envoyee; <<#C8E6C9>>
 else (Rejeter)
-    :#FFCDD2: identity_status = rejected\nMotif + Notification FCM;
+    :identity_status = rejected\nMotif + Notification FCM; <<#FFCDD2>>
 endif
 stop
 @enduml

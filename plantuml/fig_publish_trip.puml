@@ -8,7 +8,7 @@ start
 :Vehicule : Peugeot 308 - 2022 - 3 places;
 :Date : 15/04/2026 - 08h30;
 if (Surge actif ?) then (Oui)
-    :#FFF3E0: Suggestion : Base 2000 DA\nSurge x1.5 -> Recommande 3000 DA;
+    :Suggestion : Base 2000 DA\nSurge x1.5 -> Recommande 3000 DA; <<#FFF3E0>>
 else (Non)
     :Prix de base standard;
 endif

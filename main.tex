@@ -107,7 +107,7 @@
       \\[0.6em]
       \noindent\rule{0.35\textwidth}{0.5pt}
       \\[1em]
-      {\color{chapcolor}\fontsize{20}{26}
+      {\color{chapcolor}\fontsize{16}{22}
        \bfseries #1}
       \\[1em]
       \noindent\rule{\textwidth}{2pt}
@@ -117,10 +117,32 @@
   }
 \titlespacing*{\chapter}{0pt}{0pt}{0pt}
 
+% Formatage personnalisé des sections, sous-sections et sous-sous-sections (taille réduite)
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{chapcolor}}
+  {\thesection}
+  {1em}
+  {#1}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries\color{chapcolor}}
+  {\thesubsection}
+  {1em}
+  {#1}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\itshape\color{chapcolor}}
+  {\thesubsubsection}
+  {1em}
+  {#1}
+\titlespacing*{\subsubsection}{0pt}{8pt}{3pt}
+
 % Style initial pour les chapitres non numérotés standard (Remerciements, Dédicaces...)
 % Permet de ne pas occuper de page dédiée pour les pages liminaires
 \titleformat{name=\chapter,numberless}[block]
-  {\normalfont\color{chapcolor}\Huge\bfseries}
+  {\normalfont\color{chapcolor}\Large\bfseries}
   {}
   {0pt}
   {#1}
@@ -137,6 +159,21 @@
   labelfont={bf, color=chapcolor},
   labelsep=period
 }
+
+% Paramètres de placement des flottants pour réduire les espaces vides
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dbltopfraction}{0.85}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{4}
+
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{12pt plus 2pt minus 4pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
 
 % ── Autres packages requis ─────────────────────────
 \usepackage{enumitem}
@@ -160,6 +197,7 @@
 \usepackage{multirow}
 \usepackage{listings}
 \usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
 \usepackage{fontawesome5}
 
 % Listings setup
@@ -217,8 +255,7 @@
 \input{frontmatter/acronymes}
 
 % ── Numérotation ───────────────────────────────────
-\pagenumbering{arabic}
-\setcounter{page}{1}
+\pagenumbering{roman}
 
 % =====================================================================
 \begin{document}
@@ -261,7 +298,7 @@
     \vspace*{\fill}
     \begin{center}
       \noindent\rule{\textwidth}{2pt}\\[1.5em]
-      {\color{chapcolor}\fontsize{20}{26}
+      {\color{chapcolor}\fontsize{16}{22}
        \bfseries #1}
       \\[1.5em]
       \noindent\rule{\textwidth}{2pt}
@@ -274,6 +311,7 @@
 % ══════════════════════════════════════════════════
 %  CONTENU PRINCIPAL
 % ══════════════════════════════════════════════════
+\pagenumbering{arabic}
 \include{chapters/introduction}
 \include{chapters/chap1_existant}
 \include{chapters/chap2_conception}

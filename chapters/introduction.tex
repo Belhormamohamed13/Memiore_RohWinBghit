@@ -2,22 +2,35 @@
 \addcontentsline{toc}{chapter}{Introduction Générale}
 \markboth{Introduction générale}{}
 
-\section*{I.1 Contexte du projet}
-\addcontentsline{toc}{section}{I.1 Contexte du projet}
+\section*{Contexte du projet}
+\addcontentsline{toc}{section}{Contexte du projet}
 
 La mobilité intercité constitue l'un des défis structurels majeurs de l'Algérie contemporaine. Avec une superficie de 2~381~741~km² répartie en 69 wilayas et une population dépassant 46,8~millions d'habitants~\cite{ons_2024}, le pays présente un besoin constant de déplacements entre pôles universitaires, centres économiques et zones résidentielles. Les solutions traditionnelles --- taxis intercités, lignes de bus privées --- demeurent fragmentées, onéreuses et asymétriques en information. Parallèlement, la révolution numérique a vu émerger des plateformes de covoiturage transformant les déplacements en services à la demande. Cependant, aucune solution adaptée au contexte algérien n'a atteint une couverture nationale, les offres existantes étant urbaines ou dépourvues d'un modèle économique adapté aux flux inter-wilayas.
 
-\section*{I.2 Problématique}
-\addcontentsline{toc}{section}{I.2 Problématique}
+\section*{Objectifs et enjeux}
+\addcontentsline{toc}{section}{Objectifs et enjeux}
+
+La conception et la mise en œuvre d'une plateforme de covoiturage inter-wilayas en Algérie soulèvent des défis techniques et humains uniques. Pour y répondre efficacement, ce projet s'articule autour d'une problématique d'ingénierie centrale, d'hypothèses scientifiques claires et d'objectifs quantifiables.
+
+\subsection*{Problématique}
 
 Cette fragmentation de l'offre de transport interurbain, confrontée à une demande estudiantine et professionnelle en forte croissance, soulève un défi d'ingénierie logicielle et de confiance sociétale majeur. La problématique centrale de ce travail s'énonce ainsi : \textit{Comment concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée aux contraintes socio-économiques, logistiques et financières de l'Algérie, capable de lever le frein de la confiance grâce à un système automatisé de vérification d'identité par intelligence artificielle (KYC), tout en garantissant des performances réseau optimales et l'interopérabilité avec les systèmes de paiement locaux ?}
 
-\section*{I.3 Objectifs du projet}
-\addcontentsline{toc}{section}{I.3 Objectifs du projet}
+\subsection*{Hypothèses de travail}
+
+Ce travail repose sur trois hypothèses vérifiables, formulées en réponse à la problématique~:
+\begin{enumerate}
+  \item \textbf{H1 ---} Un pipeline biométrique à trois niveau (extraction \textsc{ocr}, comparaison faciale, détection de vivacité) associé à des seuils différenciés par rôle permet d'atteindre un taux de rejet des tentatives de \textit{spoofing} supérieur à celui d'une vérification documentaire simple.
+  \item \textbf{H2 ---} L'intégration de moyens de paiement électroniques locaux (\textsc{cib}, \textit{Edahabia}) en complément des espèces, combinée à une interface trilingue, améliore l'utilisabilité perçue de la plateforme (score \textsc{sus} $\geq$ 68/100).
+  \item \textbf{H3 ---} Une architecture tolérante aux déconnexions (requêtes idempotentes, cache local, files de messages persistantes, retentatives exponentielles) permet de maintenir un taux de succès \textsc{api} $\geq$ 99\,\% sur les réseaux mobiles algériens intercités.
+\end{enumerate}
+La validation ou l'invalidation de ces hypothèses constitue le fil directeur de l'évaluation présentée au chapitre~3 et reprise dans la conclusion générale.
+
+\subsection*{Objectifs du projet}
 
 Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) propose de concevoir, développer et évaluer une plateforme logicielle complète. Les objectifs ont été formulés selon la grille \textbf{SMART} et sont synthétisés dans le tableau ci-dessous.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \small
 \begin{tabularx}{\textwidth}{|l|X|l|}
@@ -39,21 +52,20 @@ Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textara
 \caption{Objectifs du projet selon la grille SMART}
 \end{table}
 
-\section*{I.4 Méthodologie de travail}
-\addcontentsline{toc}{section}{I.4 Méthodologie de travail}
+\section*{Méthodologie de travail}
+\addcontentsline{toc}{section}{Méthodologie de travail}
 
 Le développement d'un système distribué combinant du mobile multiplateforme, de la communication temps réel et de l'inférence biométrique présente de forts risques d'intégration. Pour y faire face, nous avons opté pour le cadre de travail agile \textbf{Scrum}, organisé en sprints de deux semaines. Les rôles Scrum ont été répartis de manière hybride au sein du binôme (Product Owner/Développeur et Scrum Master/Développeur), et les artefacts (Product Backlog, Sprint Backlog, Incrément) ont été suivis via \textbf{Jira}. Ce cadre itératif a permis l'adaptation continue du produit en fonction des retours précoces des utilisateurs.
 
-\section*{I.5 Structure du mémoire}
-\addcontentsline{toc}{section}{I.5 Structure du mémoire}
+\section*{Structure du mémoire}
+\addcontentsline{toc}{section}{Structure du mémoire}
 
-Ce mémoire s'articule autour de quatre chapitres~:
+Ce mémoire s'articule autour de trois chapitres principaux, suivis de ses annexes et d'une conclusion :
 
 \begin{itemize}[leftmargin=1.8em]
-  \item Le \textbf{Chapitre~1 --- Étude de l'Existant et Analyse Comparative} dresse l'état de l'art du covoiturage et positionne \textit{RohWinBghit} face aux solutions concurrentes.
-  \item Le \textbf{Chapitre~2 --- Analyse des Besoins et Conception} détaille les exigences fonctionnelles et non fonctionnelles, ainsi que la modélisation UML du système.
-  \item Le \textbf{Chapitre~3 --- Réalisation et Implémentation} documente l'implémentation technique, l'architecture, les tests et la sécurité.
-  \item Le \textbf{Chapitre~4 --- Tests, Déploiement et Étude Technico-Économique} présente la validation, le déploiement et l'étude de faisabilité économique.
+  \item Le \textbf{Chapitre~1 --- Systèmes similaires} dresse l'état de l'art du covoiturage et positionne \textit{RohWinBghit} face aux solutions concurrentes à travers une analyse comparative rigoureuse.
+  \item Le \textbf{Chapitre~2 --- Exigences du système et Conception} détaille les besoins fonctionnels et non fonctionnels, la modélisation UML, les processus BPMN, les diagrammes de classes participantes et le modèle physique de données.
+  \item Le \textbf{Chapitre~3 --- Réalisation, Tests et déploiement} documente les choix technologiques, l'implémentation des interfaces, la stratégie de tests automatisés et le déploiement sur infrastructure cloud.
 \end{itemize}
 
-Enfin, la \textbf{conclusion générale} dresse le bilan des réalisations, discute les limites et dessine les perspectives.
+Enfin, l'\textbf{Annexe~A} présente l'étude technico-économique dans le cadre de l'Arrêté~1275 (Business Model Canvas), et la \textbf{conclusion générale} dresse le bilan des réalisations, discute les limites et dessine les perspectives de développement.

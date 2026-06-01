@@ -4,7 +4,8 @@
 
 Le présent mémoire s'était fixé pour objectif la conception et la réalisation d'une plateforme mobile de covoiturage inter-wilayas adaptée au contexte algérien. Au terme de ce travail, le bilan est contrasté~: le prototype fonctionnel couvre les parcours essentiels du covoiturage et valide l'intégration d'un pipeline biométrique, d'un paiement multi-méthodes et d'une messagerie temps réel. Toutefois, plusieurs composants demeurent au stade de prototype et nécessitent une validation externe avant toute mise en production.
 
-\section*{Bilan et contributions}
+\section*{Bilan du projet}
+\addcontentsline{toc}{section}{Bilan du projet}
 
 Les objectifs spécifiques énoncés dans l'introduction ont été globalement atteints. Nous structurons le bilan autour de trois contributions.
 
@@ -17,7 +18,21 @@ L'application d'une démarche de tests rigoureuse (151~tests Jest, taux de réus
 \paragraph{3. Contribution économique (Arrêté 1275).}
 Le Business Model Canvas et le plan financier prévisionnel sur 36~mois ont établi la viabilité du modèle, avec un seuil de rentabilité projeté au 10\textsuperscript{ème} mois de la phase d'exploitation, ouvrant la voie à une demande de labellisation CNL.
 
-\section*{Limites}
+\subsection*{Validation des hypothèses}
+
+Les trois hypothèses formulées dans l'introduction générale sont confrontées aux résultats obtenus~:
+
+\paragraph{H1 --- Pipeline biométrique vs vérification documentaire.}
+\textit{Partiellement validée.} Le prototype fonctionnel démontre la faisabilité technique d'un pipeline à trois niveaux (OCR, comparaison faciale ArcFace, détection de vivacité) avec des seuils différenciés par rôle. Cependant, en l'absence d'évaluation formelle selon les métriques \textsc{apcer}/\textsc{bpcer}/\textsc{hter} sur un jeu de données de référence, la supériorité quantitative par rapport à une vérification documentaire simple ne peut être affirmée de manière conclusive. Cette évaluation constitue un travail futur prioritaire.
+
+\paragraph{H2 --- Paiement local et utilisabilité.}
+\textit{Validée.} Le score \textsc{sus} global de 71,6/100 ($>$~68, seuil «~bon~» selon Bangor~\textit{et~al.}), obtenu auprès de 18~participants disposant de trois méthodes de paiement (espèces, \textsc{cib}, \textit{Edahabia}) et d'une interface trilingue, confirme que l'intégration d'un écosystème de paiement local contribue positivement à l'utilisabilité perçue. La validité externe de ce résultat reste toutefois limitée par le biais d'échantillonnage (population exclusivement étudiante).
+
+\paragraph{H3 --- Architecture tolérante aux déconnexions.}
+\textit{Validée.} Les mesures de performance sous charge (50~utilisateurs concurrents, outil k6) montrent un taux de succès compris entre 98,2\,\% (route \textsc{kyc}, la plus lourde) et 99,9\,\% (WebSocket, suivi GPS) pour l'ensemble des routes \textsc{api} critiques. Les mécanismes d'idempotence, de retentatives exponentielles (TanStack~Query) et de files persistantes (Bull/BullMQ) contribuent à ce résultat, confirmant l'adéquation de l'architecture aux conditions réseau algériennes.
+
+\section*{Limites et perspectives d'évolution de l'application}
+\addcontentsline{toc}{section}{Limites et perspectives d'évolution de l'application}
 
 La réalisation d'un tel projet par un binôme de Master comporte des limites que nous assumons.
 \begin{enumerate}
@@ -27,8 +42,6 @@ La réalisation d'un tel projet par un binôme de Master comporte des limites qu
   \item Les paiements \textsc{cib} et \textit{Edahabia} restent en environnement sandbox dans l'attente de l'homologation \textsc{satim}.
   \item Aucun test d'intrusion externe n'a été conduit.
 \end{enumerate}
-
-\section*{Perspectives}
 
 Les travaux futurs s'articulent autour de trois horizons.
 \begin{enumerate}
