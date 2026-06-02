@@ -141,7 +141,14 @@ inDrive est un acteur international classé application de mobilité partagée \
 
 La vérification d'identité y est purement documentaire (non biométrique), ce qui la rend vulnérable aux mêmes vecteurs d'attaque par photographie statique que les acteurs précédents. Plus fondamentalement, l'absence totale d'intégration des moyens de paiement électroniques algériens (\textsc{cib}, \textit{Edahabia}) force la totalité des transactions à s'effectuer en espèces, ce qui non seulement génère une opacité fiscale incompatible avec les exigences de la Loi~18-05 sur le commerce électronique~\cite{loi1805_2018}, mais empêche également la plateforme de mettre en œuvre un mécanisme de séquestre garantissant la protection financière du passager en cas d'annulation.
 
-\paragraph{Melaygo.} Mentionnons également Melaygo (2019), qui s'est positionné sur le partage de trajets interurbains. Son développement est resté limité par une interface peu ergonomique et l'absence de services de paiement et de sécurisation des identités.
+\section{Covoit'Dz (Université de Tlemcen)}
+\label{sec:covoitdz}
+
+Développée et soutenue en tant que projet académique au sein du Département d'Informatique de l'Université de Tlemcen~\cite{merad_covoitdz_2024}, l'application Android Covoit'Dz vise spécifiquement à faciliter la mise en relation pour le partage de trajets routiers en Algérie.
+\begin{itemize}
+  \item \textbf{Analyse de la contribution~:} Le projet démontre l'intérêt méthodologique de l'approche mobile Android pour structurer le marché national, en proposant une modélisation UML et une base de données relationnelle adaptée aux liaisons inter-wilayas.
+  \item \textbf{Limitations scientifiques~:} Covoit'Dz souffre de l'absence totale de modules d'identité biométrique KYC. L'application repose sur un modèle déclaratif vulnérable, sans chiffrement des données personnelles au repos et sans algorithme de tarification dynamique. De plus, elle ne propose aucune intégration monétique avec l'écosystème interbancaire de la SATIM, limitant son champ d'action à un prototype informationnel.
+\end{itemize}
 
 \section{Synthèse des systèmes concurrents}
 \label{sec:comparatif}
@@ -156,25 +163,25 @@ Afin de situer précisément notre contribution, nous présentons ci-dessous une
 \begin{tabularx}{\linewidth}{|l|c|c|c|c|c|X|}
 \hline
 \rowcolor{rohlight}
-\textbf{Critère} & \textbf{BlaBlaCar} & \textbf{Yassir} & \textbf{Nroho} & \textbf{inDrive} & \textbf{Melaygo} & \textbf{RohWinBghit} \\
+\textbf{Critère} & \textbf{BlaBlaCar} & \textbf{Yassir} & \textbf{Nroho} & \textbf{inDrive} & \textbf{Covoit'Dz} & \textbf{RohWinBghit} \\
 \hline
 Couverture en Algérie & Absent & Urbaine & Nationale & Nationale & Nationale & \textbf{Nationale (69 wilayas)} \\
 \hline
-Focus inter-wilayas & Oui (Europe) & Non & Oui & Oui (City to City) & Limité & \textbf{Oui (natif)} \\
+Focus inter-wilayas & Oui (Europe) & Non & Oui & Oui (City to City) & Oui & \textbf{Oui (natif)} \\
 \hline
-Authentification KYC & Standard & Standard & CIN + \textit{selfie} & Documentaire & Minimale & \textbf{Biométrique (Liveness + Anti-spoof)} \\
+Authentification KYC & Standard & Standard & CIN + \textit{selfie} & Documentaire & Néant & \textbf{Biométrique (Liveness + Anti-spoof)} \\
 \hline
 Seuils IA par rôle & Non & Non & Non & Non & Non & \textbf{Oui ($\geq 0{,}65$ / $\geq 0{,}60$)} \\
 \hline
 Paiement CIB / Edahabia & Non & Partiel & Non (cash) & Non (cash) & Non & \textbf{Sandbox + espèces} \\
 \hline
-Messagerie temps réel & Oui & Oui & Oui & Oui & Limité & \textbf{Oui (Socket.IO)} \\
+Messagerie temps réel & Oui & Oui & Oui & Oui & Non & \textbf{Oui (Socket.IO)} \\
 \hline
-Tarification dynamique & Non & Oui & Non & Non & Non & \textbf{Oui ($m \in [1{,}0;\; 2{,}5]$)} \\
+Tarification dynamique & Non & Oui & Non & Non & Fixe & \textbf{Oui ($m \in [1{,}0;\; 2{,}5]$)} \\
 \hline
 Chiffrement PII au repos & Non doc. & Non doc. & Non doc. & Non doc. & Non doc. & \textbf{AES-256-GCM} \\
 \hline
-Langues d'interface & FR / EN & AR / FR & AR / FR & AR / FR & AR / FR & \textbf{AR / FR / EN} \\
+Langues d'interface & FR / EN & AR / FR & AR / FR & AR / FR & FR & \textbf{AR / FR / EN} \\
 \hline
 \end{tabularx}
   \caption{Matrice comparative approfondie des plateformes de mobilité partagée --- État du marché au 1\textsuperscript{er} mai 2026}

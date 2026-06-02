@@ -5,30 +5,31 @@
 \section*{Contexte du projet}
 \addcontentsline{toc}{section}{Contexte du projet}
 
-La mobilité intercité constitue l'un des défis structurels majeurs de l'Algérie contemporaine. Avec une superficie de 2~381~741~km² répartie en 69 wilayas et une population dépassant 46,8~millions d'habitants~\cite{ons_2024}, le pays présente un besoin constant de déplacements entre pôles universitaires, centres économiques et zones résidentielles. Les solutions traditionnelles --- taxis intercités, lignes de bus privées --- demeurent fragmentées, onéreuses et asymétriques en information. Parallèlement, la révolution numérique a vu émerger des plateformes de covoiturage transformant les déplacements en services à la demande. Cependant, aucune solution adaptée au contexte algérien n'a atteint une couverture nationale, les offres existantes étant urbaines ou dépourvues d'un modèle économique adapté aux flux inter-wilayas.
+La mobilité inter-wilayas constitue l'un des défis d'infrastructure majeurs de l'Algérie contemporaine. Avec un territoire de 2~381~741~km² divisé en 69 wilayas et une population nationale qui dépasse 46,8~millions d'habitants~\cite{ons_2024}, la fluidité des transports routiers interurbains représente un enjeu économique et social de premier plan. Les déplacements entre les pôles universitaires régionaux, les centres administratifs et les localités de résidence s'effectuent aujourd'hui au travers de solutions traditionnelles fragmentées~: lignes de bus privées aux horaires rigides, taxis collectifs inter-wilayas ou groupes de covoiturage informels sur les réseaux sociaux. Ces alternatives souffrent d'une forte asymétrie de l'information, de tarifs volatils et d'un manque absolu de garanties sécuritaires.
 
-\section*{Objectifs et enjeux}
-\addcontentsline{toc}{section}{Objectifs et enjeux}
+Si le concept de transport collaboratif ou covoiturage (\textit{carpooling}) s'est largement démocratisé à l'échelle internationale grâce aux plateformes connectées, aucune solution d'envergure nationale n'a réussi à s'imposer en Algérie pour structurer spécifiquement le transport longue distance. L'émergence d'infrastructures de paiement électronique locales (cartes CIB et Edahabia) et l'évolution rapide de la pénétration de l'Internet mobile à haut débit offrent un cadre technologique propice à la création d'une solution de mise en relation de confiance.
 
-La conception et la mise en œuvre d'une plateforme de covoiturage inter-wilayas en Algérie soulèvent des défis techniques et humains uniques. Pour y répondre efficacement, ce projet s'articule autour d'une problématique d'ingénierie centrale, d'hypothèses scientifiques claires et d'objectifs quantifiables.
+\section*{Problématique}
+\addcontentsline{toc}{section}{Problématique}
 
-\subsection*{Problématique}
+La transition d'un modèle de covoiturage informel et non réglementé vers une plateforme logicielle souveraine et de niveau industriel pose une série de verrous techniques et socioculturels. La problématique scientifique et d'ingénierie de cette thèse de Master s'énonce ainsi~:
 
-Cette fragmentation de l'offre de transport interurbain, confrontée à une demande estudiantine et professionnelle en forte croissance, soulève un défi d'ingénierie logicielle et de confiance sociétale majeur. La problématique centrale de ce travail s'énonce ainsi : \textit{Comment concevoir et réaliser une plateforme mobile de covoiturage inter-wilayas spécifiquement adaptée aux contraintes socio-économiques, logistiques et financières de l'Algérie, capable de lever le frein de la confiance grâce à un système automatisé de vérification d'identité par intelligence artificielle (KYC), tout en garantissant des performances réseau optimales et l'interopérabilité avec les systèmes de paiement locaux ?}
+\textit{Comment concevoir, structurer et déployer une architecture logicielle distribuée et tolérante aux déconnexions réseau pour le covoiturage longue distance en Algérie, capable d'instaurer un climat d'utilisabilité et de confiance mutuelle par le biais d'un pipeline biométrique automatisé d'identité (KYC), tout en garantissant la cohérence transactionnelle face aux accès concurrents et l'intégration des passerelles de paiement électronique nationales ?}
 
-\subsection*{Hypothèses de travail}
+\section*{Hypothèses de travail}
+\addcontentsline{toc}{section}{Hypothèses de travail}
 
-Ce travail repose sur trois hypothèses vérifiables, formulées en réponse à la problématique~:
+Afin de répondre à cette problématique, les trois hypothèses scientifiques et techniques suivantes ont été formulées~:
 \begin{enumerate}
-  \item \textbf{H1 ---} Un pipeline biométrique à trois niveau (extraction \textsc{ocr}, comparaison faciale, détection de vivacité) associé à des seuils différenciés par rôle permet d'atteindre un taux de rejet des tentatives de \textit{spoofing} supérieur à celui d'une vérification documentaire simple.
-  \item \textbf{H2 ---} L'intégration de moyens de paiement électroniques locaux (\textsc{cib}, \textit{Edahabia}) en complément des espèces, combinée à une interface trilingue, améliore l'utilisabilité perçue de la plateforme (score \textsc{sus} $\geq$ 68/100).
-  \item \textbf{H3 ---} Une architecture tolérante aux déconnexions (requêtes idempotentes, cache local, files de messages persistantes, retentatives exponentielles) permet de maintenir un taux de succès \textsc{api} $\geq$ 99\,\% sur les réseaux mobiles algériens intercités.
+  \item \textbf{Hypothèse H1 ---} L'intégration d'un pipeline d'authentification biométrique asynchrone à trois niveaux (extraction OCR de la carte d'identité, comparaison faciale par réseaux convolutifs et détection active de vivacité) avec des seuils de décision différenciés par rôle permet d'annihiler les vecteurs d'attaque par rejeu ou spoofing d'identité, surpassant ainsi les mécanismes de contrôle purement documentaires.
+  \item \textbf{Hypothèse H2 ---} L'implémentation d'une gestion transactionnelle découplée supportant un modèle hybride de paiement (espèces et passerelle électronique locale CIB/Edahabia) intégrée à une interface utilisateur trilingue permet d'atteindre un score d'utilisabilité globale sur l'échelle SUS supérieur ou égal à 68 sur 100 auprès des usagers algériens.
+  \item \textbf{Hypothèse H3 ---} L'application de mécanismes de tolérance aux pannes réseau (idempotence des requêtes HTTP, mise en cache mémoire adaptative Redis et files de messages asynchrones persistantes) garantit un taux d'exécution des transactions API supérieur ou égal à 99\,\% sur les axes routiers inter-wilayas soumis à une connectivité mobile intermittente.
 \end{enumerate}
-La validation ou l'invalidation de ces hypothèses constitue le fil directeur de l'évaluation présentée au chapitre~3 et reprise dans la conclusion générale.
 
-\subsection*{Objectifs du projet}
+\section*{Objectifs du projet}
+\addcontentsline{toc}{section}{Objectifs du projet}
 
-Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) propose de concevoir, développer et évaluer une plateforme logicielle complète. Les objectifs ont été formulés selon la grille \textbf{SMART} et sont synthétisés dans le tableau ci-dessous.
+Le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) poursuit l'objectif principal de concevoir et développer un prototype opérationnel complet de plateforme intelligente et sécurisée de covoiturage longue distance. Les objectifs spécifiques se structurent comme suit~:
 
 \begin{table}[!htbp]
 \centering
@@ -38,34 +39,29 @@ Pour répondre à cette problématique, le projet \textbf{RohWinBghit} (\textara
 \rowcolor{rohlight}
 \textbf{Objectif} & \textbf{Livrable} & \textbf{Délai} \\
 \hline
-\textbf{OG} --- Prototype opérationnel & Application mobile + infrastructure de services, SUS $\geq$ 70/100 & 9 mois \\
+\textbf{OG} (Global) & Prototype de plateforme mobile opérationnel (Android/iOS) et d'administration web, avec un score d'utilisabilité SUS supérieur ou égal à 70 sur 100. & 9 mois \\
 \hline
-\textbf{OS1} --- Analyse et conception & Étude comparative, modélisation UML, schéma 3NF & 4 sem. \\
+\textbf{OS1} (Méthodologique) & Étude de l'art, recueil des exigences de la Loi 25-11, modélisation UML 2.5 et conception de la base de données relationnelle 3NF. & 4 semaines \\
 \hline
-\textbf{OS2} --- Mobile et back-end & Application React~Native/Expo + API Express.js, cartographie Mapbox & 16 sem. \\
+\textbf{OS2} (Ingénierie client-serveur) & Développement de l'application mobile sous React Native, du serveur API modulaire Express.js et intégration cartographique Mapbox. & 16 semaines \\
 \hline
-\textbf{OS3} --- Service KYC biométrique & Microservice FastAPI (OCR, comparaison faciale, liveness) & 6 sem. \\
+\textbf{OS3} (Intelligence Artificielle) & Réalisation du microservice asynchrone de vérification biométrique KYC sous FastAPI (Python) à l'aide d'InsightFace et ArcFace. & 6 semaines \\
 \hline
-\textbf{OS4} --- Paiement et validation & Paiement multi-méthodes (CIB/Edahabia en sandbox, espèces), tests automatisés & 4 sem. \\
+\textbf{OS4} (Validation et Intégration) & Déploiement des stratégies de test automatisées (Jest), simulation de la passerelle SATIM en sandbox, et étude technico-économique sous l'arrêté 1275. & 4 semaines \\
 \hline
 \end{tabularx}
 \caption{Objectifs du projet selon la grille SMART}
+\label{tab:objectifs_smart}
 \end{table}
-
-\section*{Méthodologie de travail}
-\addcontentsline{toc}{section}{Méthodologie de travail}
-
-Le développement d'un système distribué combinant du mobile multiplateforme, de la communication temps réel et de l'inférence biométrique présente de forts risques d'intégration. Pour y faire face, nous avons opté pour le cadre de travail agile \textbf{Scrum}, organisé en sprints de deux semaines. Les rôles Scrum ont été répartis de manière hybride au sein du binôme (Product Owner/Développeur et Scrum Master/Développeur), et les artefacts (Product Backlog, Sprint Backlog, Incrément) ont été suivis via \textbf{Jira}. Ce cadre itératif a permis l'adaptation continue du produit en fonction des retours précoces des utilisateurs.
 
 \section*{Structure du mémoire}
 \addcontentsline{toc}{section}{Structure du mémoire}
 
-Ce mémoire s'articule autour de trois chapitres principaux, suivis de ses annexes et d'une conclusion :
-
+Le présent document est organisé en trois chapitres techniques et scientifiques~:
 \begin{itemize}[leftmargin=1.8em]
-  \item Le \textbf{Chapitre~1 --- Systèmes similaires} dresse l'état de l'art du covoiturage et positionne \textit{RohWinBghit} face aux solutions concurrentes à travers une analyse comparative rigoureuse.
-  \item Le \textbf{Chapitre~2 --- Exigences du système et Conception} détaille les besoins fonctionnels et non fonctionnels, la modélisation UML, les processus BPMN, les diagrammes de classes participantes et le modèle physique de données.
-  \item Le \textbf{Chapitre~3 --- Réalisation et Tests} documente les choix technologiques, l'implémentation des interfaces et la stratégie de tests automatisés.
+  \item Le \textbf{Chapitre~1 --- Étude de l'existant} dresse l'état de l'art du transport partagé, analyse les spécificités du marché numérique algérien et évalue de manière critique les solutions de transport existantes.
+  \item Le \textbf{Chapitre~2 --- Conception et Spécifications} expose l'analyse fonctionnelle et technique, détaille la modélisation UML, documente les choix architecturaux et la modélisation mathématique du pipeline KYC, puis présente le schéma logique de la base de données relationnelle.
+  \item Le \textbf{Chapitre~3 --- Réalisation, tests et déploiement} présente l'implémentation physique des interfaces, détaille les résultats des campagnes de test et justifie les technologies retenues.
 \end{itemize}
 
-Enfin, l'\textbf{Annexe~A} présente l'étude technico-économique dans le cadre de l'Arrêté~1275 (Business Model Canvas), et la \textbf{conclusion générale} dresse le bilan des réalisations, discute les limites et dessine les perspectives de développement.
+Enfin, l'\textbf{Annexe~A} expose l'étude de faisabilité économique élaborée dans le cadre de l'arrêté ministériel n° 1275 pour la labellisation du projet en startup, et la \textbf{conclusion générale} dresse le bilan des réalisations, discute les limites et dessine les perspectives de développement.

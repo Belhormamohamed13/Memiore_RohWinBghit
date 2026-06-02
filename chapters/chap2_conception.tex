@@ -3,13 +3,13 @@
 
 \section{Introduction}
 
-Ce chapitre constitue la charnière entre l'étude du contexte menée précédemment et la phase de réalisation. Il rend compte de la démarche d'analyse retenue, recense les acteurs du système, formalise les exigences fonctionnelles et non fonctionnelles, puis présente la modélisation \gls{uml} complète~\cite{fowler_uml_2003} de la plateforme \textit{RohWinBghit}. Notre objectif est de produire une spécification suffisamment précise pour piloter la phase d'implémentation tout en préservant la lisibilité attendue d'un document académique.
+Ce chapitre constitue la charnière entre l'étude du contexte menée précédemment et la phase de réalisation. Il rend compte de la démarche d'analyse retenue, recense les acteurs du système, formalise les exigences fonctionnelles et non fonctionnelles, puis présente la modélisation \gls{uml} complète~\cite{fowler_uml_2003} de la plateforme \textit{RohWinBghit}. Notre objectif est de produire une spécification suffisamment précise pour piloter la phase d'implémentation tout en préservant la lisibilité attendue d'un document académique. L'ensemble de la conception s'appuie sur la modélisation UML des cas d'utilisation (figure~\ref{fig:uc-global}), des processus métiers BPMN (figures~\ref{fig:proc-driver}, \ref{fig:proc-passenger} et \ref{fig:proc-admin}) ainsi que de la structure de données (figure~\ref{fig:classes}).
 
 \section{Analyse des besoins et méthodologie de développement}
 \label{sec:methodologie-globale}
 \label{sec:methodologie}
 
-La conception d'une plateforme distribuée requiert une démarche disciplinée. Nous avons retenu une approche itérative inspirée du Processus Unifié (\textsc{up}) allégé~\cite{kruchten_up_2004}, combinée à des itérations agiles de type \textit{Scrum} pour la réalisation.
+La conception d'une plateforme distribuée requiert une démarche disciplinée. Nous avons retenu une approche itérative inspirée du Processus Unifié (\textsc{up}) allégé~\cite{kruchten_up_2004}, combinée à des itérations agiles de type \textit{Scrum} pour la réalisation. Le déroulement de nos itérations (sprints) est structuré dans le tableau~\ref{tab:sprints}, tandis que la segmentation de notre échantillon d'enquête et ses résultats clés sont synthétisés dans les tableaux~\ref{tab:profil-repondants} et~\ref{tab:resultats-enquete}.
 
 Le recueil des besoins s'est articulé autour de trois axes méthodologiques.
 \begin{enumerate}
@@ -116,6 +116,11 @@ Souhaitent une fonctionnalité de \textit{suivi GPS en temps réel} & 83\,\% \\
 
 Trois enseignements majeurs orientent la conception~: (1)~la \textbf{sécurité} constitue le premier critère de décision, justifiant l'investissement dans le pipeline biométrique~; (2)~la majorité des répondants privilégie le \textbf{paiement électronique}, validant l'intégration CIB/Edahabia~; (3)~le \textbf{déficit de confiance} envers les plateformes existantes confirme l'opportunité d'un mécanisme de vérification d'identité renforcé.
 
+\section{Spécification des exigences}
+\label{sec:spec-exigences}
+
+Cette section formalise la spécification des exigences fonctionnelles (tableau~\ref{tab:exigences-fonc}) ainsi que des exigences non fonctionnelles (détaillées sous forme de fiches techniques de l'ENF~1 à l'ENF~8 ci-dessous) qui régissent le comportement technique, sécuritaire et opérationnel de la plateforme.
+
 \subsection{Exigences fonctionnelles}
 \label{sec:recueil-besoins}
 \label{sec:exigences-fonc}
@@ -191,6 +196,8 @@ Application native Android/iOS via React~Native et Expo.
 \clearpage
 \section{Analyse fonctionnelle et modélisation des cas d'utilisation}
 \label{sec:analyse-fonctionnelle}
+
+Cette section présente la modélisation fonctionnelle du système en identifiant ses acteurs (tableau~\ref{tab:acteurs}) et en modélisant leurs interactions sous la forme d'un diagramme global de cas d'utilisation (figure~\ref{fig:uc-global}). La cohérence de la spécification est renforcée par une matrice de traçabilité (tableau~\ref{tab:tracabilite}) et par la définition détaillée des récits utilisateurs (User Stories) présentés dans le tableau~\ref{tab:user-stories}.
 
 \subsection{Identification des acteurs}
 \label{sec:acteurs}
@@ -306,6 +313,10 @@ US-05 & Admin & En tant qu'administrateur, je veux consulter et traiter la file 
 \label{tab:user-stories}
 \end{table}
 
+\clearpage
+\section{Spécification des scénarios dynamiques}
+\label{sec:scenarios-dynamiques}
+
 \subsection{Fiches descriptives et diagrammes de séquences des cas d'utilisation clés}
 \label{sec:cu-textuel}
 
@@ -328,13 +339,20 @@ Cette section fournit les fiches descriptives détaillées des cas d'utilisation
   \item \textbf{Post-conditions :} Compte créé, jeton \gls{jwt} émis, statut \textsc{kyc} initialisé à \textit{unverified}.
 \end{itemize}
 
-L'inscription repose sur une vérification du numéro de téléphone par code OTP, suivie de la saisie des informations personnelles (figure~\ref{fig:seq-inscription}).
+L'inscription repose sur une vérification du numéro de téléphone par code OTP, suivie de la saisie des informations personnelles (figure~\ref{fig:seq-inscription}). Le processus de connexion (authentification) ultérieur par code OTP pour un utilisateur enregistré est modélisé sous la forme d'un diagramme de séquence dans la figure~\ref{fig:seq-auth}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{fig_sequence_inscription.png}
 \caption{Séquence --- Inscription d'un nouvel utilisateur}
 \label{fig:seq-inscription}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{fig_sequence_authentification.png}
+\caption{Séquence --- Authentification et connexion (OTP)}
+\label{fig:seq-auth}
 \end{figure}
 
 \subsubsection{UC-KYC --- Vérification d'identité biométrique}
@@ -421,14 +439,23 @@ La figure~\ref{fig:seq-reservation} expose l'orchestration interne du paiement~:
     \begin{itemize}
       \item \textit{Acteurs :} Passager et Conducteur.
       \item \textit{Pré-conditions :} Réservation confirmée active.
-      \item \textit{Scénario nominal :} Messages texte via Socket.IO, persistés en base de données.
-    \end{itemize}
+      \item \textit{Scénario nominal :} Messages de type texte via Socket.IO, persistés en base de données PostgreSQL 16.
+     \end{itemize}
   \item \textbf{UC-MODERATION --- Modération et revue KYC manuelle :}
     \begin{itemize}
       \item \textit{Acteur :} Administrateur.
       \item \textit{Scénario nominal :} Consultation de la file \textit{pending\_review}, examen visuel comparatif des documents, validation ou rejet avec motif, mise à jour du statut.
     \end{itemize}
 \end{itemize}
+
+Le processus opérationnel de modération et d'évaluation manuelle du KYC par l'administrateur, lorsqu'un dossier est mis en attente de revue, suit l'enchaînement d'activités présenté dans la figure~\ref{fig:seq-kyc-review}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{fig_kyc_review.png}
+\caption{Flux d'activité de la modération et revue manuelle du KYC par l'administrateur}
+\label{fig:seq-kyc-review}
+\end{figure}
 
 \subsection{Modélisation du comportement global (Diagramme d'activité)}
 \label{sec:activite-global}
@@ -493,6 +520,80 @@ La figure~\ref{fig:proc-admin} présente le processus opérationnel de supervisi
 \end{figure}
 
 \clearpage
+\section{Conception de la sécurité biométrique (KYC)}
+\label{sec:securite-biometrique}
+
+La modélisation mathématique du pipeline de décision biométrique KYC s'appuie sur trois scores flottants normalisés~:
+\begin{itemize}
+  \item Le score de conformité d'identité ($S_{id}$), mesurant la corrélation par distance cosinus entre l'embedding facial extrait de la carte d'identité nationale (CIN) et l'embedding extrait de la vidéo par l'architecture ArcFace.
+  \item Le score de détection de vivacité ($S_{liv}$), évaluant l'authenticité de la présence physique de l'utilisateur.
+  \item Le score d'anti-spoofing ($S_{as}$), détectant la présentation de supports de rejeu (écrans, masques ou impressions papier).
+\end{itemize}
+
+Les taux d'erreur du pipeline sont définis selon les métriques internationales d'évaluation de la biométrie~:
+\begin{itemize}
+  \item \textbf{APCER} (\textit{Attack Presentation Classification Error Rate})~: Taux de classification erronée des présentations d'attaque.
+  \item \textbf{BPCER} (\textit{Bona Fide Presentation Classification Error Rate})~: Taux de classification erronée des présentations légitimes.
+  \item \textbf{ACER} (\textit{Average Classification Error Rate})~: Taux moyen d'erreur de classification.
+\end{itemize}
+
+Ces métriques sont formalisées au moyen des équations mathématiques suivantes~:
+
+\begin{equation}
+\text{APCER} = \frac{1}{N_{\text{PA}}} \sum_{i=1}^{N_{\text{PA}}} \text{Res}(i)
+\end{equation}
+
+\begin{equation}
+\text{BPCER} = \frac{1}{N_{\text{BF}}} \sum_{j=1}^{N_{\text{BF}}} (1 - \text{Res}(j))
+\end{equation}
+
+\begin{equation}
+\text{ACER} = \frac{\text{APCER} + \text{BPCER}}{2}
+\end{equation}
+
+Où $N_{\text{PA}}$ est le nombre de présentations d'attaque soumises lors de l'évaluation, $N_{\text{BF}}$ est le nombre de présentations légitimes, et $\text{Res}(x)$ est la fonction de décision binaire de l'algorithme d'identification, retournant la valeur 1 pour une attaque détectée et 0 pour un enrôlement accepté.
+
+La plateforme adopte une stratégie d'analyse multi-seuils différenciée selon la criticité des rôles~:
+
+\paragraph{Profil Conducteur (Haute criticité)~:}
+\begin{equation}
+\text{Statut} = \begin{cases} 
+\text{Accepté} & \text{si } S_{id} \geq 0{,}65 \wedge S_{liv} \geq 0{,}65 \wedge S_{as} \geq 0{,}60 \\
+\text{Rejeté} & \text{si } S_{id} < 0{,}30 \vee S_{liv} < 0{,}30 \\
+\text{Revue Manuelle} & \text{sinon}
+\end{cases}
+\end{equation}
+
+\paragraph{Profil Passager (Criticité moyenne)~:}
+\begin{equation}
+\text{Statut} = \begin{cases} 
+\text{Accepté} & \text{si } S_{id} \geq 0{,}60 \wedge S_{liv} \geq 0{,}55 \wedge S_{as} \geq 0{,}50 \\
+\text{Rejeté} & \text{si } S_{id} < 0{,}30 \vee S_{liv} < 0{,}30 \\
+\text{Revue Manuelle} & \text{sinon}
+\end{cases}
+\end{equation}
+
+La synthèse de ces seuils décisionnels configurés pour le microservice d'IA et la file d'attente de revue administrative manuelle selon le rôle de l'utilisateur est présentée dans le tableau~\ref{tab:seuils-biometriques}.
+
+\begin{table}[!htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|>{\hsize=1.25\hsize}X|>{\centering\arraybackslash\hsize=0.85\hsize}X|>{\centering\arraybackslash\hsize=0.85\hsize}X|>{\centering\arraybackslash\hsize=0.9\hsize}X|>{\hsize=1.15\hsize\arraybackslash}X|}
+\hline
+\rowcolor{rohlight}
+\textbf{Rôle de l'utilisateur} & \textbf{Identité ($S_{id}$)} & \textbf{Vivacité ($S_{liv}$)} & \textbf{Anti-spoofing ($S_{as}$)} & \textbf{Action de rejet immédiat} \\
+\hline
+\textbf{Conducteur} (Haute criticité) & $\geq 0{,}65$ & $\geq 0{,}65$ & $\geq 0{,}60$ & Si $S_{id} < 0{,}30$ ou $S_{liv} < 0{,}30$ \\
+\hline
+\textbf{Passager} (Criticité moyenne) & $\geq 0{,}60$ & $\geq 0{,}55$ & $\geq 0{,}50$ & Si $S_{id} < 0{,}30$ ou $S_{liv} < 0{,}30$ \\
+\hline
+\end{tabularx}
+\caption{Seuils de décision et de classification biométrique KYC par rôle}
+\label{tab:seuils-biometriques}
+\end{table}
+
+\clearpage
 \section{Conception architecturale et déploiement}
 \label{sec:architecture}
 
@@ -541,31 +642,50 @@ La figure~\ref{fig:deploiement} formalise la distribution physique des artefacts
 
 \paragraph{Conformité \textsc{solid}.} Chaque module respecte les cinq principes~: SRP par séparation contrôleur/service/dépôt, OCP via les patrons Strategy/Factory, LSP par interfaces explicites, ISP par contrats fins, DIP par injection systématique.
 
-\paragraph{Risques techniques anticipés.}
-\begin{enumerate}
-  \item \textit{Latence sur réseaux mobiles algériens} $\to$ cache Redis, requêtes idempotentes.
-  \item \textit{Faux positifs/négatifs du pipeline biométrique} $\to$ seuils différenciés, file de revue manuelle.
-  \item \textit{Indisponibilité d'une passerelle de paiement} $\to$ patron Strategy permettant le repli.
-  \item \textit{Conformité Loi~25-11} $\to$ chiffrement au repos, droit d'effacement \textit{by design}.
-\end{enumerate}
+\paragraph{Risques techniques anticipés.} L'analyse des risques techniques critiques inhérents à l'exploitation de la plateforme et les stratégies d'atténuation logicielle associées sont synthétisées dans le tableau~\ref{tab:risques-mitigations}.
+
+\begin{table}[!htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|X|c|X|}
+\hline
+\rowcolor{rohlight}
+\textbf{Risque technique identifié} & \textbf{Impact} & \textbf{Stratégie d'atténuation (Mitigation)} \\
+\hline
+\textbf{Latence réseau} (connexion 3G/4G instable inter-wilayas) & Élevé & Mise en cache locale Redis 7, compression des payloads JSON, et requêtes idempotentes. \\
+\hline
+\textbf{Faux positifs / négatifs} du pipeline KYC biométrique & Critique & Seuils adaptatifs par rôle et file d'attente de modération manuelle administrative asynchrone. \\
+\hline
+\textbf{Indisponibilité de la passerelle} de paiement électronique & Élevé & Application du patron Strategy/Factory pour un repli transparent vers le paiement en espèces. \\
+\hline
+\textbf{Fuite de données biométriques} et personnelles & Critique & Chiffrement AES-256-GCM au repos, purge des pièces d'identité temporaires après validation (conformité Loi 25-11). \\
+\hline
+\end{tabularx}
+\caption{Analyse et stratégies d'atténuation des risques techniques critiques}
+\label{tab:risques-mitigations}
+\end{table}
+
 
 \clearpage
-\section{Modélisation statique et base de données}
+\section{Modélisation statique}
 \label{sec:conception-statique}
 
-Cette section formalise la structure statique du domaine, le dictionnaire de ses classes et concepts métiers, le schéma relationnel qui en découle ainsi que les dictionnaires physiques de ses tables de données les plus critiques.
+Cette section formalise la structure statique du domaine, ainsi que le dictionnaire de ses classes et concepts métiers.
 
 \subsection{Diagramme de classes du domaine}
 \label{sec:classes}
 
 La figure~\ref{fig:classes} représente le diagramme global de classes participantes du domaine (avec alignement \textsc{postgresql}).
 
+\begin{landscape}
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{fig_class_diagram.png}
 \caption{Diagramme de classes du domaine (alignement \textsc{postgresql})}
 \label{fig:classes}
 \end{figure}
+\end{landscape}
 
 La classe \texttt{User} est modélisée comme classe mère abstraite, avec trois sous-classes concrètes~: \texttt{Passenger}, \texttt{Driver} et \texttt{Admin}. Le domaine s'articule autour de quatre agrégats~:
 \begin{enumerate}
@@ -577,6 +697,7 @@ La classe \texttt{User} est modélisée comme classe mère abstraite, avec trois
 
 Le modèle intègre quatre patrons de conception~: \textit{Strategy} et \textit{Factory} pour les paiements, \textit{Repository} pour l'accès aux données, et \textit{Observer} pour la diffusion des événements.
 
+\begin{landscape}
 \subsection{Dictionnaire des classes et concepts métier}
 \label{sec:classes-description}
 
@@ -585,7 +706,8 @@ Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs att
 \begin{table}[!htbp]
 \centering
 \footnotesize
-\begin{tabularx}{\textwidth}{|l|X|X|}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{|l|X|X|}
 \hline
 \rowcolor{rohlight}
 \textbf{Classe} & \textbf{Attributs principaux} & \textbf{Méthodes métier} \\
@@ -624,161 +746,7 @@ Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs att
   \caption{Description des classes du domaine}
   \label{tab:classes}
 \end{table}
-
-\subsection{Modèle Conceptuel de Données (MCD) / Modèle relationnel (MLD)}
-\label{sec:modele-relationnel}
-
-Le passage du diagramme de classes au schéma relationnel suit les règles classiques de transformation. Les clés primaires sont soulignées, les clés étrangères préfixées par~\#.
-
-\begin{highlight}
-\small
-\texttt{User}(\underline{id}, phone, email, firstName, lastName, dateOfBirth, passwordHash, verificationStatus, createdAt)\\[2pt]
-\texttt{Role}(\underline{id}, name, permissions)\\[2pt]
-\texttt{UserRole}(\underline{\#userId}, \underline{\#roleId})\\[2pt]
-\texttt{Vehicle}(\underline{id}, \#driverId, brand, model, licensePlate, color, seatsAvailable, isActive)\\[2pt]
-\texttt{Wilaya}(\underline{id}, code, nameFr, nameAr, latitude, longitude)\\[2pt]
-\texttt{Route}(\underline{id}, \#driverId, \#fromWilayaCode, \#toWilayaCode, isHabitual, frequency)\\[2pt]
-\texttt{Trip}(\underline{id}, \#driverId, \#vehicleId, \#originWilayaId, \#destinationWilayaId, departureAt, pricePerSeat, availableSeats, status, createdAt)\\[2pt]
-\texttt{TripRequest}(\underline{id}, \#passengerId, \#fromWilayaCode, \#toWilayaCode, requestedDate, seats, status, expiresAt)\\[2pt]
-\texttt{Booking}(\underline{id}, \#tripId, \#passengerId, seats, totalPrice, status, paymentStatus, createdAt)\\[2pt]
-\texttt{Payment}(\underline{id}, \#bookingId, method, amount, status, transactionRef, createdAt)\\[2pt]
-\texttt{IdentityVerification}(\underline{id}, \#userId, idFrontUrl, idBackUrl, videoUrl, faceMatchScore, livenessScore, antispoofScore, status, role, reviewedBy)\\[2pt]
-\texttt{FraudEvent}(\underline{id}, \#userId, \#verificationId, eventType, severity, reason, aiScores, createdAt)\\[2pt]
-\texttt{FaceEmbedding}(\underline{id}, \#userId, embedding, version, createdAt)\\[2pt]
-\texttt{SurgePricingRule}(\underline{id}, wilayaCode, dayOfWeek, hourStart, hourEnd, multiplier, isActive)\\[2pt]
-\texttt{Wallet}(\underline{id}, \#userId, balance, currency)\\[2pt]
-\texttt{WalletTransaction}(\underline{id}, \#walletId, type, amount, reference, createdAt)\\[2pt]
-\texttt{Chat}(\underline{id}, \#tripId, createdAt)\\[2pt]
-\texttt{Message}(\underline{id}, \#chatId, \#senderId, content, sentAt, readAt)\\[2pt]
-\texttt{Notification}(\underline{id}, \#userId, type, title, body, data, readAt, createdAt)\\[2pt]
-\texttt{Review}(\underline{id}, \#tripId, \#authorId, \#targetId, rating, comment, createdAt)
-\end{highlight}
-
-\subsection{Dictionnaires de données des tables critiques}
-\label{sec:postgresql-justification}
-\label{sec:dictionnaires-donnees}
-
-Le choix du système de gestion de bases de données constitue une décision architecturale structurante dont les conséquences se propagent sur l'ensemble du cycle de vie de la plateforme. Pour un système transactionnel manipulant simultanément des réservations concurrentes, des flux financiers et des données biométriques sensibles, la conformité stricte aux propriétés \textsc{acid} (Atomicité, Cohérence, Isolation, Durabilité) n'est pas négociable. PostgreSQL~16 garantit nativement ces propriétés, là où les bases documentaires de type MongoDB ou les entrepôts clé-valeur sacrifient la cohérence forte au profit de la disponibilité (théorème \textsc{cap}).
-
-Concrètement, le scénario critique de réservation concurrente illustre cette nécessité~: lorsque deux passagers tentent de réserver simultanément la dernière place disponible sur un trajet donné, le mécanisme de verrouillage pessimiste de PostgreSQL (\texttt{SELECT ... FOR UPDATE}) garantit qu'une seule transaction aboutit, l'autre étant bloquée puis informée de l'indisponibilité. Sous un modèle NoSQL à cohérence éventuelle, ce scénario engendrait une sur-réservation (\textit{overbooking}) nécessitant des compensations financières et une dégradation de la confiance utilisateur.
-
-Par ailleurs, PostgreSQL offre le type natif \texttt{JSONB} qui permet de stocker les payloads semi-structurés --- tels que les scores flottants multi-dimensionnels retournés par le microservice IA ou les métadonnées de notification push --- sans renoncer aux garanties relationnelles. Les index B-Tree déployés sur le triplet \texttt{(originWilayaId, destinationWilayaId, departureAt)} réduisent la complexité algorithmique de la recherche de trajets de $O(N)$ (balayage séquentiel) à $O(\log N)$ (parcours d'arbre), ce qui préserve des temps de réponse sous la barre des 300~ms même sous forte charge concurrente.
-
-Les tableaux suivants détaillent le schéma physique des quatre tables les plus névralgiques du système. L'utilisation systématique d'identifiants universels version~4 (\textsc{uuid}v4) comme clés primaires constitue une contre-mesure explicite contre les vulnérabilités de type \gls{idor} (\textsc{owasp}~A01), car leur espace de collision ($2^{122}$ combinaisons) rend l'énumération séquentielle mathématiquement impraticable.
-
-\begin{table}[!htbp]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|l|l|l|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Colonne} & \textbf{Type PostgreSQL} & \textbf{Contraintes} & \textbf{Description} \\
-\hline
-id & \texttt{UUID} & PK, DEFAULT gen\_random\_uuid() & Identifiant unique UUIDv4 \\
-\hline
-phone & \texttt{VARCHAR(15)} & UNIQUE, NOT NULL & Numéro de téléphone algérien \\
-\hline
-email & \texttt{VARCHAR(255)} & UNIQUE, NULLABLE & Adresse e-mail optionnelle \\
-\hline
-firstName & \texttt{VARCHAR(100)} & NOT NULL & Prénom \\
-\hline
-lastName & \texttt{VARCHAR(100)} & NOT NULL & Nom de famille \\
-\hline
-passwordHash & \texttt{TEXT} & NOT NULL & Hash bcrypt (coût 10) \\
-\hline
-verificationStatus & \texttt{ENUM} & NOT NULL, DEFAULT 'unverified' & \{unverified, pending, verified, rejected\} \\
-\hline
-createdAt & \texttt{TIMESTAMPTZ} & NOT NULL, DEFAULT NOW() & Horodatage de création \\
-\hline
-\end{tabularx}
-  \caption{Dictionnaire de données --- Table \texttt{users}}
-  \label{tab:dd-users}
-\end{table}
-
-\begin{table}[!htbp]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|l|l|l|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Colonne} & \textbf{Type PostgreSQL} & \textbf{Contraintes} & \textbf{Description} \\
-\hline
-id & \texttt{UUID} & PK & Identifiant unique \\
-\hline
-driverId & \texttt{UUID} & FK $\to$ users, NOT NULL & Conducteur propriétaire \\
-\hline
-originWilayaId & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya de départ \\
-\hline
-destinationWilayaId & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya d'arrivée \\
-\hline
-departureAt & \texttt{TIMESTAMPTZ} & NOT NULL, INDEXED & Date et heure de départ \\
-\hline
-pricePerSeat & \texttt{NUMERIC(10,2)} & NOT NULL, CHECK $> 0$ & Tarif unitaire en DZD \\
-\hline
-availableSeats & \texttt{SMALLINT} & NOT NULL, CHECK $\geq 0$ & Places restantes \\
-\hline
-status & \texttt{ENUM} & NOT NULL & \{active, full, departed, completed, cancelled\} \\
-\hline
-\end{tabularx}
-  \caption{Dictionnaire de données --- Table \texttt{trips}}
-  \label{tab:dd-trips}
-\end{table}
-
-\begin{table}[!htbp]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|l|l|l|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Colonne} & \textbf{Type PostgreSQL} & \textbf{Contraintes} & \textbf{Description} \\
-\hline
-id & \texttt{UUID} & PK & Identifiant unique \\
-\hline
-tripId & \texttt{UUID} & FK $\to$ trips, NOT NULL & Trajet réservé \\
-\hline
-passengerId & \texttt{UUID} & FK $\to$ users, NOT NULL & Passager réservant \\
-\hline
-seats & \texttt{SMALLINT} & NOT NULL, CHECK $\geq 1$ & Nombre de places réservées \\
-\hline
-totalPrice & \texttt{NUMERIC(10,2)} & NOT NULL & Montant total (avec surge) \\
-\hline
-status & \texttt{ENUM} & NOT NULL & \{pending, confirmed, cancelled, completed\} \\
-\hline
-paymentStatus & \texttt{ENUM} & NOT NULL & \{unpaid, paid, refunded\} \\
-\hline
-\end{tabularx}
-  \caption{Dictionnaire de données --- Table \texttt{bookings}}
-  \label{tab:dd-bookings}
-\end{table}
-
-\begin{table}[!htbp]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{|l|l|l|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Colonne} & \textbf{Type PostgreSQL} & \textbf{Contraintes} & \textbf{Description} \\
-\hline
-id & \texttt{UUID} & PK & Identifiant unique \\
-\hline
-userId & \texttt{UUID} & FK $\to$ users, NOT NULL & Utilisateur vérifié \\
-\hline
-faceMatchScore & \texttt{REAL} & NULLABLE & Score de similarité faciale $\in [0; 1]$ \\
-\hline
-livenessScore & \texttt{REAL} & NULLABLE & Score de détection de vivacité \\
-\hline
-antispoofScore & \texttt{REAL} & NULLABLE & Score anti-spoofing CNN \\
-\hline
-status & \texttt{ENUM} & NOT NULL & \{pending, verified, pending\_review, rejected\} \\
-\hline
-role & \texttt{ENUM} & NOT NULL & \{passenger, driver\} --- détermine les seuils \\
-\hline
-aiScores & \texttt{JSONB} & NULLABLE & Payload brut multi-dimensionnel du service IA \\
-\hline
-\end{tabularx}
-  \caption{Dictionnaire de données --- Table \texttt{identity\_verifications}}
-  \label{tab:dd-kyc}
-\end{table}
+\end{landscape}
 
 \clearpage
 \section{Conclusion}

@@ -9,10 +9,10 @@
 \begin{center}
 \begin{minipage}{0.92\textwidth}
 \begin{Arabic}
-يهدف هذا المشروع إلى تصميم وتطوير منصة متنقلة لمشاركة السيارة بين الولايات في الجزائر، تحت اسم \textit{RohWinBghit}. يعالج النظام مشاكل التنقل بين الولايات من حيث التكلفة، الموثوقية، والأمان. يقدم التطبيق مصادقة عن طريق رمز لمرة واحدة (OTP)، تحققًا بيومترياً من الهوية (KYC) باستخدام تقنيات الذكاء الاصطناعي، بالإضافة إلى نظام دفع متعدد الوسائل يدعم بطاقتي CIB وEdahabia والدفع النقدي (في بيئة اختبارية). تم تطوير التطبيق النقال باستخدام React Native 0.81 وExpo SDK 54، والواجهة الخلفية باستخدام Express.js وNode.js، مع قاعدة بيانات PostgreSQL وذاكرة تخزين Redis، وخدمة مستقلة FastAPI للتحقق البيومتري. يتضمن النظام أيضاً نظام تسعير ديناميكي، كشف الاحتيال، دردشة لحظية، وتتبع عبر GPS. أظهرت نتائج الاختبار الآلي باستخدام Jest نجاح 147 من أصل 151 اختباراً (107 اختبارات وحدة و44 اختبار دمج)، بنسبة نجاح إجمالية بلغت 97.4 \%، وتغطي المنصة 69 ولاية جزائرية.
+يقدم هذا البحث تصميم وتطوير منصة "RohWinBghit"، وهي منصة هاتفية متعددة الأنظمة مخصصة لمشاركة السيارات بين الولايات الـ 69 في الجزائر. تعتمد البنية البرمجية المقترحة على تطبيق نقال باستخدام React Native (Expo SDK 54) وواجهة خلفية Express.js مدعومة بقاعدة بيانات PostgreSQL 16 وذاكرة Redis 7، بالإضافة إلى خدمة ذكاء اصطناعي FastAPI (Python) للتحقق البيومتري من الهوية (KYC) مع كشف الحيوية ومقاومة التزييف. تمت عملية التحقق من النظام من خلال مجموعة اختبارات مؤتمتة Jest تشمل 151 اختبارًا (بنسبة نجاح 97.4\%) ودراسة قياسية لسهولة الاستخدام (SUS = 71.6/100). تؤكد دراسة الجدوى التجارية، التي أعدت في إطار القرار الوزاري رقم 1275، على الإمكانات التجارية لهذه الشركة الناشئة.
 
 \vspace{0.5cm}
-\textbf{الكلمات المفتاحية~:} مشاركة السيارة، React Native، Express.js، التحقق البيومتري KYC، PostgreSQL، Redis، الذكاء الاصطناعي، الدفع الإلكتروني، الجزائر، 69 ولاية.
+\textbf{الكلمات المفتاحية~:} مشاركة السيارات، هندسة البرمجيات، التحقق البيومتري KYC، PostgreSQL، الدفع الإلكتروني، القرار 1275.
 \end{Arabic}
 \end{minipage}
 \end{center}
@@ -22,11 +22,7 @@
 \addcontentsline{toc}{chapter}{Résumé}
 \thispagestyle{plain}
 
-Ce mémoire présente la conception et la réalisation de \textit{RohWinBghit}, une plateforme mobile de covoiturage inter-wilayas dédiée au marché algérien. Il répond à une problématique réelle~: l'absence d'une solution numérique sécurisée pour les déplacements longue distance entre les 69~wilayas, marqués par un coût élevé, une offre limitée et un déficit de confiance entre usagers.
-
-L'architecture proposée combine une application mobile \textit{React Native}~0.81 (Expo SDK~54), un \textit{back-end} Express.js avec organisation modulaire inspirée de NestJS (fondé sur Knex.js et PostgreSQL), un cache Redis, et un service IA \textit{FastAPI} dédié à la vérification biométrique d'identité (KYC) intégrant détection de vivacité et module anti-\textit{spoofing}. L'application offre une authentification par OTP, un système de réservation temps réel, un suivi GPS via Mapbox, une messagerie instantanée Socket.IO, un mécanisme expérimental de tarification dynamique, un module de détection de fraude et un moteur de paiement multi-méthodes implémenté via un patron \textit{Strategy/Factory}~: le règlement en espèces est opérationnel, tandis que CIB et Edahabia sont intégrés en environnement \textit{sandbox} dans l'attente de l'homologation SATIM.
-
-La validation expérimentale repose sur une suite Jest comportant 151~tests (107~unitaires et 44~d'intégration), dont 147~réussis, soit un taux de réussite global de 97,4\,\%, complétée par une campagne de validation manuelle portant sur 62~écrans distincts.
+Ce mémoire présente la conception et la réalisation de RohWinBghit, une plateforme mobile multiplateforme de covoiturage inter-wilayas adaptée au marché algérien. Le projet répond à une problématique majeure : l'absence d'un service numérique de confiance pour les déplacements interurbains entre les 69 wilayas, caractérisés par une fragmentation de l'offre et des risques de sécurité. L'architecture logicielle repose sur une application mobile React Native (Expo SDK 54), un back-end modulaire Express.js s'appuyant sur PostgreSQL 16 et Redis 7, et un microservice d'intelligence artificielle FastAPI (Python) dédié à la vérification d'identité biométrique (KYC) avec détection de vivacité. La validation s'appuie sur une suite automatisée de 151 tests Jest (147/151 tests réussis, soit un taux de réussite de 97,4 \%) et une évaluation d'utilisabilité (SUS = 71,6/100). L'étude de viabilité commerciale, rédigée sous l'arrêté ministériel n° 1275, confirme la durabilité économique de la solution.
 
 \vspace{0.3cm}
-\textbf{Mots-clés~:} covoiturage, React Native, Express.js, vérification biométrique KYC, PostgreSQL, Redis, paiement mobile, Algérie, inter-wilayas, 69 wilayas.
+\textbf{Mots-clés~:} Covoiturage, Génie Logiciel, Biométrie KYC, PostgreSQL, Paiement mobile, Arrêté 1275.
