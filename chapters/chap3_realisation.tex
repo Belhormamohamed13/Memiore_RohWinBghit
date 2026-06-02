@@ -1,11 +1,11 @@
-\chapter{Réalisation, Tests et Déploiement}
+\chapter{Réalisation et Tests}
 \label{chap:realisation}
 
 \section{Introduction}
 
-Après avoir défini l'architecture logicielle et la modélisation conceptuelle de la plateforme \textit{RohWinBghit} dans le chapitre précédent, le présent chapitre aborde la phase de réalisation effective du système. Il s'agit de concrétiser les choix de conception en un prototype fonctionnel, de valider le comportement du système par une campagne de tests rigoureuse, et de décrire la stratégie de déploiement adoptée pour la mise en production.
+Après avoir défini l'architecture logicielle et la modélisation conceptuelle de la plateforme \textit{RohWinBghit} dans le chapitre précédent, le présent chapitre aborde la phase de réalisation effective du système. Il s'agit de concrétiser les choix de conception en un prototype fonctionnel et de valider le comportement du système par une campagne de tests rigoureuse.
 
-Nous commençons par la description détaillée de l'implémentation des fonctionnalités principales, en présentant les interfaces utilisateur de l'application mobile (passager et conducteur) ainsi que le panneau d'administration web. Nous enchaînons avec les scénarios de tests fonctionnels qui ont permis de vérifier la conformité du système aux exigences formulées au chapitre~2. Nous décrivons ensuite la stratégie de déploiement retenue, avant de conclure par une présentation systématique des technologies et outils de développement mobilisés tout au long du projet.
+Nous commençons par la description détaillée de l'implémentation des fonctionnalités principales, en présentant les interfaces utilisateur de l'application mobile (passager et conducteur) ainsi que le panneau d'administration web. Nous enchaînons avec les scénarios de tests fonctionnels qui ont permis de vérifier la conformité du système aux exigences formulées au chapitre~2. Nous concluons par une présentation systématique des technologies et outils de développement mobilisés tout au long du projet.
 
 % ══════════════════════════════════════════════════════════════════════════════
 \section{Description de l'implémentation des fonctionnalités principales}
@@ -237,18 +237,6 @@ Message délivré en temps réel via WebSocket. Message persisté en base de don
 L'ensemble des scénarios fonctionnels décrits ci-dessus ont été exécutés avec succès lors de la campagne de validation du 24~avril~2026. Par ailleurs, une évaluation de l'utilisabilité a été conduite auprès de 18~participants selon l'échelle \textsc{sus}~\cite{brooke_sus_1996}, obtenant un score global de \textbf{71,6/100} (qualifié de «~bon~» selon le barème de Bangor~\textit{et~al.}~\cite{Bangor2008}). Le groupe des passagers a obtenu un score de 74,2/100, tandis que le groupe des conducteurs a enregistré 68,9/100, la différence étant principalement attribuable à la complexité perçue du parcours \textsc{kyc} biométrique. Des tests de performance sous charge (50~utilisateurs concurrents, outil k6) ont confirmé que l'ensemble des routes \textsc{api} critiques respectent l'objectif de temps de réponse P95~$\leq$~500~ms, à l'exception du flux \textsc{kyc} (P95~=~2,8~s), dont le délai est communiqué à l'utilisateur via un indicateur de progression.
 
 % ══════════════════════════════════════════════════════════════════════════════
-\section{Déploiement}
-\label{sec:deploiement}
-
-La stratégie de déploiement adoptée pour la plateforme \textit{RohWinBghit} s'appuie sur une infrastructure cloud combinant conteneurisation, automatisation et intégration continue. Le back-end Node.js (API Express.js) et le microservice d'intelligence artificielle (FastAPI) sont conteneurisés à l'aide de \textbf{Docker} et orchestrés via \textbf{Docker Swarm} sur un serveur privé virtuel (VPS) \textbf{Hetzner Cloud} fonctionnant sous Ubuntu Server. Un reverse proxy \textbf{Nginx} assure la terminaison TLS (certificats Let's Encrypt renouvelés automatiquement) et l'équilibrage de charge entre les conteneurs applicatifs.
-
-L'intégration et le déploiement continus sont entièrement automatisés via \textbf{GitHub Actions}. Chaque \textit{commit} poussé sur la branche \texttt{main} déclenche un pipeline composé de trois étapes~: (1)~l'exécution de la suite complète de tests Jest, (2)~la construction des images Docker en cas de succès, et (3)~le redéploiement sans interruption (\textit{zero-downtime}) sur l'infrastructure Hetzner. Ce pipeline garantit qu'aucune régression ne parvient en production sans avoir été préalablement détectée par les tests automatisés.
-
-L'application mobile Android est compilée et distribuée via \textbf{Expo Application Services} (EAS Build), qui produit les binaires \texttt{.apk} et \texttt{.aab} nécessaires à la publication sur le Google Play Store (actuellement en test fermé). La compilation iOS est également configurée via EAS, dans l'attente de la finalisation du compte développeur Apple. Le panneau d'administration React/Vite est quant à lui servi en tant que site statique par Nginx sur le même VPS, bénéficiant de la même infrastructure TLS.
-
-La supervision de la plateforme en production est assurée par \textbf{Sentry} pour le suivi des erreurs et des performances applicatives, complétée par une journalisation structurée via Winston. Les accès au serveur sont sécurisés par authentification par clés SSH exclusivement, et les journaux d'accès Nginx sont analysés en continu pour la détection d'anomalies.
-
-% ══════════════════════════════════════════════════════════════════════════════
 \section{Choix des technologies et des outils de développement}
 \label{sec:technologies}
 
@@ -305,4 +293,4 @@ Cette section présente les technologies et outils mobilisés pour la réalisati
 % ══════════════════════════════════════════════════════════════════════════════
 \section{Conclusion}
 
-Ce chapitre a présenté la réalisation effective de la plateforme \textit{RohWinBghit}, depuis l'implémentation des interfaces utilisateur jusqu'au déploiement sur infrastructure cloud. Les 62~écrans de l'application mobile et le panneau d'administration web traduisent concrètement les exigences fonctionnelles formalisées au chapitre~2 en parcours utilisateurs opérationnels. La campagne de tests, combinant 151~tests automatisés (97,4\,\% de réussite) et une évaluation d'utilisabilité SUS de 71,6/100, valide la conformité et la robustesse du prototype. La stratégie de déploiement par conteneurisation et intégration continue assure la reproductibilité et la fiabilité des mises en production. L'étude de la viabilité commerciale du projet dans le cadre de l'Arrêté~1275 est présentée en Annexe~\ref{app:business}.
+Ce chapitre a présenté la réalisation effective de la plateforme \textit{RohWinBghit}, depuis l'implémentation des interfaces utilisateur jusqu'à la validation fonctionnelle. Les 62~écrans de l'application mobile et le panneau d'administration web traduisent concrètement les exigences fonctionnelles formalisées au chapitre~2 en parcours utilisateurs opérationnels. La campagne de tests, combinant 151~tests automatisés (97,4\,\% de réussite) et une évaluation d'utilisabilité SUS de 71,6/100, valide la conformité et la robustesse du prototype. L'étude de la viabilité commerciale du projet dans le cadre de l'Arrêté~1275 est présentée en Annexe~\ref{app:business}.
