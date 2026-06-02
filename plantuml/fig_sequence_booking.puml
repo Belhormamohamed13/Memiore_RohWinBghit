@@ -1,7 +1,7 @@
 @startuml fig_sequence_booking
 skinparam style strictuml
 skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
+skinparam DefaultFontSize 11
 skinparam shadowing false
 skinparam SequenceMessageAlignment center
 
@@ -14,37 +14,81 @@ skinparam sequence {
   ParticipantBorderColor #4B3A8B
   ParticipantBackgroundColor #D1C4E9
   ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
 }
 
-title Diagramme de séquence système — Réservation et paiement
+title Séquence — Réservation + Paiement (PaymentFactory + Surge)
 
-actor "Passager" as P
-participant ":Système" as S
-actor "Conducteur" as C #C8E6C9
+actor "Passager" as Pax #BBDEFB
+participant "Application Mobile" as App #ECEFF1
+participant "Gestionnaire de Réservations" as API #ECEFF1
+participant "Calculateur de Tarifs" as Surge #FFE0B2
+participant "Gestionnaire de Paiement" as Pay #FFE0B2
+database "Base de Données" as DB #FFF9C4
+participant "Service de Notification" as Notif #FFE0B2
+actor "Conducteur" as Drv #C8E6C9
 
-P -> S : 1: Choisir un trajet et cliquer sur "Réserver"
-activate S
-S --> P : 2: Demander le choix du mode de paiement (carte ou espèces)
-deactivate S
+' === PHASE 1 : INITIALISATION ===
+Pax -> App : 1. Cliquer sur "Réserver" (places souhaitées)
+App -> API : 2. Envoyer la demande de réservation
+activate API
 
-P -> S : 3: Sélectionner le mode de paiement et valider
-activate S
-S -> S : 4: Calculer le prix final (avec tarification dynamique)
-S -> S : 5: Effectuer la transaction sécurisée (séquestre des fonds)
+API -> DB : 3. Vérifier la disponibilité des places sur le trajet
+activate DB
+DB --> API : Détails du trajet (places restantes, tarif de base)
+deactivate DB
 
-alt Paiement accepté
-  S --> P : 6: Confirmer la réservation (en attente de validation)
-  S --> C : 7: Envoyer une notification de nouvelle réservation
-  deactivate S
-  
-  C -> S : 8: Accepter la demande de réservation
-  activate S
-  S -> S : 9: Mettre à jour le statut et déduire les places disponibles
-  S --> P : 10: Envoyer la notification de confirmation finale avec QR code
-  S --> C : 11: Confirmer la validation de la réservation
-else Paiement refusé
-  S --> P : 12: Afficher un message d'erreur de paiement et annuler la réservation
+' === PHASE 2 : CALCUL DU PRIX ET TARIFICATION DYNAMIQUE ===
+API -> Surge : 4. Demander le calcul du tarif final
+activate Surge
+Surge -> Surge : Consulter la mémoire cache pour les règles temporaires de tarification dynamique
+Surge -> DB : Si données absentes de la mémoire : Récupérer les règles de tarification de la base
+Surge --> API : Retourner le tarif final calculé (tarif ajusté selon l'offre et la demande)
+deactivate Surge
+
+' === PHASE 3 : PAIEMENT ===
+API -> Pay : 5. Lancer le traitement du paiement
+activate Pay
+Pay -> Pay : Sélectionner le mode de paiement choisi\n(Carte CIB / carte Edahabia / espèces)
+Pay -> Pay : Exécuter la transaction correspondante
+Pay --> API : Retourner le résultat de la transaction
+deactivate Pay
+
+' === PHASE 4 : ENREGISTREMENT ===
+alt Paiement validé (carte) ou paiement en espèces accepté
+  API -> DB : 6. Ouvrir une transaction d'écriture sécurisée
+  API -> DB : 7. Enregistrer la réservation (statut en attente de confirmation)
+  API -> DB : 8. Valider et confirmer l'écriture en base
+  activate DB
+  DB --> API : Confirmation de l'enregistrement de la réservation
+  deactivate DB
+
+  API -> Notif : 9. Demander l'envoi d'une notification au conducteur
+  activate Notif
+  Notif -> DB : Enregistrer la notification
+  Notif -> Drv : Envoyer la notification push : Nouvelle réservation en attente
+  deactivate Notif
+
+  API --> App : 10. Retourner la réservation enregistrée
+  App --> Pax : Afficher : En attente de confirmation
+else Échec du paiement
+  API -> Pay : Annuler ou rembourser si prélèvement partiel effectué
+  API --> App : Signaler l'erreur de réservation et de paiement
+  App --> Pax : Afficher : Erreur lors du paiement
 end
-deactivate S
+deactivate API
 
+' === PHASE 5 : CONFIRMATION DU CONDUCTEUR ===
+Drv -> App : 11. Accepter la demande de réservation
+App -> API : 12. Envoyer l'acceptation de la réservation
+activate API
+API -> DB : 13. Mettre à jour la réservation (statut confirmée)
+API -> DB : 14. Réduire le nombre de places disponibles pour ce trajet
+API -> Notif : 15. Demander l'envoi de la confirmation au passager
+activate Notif
+Notif -> Pax : Envoyer la notification push : Réservation confirmée ✅
+deactivate Notif
+API --> App : Confirmer la réussite de l'opération
+deactivate API
 @enduml

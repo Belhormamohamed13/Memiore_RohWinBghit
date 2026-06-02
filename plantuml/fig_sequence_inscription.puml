@@ -14,35 +14,39 @@ skinparam sequence {
   ParticipantBorderColor #4B3A8B
   ParticipantBackgroundColor #D1C4E9
   ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
 }
 
-title Diagramme de séquence système — Inscription
+title Diagramme de séquence — Inscription (RohWinBghit)
 
-actor "Utilisateur" as U
-participant ":Système" as S
+actor "r : Utilisateur" as U
+participant "System" as S
+database "BDD" as DB
 
-U -> S : 1: Demander à s'inscrire
-activate S
-S --> U : 2: Demander le numéro de téléphone
-deactivate S
+U -> S : Affichage de l'écran d'accueil
+U -> S : Demander à s'inscrire
 
-U -> S : 3: Saisir le numéro de téléphone
-activate S
-S --> U : 4: Envoyer le code OTP par SMS
-deactivate S
+alt Rôle de l'utilisateur (Conducteur / Passager)
 
-U -> S : 5: Saisir le code OTP reçu
-activate S
+  alt Téléphone & code de validation corrects
+    U -> S : Saisir le numéro de téléphone
+    S -> DB : Vérifier la disponibilité du numéro
+    DB --> S : Numéro disponible
+    S --> U : Envoi du code de validation par SMS
+    U -> S : Saisir le code de validation reçu
+    S -> S : Vérifier le code de validation
+    S --> U : Code de validation validé
+    U -> S : Saisir les informations de profil\n(Nom, Prénom, Email, Mot de passe)
+    S -> DB : Enregistrer les données de l'utilisateur
+    DB --> S : Utilisateur créé
+    S --> U : Inscription réussie\n(Rôle attribué : passager ou conducteur)
+  else Code de validation invalide ou expiré
+    U -> S : Saisir un code de validation incorrect
+    S -> S : Vérifier le code de validation
+    S --> U : Message : Code de validation invalide ou expiré
+  end
 
-alt Code OTP correct
-  S --> U : 6: Valider le code OTP et demander les informations de profil
-  deactivate S
-  U -> S : 7: Saisir les informations (Nom, Prénom, Mot de passe)
-  activate S
-  S --> U : 8: Confirmer la création du compte avec succès
-else Code OTP incorrect
-  S --> U : 9: Afficher un message d'erreur (Code invalide ou expiré)
 end
-deactivate S
 
 @enduml

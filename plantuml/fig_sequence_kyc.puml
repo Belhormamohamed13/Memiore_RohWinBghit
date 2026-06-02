@@ -1,7 +1,7 @@
 @startuml fig_sequence_kyc
 skinparam style strictuml
 skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
+skinparam DefaultFontSize 11
 skinparam shadowing false
 skinparam SequenceMessageAlignment center
 
@@ -14,33 +14,75 @@ skinparam sequence {
   ParticipantBorderColor #4B3A8B
   ParticipantBackgroundColor #D1C4E9
   ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
 }
 
-title Diagramme de séquence système — Vérification d'identité (KYC)
+title Séquence — Vérification d'Identité (KYC) Biométrique
 
-actor "Utilisateur" as U
-participant ":Système" as S
-actor "Administrateur" as A #C8E6C9
+actor "Conducteur / Passager" as User #BBDEFB
+participant "Application Mobile" as App #ECEFF1
+participant "Service de Vérification" as Node #ECEFF1
+participant "Module d'Intelligence Artificielle" as IA #FFE0B2
+database "Base de Données" as DB #FFF9C4
+participant "Service de Notification" as Notif #FFE0B2
+participant "Portail Administration" as Admin #FFCDD2
 
-U -> S : 1: Soumettre le scan de la carte d'identité (recto/verso)
-activate S
-S --> U : 2: Confirmer la réception et demander la vidéo de vivacité
-deactivate S
+' === ÉTAPE 1 : ENVOI DE LA CARTE D'IDENTITÉ ===
+User -> App : 1. Scanner la carte d'identité (recto/verso)
+App -> App : Extraire les informations textuelles\nde la carte d'identité
+App -> Node : 2. Transmettre les images de la carte et les informations lues
+activate Node
+Node -> DB : 3. Enregistrer les images de la carte et définir le statut en attente
+Node -> DB : Créer une demande de vérification d'identité
+Node --> App : 4. Confirmation de réception (vidéo de contrôle requise)
+deactivate Node
 
-U -> S : 3: Soumettre la capture vidéo de vivacité (3 secondes)
-activate S
-S --> U : 4: Afficher le statut temporaire (En cours de traitement)
+' === ÉTAPE 2 : CAPTURE VIDÉO DE CONTRÔLE ===
+User -> App : 5. Réaliser la capture vidéo de contrôle (3s)
+App -> Node : 6. Transmettre la vidéo de contrôle et le rôle
+activate Node
+Node -> DB : Mettre à jour la demande de vérification (statut en cours de traitement)
+Node --> App : Confirmation d'envoi (traitement en cours)
 
-alt Cas 1 : Validation automatique (scores élevés)
-  S --> U : 5: Notifier la validation de l'identité (compte vérifié)
-else Cas 2 : Rejet automatique (fraude détectée / scores critiques)
-  S --> U : 6: Notifier le rejet de l'identité et enregistrer l'alerte
-else Cas 3 : Revue manuelle requise (scores intermédiaires)
-  S -> S : 7: Placer le dossier en file d'attente de modération
-  A -> S : 8: Consulter la file d'attente des dossiers en attente
-  A -> S : 9: Valider ou rejeter le dossier manuellement
-  S --> U : 10: Notifier la décision finale à l'utilisateur
+' === ÉTAPE 3 : ANALYSE PAR INTELLIGENCE ARTIFICIELLE ===
+Node -> IA : 7. Demander l'analyse de la carte et de la vidéo
+activate IA
+IA -> IA : 8. Comparer les visages (carte d'identité vs vidéo)
+IA -> IA : 9. Vérifier le mouvement et la présence physique
+IA -> IA : 10. Détecter d'éventuelles tentatives de fraude
+IA --> Node : 11. Retourner les scores d'analyse et de validation
+deactivate IA
+
+' === ÉTAPE 4 : DÉCISION MÉTIER (3 états) ===
+Node -> Node : Évaluer les scores selon le rôle
+
+alt Validation automatique (scores élevés)
+  Node -> DB : 12a. Enregistrer la validation finale de l'identité
+  Node -> Notif : 13a. Demander l'envoi d'une notification de succès
+  Notif -> User : Notification push : Identité vérifiée ✅
+else Vérification manuelle requise (scores intermédiaires)
+  Node -> DB : 12b. Définir le statut en attente de vérification manuelle
+  Node -> Notif : 13b. Demander l'envoi d'une notification d'attente
+  Notif -> User : Notification push : Vérification manuelle en cours
+else Rejet automatique (scores faibles / fraude suspectée)
+  Node -> DB : 12c. Enregistrer le rejet de l'identité
+  Node -> DB : 14. Enregistrer un signalement de fraude potentielle
+  Node -> Notif : 15. Demander l'envoi d'une notification de rejet
+  Notif -> User : Notification push : Vérification d'identité refusée ❌
+  Node -> Notif : 16. Signaler l'alerte de fraude aux administrateurs
+  Notif -> Admin : Alerte sur le portail d'administration
 end
-deactivate S
+deactivate Node
 
+' === ÉTAPE 5 : CONSULTATION STATUT / MODÉRATION ADMIN ===
+App -> Node : 17. Demander le statut de la vérification
+Node --> App : Retourner le statut actuel
+App --> User : Afficher le statut final
+
+note over Admin
+  Si vérification manuelle requise :
+  Valider la demande manuellement
+  ou Rejeter la demande manuellement
+end note
 @enduml

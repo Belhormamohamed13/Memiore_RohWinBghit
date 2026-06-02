@@ -1,7 +1,7 @@
 @startuml fig_sequence_trip_request
 skinparam style strictuml
 skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
+skinparam DefaultFontSize 11
 skinparam shadowing false
 skinparam SequenceMessageAlignment center
 
@@ -14,34 +14,74 @@ skinparam sequence {
   ParticipantBorderColor #4B3A8B
   ParticipantBackgroundColor #D1C4E9
   ParticipantFontStyle bold
+  DatabaseBorderColor #F9A825
+  DatabaseBackgroundColor #FFF9C4
 }
 
-title Diagramme de séquence système — Demande de trajet et matching
+title Séquence — Demande de trajet (Passager publie, Conducteurs alertés)
 
-actor "Passager" as P
-participant ":Système" as S
-actor "Conducteur" as C #C8E6C9
+actor "Passager" as Pax #BBDEFB
+participant "Application Passager" as AppP #ECEFF1
+participant "Gestionnaire de Trajets" as API #ECEFF1
+database "Base de Données" as DB #FFF9C4
+participant "Service de Mise en Relation" as Match #FFE0B2
+participant "Service de Notification" as Notif #FFE0B2
+actor "Conducteur ciblé" as Drv #C8E6C9
+participant "Application Conducteur" as AppD #ECEFF1
 
-P -> S : 1: Saisir les détails de la demande (départ, destination, date, places)
-activate S
-S --> P : 2: Valider et confirmer la publication de la demande
-deactivate S
+' === 1. CRÉATION DE LA DEMANDE ===
+Pax -> AppP : 1. Saisir les détails du trajet\n(Wilayas de départ/destination, date, places)
+AppP -> API : 2. Envoyer la demande de trajet
+activate API
 
-S -> S : 3: Rechercher les conducteurs éligibles (matching)
-activate S
-S --> C : 4: Envoyer une notification de demande disponible
-deactivate S
+API -> DB : 3. Enregistrer la demande (statut ouverte, validité de 24h)
+activate DB
+DB --> API : Identifiant de la demande
+deactivate DB
 
-C -> S : 5: Consulter les détails de la demande de trajet
-activate S
-S --> C : 6: Afficher les informations détaillées
-deactivate S
+API --> AppP : 4. Confirmation de la création de la demande
+AppP --> Pax : "Recherche de conducteurs en cours..."
 
-C -> S : 7: Cliquer sur "Proposer un trajet"
-activate S
-S -> S : 8: Associer le conducteur à la demande et fermer la demande
-S --> P : 9: Notifier le passager qu'un conducteur a accepté sa demande
-S --> C : 10: Confirmer la création du trajet
-deactivate S
+' === 2. RECHERCHE DE CORRESPONDANCE (asynchrone) ===
+API -> Match : 5. Déclencher la recherche de conducteurs correspondants
+activate Match
+Match -> DB : 6. Rechercher les conducteurs vérifiés\nayant un itinéraire correspondant
+activate DB
+DB --> Match : Liste des conducteurs éligibles
+deactivate DB
+Match --> API : Identifiants des conducteurs correspondants
+deactivate Match
 
+' === 3. DIFFUSION DES NOTIFICATIONS ===
+loop Pour chaque conducteur concerné
+  API -> Notif : 7. Demander l'envoi de la notification de trajet
+  activate Notif
+  Notif -> DB : Enregistrer la notification
+  Notif -> Drv : 8. Envoyer la notification push
+  deactivate Notif
+end
+deactivate API
+
+' === 4. ACTION DU CONDUCTEUR ===
+Drv -> AppD : 9. Consulter la notification
+AppD -> API : 10. Demander la liste des demandes de trajet disponibles
+activate API
+API -> DB : 11. Récupérer les demandes de trajet ouvertes et valides
+DB --> API : Liste des demandes
+API --> AppD : Retourner les détails des demandes
+deactivate API
+AppD --> Drv : Afficher la demande détaillée
+Drv -> AppD : 12. Choisir de proposer un trajet
+
+' === 5. RÉSOLUTION ===
+AppD -> API : 13. Envoyer la proposition de trajet
+activate API
+API -> DB : 14. Créer et enregistrer le trajet proposé
+API -> DB : 15. Marquer la demande initiale comme associée
+API -> Notif : 16. Demander l'envoi de la confirmation au passager
+activate Notif
+Notif -> Pax : Envoyer la notification push de confirmation
+deactivate Notif
+API --> AppD : 17. Confirmer la création du trajet au conducteur
+deactivate API
 @enduml
