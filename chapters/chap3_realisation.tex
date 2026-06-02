@@ -179,7 +179,7 @@ Le panneau d'administration se structure autour des modules fonctionnels suivant
 \section{Scénarios de tests (vérification)}
 \label{sec:tests-app}
 
-La validation du système repose sur une stratégie combinant des tests automatisés (151~cas Jest, taux de réussite de 97,4\,\%) et des campagnes de tests fonctionnels manuels. Les tests automatisés se décomposent en 107~tests unitaires (100\,\% de réussite) validant la logique métier isolée (authentification, tarification dynamique, détection de fraude, machine d'états des trajets), et 44~tests d'intégration (90,9\,\% de réussite) vérifiant les interactions entre composants (HTTP, PostgreSQL, Socket.IO). Les 4~échecs résiduels en intégration sont liés à des difficultés d'isolation transactionnelle de l'environnement de test et non à des défauts fonctionnels.
+La validation du système repose sur une stratégie combinant des tests automatisés (147/151~cas Jest, taux de réussite de 97,4\,\%) et des campagnes de tests fonctionnels manuels. Les tests automatisés se décomposent en 107~tests unitaires (100\,\% de réussite) validant la logique métier isolée (authentification, tarification dynamique, détection de fraude, machine d'états des trajets), et 44~tests d'intégration (90,9\,\% de réussite) vérifiant les interactions entre composants (HTTP, PostgreSQL, Socket.IO). Les 4~échecs résiduels en intégration sont liés à des difficultés d'isolation transactionnelle de l'environnement de test et non à des défauts fonctionnels.
 
 Le tableau~\ref{tab:test-scenarios} présente les principaux scénarios de tests fonctionnels exécutés manuellement pour valider la conformité de chaque parcours utilisateur aux exigences spécifiées.
 
