@@ -1,91 +1,50 @@
-@startuml
+@startuml fig_sequence_booking
 skinparam style strictuml
 skinparam DefaultFontName Arial
-skinparam DefaultFontSize 11
+skinparam DefaultFontSize 12
 skinparam shadowing false
 skinparam SequenceMessageAlignment center
+
 skinparam sequence {
-  ArrowColor #444444
+  ArrowColor #A83B3B
   ActorBorderColor #1565C0
-  LifeLineBorderColor #888888
-  ParticipantBorderColor #455A64
-  ParticipantBackgroundColor #ECEFF1
+  ActorBackgroundColor #BBDEFB
+  LifeLineBorderColor #1565C0
+  LifeLineBackgroundColor #FFF9C4
+  ParticipantBorderColor #4B3A8B
+  ParticipantBackgroundColor #D1C4E9
   ParticipantFontStyle bold
-  DatabaseBorderColor #F9A825
-  DatabaseBackgroundColor #FFF9C4
 }
 
-title Séquence — Réservation + Paiement (PaymentFactory + Surge)
+title Diagramme de séquence système — Réservation et paiement
 
-actor "Passager" as Pax #BBDEFB
-participant "App Mobile\n(React Native)" as App #ECEFF1
-participant "BookingsController" as API #ECEFF1
-participant "FareService\n+ SurgeService" as Surge #FFE0B2
-participant "PaymentFactory" as Pay #FFE0B2
-database "PostgreSQL\n(Knex)" as DB
-participant "NotificationService\n(FCM)" as Notif #FFE0B2
-actor "Conducteur" as Drv #C8E6C9
+actor "Passager" as P
+participant ":Système" as S
+actor "Conducteur" as C #C8E6C9
 
-' === PHASE 1 : INITIALISATION ===
-Pax -> App : 1. Clique "Réserver" (tripId, seats)
-App -> API : 2. POST /api/bookings\n{trip_id, seats, payment_method}
-activate API
+P -> S : 1: Choisir un trajet et cliquer sur "Réserver"
+activate S
+S --> P : 2: Demander le choix du mode de paiement (carte ou espèces)
+deactivate S
 
-API -> DB : 3. SELECT trip\nWHERE id=? AND available_seats>=?
-activate DB
-DB --> API : trip {price_per_seat, status}
-deactivate DB
+P -> S : 3: Sélectionner le mode de paiement et valider
+activate S
+S -> S : 4: Calculer le prix final (avec tarification dynamique)
+S -> S : 5: Effectuer la transaction sécurisée (séquestre des fonds)
 
-' === PHASE 2 : CALCUL PRIX + SURGE ===
-API -> Surge : 4. calculateFare(tripId, seats)
-activate Surge
-Surge -> Surge : Check Redis cache (surge:multiplier)
-Surge -> DB : Si cache miss : SELECT\nsurge_pricing_rules actives
-Surge --> API : {base, multiplier, total}
-deactivate Surge
-
-' === PHASE 3 : PAIEMENT (Strategy Pattern) ===
-API -> Pay : 5. processPayment(method, {amount, userId})
-activate Pay
-Pay -> Pay : getStrategy(method)\n→ CIBStrategy / EdahabiaStrategy / CashStrategy
-Pay -> Pay : strategy.process(data)
-Pay --> API : {success, transactionId, status}
-deactivate Pay
-
-' === PHASE 4 : ENREGISTREMENT ===
-alt Paiement réussi (CIB/Edahabia) ou Cash
-  API -> DB : 6. BEGIN TRANSACTION
-  API -> DB : 7. INSERT INTO bookings\n(status='pending',\npayment_status='paid'|'pending_cash')
-  API -> DB : 8. COMMIT
-  activate DB
-  DB --> API : booking
-  deactivate DB
-
-  API -> Notif : 9. dispatch(driverId,\n"Nouvelle réservation")
-  activate Notif
-  Notif -> DB : INSERT INTO notifications
-  Notif -> Drv : Push FCM
-  deactivate Notif
-
-  API --> App : 10. 201 Created {booking}
-  App --> Pax : "En attente de confirmation"
-else Paiement échoué
-  API -> Pay : refundPayment() si partiel
-  API --> App : 400 Bad Request {error}
-  App --> Pax : Affiche erreur de paiement
+alt Paiement accepté
+  S --> P : 6: Confirmer la réservation (en attente de validation)
+  S --> C : 7: Envoyer une notification de nouvelle réservation
+  deactivate S
+  
+  C -> S : 8: Accepter la demande de réservation
+  activate S
+  S -> S : 9: Mettre à jour le statut et déduire les places disponibles
+  S --> P : 10: Envoyer la notification de confirmation finale avec QR code
+  S --> C : 11: Confirmer la validation de la réservation
+else Paiement refusé
+  S --> P : 12: Afficher un message d'erreur de paiement et annuler la réservation
 end
-deactivate API
+deactivate S
 
-' === PHASE 5 : CONFIRMATION DRIVER ===
-Drv -> App : 11. Accepte la réservation
-App -> API : 12. PATCH /api/bookings/:id/accept
-activate API
-API -> DB : 13. UPDATE bookings SET status='confirmed'
-API -> DB : 14. UPDATE trips SET\navailable_seats = available_seats - seats
-API -> Notif : 15. dispatch(passengerId,\n"Réservation confirmée ✅")
-activate Notif
-Notif -> Pax : Push FCM
-deactivate Notif
-API --> App : 200 OK
-deactivate API
 @enduml

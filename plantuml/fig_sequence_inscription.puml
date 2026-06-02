@@ -1,48 +1,48 @@
 @startuml fig_sequence_inscription
+skinparam style strictuml
 skinparam DefaultFontName Arial
 skinparam DefaultFontSize 12
 skinparam shadowing false
+skinparam SequenceMessageAlignment center
+
 skinparam sequence {
-  ArrowColor #444444
+  ArrowColor #A83B3B
   ActorBorderColor #1565C0
   ActorBackgroundColor #BBDEFB
-  LifeLineBorderColor #888888
-  ParticipantBorderColor #455A64
-  ParticipantBackgroundColor #ECEFF1
+  LifeLineBorderColor #1565C0
+  LifeLineBackgroundColor #FFF9C4
+  ParticipantBorderColor #4B3A8B
+  ParticipantBackgroundColor #D1C4E9
   ParticipantFontStyle bold
-  DatabaseBorderColor #F9A825
-  DatabaseBackgroundColor #FFF9C4
 }
 
-title Diagramme de séquence — Inscription (RohWinBghit)
+title Diagramme de séquence système — Inscription
 
-actor "r : Utilisateur" as U
-participant "System" as S
-database "BDD" as DB
+actor "Utilisateur" as U
+participant ":Système" as S
 
-U -> S : Affichage de l'écran d'accueil
-U -> S : Demander à s'inscrire
+U -> S : 1: Demander à s'inscrire
+activate S
+S --> U : 2: Demander le numéro de téléphone
+deactivate S
 
-alt cpt = [[Conducteur || Passager]]
+U -> S : 3: Saisir le numéro de téléphone
+activate S
+S --> U : 4: Envoyer le code OTP par SMS
+deactivate S
 
-  alt Téléphone & OTP corrects
-    U -> S : Saisir numéro de téléphone
-    S -> DB : Envoyer la requête (numéro)
-    DB --> S : Numéro disponible
-    S --> U : Envoi du code OTP par SMS
-    U -> S : Saisir le code OTP reçu
-    S -> S : Vérifier le code OTP
-    S --> U : OTP validé
-    U -> S : Saisir les informations\n(Nom, Prénom, Email, Mot de passe)
-    S -> DB : Envoyer les données utilisateur
-    DB --> S : Utilisateur créé
-    S --> U : Inscription avec succès\n(rôle attribué : passager / conducteur)
-  else OTP invalide ou expiré
-    U -> S : Saisir un code incorrect
-    S -> S : Vérifier le code OTP
-    S --> U : Code OTP invalide ou expiré
-  end
+U -> S : 5: Saisir le code OTP reçu
+activate S
 
+alt Code OTP correct
+  S --> U : 6: Valider le code OTP et demander les informations de profil
+  deactivate S
+  U -> S : 7: Saisir les informations (Nom, Prénom, Mot de passe)
+  activate S
+  S --> U : 8: Confirmer la création du compte avec succès
+else Code OTP incorrect
+  S --> U : 9: Afficher un message d'erreur (Code invalide ou expiré)
 end
+deactivate S
 
 @enduml
