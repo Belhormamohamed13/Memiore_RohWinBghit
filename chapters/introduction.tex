@@ -7,7 +7,7 @@
 
 La mobilité inter-wilayas constitue l'un des défis d'infrastructure majeurs de l'Algérie contemporaine. Avec un territoire de 2~381~741~km² divisé en 69 wilayas et une population nationale qui dépasse 46,8~millions d'habitants~\cite{ons_2024}, la fluidité des transports routiers interurbains représente un enjeu économique et social de premier plan. Les déplacements entre les pôles universitaires régionaux, les centres administratifs et les localités de résidence s'effectuent aujourd'hui au travers de solutions traditionnelles fragmentées~: lignes de bus privées aux horaires rigides, taxis collectifs inter-wilayas ou groupes de covoiturage informels sur les réseaux sociaux. Ces alternatives souffrent d'une forte asymétrie de l'information, de tarifs volatils et d'un manque absolu de garanties sécuritaires.
 
-Si le concept de transport collaboratif ou covoiturage (\textit{carpooling}) s'est largement démocratisé à l'échelle internationale grâce aux plateformes connectées, aucune solution d'envergure nationale n'a réussi à s'imposer en Algérie pour structurer spécifiquement le transport longue distance. L'émergence d'infrastructures de paiement électronique locales (cartes CIB et Edahabia) et l'évolution rapide de la pénétration de l'Internet mobile à haut débit offrent un cadre technologique propice à la création d'une solution de mise en relation de confiance.
+Si le concept de transport collaboratif (\textit{carpooling}) s'est largement structuré à l'échelle internationale grâce aux plateformes numériques connectées, l'analyse de l'état de l'art montre l'absence d'une infrastructure logicielle unifiée et d'un tiers de confiance numérique à l'échelle nationale pour réguler la mobilité interurbaine en Algérie. L'émergence d'infrastructures de paiement électronique locales (cartes CIB et Edahabia) et la progression de la pénétration de l'Internet mobile à haut débit offrent un environnement technologique propice au déploiement d'un système de mise en relation sécurisé.
 
 \section*{Problématique}
 \addcontentsline{toc}{section}{Problématique}
@@ -29,7 +29,7 @@ Afin de répondre à cette problématique, les trois hypothèses scientifiques e
 \section*{Objectifs du projet}
 \addcontentsline{toc}{section}{Objectifs du projet}
 
-Le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) poursuit l'objectif principal de concevoir et développer un prototype opérationnel complet de plateforme intelligente et sécurisée de covoiturage longue distance. Les objectifs spécifiques se structurent comme suit~:
+Le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) poursuit l'objectif principal de concevoir et développer un prototype opérationnel d'un système distribué de mise en relation dynamique de conducteurs et de passagers, intégrant des passerelles de paiement locales et un contrôle d'identité biométrique. Les objectifs spécifiques se structurent comme suit~:
 
 \begin{table}[!htbp]
 \centering
@@ -59,9 +59,9 @@ Le projet \textbf{RohWinBghit} (\textarabic{روح وين بغيت}) poursuit l'
 
 Le présent document est organisé en trois chapitres techniques et scientifiques~:
 \begin{itemize}[leftmargin=1.8em]
-  \item Le \textbf{Chapitre~1 --- Étude de l'existant} dresse l'état de l'art du transport partagé, analyse les spécificités du marché numérique algérien et évalue de manière critique les solutions de transport existantes.
-  \item Le \textbf{Chapitre~2 --- Conception et Spécifications} expose l'analyse fonctionnelle et technique, détaille la modélisation UML, documente les choix architecturaux et la modélisation mathématique du pipeline KYC, puis présente le schéma logique de la base de données relationnelle.
-  \item Le \textbf{Chapitre~3 --- Réalisation, tests et déploiement} présente l'implémentation physique des interfaces, détaille les résultats des campagnes de test et justifie les technologies retenues.
+  \item Le \textbf{Chapitre~1 --- État de l'art et Spécification} dresse l'état de l'art du transport partagé, analyse de manière critique les systèmes existants et formalise l'ensemble des exigences fonctionnelles, non fonctionnelles et la modélisation UML des besoins.
+  \item Le \textbf{Chapitre~2 --- Conception Architecturale} expose la méthodologie agile retenue, détaille l'architecture logique multi-services, formalise mathématiquement le pipeline biométrique KYC, modélise les processus métiers via BPMN et présente la modélisation statique du domaine.
+  \item Le \textbf{Chapitre~3 --- Réalisation et Validation} décrit l'environnement de développement et la pile technologique, présente l'implémentation des parcours utilisateurs, détaille la campagne de tests automatisés Jest et l'évaluation d'utilisabilité selon l'échelle SUS.
 \end{itemize}
 
 Enfin, l'\textbf{Annexe~A} expose l'étude de faisabilité économique élaborée dans le cadre de l'arrêté ministériel n° 1275 pour la labellisation du projet en startup, et la \textbf{conclusion générale} dresse le bilan des réalisations, discute les limites et dessine les perspectives de développement.

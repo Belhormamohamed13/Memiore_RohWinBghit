@@ -3,9 +3,67 @@
 
 \section{Introduction}
 
-La phase de réalisation logicielle concrétise les spécifications conceptuelles et architecturales élaborées au chapitre précédent en un produit fini, fonctionnel et évaluable. Ce chapitre documente l'implémentation physique des parcours applicatifs sur smartphone et console web d'administration. Il détaille ensuite les résultats des campagnes de tests automatisées et d'évaluation d'utilisabilité de type System Usability Scale (SUS), puis justifie le choix des technologies industrielles retenues pour l'infrastructure de production.
+La phase de réalisation logicielle concrétise les spécifications conceptuelles et architecturales élaborées au chapitre précédent en un prototype fini, fonctionnel et évaluable. Ce chapitre présente d'abord l'environnement de développement et les choix technologiques retenus pour l'infrastructure de production (section 3.2). Il documente ensuite l'implémentation physique des parcours applicatifs sur smartphone et console web d'administration (section 3.3). Il détaille par la suite les résultats de la campagne de tests automatisés Jest (section 3.4) et de l'évaluation d'utilisabilité quantitative de type System Usability Scale (SUS) (section 3.5).
+\section{Environnement de développement et choix techniques}
+\label{sec:technologies}
 
-\section{Implémentation des parcours utilisateurs}
+Le choix des briques technologiques de la plateforme a été guidé par des critères industriels de performance, de maintenabilité et de sécurité. Le tableau~\ref{tab:pile-technologique} résume la pile technique retenue avec les justifications académiques et techniques associées.
+
+\begin{landscape}
+\begin{table}[!htbp]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{|l|l|c|X|}
+\hline
+\rowcolor{rohlight}
+\textbf{Composant} & \textbf{Technologie retenue} & \textbf{Version} & \textbf{Justification académique et technique} \\
+\hline
+\textbf{Client Mobile} & React Native / Expo SDK & v54 & Base de code unique cross-platform iOS/Android, performances proches du natif. \\
+\hline
+\textbf{Client Web Admin} & React / Vite & v18 & Performance du DOM virtuel, rapidité de build et SPA hautement interactive. \\
+\hline
+\textbf{Back-end API} & Node.js / Express & v4.18 & I/O non bloquantes asynchrones, idéal pour Socket.IO et la haute concurrence. \\
+\hline
+\textbf{Service IA KYC} & Python / FastAPI & v0.111 & Inférence asynchrone performante (ASGI) et intégration simplifiée d'InsightFace. \\
+\hline
+\textbf{Base de données} & PostgreSQL & v16 & Rigueur transactionnelle ACID pour éviter l'overbooking, support natif JSONB. \\
+\hline
+\textbf{Cache et Files} & Redis / BullMQ & v7 & Vitesse en mémoire d'accès clé-valeur pour sessions OTP, blocages temporaires. \\
+\hline
+\textbf{Infrastructure} & Docker / Compose & -- & Reproductibilité stricte des environnements de dev, test et production. \\
+\hline
+\end{tabularx}
+\caption{Synthèse de la pile technologique et justifications de la plateforme}
+\label{tab:pile-technologique}
+\end{table}
+\end{landscape}
+
+\subsection{Langages et Frameworks}
+
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{TypeScript (v5.0)~:} Retenu comme langage pivot pour l'intégralité de l'écosystème web et mobile (client mobile, client web, serveur API REST). Son typage statique permet de détecter une large proportion d'anomalies logiques dès la phase de compilation.
+  \item \textbf{Python (v3.11)~:} Utilisé spécifiquement pour le développement du microservice d'intelligence artificielle dédié à la vision par ordinateur, bénéficiant de la richesse des bibliothèques de traitement d'images et d'apprentissage profond (OpenCV, InsightFace, ONNX Runtime).
+  \item \textbf{React Native et Expo SDK 54~:} Framework de développement mobile cross-platform permettant de mutualiser plus de 95\,\% du code source entre Android et iOS tout en maintenant des performances d'exécution natives et un accès direct aux capteurs de sécurité matériels.
+  \item \textbf{Express.js (v4.18)~:} Framework de serveur HTTP léger et modulaire sous Node.js, configuré de manière à respecter l'isolation logique des composants métier.
+  \item \textbf{FastAPI (v0.111)~:} Framework Python asynchrone retenu pour le microservice d'IA en raison de ses performances d'exécution asynchrones (ASGI) de premier plan et de sa génération automatique de documentation conforme aux spécifications OpenAPI.
+\end{itemize}
+
+\subsection{Technologies de persistance et communication}
+
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{PostgreSQL 16~:} SGBD relationnel de référence choisi pour sa conformité absolue aux exigences ACID transactionnelles, indispensable pour la manipulation de données financières et d'états de réservation concurrents.
+  \item \textbf{Redis 7~:} Base de données mémoire ultra-rapide exploitée comme couche de cache d'accès (sessions utilisateurs, états OTP) et comme gestionnaire de files d'attente distribuées de tâches asynchrones à l'aide de la bibliothèque BullMQ.
+  \item \textbf{Socket.IO (v4.7)~:} Bibliothèque de communication temps réel bidirectionnelle s'appuyant sur le protocole WebSockets, configurée avec rétrogradation automatique vers le long-polling HTTP pour surmonter les restrictions de filtrage réseau imposées par les pare-feux des opérateurs mobiles algériens.
+\end{itemize}
+
+\subsection{Déploiement et conteneurisation}
+
+\begin{itemize}[leftmargin=1.8em]
+  \item \textbf{Docker et Docker Compose~:} L'intégralité des composants de l'architecture distribuée est conteneurisée au sein d'images Docker légères, garantissant la reproductibilité stricte des environnements d'exécution entre les machines de développement, d'intégration et les serveurs de production.
+  \item \textbf{Expo Application Services (EAS)~:} Suite de services cloud exploitée pour l'automatisation de la compilation des binaires natifs Android (AAB) et iOS (IPA) signés de manière conforme pour les magasins d'applications officiels.
+\end{itemize}
+
+\section{Implémentation des parcours utilisateurs et UI/UX}
 \label{sec:implementation}
 
 Cette section présente les interfaces et les parcours utilisateurs implémentés dans le cadre du prototype fonctionnel de \textit{RohWinBghit}. L'accent est mis sur l'expérience utilisateur et les flux fonctionnels plutôt que sur les détails techniques de bas niveau, afin de mettre en évidence la traduction concrète des exigences spécifiées au chapitre~2 en écrans et interactions opérationnels.
@@ -132,10 +190,7 @@ Conçue sous forme d'une application monopage (SPA) sécurisée, la console web 
 \label{fig:admin-kyc}
 \end{figure}
 
-\section{Résultats des tests et évaluation quantitative}
-\label{sec:tests-app}
-
-\subsection{Stratégie de tests automatisés (Jest)}
+\section{Campagne de tests automatisés (Jest)}
 \label{sec:tests-jest}
 
 Afin de certifier la robustesse structurelle de l'API REST Node.js, une suite de 151 cas de tests unitaires et d'intégration a été implémentée avec le framework Jest~:
@@ -198,7 +253,7 @@ Message délivré en temps réel via WebSocket. Message persisté en base de don
 \label{tab:test-scenarios}
 \end{table}
 
-\subsection{Évaluation d'utilisabilité normalisée (SUS)}
+\section{Évaluation d'utilisabilité quantitative (SUS)}
 \label{sec:tests-sus}
 
 Pour valider l'hypothèse H2, une campagne d'évaluation d'utilisabilité a été menée en conditions réelles auprès de 18 participants représentatifs de la population cible algérienne (étudiants et conducteurs réguliers interurbains). L'étude s'appuie sur le questionnaire standardisé de l'échelle SUS (\textit{System Usability Scale})~:
@@ -236,65 +291,6 @@ Conducteurs (Inter-wilayas) & 8 & 68,9 / 100 & Utilisabilité « Acceptable » &
 \end{table}
 
 
-\section{Choix technologiques et architecture d'infrastructure}
-\label{sec:technologies}
-
-Le choix des briques technologiques de la plateforme a été guidé par des critères industriels de performance, de maintenabilité et de sécurité. Le tableau~\ref{tab:pile-technologique} résume la pile technique retenue avec les justifications académiques et techniques associées.
-
-\begin{landscape}
-\begin{table}[!htbp]
-\centering
-\renewcommand{\arraystretch}{1.4}
-\begin{tabularx}{\linewidth}{|l|l|c|X|}
-\hline
-\rowcolor{rohlight}
-\textbf{Composant} & \textbf{Technologie retenue} & \textbf{Version} & \textbf{Justification académique et technique} \\
-\hline
-\textbf{Client Mobile} & React Native / Expo SDK & v54 & Base de code unique cross-platform iOS/Android, performances proches du natif. \\
-\hline
-\textbf{Client Web Admin} & React / Vite & v18 & Performance du DOM virtuel, rapidité de build et SPA hautement interactive. \\
-\hline
-\textbf{Back-end API} & Node.js / Express & v4.18 & I/O non bloquantes asynchrones, idéal pour Socket.IO et la haute concurrence. \\
-\hline
-\textbf{Service IA KYC} & Python / FastAPI & v0.111 & Inférence asynchrone performante (ASGI) et intégration simplifiée d'InsightFace. \\
-\hline
-\textbf{Base de données} & PostgreSQL & v16 & Rigueur transactionnelle ACID pour éviter l'overbooking, support natif JSONB. \\
-\hline
-\textbf{Cache et Files} & Redis / BullMQ & v7 & Vitesse en mémoire d'accès clé-valeur pour sessions OTP, blocages temporaires. \\
-\hline
-\textbf{Infrastructure} & Docker / Compose & -- & Reproductibilité stricte des environnements de dev, test et production. \\
-\hline
-\end{tabularx}
-\caption{Synthèse de la pile technologique et justifications de la plateforme}
-\label{tab:pile-technologique}
-\end{table}
-\end{landscape}
-
-\subsection{Langages et Frameworks}
-
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{TypeScript (v5.0)~:} Retenu comme langage pivot pour l'intégralité de l'écosystème web et mobile (client mobile, client web, serveur API REST). Son typage statique permet de détecter une large proportion d'anomalies logiques dès la phase de compilation.
-  \item \textbf{Python (v3.11)~:} Utilisé spécifiquement pour le développement du microservice d'intelligence artificielle dédié à la vision par ordinateur, bénéficiant de la richesse des bibliothèques de traitement d'images et d'apprentissage profond (OpenCV, InsightFace, ONNX Runtime).
-  \item \textbf{React Native et Expo SDK 54~:} Framework de développement mobile cross-platform permettant de mutualiser plus de 95\,\% du code source entre Android et iOS tout en maintenant des performances d'exécution natives et un accès direct aux capteurs de sécurité matériels.
-  \item \textbf{Express.js (v4.18)~:} Framework de serveur HTTP léger et modulaire sous Node.js, configuré de manière à respecter l'isolation logique des composants métier.
-  \item \textbf{FastAPI (v0.111)~:} Framework Python asynchrone retenu pour le microservice d'IA en raison de ses performances d'exécution asynchrones (ASGI) de premier plan et de sa génération automatique de documentation conforme aux spécifications OpenAPI.
-\end{itemize}
-
-\subsection{Technologies de persistance et communication}
-
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{PostgreSQL 16~:} SGBD relationnel de référence choisi pour sa conformité absolue aux exigences ACID transactionnelles, indispensable pour la manipulation de données financières et d'états de réservation concurrents.
-  \item \textbf{Redis 7~:} Base de données mémoire ultra-rapide exploitée comme couche de cache d'accès (sessions utilisateurs, états OTP) et comme gestionnaire de files d'attente distribuées de tâches asynchrones à l'aide de la bibliothèque BullMQ.
-  \item \textbf{Socket.IO (v4.7)~:} Bibliothèque de communication temps réel bidirectionnelle s'appuyant sur le protocole WebSockets, configurée avec rétrogradation automatique vers le long-polling HTTP pour surmonter les restrictions de filtrage réseau imposées par les pare-feux des opérateurs mobiles algériens.
-\end{itemize}
-
-\subsection{Déploiement et conteneurisation}
-
-\begin{itemize}[leftmargin=1.8em]
-  \item \textbf{Docker et Docker Compose~:} L'intégralité des composants de l'architecture distribuée est conteneurisée au sein d'images Docker légères, garantissant la reproductibilité stricte des environnements d'exécution entre les machines de développement, d'intégration et les serveurs de production.
-  \item \textbf{Expo Application Services (EAS)~:} Suite de services cloud exploitée pour l'automatisation de la compilation des binaires natifs Android (AAB) et iOS (IPA) signés de manière conforme pour les magasins d'applications officiels.
-\end{itemize}
-
 \section{Conclusion}
 
-Ce chapitre a présenté la réalisation effective de la plateforme \textit{RohWinBghit}, depuis l'implémentation des interfaces utilisateur jusqu'à la validation fonctionnelle. Les 62~écrans de l'application mobile et le panneau d'administration web traduisent concrètement les exigences fonctionnelles en parcours utilisateurs opérationnels. La campagne de tests, combinant 151~tests automatisés (97,4\,\% de réussite) et une évaluation d'utilisabilité SUS de 71,6/100, valide la conformité et la robustesse du prototype, validant les hypothèses de travail formulées en introduction. L'étude de la viabilité commerciale du projet dans le cadre de l'Arrêté~1275 est présentée en Annexe~\ref{app:business}.
+Ce chapitre a présenté la réalisation effective de la plateforme \textit{RohWinBghit}, depuis l'environnement de développement et les choix technologiques (section~3.2) jusqu'à l'implémentation physique des parcours applicatifs (section~3.3). Les résultats de la campagne de tests Jest (section~3.4) ainsi que l'évaluation quantitative d'utilisabilité SUS de 71,6/100 (section~3.5) valident la conformité, la robustesse et la convivialité du prototype. L'ensemble des objectifs académiques et techniques du mémoire ont été atteints, ouvrant la voie aux perspectives entrepreneuriales présentées en Annexe~\ref{app:business}.

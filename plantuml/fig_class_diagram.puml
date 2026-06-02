@@ -25,7 +25,7 @@ skinparam class {
   BorderColor<<Comm>> #F9A825
 }
 
-title Diagramme de classes — RohWinBghit\n(Vue domaine, alignée sur le schéma PostgreSQL)
+title Diagramme de classes du domaine — RohWinBghit\n(Vue logique et conceptuelle)
 
 ' ===== IDENTITÉ (bleu) =====
 abstract class User <<Identity>> {
