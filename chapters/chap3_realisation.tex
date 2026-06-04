@@ -66,104 +66,128 @@ Le choix des briques technologiques de la plateforme a été guidé par des crit
 \section{Implémentation des parcours utilisateurs et UI/UX}
 \label{sec:implementation}
 
-Cette section présente les interfaces et les parcours utilisateurs implémentés dans le cadre du prototype fonctionnel de \textit{RohWinBghit}. L'accent est mis sur l'expérience utilisateur et les flux fonctionnels plutôt que sur les détails techniques de bas niveau, afin de mettre en évidence la traduction concrète des exigences spécifiées au chapitre~2 en écrans et interactions opérationnels.
+Cette section présente les interfaces et les parcours utilisateurs implémentés dans le cadre du prototype fonctionnel de \textit{RohWinBghit}. L'accent est mis sur l'expérience utilisateur et les flux fonctionnels, afin de mettre en évidence la traduction concrète des exigences spécifiées au chapitre~2 en écrans et interactions opérationnels. Les captures d'écran sont organisées selon le parcours chronologique naturel de l'utilisateur.
 
 \subsection{Application mobile (React Native / Expo SDK 54)}
 \label{sec:realisation-mobile}
 
 L'interface mobile de \textit{RohWinBghit} est unifiée au sein d'une unique base de code multiplateforme optimisée pour iOS et Android. Elle comporte 62 écrans de navigation dynamiques permettant de basculer en temps réel entre le rôle passager et conducteur.
 
-\paragraph{Parcours KYC biométrique~:} L'utilisateur est guidé au travers d'une interface d'enrôlement claire. Un masque de cadrage dynamique s'affiche à l'écran pour assister la capture d'image recto et verso de la CIN. Le module de détection de vivacité faciale requiert de l'usager d'effectuer un mouvement de tête devant la caméra, le flux vidéo étant traité en temps réel par un thread local léger avant transmission chiffrée. Les étapes de capture sont présentées dans la figure~\ref{fig:kyc-screens}.
+\paragraph{Onboarding et inscription~:} L'expérience utilisateur débute par un écran d'accueil immersif affichant le positionnement de la plateforme --- «~Votre trajet, notre priorité~» --- suivi d'une page de présentation des fonctionnalités clés (couverture 69~wilayas, assistance~24/7, sécurité~100\,\%). L'utilisateur accède ensuite à un parcours d'inscription guidé en quatre étapes, dont la première consiste à sélectionner son rôle initial (Passager ou Chauffeur), personnalisant ainsi l'ensemble de l'interface dès le premier lancement. Les étapes d'onboarding sont présentées dans la figure~\ref{fig:onboarding-screens}.
+
+\begin{figure}[!htbp]
+\centering
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{v2_welcome_splash.jpg}
+    {\footnotesize \textbf{3.1a} --- Écran d'accueil\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{v2_landing_page.jpg}
+    {\footnotesize \textbf{3.1b} --- Fonctionnalités clés\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{v2_role_selection.jpg}
+    {\footnotesize \textbf{3.1c} --- Sélection du rôle\par}
+\end{minipage}
+\caption{Onboarding et inscription --- écrans d'accueil et choix du rôle}
+\label{fig:onboarding-screens}
+\end{figure}
+
+\paragraph{Parcours KYC biométrique~:} Une fois inscrit, l'utilisateur est guidé au travers d'une interface d'enrôlement claire. Un masque de cadrage dynamique s'affiche à l'écran pour assister la capture d'image recto et verso de la CIN. Le module de détection de vivacité faciale requiert de l'usager d'effectuer un mouvement de tête devant la caméra, le flux vidéo étant traité en temps réel par un thread local léger avant transmission chiffrée. Les étapes de capture sont présentées dans la figure~\ref{fig:kyc-screens}.
 
 \begin{figure}[!htbp]
 \centering
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_27_verif_intro.png}
-    {\footnotesize \textbf{3.1a} --- Introduction \textsc{kyc}\par}
+    {\footnotesize \textbf{3.2a} --- Introduction \textsc{kyc}\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_28_verif_id_capture.png}
-    {\footnotesize \textbf{3.1b} --- Capture de la \gls{cin}\par}
+    {\footnotesize \textbf{3.2b} --- Capture de la \gls{cin}\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_29_verif_face_capture.png}
-    {\footnotesize \textbf{3.1c} --- Détection de vivacité\par}
+    {\footnotesize \textbf{3.2c} --- Détection de vivacité\par}
 \end{minipage}
 \caption{Parcours \textsc{kyc} biométrique --- étapes de capture}
 \label{fig:kyc-screens}
 \end{figure}
 
-
-
-\paragraph{Parcours de réservation et suivi~:} Le passager accède à un moteur de recherche géographique performant permettant de filtrer les offres sur les 69 wilayas. Une fois la réservation validée, un billet numérique contenant un code QR unique et infalsifiable (contenant la signature cryptographique du tuple \texttt{(bookingId, passengerId, tripId)}) est généré. L'intégration de l'API Mapbox GL permet au passager de visualiser l'itinéraire complet et la progression en temps réel du véhicule par rafraîchissement asynchrone des coordonnées géographiques transmises via Socket.IO.
+\paragraph{Parcours de recherche et réservation~:} Le passager vérifié accède à un moteur de recherche géographique performant permettant de filtrer les offres sur les 69 wilayas. L'écran d'accueil présente un formulaire de recherche rapide (départ, destination, date, nombre de places) ainsi qu'une section «~Départs imminents~» affichant les trajets disponibles à proximité. Les résultats de recherche sont affichés sous forme de cartes détaillées indiquant le conducteur, le prix, l'heure de départ, le véhicule et le nombre de places libres. La fiche détaillée d'un trajet permet de visualiser l'itinéraire complet, les informations du conducteur et de procéder à la réservation. Les interfaces associées sont présentées dans la figure~\ref{fig:passenger-search}.
 
 \begin{figure}[!htbp]
 \centering
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_01_tab_home.png}
-    {\footnotesize \textbf{3.2a} --- Accueil passager\par}
+    {\footnotesize \textbf{3.3a} --- Accueil passager\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{mobile-all/p_08_search_results.png}
-    {\footnotesize \textbf{3.2b} --- Résultats de recherche\par}
+    \includegraphics[width=\linewidth]{v2_search_results.jpg}
+    {\footnotesize \textbf{3.3b} --- Résultats de recherche\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_09_trip_details.png}
-    {\footnotesize \textbf{3.2c} --- Détail du trajet\par}
+    {\footnotesize \textbf{3.3c} --- Détail du trajet\par}
 \end{minipage}
-\caption{Parcours passager --- accueil, recherche et détail}
+\caption{Parcours passager --- accueil, recherche et détail du trajet}
 \label{fig:passenger-search}
 \end{figure}
+
+\paragraph{Billet numérique et suivi en temps réel~:} Une fois la réservation validée, un billet numérique contenant un code QR unique et infalsifiable (contenant la signature cryptographique du tuple \texttt{(bookingId, passengerId, tripId)}) est généré. Le billet affiche le statut en temps réel de la réservation~: «~Confirmé~» lorsque le conducteur a accepté la demande, ou «~En attente~» pendant le traitement. L'intégration de l'API Mapbox GL permet au passager de visualiser l'itinéraire complet et la progression en temps réel du véhicule par rafraîchissement asynchrone des coordonnées géographiques transmises via Socket.IO. Les interfaces associées sont présentées dans la figure~\ref{fig:passenger-booking}.
 
 \begin{figure}[!htbp]
 \centering
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_10_ticket.png}
-    {\footnotesize \textbf{3.3a} --- Billet numérique QR\par}
+    {\footnotesize \textbf{3.4a} --- Billet confirmé (QR)\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{v2_ticket_pending.jpg}
+    {\footnotesize \textbf{3.4b} --- Billet en attente\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_26_live_tracking.png}
-    {\footnotesize \textbf{3.3b} --- Suivi GPS temps réel\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{mobile-all/p_04_tab_messages.png}
-    {\footnotesize \textbf{3.3c} --- Messagerie temps réel\par}
+    {\footnotesize \textbf{3.4c} --- Suivi GPS temps réel\par}
 \end{minipage}
-\caption{Parcours passager --- billet, suivi GPS et messagerie}
+\caption{Parcours passager --- billets numériques et suivi GPS}
 \label{fig:passenger-booking}
 \end{figure}
 
-\paragraph{Parcours conducteur --- publication et gestion~:} Le conducteur dispose d'un ensemble d'écrans dédiés à la publication de trajets, à la gestion de ses réservations et au suivi de ses revenus. Le tableau de bord conducteur affiche une synthèse des indicateurs clés (trajets actifs, revenus, note moyenne, taux d'occupation). Le formulaire de publication permet de définir les détails du trajet, le système suggérant un tarif basé sur la distance et la demande. Le conducteur peut scanner le code QR des billets numériques pour valider l'embarquement. Les interfaces associées sont présentées dans la figure~\ref{fig:driver-main}.
+\paragraph{Parcours conducteur --- publication et gestion~:} Le conducteur dispose d'un ensemble d'écrans dédiés à la publication de trajets, à la gestion de ses réservations et au suivi de ses revenus. Le formulaire de publication, structuré en quatre étapes (Route, Véhicule, Options, Récapitulatif), intègre une carte Mapbox affichant dynamiquement l'itinéraire calculé entre les wilayas de départ et de destination, avec estimation automatique de la distance et de la durée. Une fois le trajet publié et les réservations reçues, le conducteur accède à un écran de gestion affichant le statut du trajet, la liste des passagers confirmés et les options d'annulation. Le tableau de bord synthétise les indicateurs clés (gains journaliers, nombre de courses, statut en ligne). Les interfaces associées sont présentées dans la figure~\ref{fig:driver-main}.
 
 \begin{figure}[!htbp]
 \centering
 \begin{minipage}{0.31\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{mobile-all/d_01_tab_dashboard.png}
-    {\footnotesize \textbf{3.4a} --- Dashboard conducteur\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{mobile-all/d_03_tab_publish.png}
-    {\footnotesize \textbf{3.4b} --- Publication d'un trajet\par}
+    \includegraphics[width=\linewidth]{v2_publish_trip.jpg}
+    {\footnotesize \textbf{3.5a} --- Publication avec carte\par}
 \end{minipage}\hfill
 \begin{minipage}{0.31\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/d_06_trip_manage.png}
-    {\footnotesize \textbf{3.4c} --- Gestion du trajet\par}
+    {\footnotesize \textbf{3.5b} --- Gestion du trajet\par}
+\end{minipage}\hfill
+\begin{minipage}{0.31\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{mobile-all/d_01_tab_dashboard.png}
+    {\footnotesize \textbf{3.5c} --- Dashboard conducteur\par}
 \end{minipage}
-\caption{Parcours conducteur --- tableau de bord, publication et gestion}
+\caption{Parcours conducteur --- publication, gestion et tableau de bord}
 \label{fig:driver-main}
 \end{figure}
+
 
 
 
