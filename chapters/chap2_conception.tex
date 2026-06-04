@@ -23,7 +23,7 @@ Le recueil des besoins s'est articulé autour de trois axes méthodologiques.
 
 Le développement a été organisé en \textbf{cinq sprints de deux semaines}, pilotés via \textit{Jira}. Les rôles Scrum ont été répartis de manière hybride au sein du binôme~: AHMED~BACHA (Product Owner / Développeur) et BELHORMA (Scrum Master / Développeur). Le tableau~\ref{tab:sprints} récapitule le déroulement effectif.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.3}
@@ -54,7 +54,7 @@ Le Product Backlog initial comportait \textbf{42~User Stories} réparties sur le
 
 Le questionnaire a recueilli 150 réponses exploitables entre le 1\textsuperscript{er} et le 20~mars~2026. Le tableau~\ref{tab:profil-repondants} résume le profil sociodémographique des répondants, et le tableau~\ref{tab:resultats-enquete} synthétise les résultats clés.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \begin{tabularx}{\textwidth}{|l|X|c|}
@@ -85,7 +85,7 @@ Fréquence inter-wilayas & $\geq$ 1~trajet/semaine & 41\,\% \\
   \label{tab:profil-repondants}
 \end{table}
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \begin{tabularx}{\textwidth}{|X|c|}
@@ -121,7 +121,7 @@ Trois enseignements majeurs orientent la conception~: (1)~la \textbf{sécurité}
 
 Le système met en relation trois acteurs humains et plusieurs acteurs techniques externes. Le tableau~\ref{tab:acteurs} récapitule leurs rôles respectifs.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
@@ -155,7 +155,7 @@ La consolidation des besoins repose sur le croisement des trois sources d'analys
 \subsection{Besoins fonctionnels}
 \label{sec:exigences-fonc}
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \small
 \begin{tabularx}{\textwidth}{|l|l|X|l|l|}
@@ -196,7 +196,7 @@ Les récits utilisateurs associés aux différents rôles se déclinent ainsi :
   \item \textbf{Administrateur} : Décrivent la modération de la file d'attente KYC, la validation manuelle et la gestion générale des comptes utilisateurs.
 \end{itemize}
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \small
 \begin{tabularx}{\textwidth}{|l|l|X|X|l|}
@@ -265,7 +265,7 @@ La figure~\ref{fig:uc-global} présente, sur une même vue, les trois acteurs hu
 \subsection{Diagramme global}
 \label{sec:uc-diagramme-global}
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.95\linewidth,height=0.85\textheight,keepaspectratio]{fig_use_case.png}
 \caption{Diagramme de cas d'utilisation consolidé (Passager, Conducteur, Administrateur)}
@@ -276,7 +276,7 @@ Trois familles de cas se dégagent~: les cas \textit{transverses} (s'inscrire, s
 
 Le tableau~\ref{tab:tracabilite} établit la traçabilité entre les besoins fonctionnels et les cas d'utilisation, garantissant la couverture exhaustive des exigences spécifiées.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \begin{tabularx}{\textwidth}{|X|l|l|}
@@ -312,7 +312,7 @@ Modération et validation \textsc{kyc} & Administrateur & UC-MODERATION \\
 Le modèle intègre quatre patrons de conception~: \textit{Strategy} et \textit{Factory} pour les paiements, \textit{Repository} pour l'accès aux données, et \textit{Observer} pour la diffusion des événements. La figure~\ref{fig:classes} représente la structure statique du domaine.
 
 \begin{landscape}
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{fig_class_diagram.png}
 \caption{Diagramme de classes du domaine (vue conceptuelle)}
@@ -334,7 +334,7 @@ La classe \texttt{User} est modélisée comme classe mère abstraite, avec trois
 
 Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs attributs et méthodes métier.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.3}
@@ -384,7 +384,7 @@ Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs att
 
 Les tableaux suivants détaillent le schéma physique des quatre tables les plus névralgiques du système. L'utilisation systématique d'identifiants universels version~4 (\textsc{uuid}v4) comme clés primaires constitue une contre-mesure explicite contre les vulnérabilités de type \textsc{idor} (\textit{Insecure Direct Object Reference}, \textsc{owasp}~A01), car leur espace de collision ($2^{122}$ combinaisons) rend l'énumération séquentielle mathématiquement impraticable.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \begin{tabularx}{\textwidth}{|l|l|l|X|}
@@ -413,7 +413,7 @@ createdAt & \texttt{TIMESTAMPTZ} & NOT NULL, DEFAULT NOW() & Horodatage de créa
   \label{tab:dd-users}
 \end{table}
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \begin{tabularx}{\textwidth}{|l|l|l|X|}
@@ -442,7 +442,7 @@ status & \texttt{ENUM} & NOT NULL & \{active, full, departed, completed, cancell
   \label{tab:dd-trips}
 \end{table}
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \begin{tabularx}{\textwidth}{|l|l|l|X|}
@@ -469,7 +469,7 @@ paymentStatus & \texttt{ENUM} & NOT NULL & \{unpaid, paid, refunded\} \\
   \label{tab:dd-bookings}
 \end{table}
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \footnotesize
 \begin{tabularx}{\textwidth}{|l|l|l|X|}
@@ -801,7 +801,7 @@ La plateforme adopte une stratégie d'analyse multi-seuils différenciée selon 
 
 La synthèse de ces seuils décisionnels configurés pour le microservice d'IA et la file d'attente de revue administrative manuelle selon le rôle de l'utilisateur est présentée dans le tableau~\ref{tab:seuils-biometriques}.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \small
 \renewcommand{\arraystretch}{1.3}
@@ -829,7 +829,7 @@ La synthèse de ces seuils décisionnels configurés pour le microservice d'IA e
 
 \paragraph{Risques techniques anticipés.} L'analyse des risques techniques critiques inhérents à l'exploitation de la plateforme et les stratégies d'atténuation logicielle associées sont synthétisées dans le tableau~\ref{tab:risques-mitigations}.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering
 \small
 \renewcommand{\arraystretch}{1.3}
@@ -855,7 +855,7 @@ La synthèse de ces seuils décisionnels configurés pour le microservice d'IA e
 
 Le parcours global d'un utilisateur, depuis l'authentification jusqu'à la fin du trajet, est représenté par le diagramme d'activité (figure~\ref{fig:activite-booking}). Après authentification et \textsc{kyc}, l'utilisateur est orienté vers l'une des deux branches selon son rôle. Les nœuds de décision matérialisent les ruptures possibles (places insuffisantes, paiement échoué), chacune associée à une compensation (libération de places, remboursement).
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth,height=0.85\textheight,keepaspectratio]{fig_passenger_flow.png}
 \caption{Diagramme d'activité --- parcours global de la plateforme}
