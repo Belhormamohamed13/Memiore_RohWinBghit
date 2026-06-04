@@ -66,126 +66,225 @@ Le choix des briques technologiques de la plateforme a été guidé par des crit
 \section{Implémentation des parcours utilisateurs et UI/UX}
 \label{sec:implementation}
 
-Cette section présente les interfaces et les parcours utilisateurs implémentés dans le cadre du prototype fonctionnel de \textit{RohWinBghit}. L'accent est mis sur l'expérience utilisateur et les flux fonctionnels, afin de mettre en évidence la traduction concrète des exigences spécifiées au chapitre~2 en écrans et interactions opérationnels. Les captures d'écran sont organisées selon le parcours chronologique naturel de l'utilisateur.
+Cette section présente les interfaces et les parcours utilisateurs implémentés dans le cadre du prototype fonctionnel de \textit{RohWinBghit}. L'accent est mis sur l'expérience utilisateur et les flux fonctionnels, afin de mettre en évidence la traduction concrète des exigences spécifiées au chapitre~2 en écrans et interactions opérationnels. Les captures d'écran sont présentées individuellement, accompagnées chacune de leur description dédiée, et organisées selon le parcours chronologique naturel de l'utilisateur~: de la première ouverture de l'application jusqu'à la finalisation d'un trajet.
 
 \subsection{Application mobile (React Native / Expo SDK 54)}
 \label{sec:realisation-mobile}
 
-L'interface mobile de \textit{RohWinBghit} est unifiée au sein d'une unique base de code multiplateforme optimisée pour iOS et Android. Elle comporte 62 écrans de navigation dynamiques permettant de basculer en temps réel entre le rôle passager et conducteur.
+L'interface mobile de \textit{RohWinBghit} est unifiée au sein d'une unique base de code multiplateforme optimisée pour iOS et Android. Elle comporte 62~écrans de navigation dynamiques permettant de basculer en temps réel entre le rôle passager et conducteur. Les sous-sections suivantes détaillent chaque étape du parcours utilisateur.
 
-\paragraph{Onboarding et inscription~:} L'expérience utilisateur débute par un écran d'accueil immersif affichant le positionnement de la plateforme --- «~Votre trajet, notre priorité~» --- suivi d'une page de présentation des fonctionnalités clés (couverture 69~wilayas, assistance~24/7, sécurité~100\,\%). L'utilisateur accède ensuite à un parcours d'inscription guidé en quatre étapes, dont la première consiste à sélectionner son rôle initial (Passager ou Chauffeur), personnalisant ainsi l'ensemble de l'interface dès le premier lancement. Les étapes d'onboarding sont présentées dans la figure~\ref{fig:onboarding-screens}.
+%% ====================================================================
+%% 3.3.1 — ONBOARDING
+%% ====================================================================
+\subsubsection{Parcours d'onboarding et inscription}
+\label{sec:onboarding}
 
-\begin{figure}[!htbp]
+L'expérience utilisateur débute dès le premier lancement de l'application par un parcours d'onboarding soigneusement conçu pour établir la confiance et orienter le nouvel utilisateur.
+
+\medskip\noindent\textbf{Écran d'accueil~:}
+L'écran d'accueil (figure~\ref{fig:welcome-splash}) constitue le tout premier contact visuel de l'utilisateur avec la plateforme. Il met en avant le positionnement de \textit{RohWinBghit} à travers le slogan «~Votre trajet, notre priorité~» accompagné d'une illustration évoquant le covoiturage en Algérie. Le bouton d'action principal «~Commencer l'aventure~» invite l'utilisateur à entamer le processus d'inscription.
+
+\begin{figure}[H]
 \centering
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{v2_welcome_splash.jpg}
-    {\footnotesize \textbf{3.1a} --- Écran d'accueil\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{v2_landing_page.jpg}
-    {\footnotesize \textbf{3.1b} --- Fonctionnalités clés\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{v2_role_selection.jpg}
-    {\footnotesize \textbf{3.1c} --- Sélection du rôle\par}
-\end{minipage}
-\caption{Onboarding et inscription --- écrans d'accueil et choix du rôle}
-\label{fig:onboarding-screens}
+\includegraphics[width=0.35\textwidth]{v2_welcome_splash.jpg}
+\caption{Écran d'accueil --- première impression de la plateforme}
+\label{fig:welcome-splash}
 \end{figure}
 
-\paragraph{Parcours KYC biométrique~:} Une fois inscrit, l'utilisateur est guidé au travers d'une interface d'enrôlement claire. Un masque de cadrage dynamique s'affiche à l'écran pour assister la capture d'image recto et verso de la CIN. Le module de détection de vivacité faciale requiert de l'usager d'effectuer un mouvement de tête devant la caméra, le flux vidéo étant traité en temps réel par un thread local léger avant transmission chiffrée. Les étapes de capture sont présentées dans la figure~\ref{fig:kyc-screens}.
+\noindent\textbf{Présentation des fonctionnalités et connexion~:}
+L'écran de présentation (figure~\ref{fig:landing-page}) expose les trois piliers fondamentaux du service~: la couverture géographique complète (69~wilayas), l'assistance disponible en permanence~(24/7) et la garantie de sécurité totale~(100\,\%). Trois badges détaillent les avantages concrets~: «~Sécurité maximale~» (conducteurs vérifiés et trajets suivis), «~Réservation instantanée~» (recherche en quelques secondes) et «~Paiement flexible~» (espèces ou carte). Le bouton «~Se connecter~/~S'inscrire~» donne accès au système d'authentification par OTP téléphonique.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{mobile-all/p_27_verif_intro.png}
-    {\footnotesize \textbf{3.2a} --- Introduction \textsc{kyc}\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
+\includegraphics[width=0.35\textwidth]{v2_landing_page.jpg}
+\caption{Page de présentation --- fonctionnalités clés et accès à l'inscription}
+\label{fig:landing-page}
+\end{figure}
+
+\noindent\textbf{Sélection du rôle utilisateur~:}
+La première étape du formulaire d'inscription (figure~\ref{fig:role-selection}) invite l'utilisateur à choisir son rôle initial~: \textit{Passager} («~Réservez des trajets et suivez-les~») ou \textit{Chauffeur} («~Partagez vos frais, horaires flexibles~»). Ce choix conditionne l'ensemble de l'interface utilisateur dès le premier lancement, bien qu'il soit modifiable ultérieurement depuis les paramètres. La barre de progression en haut de l'écran indique «~Étape~1 sur~4~», offrant une visibilité claire sur le parcours d'inscription restant.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\textwidth]{v2_role_selection.jpg}
+\caption{Sélection du rôle --- Étape~1 du parcours d'inscription}
+\label{fig:role-selection}
+\end{figure}
+
+%% ====================================================================
+%% 3.3.2 — KYC
+%% ====================================================================
+\subsubsection{Vérification d'identité (KYC biométrique)}
+\label{sec:kyc-flow}
+
+La vérification d'identité constitue un prérequis de sécurité essentiel pour accéder à l'ensemble des fonctionnalités de la plateforme. Le processus KYC s'articule en deux phases distinctes~: la vérification documentaire et la vérification biométrique faciale.
+
+\medskip\noindent\textbf{Introduction au processus KYC~:}
+L'écran d'introduction (figure~\ref{fig:kyc-intro}) présente de manière transparente les deux vérifications requises~: la «~Vérification de la carte d'identité~» (scan recto et verso de la \gls{cin} ou du permis de conduire) et la «~Vérification du visage~» (capture selfie en direct avec suivi des instructions à l'écran). Un encadré informatif de consentement précise que les données sont traitées de manière sécurisée. L'utilisateur peut choisir de procéder immédiatement via «~Accepter et continuer~» ou de reporter l'opération via «~Passer pour l'instant~».
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\textwidth]{mobile-all/p_27_verif_intro.png}
+\caption{Introduction KYC --- présentation des étapes de vérification}
+\label{fig:kyc-intro}
+\end{figure}
+
+\noindent\textbf{Capture documentaire et détection de vivacité~:}
+Les écrans de capture (figure~\ref{fig:kyc-capture}) illustrent les deux phases techniques du processus biométrique. L'écran de gauche montre la demande d'autorisation d'accès à la caméra, indispensable pour la numérisation de la pièce d'identité. Un masque de cadrage dynamique assiste la capture recto et verso de la \gls{cin} en guidant le positionnement du document. L'écran de droite présente le module de détection de vivacité faciale~: l'utilisateur doit effectuer un mouvement de tête devant la caméra frontale, le flux vidéo étant analysé en temps réel par un thread local léger avant transmission chiffrée au microservice d'IA hébergeant InsightFace.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.40\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_28_verif_id_capture.png}
-    {\footnotesize \textbf{3.2b} --- Capture de la \gls{cin}\par}
+    \par\smallskip{\footnotesize Capture de la \gls{cin}\par}
 \end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
+\begin{minipage}{0.40\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/p_29_verif_face_capture.png}
-    {\footnotesize \textbf{3.2c} --- Détection de vivacité\par}
+    \par\smallskip{\footnotesize Détection de vivacité faciale\par}
 \end{minipage}
-\caption{Parcours \textsc{kyc} biométrique --- étapes de capture}
-\label{fig:kyc-screens}
+\caption{Capture biométrique --- numérisation documentaire et détection de vivacité}
+\label{fig:kyc-capture}
 \end{figure}
 
-\paragraph{Parcours de recherche et réservation~:} Le passager vérifié accède à un moteur de recherche géographique performant permettant de filtrer les offres sur les 69 wilayas. L'écran d'accueil présente un formulaire de recherche rapide (départ, destination, date, nombre de places) ainsi qu'une section «~Départs imminents~» affichant les trajets disponibles à proximité. Les résultats de recherche sont affichés sous forme de cartes détaillées indiquant le conducteur, le prix, l'heure de départ, le véhicule et le nombre de places libres. La fiche détaillée d'un trajet permet de visualiser l'itinéraire complet, les informations du conducteur et de procéder à la réservation. Les interfaces associées sont présentées dans la figure~\ref{fig:passenger-search}.
+%% ====================================================================
+%% 3.3.3 — PASSENGER FLOW
+%% ====================================================================
+\subsubsection{Parcours passager}
+\label{sec:passenger-flow}
 
-\begin{figure}[!htbp]
+Le parcours passager constitue le flux principal de l'application, depuis la recherche d'un trajet jusqu'au suivi en temps réel du véhicule.
+
+\medskip\noindent\textbf{Écran d'accueil passager~:}
+L'écran d'accueil du passager (figure~\ref{fig:passenger-home}) centralise les fonctionnalités essentielles de recherche. Le formulaire principal «~Où allez-vous~?~» propose les champs Départ (position actuelle détectée), Destination, Date et Nombre de personnes, suivis du bouton «~Rechercher un trajet~». Deux raccourcis fonctionnels permettent de «~Créer une demande~» (alerte aux conducteurs) ou de consulter «~Mes demandes~». La section inférieure «~Départs imminents~» affiche dynamiquement les trajets disponibles à proximité géographique, avec le nom du conducteur et le prix affiché en dinars. Une bannière en haut de l'écran rappelle à l'utilisateur de compléter sa vérification KYC pour débloquer toutes les fonctionnalités.
+
+\begin{figure}[H]
 \centering
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{mobile-all/p_01_tab_home.png}
-    {\footnotesize \textbf{3.3a} --- Accueil passager\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{v2_search_results.jpg}
-    {\footnotesize \textbf{3.3b} --- Résultats de recherche\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{mobile-all/p_09_trip_details.png}
-    {\footnotesize \textbf{3.3c} --- Détail du trajet\par}
-\end{minipage}
-\caption{Parcours passager --- accueil, recherche et détail du trajet}
-\label{fig:passenger-search}
+\includegraphics[width=0.35\textwidth]{mobile-all/p_01_tab_home.png}
+\caption{Accueil passager --- formulaire de recherche et départs imminents}
+\label{fig:passenger-home}
 \end{figure}
 
-\paragraph{Billet numérique et suivi en temps réel~:} Une fois la réservation validée, un billet numérique contenant un code QR unique et infalsifiable (contenant la signature cryptographique du tuple \texttt{(bookingId, passengerId, tripId)}) est généré. Le billet affiche le statut en temps réel de la réservation~: «~Confirmé~» lorsque le conducteur a accepté la demande, ou «~En attente~» pendant le traitement. L'intégration de l'API Mapbox GL permet au passager de visualiser l'itinéraire complet et la progression en temps réel du véhicule par rafraîchissement asynchrone des coordonnées géographiques transmises via Socket.IO. Les interfaces associées sont présentées dans la figure~\ref{fig:passenger-booking}.
+\noindent\textbf{Résultats de recherche~:}
+L'écran des résultats (figure~\ref{fig:search-results}) affiche les trajets correspondant aux critères saisis. Chaque carte de résultat présente~: le nom et la photo de profil du conducteur, sa note de fiabilité, le prix en dinars algériens (DZD), l'heure de départ, les wilayas de départ et d'arrivée, le modèle du véhicule et le nombre de places disponibles. L'en-tête résume la recherche effectuée (ici «~Oran~$\rightarrow$~Alger~») avec le nombre de résultats trouvés, permettant au passager de comparer rapidement les offres et de sélectionner celle qui correspond le mieux à ses besoins.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{mobile-all/p_10_ticket.png}
-    {\footnotesize \textbf{3.4a} --- Billet confirmé (QR)\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
+\includegraphics[width=0.35\textwidth]{v2_search_results.jpg}
+\caption{Résultats de recherche --- liste comparative des trajets disponibles}
+\label{fig:search-results}
+\end{figure}
+
+\noindent\textbf{Détail du trajet et réservation~:}
+La fiche détaillée d'un trajet (figure~\ref{fig:trip-details}) offre une vue complète avant la réservation. L'écran affiche le badge «~Prix le plus bas~» lorsque applicable, le prix total (770,00~DA), l'itinéraire complet avec les heures de départ et d'arrivée estimée (Alger Centre 10:00~$\rightarrow$~Annaba Centre 20:40, durée 7h), ainsi que le détail des arrêts intermédiaires. La section «~Le conducteur~» présente le profil du chauffeur. Le bouton «~Réserver~» en bas de l'écran déclenche le processus de réservation avec le récapitulatif du tarif pour le nombre de places sélectionné.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\textwidth]{mobile-all/p_09_trip_details.png}
+\caption{Détail du trajet --- itinéraire, prix et profil du conducteur}
+\label{fig:trip-details}
+\end{figure}
+
+\noindent\textbf{Billet numérique et cycle de vie~:}
+Une fois la réservation effectuée, un billet numérique contenant un code QR unique et infalsifiable est généré (figure~\ref{fig:ticket-lifecycle}). Ce code embarque la signature cryptographique du tuple \texttt{(bookingId, passengerId, tripId)}. Le billet évolue selon un cycle de vie en deux états~: à gauche, le statut «~En~attente~» (badge orange) indique que la réservation a été soumise et attend la validation du conducteur~; à droite, le statut «~Confirmé~» (badge vert) confirme l'acceptation. Chaque billet affiche les détails du trajet (horaires, wilayas, conducteur, prix) et un code de référence unique (ex.~\texttt{BK-A73756}). Les boutons «~Appeler~», «~Chat~» et «~Aide~» en pied d'écran permettent une communication directe avec le conducteur ou le support.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.40\textwidth}
     \centering
     \includegraphics[width=\linewidth]{v2_ticket_pending.jpg}
-    {\footnotesize \textbf{3.4b} --- Billet en attente\par}
+    \par\smallskip{\footnotesize Billet en attente de validation\par}
 \end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
+\begin{minipage}{0.40\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{mobile-all/p_26_live_tracking.png}
-    {\footnotesize \textbf{3.4c} --- Suivi GPS temps réel\par}
+    \includegraphics[width=\linewidth]{mobile-all/p_10_ticket.png}
+    \par\smallskip{\footnotesize Billet confirmé par le conducteur\par}
 \end{minipage}
-\caption{Parcours passager --- billets numériques et suivi GPS}
-\label{fig:passenger-booking}
+\caption{Billet numérique QR --- cycle de vie (en attente $\rightarrow$ confirmé)}
+\label{fig:ticket-lifecycle}
 \end{figure}
 
-\paragraph{Parcours conducteur --- publication et gestion~:} Le conducteur dispose d'un ensemble d'écrans dédiés à la publication de trajets, à la gestion de ses réservations et au suivi de ses revenus. Le formulaire de publication, structuré en quatre étapes (Route, Véhicule, Options, Récapitulatif), intègre une carte Mapbox affichant dynamiquement l'itinéraire calculé entre les wilayas de départ et de destination, avec estimation automatique de la distance et de la durée. Une fois le trajet publié et les réservations reçues, le conducteur accède à un écran de gestion affichant le statut du trajet, la liste des passagers confirmés et les options d'annulation. Le tableau de bord synthétise les indicateurs clés (gains journaliers, nombre de courses, statut en ligne). Les interfaces associées sont présentées dans la figure~\ref{fig:driver-main}.
+\noindent\textbf{Suivi GPS en temps réel~:}
+L'écran de suivi en temps réel (figure~\ref{fig:live-tracking}) s'active automatiquement le jour du trajet confirmé. L'intégration de l'API Mapbox~GL affiche l'itinéraire complet sur une carte interactive avec la progression en temps réel du véhicule. Le badge «~Live Tracking~» signale l'état actif du suivi, tandis que l'estimation du temps restant est rafraîchie de manière asynchrone via les coordonnées GPS transmises par Socket.IO. Deux boutons d'action rapide sont disponibles~: «~Appeler~» pour contacter directement le conducteur et «~SOS~» (en rouge) pour déclencher une alerte d'urgence.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\begin{minipage}{0.31\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{v2_publish_trip.jpg}
-    {\footnotesize \textbf{3.5a} --- Publication avec carte\par}
-\end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
+\includegraphics[width=0.35\textwidth]{mobile-all/p_26_live_tracking.png}
+\caption{Suivi GPS temps réel --- carte Mapbox et bouton d'urgence SOS}
+\label{fig:live-tracking}
+\end{figure}
+
+\noindent\textbf{Gestion des voyages~:}
+L'écran «~Mes Voyages~» (figure~\ref{fig:passenger-trips}) centralise l'historique et le suivi de l'ensemble des réservations du passager. Trois onglets filtrants --- «~À~venir~», «~Passés~» et «~Annulés~» --- permettent de naviguer entre les différents statuts. Chaque carte de voyage affiche la date, les horaires, l'itinéraire (ex.~Alger Centre~$\rightarrow$~Oran Centre), la durée estimée, le nom du conducteur et le statut en temps réel (badge «~Confirmé~» en vert ou «~En attente~» en orange). Un accès direct au billet QR est disponible via le bouton dédié sur chaque carte.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\textwidth]{mobile-all/p_03_tab_trips.png}
+\caption{Mes Voyages --- historique et suivi des réservations passager}
+\label{fig:passenger-trips}
+\end{figure}
+
+%% ====================================================================
+%% 3.3.4 — DRIVER FLOW
+%% ====================================================================
+\subsubsection{Parcours conducteur}
+\label{sec:driver-flow}
+
+Le mode conducteur offre un ensemble d'outils dédiés à la publication, la gestion des trajets et le suivi des revenus. L'interface adopte un thème sombre distinctif qui permet au conducteur de différencier immédiatement le mode actif.
+
+\medskip\noindent\textbf{Publication d'un trajet~:}
+Le formulaire de publication (figure~\ref{fig:driver-publish}) est structuré en quatre étapes séquentielles matérialisées par un stepper de progression en haut de l'écran~: Route, Véhicule, Options et Récapitulatif. L'étape «~Route~» intègre une carte Mapbox affichant dynamiquement l'itinéraire calculé entre les wilayas sélectionnées (ici Tlemcen~$\rightarrow$~Alger), avec une estimation automatique de la distance ($\sim$516\,km) et de la durée (5h33). Les champs Départ et Destination proposent un sélecteur de wilaya avec possibilité d'ajouter des arrêts intermédiaires. Les sélecteurs de date et d'heure complètent la première étape avant le bouton «~Continuer~».
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\textwidth]{v2_publish_trip.jpg}
+\caption{Publication d'un trajet --- itinéraire Mapbox et formulaire étape~1}
+\label{fig:driver-publish}
+\end{figure}
+
+\noindent\textbf{Gestion des trajets et passagers~:}
+Une fois les trajets publiés, le conducteur accède à deux écrans complémentaires de gestion (figure~\ref{fig:driver-manage}). L'écran de gauche présente la fiche détaillée d'un trajet actif~: statut «~Actif~» (badge vert), itinéraire avec horaires (Blida Centre 12:00~$\rightarrow$~Tipaza Centre 13:00), carte de l'itinéraire, nombre de places libres (3/3), section «~Passagers confirmés~» et bouton «~Annuler ce trajet~» avec avertissement de remboursement automatique. L'écran de droite affiche la liste «~Mes Trajets~» avec les onglets Actifs/Terminés/Annulés et les cartes récapitulatives de chaque trajet publié (date, horaire, itinéraire, places, prix en DA).
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.40\textwidth}
     \centering
     \includegraphics[width=\linewidth]{mobile-all/d_06_trip_manage.png}
-    {\footnotesize \textbf{3.5b} --- Gestion du trajet\par}
+    \par\smallskip{\footnotesize Gestion d'un trajet actif\par}
 \end{minipage}\hfill
-\begin{minipage}{0.31\textwidth}
+\begin{minipage}{0.40\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{mobile-all/d_01_tab_dashboard.png}
-    {\footnotesize \textbf{3.5c} --- Dashboard conducteur\par}
+    \includegraphics[width=\linewidth]{mobile-all/d_02_tab_trips.png}
+    \par\smallskip{\footnotesize Liste des trajets publiés\par}
 \end{minipage}
-\caption{Parcours conducteur --- publication, gestion et tableau de bord}
-\label{fig:driver-main}
+\caption{Gestion conducteur --- fiche du trajet actif et liste des publications}
+\label{fig:driver-manage}
+\end{figure}
+
+\noindent\textbf{Tableau de bord conducteur~:}
+Le tableau de bord (figure~\ref{fig:driver-dashboard}) constitue l'écran principal du mode conducteur. Il affiche en en-tête le nom de l'utilisateur, son statut de connexion (en ligne/hors ligne) avec un interrupteur de bascule, et les notifications actives. La zone centrale présente la carte de couverture géographique. Trois boutons d'action rapide permettent de «~Publier un trajet~», de consulter «~Mes demandes~» ou d'accéder à l'«~Historique~». Le widget inférieur «~Gains aujourd'hui~» synthétise les indicateurs financiers en temps réel (montant en DA et nombre de courses effectuées). La barre de navigation inférieure (Dashboard, Trajets, Véhicules, Profil) reflète les fonctionnalités spécifiques au rôle conducteur.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\textwidth]{mobile-all/d_01_tab_dashboard.png}
+\caption{Tableau de bord conducteur --- KPIs, carte et actions rapides}
+\label{fig:driver-dashboard}
+\end{figure}
+
+%% ====================================================================
+%% 3.3.5 — PROFILE
+%% ====================================================================
+\subsubsection{Profil utilisateur et gamification}
+\label{sec:profile-gamification}
+
+L'écran de profil (figure~\ref{fig:user-profile}) centralise les informations personnelles, les statistiques d'activité et les mécanismes de fidélisation de l'utilisateur. La carte de profil affiche le nom, la photo, le badge de niveau (ici «~Nouveau~») et trois indicateurs clés~: la note moyenne, le nombre de voyages effectués et le niveau de fidélité. Une barre de progression «~Membre Privilège~» (ici à 20\,\%) visualise l'avancement vers le statut suivant avec un objectif concret (encore 4~voyages). Le module de parrainage propose un incitatif financier de 200~DZD par ami invité. La section «~Mon activité~» donne accès aux réservations actives et à l'historique des trajets passés. Enfin, la section «~Compte \& Sécurité~» regroupe les paramètres de moyens de paiement et les réglages de confidentialité.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.35\textwidth]{mobile-all/p_05_tab_profile.png}
+\caption{Profil utilisateur --- statistiques, fidélité et parrainage}
+\label{fig:user-profile}
 \end{figure}
 
 
