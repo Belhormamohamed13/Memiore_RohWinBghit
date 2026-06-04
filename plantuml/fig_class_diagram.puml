@@ -1,29 +1,27 @@
 @startuml fig_class_diagram
+!include theme_rohwinbghit.puml
 skinparam style strictuml
 skinparam classAttributeIconSize 0
-skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
-skinparam shadowing false
 skinparam linetype ortho
 skinparam nodesep 60
 skinparam ranksep 70
-skinparam ArrowColor #444444
 
-' Couleurs par domaine
+' Couleurs par domaine harmonisées
 skinparam class {
-  BorderColor #555555
-  BackgroundColor White
-  BackgroundColor<<Identity>> #BBDEFB
-  BackgroundColor<<Trip>> #C8E6C9
-  BackgroundColor<<Booking>> #FFE0B2
-  BackgroundColor<<Wallet>> #F8BBD0
-  BackgroundColor<<Comm>> #FFF9C4
-  BorderColor<<Identity>> #1565C0
-  BorderColor<<Trip>> #2E7D32
-  BorderColor<<Booking>> #E65100
-  BorderColor<<Wallet>> #AD1457
-  BorderColor<<Comm>> #F9A825
+  BorderColor #166E3A
+  BackgroundColor #FFFFFF
+  BackgroundColor<<Identity>> #E8F5E9
+  BackgroundColor<<Trip>> #E8F5E9
+  BackgroundColor<<Booking>> #F5F1E8
+  BackgroundColor<<Wallet>> #F5F1E8
+  BackgroundColor<<Comm>> #FFFFFF
+  BorderColor<<Identity>> #166E3A
+  BorderColor<<Trip>> #166E3A
+  BorderColor<<Booking>> #D4A017
+  BorderColor<<Wallet>> #D4A017
+  BorderColor<<Comm>> #5B6A61
 }
+
 
 title Diagramme de classes du domaine — RohWinBghit\n(Vue logique et conceptuelle)
 

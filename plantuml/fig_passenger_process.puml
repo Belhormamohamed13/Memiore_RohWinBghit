@@ -1,8 +1,5 @@
 @startuml fig4_4_passenger_process
-skinparam backgroundColor white
-skinparam defaultFontName Arial
-skinparam ActivityDiamondBackgroundColor #FFF3E0
-skinparam ActivityBackgroundColor #E8F5E9
+!include theme_rohwinbghit.puml
 
 start
 :Passager ouvre l'app;

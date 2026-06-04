@@ -1,7 +1,5 @@
 @startuml fig2_1_architecture
-skinparam backgroundColor white
-skinparam defaultFontName Arial
-skinparam shadowing false
+!include theme_rohwinbghit.puml
 skinparam roundCorner 8
 skinparam packageStyle rectangle
 skinparam componentStyle rectangle

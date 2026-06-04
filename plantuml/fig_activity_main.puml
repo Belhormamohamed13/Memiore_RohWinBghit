@@ -1,12 +1,5 @@
 @startuml fig_activity_main
-skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
-skinparam shadowing false
-skinparam ArrowColor #444444
-skinparam ActivityBorderColor #455A64
-skinparam ActivityBackgroundColor #ECEFF1
-skinparam ActivityDiamondBorderColor #455A64
-skinparam ActivityDiamondBackgroundColor #FFF9C4
+!include theme_rohwinbghit.puml
 
 title Diagramme d'activité — Parcours global RohWinBghit
 

@@ -1,8 +1,5 @@
 @startuml 03-deployment
-skinparam style strictuml
-skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
-skinparam monochrome true
+!include theme_rohwinbghit.puml
 skinparam nodesep 50
 skinparam ranksep 50
 title Diagramme de déploiement — RohWinBghit

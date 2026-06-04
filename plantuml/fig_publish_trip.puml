@@ -1,7 +1,5 @@
 @startuml fig3_4_publish_trip
-skinparam backgroundColor white
-skinparam defaultFontName Arial
-skinparam ActivityBackgroundColor #E8F5E9
+!include theme_rohwinbghit.puml
 
 start
 :Itineraire : Alger (16) -> Constantine (25);

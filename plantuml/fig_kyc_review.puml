@@ -1,7 +1,5 @@
 @startuml fig3_8_kyc_review
-skinparam backgroundColor white
-skinparam defaultFontName Arial
-skinparam ActivityBackgroundColor #E8F5E9
+!include theme_rohwinbghit.puml
 
 start
 :File KYC conducteurs (paginees, filtrable);

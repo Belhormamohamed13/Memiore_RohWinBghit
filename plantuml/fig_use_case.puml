@@ -1,33 +1,14 @@
 @startuml fig_use_case
-skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
-skinparam shadowing false
-skinparam packageStyle rectangle
-skinparam ArrowColor #444444
-skinparam ActorBorderColor #1E5096
-skinparam ActorFontStyle bold
-
-' Couleurs par catégorie de cas d'utilisation
-skinparam usecase {
-  BorderColor #555555
-  BackgroundColor White
-  BackgroundColor<<Common>> #ECEFF1
-  BackgroundColor<<Passenger>> #BBDEFB
-  BackgroundColor<<Driver>> #C8E6C9
-  BackgroundColor<<Admin>> #FFE0B2
-  BorderColor<<Common>> #455A64
-  BorderColor<<Passenger>> #1565C0
-  BorderColor<<Driver>> #2E7D32
-  BorderColor<<Admin>> #E65100
-}
+!include theme_rohwinbghit.puml
 
 left to right direction
 title Diagramme de cas d'utilisation — RohWinBghit
 
 ' ===== ACTEURS COLORÉS =====
-actor "Passager" as Pax #BBDEFB
-actor "Conducteur" as Drv #C8E6C9
-actor "Administrateur" as Adm #FFE0B2
+actor "Passager" as Pax
+actor "Conducteur" as Drv
+actor "Administrateur" as Adm
+
 
 rectangle "Système RohWinBghit" {
 

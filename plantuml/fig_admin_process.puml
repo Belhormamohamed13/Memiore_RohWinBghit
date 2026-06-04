@@ -1,7 +1,5 @@
 @startuml fig4_5_admin_process
-skinparam backgroundColor white
-skinparam defaultFontName Arial
-skinparam ActivityBackgroundColor #E8F5E9
+!include theme_rohwinbghit.puml
 
 start
 :Admin au Dashboard React/Vite;

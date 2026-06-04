@@ -1,0 +1,5 @@
+@startuml
+start
+:Activity with color; <<#C8E6C9>>
+stop
+@enduml

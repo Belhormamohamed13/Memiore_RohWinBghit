@@ -1,18 +1,5 @@
 @startuml fig_sequence_authentification
-skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
-skinparam shadowing false
-skinparam sequence {
-  ArrowColor #444444
-  ActorBorderColor #1565C0
-  ActorBackgroundColor #BBDEFB
-  LifeLineBorderColor #888888
-  ParticipantBorderColor #455A64
-  ParticipantBackgroundColor #ECEFF1
-  ParticipantFontStyle bold
-  DatabaseBorderColor #F9A825
-  DatabaseBackgroundColor #FFF9C4
-}
+!include theme_rohwinbghit.puml
 
 title Diagramme de séquence — Authentification (RohWinBghit)
 

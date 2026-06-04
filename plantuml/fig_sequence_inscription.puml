@@ -1,22 +1,8 @@
 @startuml fig_sequence_inscription
+!include theme_rohwinbghit.puml
 skinparam style strictuml
-skinparam DefaultFontName Arial
-skinparam DefaultFontSize 12
-skinparam shadowing false
 skinparam SequenceMessageAlignment center
 
-skinparam sequence {
-  ArrowColor #A83B3B
-  ActorBorderColor #1565C0
-  ActorBackgroundColor #BBDEFB
-  LifeLineBorderColor #1565C0
-  LifeLineBackgroundColor #FFF9C4
-  ParticipantBorderColor #4B3A8B
-  ParticipantBackgroundColor #D1C4E9
-  ParticipantFontStyle bold
-  DatabaseBorderColor #F9A825
-  DatabaseBackgroundColor #FFF9C4
-}
 
 title Diagramme de séquence — Inscription (RohWinBghit)
 

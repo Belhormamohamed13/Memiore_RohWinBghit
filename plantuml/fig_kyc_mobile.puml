@@ -1,6 +1,5 @@
 @startuml fig3_2_kyc_mobile
-skinparam backgroundColor white
-skinparam defaultFontName Arial
+!include theme_rohwinbghit.puml
 
 |Ecran 1 - OTP|
 start

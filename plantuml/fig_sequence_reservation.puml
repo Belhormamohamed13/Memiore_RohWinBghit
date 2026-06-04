@@ -1,7 +1,5 @@
 @startuml fig2_4_sequence_reservation
-skinparam backgroundColor white
-skinparam defaultFontName Arial
-skinparam sequenceMessageAlign center
+!include theme_rohwinbghit.puml
 
 actor "Passager" as Passager
 participant "App Mobile" as Mobile #BBDEFB

@@ -1,0 +1,125 @@
+' Theme RohWinBghit - Style académique haut de gamme
+skinparam BackgroundColor #F5F1E8
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 12
+skinparam DefaultFontColor #0A1F14
+skinparam shadowing false
+skinparam RoundCorner 8
+
+skinparam actor {
+  BackgroundColor #E8F5E9
+  BorderColor #166E3A
+  FontColor #166E3A
+  FontStyle bold
+}
+
+skinparam participant {
+  BackgroundColor #E8F5E9
+  BorderColor #166E3A
+  FontColor #166E3A
+  FontStyle bold
+}
+
+skinparam database {
+  BackgroundColor #F5F1E8
+  BorderColor #D4A017
+  FontColor #0A1F14
+  FontStyle bold
+}
+
+skinparam collections {
+  BackgroundColor #E8F5E9
+  BorderColor #166E3A
+  FontColor #166E3A
+}
+
+skinparam node {
+  BackgroundColor #FFFFFF
+  BorderColor #166E3A
+  FontColor #166E3A
+  FontStyle bold
+}
+
+skinparam cloud {
+  BackgroundColor #FFFFFF
+  BorderColor #D4A017
+  FontColor #0A1F14
+}
+
+skinparam component {
+  BackgroundColor #E8F5E9
+  BorderColor #166E3A
+  FontColor #0A1F14
+}
+
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #166E3A
+  FontColor #0A1F14
+  
+  BackgroundColor<<Common>> #E8F5E9
+  BorderColor<<Common>> #166E3A
+  FontColor<<Common>> #166E3A
+  
+  BackgroundColor<<Passenger>> #E8F5E9
+  BorderColor<<Passenger>> #166E3A
+  FontColor<<Passenger>> #0A1F14
+  
+  BackgroundColor<<Driver>> #E8F5E9
+  BorderColor<<Driver>> #166E3A
+  FontColor<<Driver>> #0A1F14
+  
+  BackgroundColor<<Admin>> #FFFFFF
+  BorderColor<<Admin>> #D4A017
+  FontColor<<Admin>> #0A1F14
+}
+
+skinparam arrow {
+  Color #166E3A
+  FontColor #0A1F14
+}
+
+skinparam sequence {
+  LifeLineBorderColor #166E3A
+  LifeLineBackgroundColor #F5F1E8
+  GroupBorderColor #166E3A
+  GroupBackgroundColor #E8F5E9
+  GroupHeaderBackgroundColor #166E3A
+  GroupFontColor #166E3A
+  DividerBackgroundColor #F5F1E8
+  DividerBorderColor #166E3A
+  BoxBorderColor #166E3A
+  BoxBackgroundColor #FFFFFF
+}
+
+skinparam class {
+  BackgroundColor #E8F5E9
+  BorderColor #166E3A
+  FontColor #166E3A
+  FontStyle bold
+}
+
+skinparam activity {
+  BackgroundColor #E8F5E9
+  BorderColor #166E3A
+  FontColor #0A1F14
+  DiamondBackgroundColor #FFFFFF
+  DiamondBorderColor #D4A017
+  DiamondFontColor #0A1F14
+  ArrowColor #166E3A
+}
+
+skinparam partition {
+  BackgroundColor #FFFFFF
+  BorderColor #166E3A
+  FontColor #166E3A
+  FontStyle bold
+}
+
+skinparam state {
+  BackgroundColor #E8F5E9
+  BorderColor #166E3A
+  FontColor #0A1F14
+  ArrowColor #166E3A
+}
+

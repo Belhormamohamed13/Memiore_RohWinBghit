@@ -1,6 +1,5 @@
 @startuml fig3_3_passenger_flow
-skinparam backgroundColor white
-skinparam defaultFontName Arial
+!include theme_rohwinbghit.puml
 
 |Recherche trajet|
 start

@@ -1,8 +1,5 @@
 @startuml fig2_3_sequence_kyc
-skinparam backgroundColor white
-skinparam defaultFontName Arial
-skinparam sequenceMessageAlign center
-skinparam responseMessageBelowArrow true
+!include theme_rohwinbghit.puml
 
 actor "Conducteur" as Driver
 participant "App Mobile" as Mobile #BBDEFB
