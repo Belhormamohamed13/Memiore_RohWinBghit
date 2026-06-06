@@ -100,19 +100,29 @@ function addWatermark(slide, num, dark = false) {
 
 // ─── PROGRESS BAR HELPER (style Genspark) ───────────────────────────────────────────
 function addProgressBar(slide, x, y, w, h, pct, barColor, label, sublabel) {
-    slide.addText(label, { x, y: y - 0.3, w: w - 0.65, h: 0.26,
-        fontSize: 10.5, bold: true, color: C.deepBlack, fontFace: "Calibri" });
+    slide.addText(label, {
+        x, y: y - 0.3, w: w - 0.65, h: 0.26,
+        fontSize: 10.5, bold: true, color: C.deepBlack, fontFace: "Calibri"
+    });
     if (sublabel) {
-        slide.addText(sublabel, { x: x + w - 0.65, y: y - 0.3, w: 0.65, h: 0.26,
-            fontSize: 9, color: C.mutedText, fontFace: "Calibri", align: "right" });
+        slide.addText(sublabel, {
+            x: x + w - 0.65, y: y - 0.3, w: 0.65, h: 0.26,
+            fontSize: 9, color: C.mutedText, fontFace: "Calibri", align: "right"
+        });
     }
-    slide.addShape("roundRect", { x, y, w, h,
-        fill: { color: "ECEAE0" }, line: { color: C.cardBorder, width: 0.3 }, rectRadius: h / 2 });
+    slide.addShape("roundRect", {
+        x, y, w, h,
+        fill: { color: "ECEAE0" }, line: { color: C.cardBorder, width: 0.3 }, rectRadius: h / 2
+    });
     const fillW = Math.max(h, (w * pct) / 100);
-    slide.addShape("roundRect", { x, y, w: fillW, h,
-        fill: { color: barColor }, line: { color: barColor, width: 0 }, rectRadius: h / 2 });
-    slide.addText(`${pct}%`, { x: x + w + 0.1, y: y - 0.04, w: 0.55, h: h + 0.08,
-        fontSize: 12, bold: true, color: barColor, fontFace: "Calibri", valign: "middle" });
+    slide.addShape("roundRect", {
+        x, y, w: fillW, h,
+        fill: { color: barColor }, line: { color: barColor, width: 0 }, rectRadius: h / 2
+    });
+    slide.addText(`${pct}%`, {
+        x: x + w + 0.1, y: y - 0.04, w: 0.55, h: h + 0.08,
+        fontSize: 12, bold: true, color: barColor, fontFace: "Calibri", valign: "middle"
+    });
 }
 
 function addIconCard(slide, icon, title, body, x, y, w = 3.75, h = 0.86) {
@@ -227,7 +237,7 @@ async function buildPresentation() {
 
     function createTransitionSlide(sectionLabel, sectionTitle, questionGuide) {
         const s = createSlide(sectionLabel, true); // dark green background
-        
+
         // Large circle for the section number (inspired by MOBIPOS style)
         s.addShape("ellipse", {
             x: 4.6, y: 1.4, w: 0.8, h: 0.8,
@@ -239,20 +249,20 @@ async function buildPresentation() {
             fontSize: 22, bold: true, color: C.deepBlack,
             fontFace: "Courier New", align: "center", valign: "middle"
         });
-        
+
         // Section Title
         s.addText(sectionTitle, {
             x: 0.5, y: 2.4, w: 9.0, h: 0.8,
             fontSize: 28, bold: true, color: C.cream,
             fontFace: "Calibri", align: "center", valign: "middle"
         });
-        
+
         // Accent line
         s.addShape("rect", {
             x: 4.0, y: 3.3, w: 2.0, h: 0.03,
             fill: { color: C.gold }, line: { color: C.gold, width: 0 }
         });
-        
+
         // Question-guide
         s.addText(questionGuide, {
             x: 0.5, y: 3.5, w: 9.0, h: 0.5,
@@ -331,15 +341,15 @@ async function buildPresentation() {
         });
 
         const plans = [
-            ["01", "Introduction & Objectifs",       "Où ? Quand ? Dans quel contexte ?"],
-            ["02", "Problématique & Enjeux",          "Pourquoi ? Pour qui ? Quel intérêt ?"],
-            ["03", "Cadre du Projet & Marché",        "Quoi faire ?"],
-            ["04", "Analyse des Besoins",             "Quels sont les besoins ?"],
-            ["05", "Conception & Architecture",       "Quels sont les concepts ?"],
-            ["06", "Réalisation & Sécurité",          "Comment le faire ?"],
-            ["07", "Démonstration du Prototype",      "À quoi ça ressemble ?"],
-            ["08", "Validation & Business",           "Quels résultats obtenus ?"],
-            ["09", "Conclusion & Perspectives",       "Apports et perspectives ?"]
+            ["01", "Introduction & Objectifs", "Où ? Quand ? Dans quel contexte ?"],
+            ["02", "Problématique & Enjeux", "Pourquoi ? Pour qui ? Quel intérêt ?"],
+            ["03", "Cadre du Projet & Marché", "Quoi faire ?"],
+            ["04", "Analyse des Besoins", "Quels sont les besoins ?"],
+            ["05", "Conception & Architecture", "Quels sont les concepts ?"],
+            ["06", "Réalisation & Sécurité", "Comment le faire ?"],
+            ["07", "Démonstration du Prototype", "À quoi ça ressemble ?"],
+            ["08", "Validation & Business", "Quels résultats obtenus ?"],
+            ["09", "Conclusion & Perspectives", "Apports et perspectives ?"]
         ];
 
         const cols = [0.45, 3.6, 6.75];
@@ -637,11 +647,11 @@ async function buildPresentation() {
         s.addText("Processus Unifié (UP) + Scrum agile", { x: 0.7, y: 1.84, w: 3.85, h: 0.2, fontSize: 9.5, italic: true, color: C.mutedText, fontFace: "Calibri" });
 
         const scrumSteps = [
-            { num: "01", label: "Backlog du produit",  desc: "User stories priorisées par valeur métier" },
+            { num: "01", label: "Backlog du produit", desc: "User stories priorisées par valeur métier" },
             { num: "02", label: "Planification Sprint", desc: "Sélection des tâches + estimation Story Points" },
-            { num: "03", label: "Sprint (2 semaines)",  desc: "Développement itératif → livrable fonctionnel" },
+            { num: "03", label: "Sprint (2 semaines)", desc: "Développement itératif → livrable fonctionnel" },
             { num: "04", label: "Revue & Démonstration", desc: "Démo à l’encadrante + feedback intégré" },
-            { num: "05", label: "Rétrospective",        desc: "Amélioration du processus à chaque cycle" },
+            { num: "05", label: "Rétrospective", desc: "Amélioration du processus à chaque cycle" },
         ];
         scrumSteps.forEach(({ num, label, desc }, i) => {
             const sy = 2.1 + i * 0.55;
