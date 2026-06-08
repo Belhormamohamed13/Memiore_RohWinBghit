@@ -723,7 +723,7 @@ Les diagrammes de cas d'utilisation formalisent les interactions visibles entre 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\linewidth,height=0.85\textheight,keepaspectratio]{fig_use_case.png}
+\includegraphics[height=0.6\textheight,keepaspectratio]{fig_use_case.png}
 \caption{Diagramme de cas d'utilisation consolidé (Passager, Conducteur, Administrateur)}
 \label{fig:uc-global}
 \end{figure}
@@ -805,13 +805,6 @@ Les fiches descriptives ci-dessous formalisent les six cas d'utilisation les plu
 
 Le diagramme de classes (figure~\ref{fig:classes}) représente la structure statique du domaine. Sa conception a été optimisée pour une projection directe vers un schéma relationnel \textsc{postgresql} normalisé en troisième forme normale.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{fig_class_diagram.png}
-\caption{Diagramme de classes du domaine (alignement \textsc{postgresql})}
-\label{fig:classes}
-\end{figure}
-
 Le modèle est organisé autour de la classe \texttt{User}, qui agrège les informations communes à tous les utilisateurs. La classe \texttt{Role} (passager, conducteur, administrateur) permet à un même utilisateur de cumuler plusieurs rôles via la table d'association \texttt{UserRole}. Le domaine s'articule autour de quatre agrégats~:
 \begin{itemize}
   \item \textbf{Transport~:} \texttt{Trip}, \texttt{TripRequest}, \texttt{Route}, \texttt{Booking}, \texttt{Vehicle}.
@@ -819,6 +812,13 @@ Le modèle est organisé autour de la classe \texttt{User}, qui agrège les info
   \item \textbf{Identité~:} \texttt{IdentityVerification}, \texttt{FaceEmbedding}, \texttt{FraudEvent}.
   \item \textbf{Communication~:} \texttt{Chat}, \texttt{Message}, \texttt{Notification}, \texttt{Review}.
 \end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{fig_class_diagram.png}
+\caption{Diagramme de classes du domaine (alignement \textsc{postgresql})}
+\label{fig:classes}
+\end{figure}
 
 \subsection{Description des classes}
 

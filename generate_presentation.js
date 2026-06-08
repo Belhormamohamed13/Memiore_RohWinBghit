@@ -362,7 +362,7 @@ async function buildPresentation() {
     }
 
     // =========================================================================
-    // SLIDE 02 — Plan de la Présentation (3×3 grid)
+    // SLIDE 02 — Plan de la Présentation (4+3 Grid with Premium Styling)
     // =========================================================================
     {
         const s = createSlide("PLAN DE LA PRÉSENTATION");
@@ -373,20 +373,20 @@ async function buildPresentation() {
         });
 
         const plans = [
-            ["01", "Introduction & Problématique", "Contexte, problème, hypothèses"],
-            ["02", "Contexte & Cadre Légal", "Concurrence, Loi 25-11"],
-            ["03", "Méthodologie & Architecture", "Agile, Stack, KYC, Architecture"],
-            ["04", "Conception & Modélisation", "Use Case, Classes, Déploiement"],
-            ["05", "Résultats & Validation", "Tests Jest, SUS, Hypothèses"],
-            ["06", "Modèle Économique", "BMC, Revenus, IP"],
-            ["07", "Conclusion & Perspectives", "Bilan & Évolutions futures"],
+            ["01", "Introduction & Contexte", "Mobilité inter-wilayas • Chiffres clés", icons.route],
+            ["02", "Problématique & Objectifs", "Confiance • KYC • Hypothèses", icons.shieldG],
+            ["03", "Étude de l'Existant", "Concurrence • Gaps • Loi 25-11", icons.magnifyingGlass],
+            ["04", "Analyse & Conception", "Use Case • UML • Classes", icons.sitemap],
+            ["05", "Architecture & Technologies", "Stack • KYC • Microservices", icons.network],
+            ["06", "Réalisation & Démonstration", "Prototype • Flux passager", icons.mobile],
+            ["07", "Résultats & Conclusion", "Tests Jest • SUS 71.6 • Perspectives", icons.trend],
         ];
 
         // Layout: 4 cards on top row, 3 cards on bottom row (centered)
         const gridStartY = 1.55;
-        const colW = 2.1, rowH = 1.55, gap = 0.15;
+        const colW = 2.1, rowH = 1.6, gap = 0.15;
 
-        plans.forEach(([num, title, sub], i) => {
+        plans.forEach(([num, title, sub, icon], i) => {
             let x, y;
             if (i < 4) {
                 // Top row: 4 cards
@@ -399,30 +399,57 @@ async function buildPresentation() {
                 y = gridStartY + rowH + gap;
             }
 
+            const isActive = (num === "01");
+
             s.addShape("roundRect", {
                 x, y, w: colW, h: rowH,
                 fill: { color: C.white },
-                line: { color: C.cardBorder, width: 0.5 },
+                line: { color: isActive ? C.accentGreen : C.cardBorder, width: isActive ? 1.5 : 0.5 },
                 shadow: { type: "outer", blur: 6, offset: 1, angle: 135, color: "0A1F14", opacity: 0.04 },
                 rectRadius: 0.08
             });
 
-            // Number badge
+            if (isActive) {
+                // Bottom green accent line
+                s.addShape("rect", {
+                    x: x + 0.05, y: y + rowH - 0.04, w: colW - 0.1, h: 0.04,
+                    fill: { color: C.accentGreen }, line: { color: C.accentGreen, width: 0 }
+                });
+            }
+
+            // Number badge (dark green pill)
             s.addShape("roundRect", {
-                x: x + (colW - 0.5) / 2, y: y + 0.15, w: 0.5, h: 0.5,
-                fill: { color: C.darkGreen }, line: { color: C.darkGreen, width: 0 }, rectRadius: 0.08
+                x: x + (colW - 0.45) / 2, y: y + 0.08, w: 0.45, h: 0.22,
+                fill: { color: C.darkGreen }, line: { color: C.darkGreen, width: 0 }, rectRadius: 0.11
             });
             s.addText(num, {
-                x: x + (colW - 0.5) / 2, y: y + 0.15, w: 0.5, h: 0.5,
-                fontSize: 16, bold: true, color: C.accentGreen,
+                x: x + (colW - 0.45) / 2, y: y + 0.08, w: 0.45, h: 0.22,
+                fontSize: 9.5, bold: true, color: C.accentGreen,
                 fontFace: "Courier New", align: "center", valign: "middle"
             });
-            s.addText(title, {
-                x: x + 0.1, y: y + 0.75, w: colW - 0.2, h: 0.35,
-                fontSize: 10, bold: true, color: C.deepBlack, fontFace: "Calibri", align: "center", valign: "middle"
+
+            // Icon Container (light green square)
+            s.addShape("roundRect", {
+                x: x + (colW - 0.38) / 2, y: y + 0.36, w: 0.38, h: 0.38,
+                fill: { color: "F0F7F2" }, line: { color: "F0F7F2", width: 0 }, rectRadius: 0.06
             });
+            if (icon) {
+                s.addImage({
+                    data: icon,
+                    x: x + (colW - 0.24) / 2, y: y + 0.43,
+                    w: 0.24, h: 0.24
+                });
+            }
+
+            // Title (Bold, 12pt, Calibri)
+            s.addText(title, {
+                x: x + 0.05, y: y + 0.78, w: colW - 0.1, h: 0.42,
+                fontSize: 12, bold: true, color: C.deepBlack, fontFace: "Calibri", align: "center", valign: "middle"
+            });
+
+            // Subtitle / Description (8.5pt, gray-green)
             s.addText(sub, {
-                x: x + 0.1, y: y + 1.1, w: colW - 0.2, h: 0.35,
+                x: x + 0.05, y: y + 1.25, w: colW - 0.1, h: 0.3,
                 fontSize: 8.5, color: C.mutedText, fontFace: "Calibri", align: "center", valign: "top"
             });
         });

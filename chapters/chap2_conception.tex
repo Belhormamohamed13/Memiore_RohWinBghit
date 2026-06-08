@@ -123,6 +123,8 @@ Le système met en relation trois acteurs humains et plusieurs acteurs technique
 
 \begin{table}[H]
 \centering
+\small
+\renewcommand{\arraystretch}{1.15}
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
 \rowcolor{rohlight}
@@ -219,6 +221,7 @@ US-05 & Admin & En tant qu'administrateur, je veux consulter et traiter la file 
 \label{tab:user-stories}
 \end{table}
 
+\clearpage
 \subsection{Besoins non fonctionnels}
 \label{sec:exigences-nonfonc}
 
@@ -267,7 +270,7 @@ La figure~\ref{fig:uc-global} présente, sur une même vue, les trois acteurs hu
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\linewidth,height=0.85\textheight,keepaspectratio]{fig_use_case.png}
+\includegraphics[height=0.78\textheight,keepaspectratio]{fig_use_case.png}
 \caption{Diagramme de cas d'utilisation consolidé (Passager, Conducteur, Administrateur)}
 \label{fig:uc-global}
 \end{figure}
@@ -305,20 +308,10 @@ Modération et validation \textsc{kyc} & Administrateur & UC-MODERATION \\
   \label{tab:tracabilite}
 \end{table}
 
-\clearpage
 \section{Diagrammes de classes}
 \label{sec:classes}
 
 Le modèle intègre quatre patrons de conception~: \textit{Strategy} et \textit{Factory} pour les paiements, \textit{Repository} pour l'accès aux données, et \textit{Observer} pour la diffusion des événements. La figure~\ref{fig:classes} représente la structure statique du domaine.
-
-\begin{landscape}
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{fig_class_diagram.png}
-\caption{Diagramme de classes du domaine (vue conceptuelle)}
-\label{fig:classes}
-\end{figure}
-\end{landscape}
 
 La classe \texttt{User} est modélisée comme classe mère abstraite, avec trois sous-classes concrètes~: \texttt{Passenger}, \texttt{Driver} et \texttt{Admin}. Le domaine s'articule autour de quatre agrégats~:
 \begin{enumerate}
@@ -329,6 +322,13 @@ La classe \texttt{User} est modélisée comme classe mère abstraite, avec trois
 \end{enumerate}
 
 \begin{landscape}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{fig_class_diagram.png}
+\caption{Diagramme de classes du domaine (vue conceptuelle)}
+\label{fig:classes}
+\end{figure}
+
 \subsection{Description des classes}
 \label{sec:classes-description}
 
@@ -336,8 +336,8 @@ Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs att
 
 \begin{table}[H]
 \centering
-\footnotesize
-\renewcommand{\arraystretch}{1.3}
+\scriptsize
+\renewcommand{\arraystretch}{1.1}
 \begin{tabularx}{\linewidth}{|l|X|X|}
 \hline
 \rowcolor{rohlight}
@@ -498,6 +498,7 @@ aiScores & \texttt{JSONB} & NULLABLE & Payload brut multi-dimensionnel du servic
   \label{tab:dd-kyc}
 \end{table}
 
+\clearpage
 \subsection{Modèle relationnel synthétique}
 \label{sec:modele-relationnel}
 
@@ -710,7 +711,7 @@ La figure~\ref{fig:archi-globale} en présente la vue d'ensemble logique.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\linewidth]{fig_architecture.png}
+\includegraphics[width=0.95\linewidth]{fig_architecture2.png}
 \caption{Architecture globale de \textit{RohWinBghit}}
 \label{fig:archi-globale}
 \end{figure}
@@ -729,7 +730,7 @@ L'ensemble est déployé derrière un \textit{reverse proxy} Nginx assurant la t
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.95\textwidth]{figures/fig_deployment}
+  \includegraphics[width=0.95\textwidth]{figures/fig_deployment2.png}
   \caption{Diagramme de déploiement UML~2.5 --- RohWinBghit}
   \label{fig:deploiement}
 \end{figure}
@@ -743,7 +744,6 @@ Concrètement, le scénario critique de réservation concurrente illustre cette 
 
 Par ailleurs, PostgreSQL offre le type natif \texttt{JSONB} qui permet de stocker les payloads semi-structurés --- tels que les scores flottants multi-dimensionnels retournés par le microservice IA ou les métadonnées de notification push --- sans renoncer aux garanties relationnelles. Les index B-Tree déployés sur le triplet \texttt{(originWilayaId, destinationWilayaId, departureAt)} réduisent la complexité algorithmique de la recherche de trajets de $O(N)$ (balayage séquentiel) à $O(\log N)$ (parcours d'arbre), ce qui préserve des temps de réponse sous la barre des 300~ms même sous forte charge concurrente.
 
-\clearpage
 \section{Modèle de données}
 \label{sec:modele-donnees}
 
