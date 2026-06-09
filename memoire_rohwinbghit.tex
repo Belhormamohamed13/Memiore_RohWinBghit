@@ -169,8 +169,52 @@
 }
 
 %=============================================================================
-\usepackage[backend=biber,style=ieee,sorting=none]{biblatex}
+% ── Bibliographie Personnalisée ────────────────────
+\usepackage[backend=biber, style=numeric, sorting=none, giveninits=false]{biblatex}
 \addbibresource{biblio.bib}
+
+% Format des noms : Nom Prénom (sans virgule)
+\DeclareNameAlias{default}{family-given}
+\DeclareNameAlias{author}{family-given}
+\DeclareNameAlias{editor}{family-given}
+\renewcommand*{\revsdnamepunct}{\space}
+
+% Pas d'italique ni de guillemets pour les titres
+\DeclareFieldFormat{title}{#1}
+\DeclareFieldFormat{booktitle}{#1}
+\DeclareFieldFormat{journaltitle}{#1}
+\DeclareFieldFormat{maintitle}{#1}
+\DeclareFieldFormat{pages}{P~#1}
+\DeclareFieldFormat{page}{P~#1}
+
+% Pas de préfixe "URL:" devant les liens
+\DeclareFieldFormat{url}{\url{#1}}
+
+% Supprimer la date de la fin de l'entrée
+\renewbibmacro*{date}{}
+\renewbibmacro*{issue+date}{}
+
+% Placer la date (année) entre parenthèses après l'auteur/éditeur
+\newbibmacro*{date+parens}{%
+  \iffieldundef{year}
+    {}
+    {\printtext[parens]{\printfield{year}}}}
+
+\renewbibmacro*{author}{%
+  \ifnameundef{author}
+    {}
+    {\printnames{author}%
+     \setunit{\adddot\space}%
+     \usebibmacro{date+parens}%
+     \clearname{author}}}
+
+\renewbibmacro*{editor}{%
+  \ifnameundef{editor}
+    {}
+    {\printnames{editor}%
+     \setunit{\adddot\space}%
+     \usebibmacro{date+parens}%
+     \clearname{editor}}}
 \begin{document}
 %=============================================================================
 

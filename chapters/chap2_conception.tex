@@ -614,7 +614,7 @@ Le flux de paiement multi-méthodes s'appuie sur le patron de conception \textit
     \begin{enumerate}
       \item L'utilisateur téléverse le recto et le verso de sa carte nationale d'identité (CIN).
       \item L'utilisateur effectue une capture vidéo de vivacité (3 secondes).
-      \item Le microservice d'intelligence artificielle procède à l'évaluation asynchrone des descripteurs biométriques à l'aide de réseaux de neurones convolutifs (ArcFace) et d'un pipeline de détection de vivacité.
+      \item Le microservice d'intelligence artificielle procède à l'évaluation asynchrone des descripteurs biométriques à l'aide de réseaux de neurones convolutifs (ArcFace~\cite{deng_arcface_2019}) et d'un pipeline de détection de vivacité.
       \item Le système rend une décision automatique (verified/pending\_review/rejected).
     \end{enumerate}
   \item \textbf{Post-conditions :} Statut \textsc{kyc} mis à jour dans le profil utilisateur.
@@ -659,7 +659,7 @@ La modélisation des processus métier via la notation \textsc{bpmn} (\textit{Bu
 \subsection{Publication d'un trajet}
 \label{sec:bpmn-driver}
 
-La figure~\ref{fig:proc-driver} décrit le parcours du conducteur, depuis son inscription et sa vérification d'identité (KYC) jusqu'à la publication de trajets et l'encaissement de ses revenus. Le processus d'inscription d'un conducteur avec mise en attente \textsc{kyc} s'articule comme suit. L'utilisateur saisit son numéro de téléphone et reçoit un code \textsc{otp} par \textsc{sms}. Après validation, il complète son profil personnel puis enregistre son véhicule. Le système initialise alors son statut de vérification à \textit{unverified} et le redirige vers le parcours \textsc{kyc}~: capture du recto et du verso de la carte nationale d'identité, puis capture vidéo de vivacité (3~secondes). Les artefacts sont téléversés de manière asynchrone vers le microservice FastAPI, qui exécute le pipeline d'inférence en quatre étages (extraction \textsc{ocr}, comparaison faciale ArcFace, détection de vivacité, anti-spoofing). Le résultat est une décision à trois états~: si l'ensemble des scores dépasse les seuils conducteur ($S_{\text{facial}} \geq 0{,}65$, $S_{\text{liveness}} \geq 0{,}65$, $S_{\text{antispoof}} \geq 0{,}60$), le statut passe directement à \textit{verified} et le conducteur peut publier des trajets. Si les scores sont intermédiaires, le dossier est placé en file d'attente \textit{pending\_review} pour examen humain par un administrateur. En cas de score inférieur au seuil d'échec critique ($< 0{,}30$), le système enregistre automatiquement un événement de fraude dans la table \texttt{fraud\_events} et rejette la demande.
+La figure~\ref{fig:proc-driver} décrit le parcours du conducteur, depuis son inscription et sa vérification d'identité (KYC) jusqu'à la publication de trajets et l'encaissement de ses revenus. Le processus d'inscription d'un conducteur avec mise en attente \textsc{kyc} s'articule comme suit. L'utilisateur saisit son numéro de téléphone et reçoit un code \textsc{otp} par \textsc{sms}. Après validation, il complète son profil personnel puis enregistre son véhicule. Le système initialise alors son statut de vérification à \textit{unverified} et le redirige vers le parcours \textsc{kyc}~: capture du recto et du verso de la carte nationale d'identité, puis capture vidéo de vivacité (3~secondes). Les artefacts sont téléversés de manière asynchrone vers le microservice FastAPI, qui exécute le pipeline d'inférence en quatre étages (extraction \textsc{ocr}, comparaison faciale ArcFace~\cite{deng_arcface_2019}, détection de vivacité, anti-spoofing). Le résultat est une décision à trois états~: si l'ensemble des scores dépasse les seuils conducteur ($S_{\text{facial}} \geq 0{,}65$, $S_{\text{liveness}} \geq 0{,}65$, $S_{\text{antispoof}} \geq 0{,}60$), le statut passe directement à \textit{verified} et le conducteur peut publier des trajets. Si les scores sont intermédiaires, le dossier est placé en file d'attente \textit{pending\_review} pour examen humain par un administrateur. En cas de score inférieur au seuil d'échec critique ($< 0{,}30$), le système enregistre automatiquement un événement de fraude dans la table \texttt{fraud\_events} et rejette la demande.
 
 \begin{figure}[H]
 \centering
@@ -751,7 +751,7 @@ Cette section formalise la modélisation mathématique du pipeline de décision 
 
 La modélisation mathématique du pipeline de décision biométrique KYC s'appuie sur trois scores flottants normalisés~:
 \begin{itemize}
-  \item Le score de conformité d'identité ($S_{id}$), mesurant la corrélation par distance cosinus entre l'embedding facial extrait de la carte d'identité nationale (CIN) et l'embedding extrait de la vidéo par l'architecture ArcFace.
+  \item Le score de conformité d'identité ($S_{id}$), mesurant la corrélation par distance cosinus entre l'embedding facial extrait de la carte d'identité nationale (CIN) et l'embedding extrait de la vidéo par l'architecture ArcFace~\cite{deng_arcface_2019}.
   \item Le score de détection de vivacité ($S_{liv}$), évaluant l'authenticité de la présence physique de l'utilisateur.
   \item Le score d'anti-spoofing ($S_{as}$), détectant la présentation de supports de rejeu (écrans, masques ou impressions papier).
 \end{itemize}

@@ -22,7 +22,7 @@ Le covoiturage (\textit{carpooling}) désigne le partage d'un véhicule privé e
 
 Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturage produit une triple valeur~: économique (mutualisation des frais, ~40\,\% d'économie par passager~\cite{blablacar_report_2023}), sociale (accessibilité aux zones mal desservies, démocratisation des déplacements pour les étudiants) et environnementale (réduction du nombre de véhicules, ~110~kg de CO\textsubscript{2} évités par passager/an~\cite{ademe_2022}).
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -65,7 +65,7 @@ L'Algérie présente une géographie singulière~: un territoire de plus de 2,38
 
 Le marché algérien de la mobilité numérique est émergent mais dynamique. Le taux de pénétration du \textit{smartphone} dépasse 75\,\%, et le pays comptait plus de 48~millions d'abonnements Internet mobile actifs en 2024~\cite{arpt_2024}. L'écosystème des paiements électroniques s'est structuré avec les cartes \textbf{CIB} et \textbf{Edahabia}, complétées par \textit{Baridi~Mob}~: plus de \textbf{7~millions d'opérations} de paiement électronique ont été enregistrées sur les premiers mois de 2025~\cite{aps_epaiement_2025}. Enfin, le pays compte plus de 1,7~million d'étudiants, dont une part importante se déplace régulièrement entre wilayas, constituant une base initiale naturelle pour une plateforme inter-wilayas.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[xscale=1.5, yscale=0.07]
@@ -116,19 +116,57 @@ Le marché algérien de la mobilité numérique est émergent mais dynamique. Le
 \section{BlaBlaCar}
 \label{sec:blablacar}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{fig_blablacar}
+  \caption{Interface de l'application BlaBlaCar.}
+  \label{fig:blablacar}
+\end{figure}
+
+La Figure~\ref{fig:blablacar} présente l'interface principale de la plateforme BlaBlaCar~\cite{googleplay_blablacar}, illustrant son fonctionnement dans le cadre du covoiturage longue distance.
+
 BlaBlaCar (France, 2006) reste la référence européenne et internationale du covoiturage longue distance, avec une présence dans 22~pays et plus de 100~millions d'utilisateurs cumulés. Elle offre une structure complète de réservation, une messagerie interne et un système d'évaluation des membres. Son modèle de paiement (carte bancaire internationale obligatoire) et son absence d'implantation locale le rendent inopérant pour le marché national algérien, mais il constitue un modèle fonctionnel de référence.
 
 \section{Yassir}
 \label{sec:yassir}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{fig_yassir}
+  \caption{Interface de l'application Yassir.}
+  \label{fig:yassir}
+\end{figure}
+
+La Figure~\ref{fig:yassir} présente l'interface de commande de l'application Yassir~\cite{googleplay_yassir}, illustrant son modèle de transport à la demande urbain.
+
 Yassir est une application algérienne fondée en 2017, devenue le leader local du \gls{vtc} urbain et s'étendant à la livraison de repas et aux services financiers. Une étude empirique conduite à Ali~Menjeli (Constantine) a montré que son adoption a réduit le temps d'attente moyen et transformé les pratiques de mobilité~\cite{naim_yassir_2024}. 
 
 D'un point de vue architectural, la plateforme Yassir ne propose aucune vérification biométrique de vivacité (\textit{liveness detection}). Son processus d'onboarding conducteur se limite à une vérification documentaire asynchrone, ce qui expose structurellement le système à des attaques par rejeu d'identité~: un acteur malveillant peut soumettre la photographie d'un tiers sans que le système ne détecte l'absence de présence physique. Par ailleurs, son modèle économique reste exclusivement urbain et de transport à la demande (VTC), ne couvrant aucun axe inter-wilayas de covoiturage régulier.
 
-\paragraph{Heetch \& TemTem.} D'autres acteurs urbains algériens comme Heetch (introduit en 2020) et TemTem ont également consolidé le transport urbain à la demande. Ils partagent cependant les mêmes limites que Yassir : focalisation sur les trajets courts intra-wilayas et absence de modules de covoiturage longue distance ou de vérification biométrique KYC intégrée.
+\paragraph{Heetch \& TemTem.}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig_heetch_temtem}
+  \caption{Interfaces des applications Heetch et TemTem.}
+  \label{fig:heetch_temtem}
+\end{figure}
+
+La Figure~\ref{fig:heetch_temtem} présente les interfaces des applications Heetch~\cite{googleplay_heetch} et TemTem~\cite{googleplay_temtem}, mettant en évidence leur orientation urbaine sous forme d'écrans comparatifs.
+
+D'autres acteurs urbains algériens comme Heetch (introduit en 2020) et TemTem ont également consolidé le transport urbain à la demande. Ils partagent cependant les mêmes limites que Yassir : focalisation sur les trajets courts intra-wilayas et absence de modules de covoiturage longue distance ou de vérification biométrique KYC intégrée.
 
 \section{Nroho}
 \label{sec:nroho}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{fig_nroho}
+  \caption{Interface de l'application Nroho.}
+  \label{fig:nroho}
+\end{figure}
+
+La Figure~\ref{fig:nroho} présente l'interface de mise en relation de la plateforme Nroho~\cite{googleplay_nroho}, illustrant son fonctionnement pour le covoiturage en Algérie.
 
 Nroho est une startup algérienne de covoiturage labellisée par le Ministère de l'Économie du Savoir et lauréate du 2\textsuperscript{e}~prix à l'\textit{IsDB Pitch Competition}. L'application revendique plus de 2~000~utilisateurs actifs et propose une vérification d'identité par scan de la \gls{cin} et \textit{selfie}, un \textit{matching} par affinités, un suivi GPS temps réel et un règlement en espèces. 
 
@@ -137,12 +175,30 @@ L'examen technique de son pipeline d'identité révèle cependant une vulnérabi
 \section{inDrive}
 \label{sec:indrive}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{fig_indrive}
+  \caption{Interface de l'application inDrive.}
+  \label{fig:indrive}
+\end{figure}
+
+La Figure~\ref{fig:indrive} présente l'interface de négociation de tarifs et de choix d'axes interurbains (City to City) sur l'application inDrive~\cite{googleplay_indrive}.
+
 inDrive est un acteur international classé application de mobilité partagée \#1 en Algérie au troisième trimestre 2025~\cite{sensortower_algeria_2025}. En décembre~2025, inDrive a étendu son offre vers le covoiturage inter-wilayas (service \textit{City~to~City}) sur une dizaine d'axes initiaux~\cite{indrive_interwilaya_2025}. 
 
 La vérification d'identité y est purement documentaire (non biométrique), ce qui la rend vulnérable aux mêmes vecteurs d'attaque par photographie statique que les acteurs précédents. Plus fondamentalement, l'absence totale d'intégration des moyens de paiement électroniques algériens (\textsc{cib}, \textit{Edahabia}) force la totalité des transactions à s'effectuer en espèces, ce qui non seulement génère une opacité fiscale incompatible avec les exigences de la Loi~18-05 sur le commerce électronique~\cite{loi1805_2018}, mais empêche également la plateforme de mettre en œuvre un mécanisme de séquestre garantissant la protection financière du passager en cas d'annulation.
 
 \section{Covoit'Dz (Université de Tlemcen)}
 \label{sec:covoitdz}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{fig_covoitdz}
+  \caption{Interface de l'application Covoit'Dz.}
+  \label{fig:covoitdz}
+\end{figure}
+
+La Figure~\ref{fig:covoitdz} présente l'interface d'accueil de l'application universitaire Covoit'Dz~\cite{merad_covoitdz_2024}, illustrant le prototype développé pour le partage de trajets.
 
 Développée et soutenue en tant que projet académique au sein du Département d'Informatique de l'Université de Tlemcen~\cite{merad_covoitdz_2024}, l'application Android Covoit'Dz vise spécifiquement à faciliter la mise en relation pour le partage de trajets routiers en Algérie.
 \begin{itemize}
