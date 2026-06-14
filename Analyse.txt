@@ -1,0 +1,2083 @@
+
+--- PAGE 1 ---
+RÉPUBLIQUE ALGÉRIENNE 
+DÉMOCRATIQUE ET POPULAIRE 
+MINISTÈRE DE L'ENSEIGNEMENT 
+SUPÉRIEUR ET DE LA RECHERCHE 
+SCIENTIFIQUE 
+UNIVERSITÉ ABOU BEKR BELKAID — 
+TLEMCEN 
+FACULTÉ DES SCIENCES — 
+DÉPARTEMENT D'INFORMATIQUE 
+MÉMOIRE DE FIN D'ÉTUDES 
+Pour l'obtention du diplôme de Master en Informatique 
+Dans le cadre de l'arrêté ministériel n° 1275 (mécanisme « Un diplôme, une Startup ») 
+Option : Génie Logiciel (GL) 
+THÈME : 
+RohWinBghit (روح وين بغيت) : Conception et réalisation d'une plateforme mobile 
+multiplateforme intelligente de covoiturage inter-wilayas sécurisée adaptée au contexte 
+algérien 
+Réalisé par : 
+●​ AHMED BACHA Djamel Eddine 
+●​ BELHORMA Sidi Mohammed Reduane 
+Encadré par : 
+●​ Mme BENLEDGHEM Rafika, Maître de Conférences, Université de Tlemcen 
+Soutenu publiquement le 15 juin 2026 devant le jury composé de : 
+●​ M. President, MCA (Président) 
+●​ Mme BENLEDGHEM Rafika, MCB (Encadrante) 
+●​ M. Examinateur, MCB (Examinateur) 
+Année universitaire : 2025 / 2026 
+REMERCIEMENTS 
+Au terme de ce travail d'ingénierie et de recherche, nous exprimons notre gratitude envers le 
+Tout-Puissant pour nous avoir accordé la force, la persévérance et les ressources intellectuelles 
+
+--- PAGE 2 ---
+nécessaires à la concrétisation de ce projet. 
+Nous tenons à exprimer notre profonde reconnaissance à notre encadrante, Mme 
+BENLEDGHEM Rafika, pour la rigueur de son suivi pédagogique, sa disponibilité constante, ses 
+orientations méthodologiques avisées et ses précieux conseils tout au long de la rédaction de 
+ce mémoire. 
+Nos remerciements les plus sincères s'adressent aux membres du jury qui ont accepté 
+d'évaluer ce travail de fin d'études et de l'honorer par leur lecture critique. 
+Nous saluons également l'ensemble du corps professoral du Département d'Informatique de la 
+Faculté des Sciences de l'Université de Tlemcen, qui a assuré notre formation scientifique 
+depuis le premier cycle universitaire jusqu'au Master en Génie Logiciel. 
+Enfin, nous remercions chaleureusement nos familles et proches pour leur soutien moral 
+indéfectible, ainsi que tous nos camarades de promotion qui ont partagé et enrichi ce parcours 
+académique. 
+DÉDICACES 
+(Page de dédicace d'AHMED BACHA Djamel Eddine) 
+Je dédie ce travail de fin d'études : 
+À mes parents, pour leur dévouement, leurs sacrifices inestimables et leurs encouragements 
+quotidiens, qui ont rendu mon parcours académique possible. 
+À mes frères et sœurs, pour leur présence constante et leur soutien indéfectible. 
+À toute ma famille, pour son affection et sa confiance. 
+À mon binôme de projet, Sidi Mohammed Reduane, pour son sérieux, sa collaboration 
+scientifique exemplaire et son amitié. 
+AHMED BACHA Djamel Eddine 
+(Page de dédicace de BELHORMA Sidi Mohammed Reduane) 
+Je dédie ce travail de fin d'études : 
+À ma mère, pour son amour inconditionnel, ses prières de chaque instant et son soutien de 
+tous les jours. Que ce mémoire soit le témoignage de ma profonde gratitude. 
+À mon père, pour ses conseils inspirants, sa rigueur morale et sa confiance constante en mon 
+avenir. 
+À mes frères et sœurs, pour leur présence et leur soutien moral. 
+À mon binôme, Djamel Eddine, pour sa persévérance, sa technicité et l'esprit d'équipe 
+exceptionnel dont il a fait preuve durant ces longs mois de recherche. 
+BELHORMA Sidi Mohammed Reduane 
+RÉSUMÉS 
+Résumé (Français) 
+Ce mémoire présente la conception et la réalisation de RohWinBghit, une plateforme mobile 
+multiplateforme de covoiturage inter-wilayas adaptée au marché algérien. Le projet répond à 
+une problématique majeure : l'absence d'un service numérique de confiance pour les 
+déplacements interurbains entre les 69 wilayas, caractérisés par une fragmentation de l'offre et 
+des risques de sécurité. L'architecture logicielle repose sur une application mobile React Native 
+
+--- PAGE 3 ---
+(Expo SDK 54), un back-end modulaire Express.js s'appuyant sur PostgreSQL 16 et Redis 7, et un 
+microservice d'intelligence artificielle FastAPI (Python) dédié à la vérification d'identité 
+biométrique (KYC) avec détection de vivacité. La validation s'appuie sur une suite automatisée 
+de 151 tests Jest (taux de réussite de 97,4 %) et une évaluation d'utilisabilité (SUS = 71,6/100). 
+L'étude de viabilité commerciale, rédigée sous l'arrêté ministériel n° 1275, confirme la durabilité 
+économique de la solution. 
+Mots-clés : Covoiturage, Génie Logiciel, Biométrie KYC, PostgreSQL, Paiement mobile, Arrêté 
+1275. 
+Abstract (English) 
+This thesis introduces RohWinBghit, a dynamic cross-platform carpooling system tailored for 
+long-distance transport across Algeria's 69 wilayas. The platform mitigates high travel costs 
+and user trust deficits through a multi-tier architecture: a React Native mobile client (Expo SDK 
+54), an Express.js back-end with PostgreSQL 16 and Redis 7 databases, and a specialized 
+Python FastAPI microservice executing real-time biometric identity verification (KYC) with 
+anti-spoofing and liveness detection. The system features a custom dynamic pricing model and 
+local electronic payments. System validation was executed using an automated Jest suite 
+(97.4% pass rate across 151 tests) alongside a standardized System Usability Scale study (SUS = 
+71.6/100). Elaborated within the regulatory framework of Decree 1275, the business feasibility 
+study confirms the market potential of the startup. 
+Keywords: Carpooling, Software Engineering, Biometric KYC, PostgreSQL, Mobile payment, 
+Decree 1275. 
+ملخص (Arabe) 
+يقدم هذا البحث تصميم وتطوير منصة "RohWinBghit"، وهي منصة هاتفية متعددة األنظمة مخصصة لمشاركة السيارات بين الواليات 
+الـ 
+69
+ في 
+.الجزائر.
+ .تعتم
+البني
+البرمجي
+المقترح
+عل
+تطبي
+نقا
+باستخدا React Native (Expo SDK 54)وواجه
+خلفي Express.j
+ sمدعوم
+بقاعد
+بيانا PostgreSQL 1 6وذاكر Redis 7بلاإضاف
+إل
+خدم
+ذكا
+اصطناع FastAPI (Python )للتحق
+البيومتر
+م
+الهوي (KYC )م
+كش
+الحيوي
+ومقاوم
+التزيي
+ت
+ة
+ق ن
+م 
+151
+ا
+ا Je
+st
+ة
+ح 9
+7
+4 .
+4% ،
+سة
+ية
+ي ة (SUS = 71.6/100.)
+كد
+سة
+و ى
+ة،
+دة في
+ار
+ار
+ري 1257،
+مة
+ية
+ية
+دة
+ذه
+كة
+الكلمات المفتاحية : مشاركة 
+،السيارات هندسة 
+،البرمجيات التحقق 
+،البيومتري الدفع 
+،اإللكتروني القرار 
+1275
+. 
+INTRODUCTION GÉNÉRALE 
+Contexte du projet 
+La mobilité inter Wilayas constitue l'un des défis d'infrastructure majeurs de l'Algérie 
+contemporaine. Avec un territoire de 2 381 741 km² divisé en 69 wilayas et une population 
+nationale qui dépasse 46,8 millions d'habitants 1, la fluidité des transports routiers interurbains 
+représente un enjeu économique et social de premier plan. Les déplacements entre les pôles 
+universitaires régionaux, les centres administratifs et les localités de résidence s'effectuent 
+aujourd'hui au travers de solutions traditionnelles fragmentées : lignes de bus privées aux 
+
+--- PAGE 4 ---
+horaires rigides, taxis collectifs inter-wilayas ou groupes de covoiturage informels sur les 
+réseaux sociaux. Ces alternatives souffrent d'une forte asymétrie de l'information, de tarifs 
+volatils et d'un manque absolu de garanties sécuritaires. 
+Si le concept de transport collaboratif ou covoiturage (carpooling) s'est largement démocratisé 
+à l'échelle internationale grâce aux plateformes connectées, aucune solution d'envergure 
+nationale n'a réussi à s'imposer en Algérie pour structurer spécifiquement le transport longue 
+distance. L'émergence d'infrastructures de paiement électronique locales (cartes CIB et 
+Edahabia) et l'évolution rapide de la pénétration de l'Internet mobile à haut débit offrent un 
+cadre technologique propice à la création d'une solution de mise en relation de confiance. 
+Problématique 
+La transition d'un modèle de covoiturage informel et non réglementé vers une plateforme 
+logicielle souveraine et de niveau industriel pose une série de verrous techniques et 
+socioculturels. La problématique scientifique et d'ingénierie de cette thèse de Master s'énonce 
+ainsi : 
+Comment concevoir, structurer et déployer une architecture logicielle distribuée et tolérante 
+aux déconnexions réseau pour le covoiturage longue distance en Algérie, capable d'instaurer 
+un climat d'utilisabilité et de confiance mutuelle par le biais d'un pipeline biométrique 
+automatisé d'identité (KYC), tout en garantissant la cohérence transactionnelle face aux accès 
+concurrents et l'intégration des passerelles de paiement électronique nationales? 
+Hypothèses de travail 
+Afin de répondre à cette problématique, les trois hypothèses scientifiques et techniques 
+suivantes ont été formulées : 
+1.​ Hypothèse H1 : L'intégration d'un pipeline d'authentification biométrique asynchrone à 
+trois niveaux (extraction OCR de la carte d'identité, comparaison faciale par réseaux 
+convolutifs et détection active de vivacité) avec des seuils de décision différenciés par 
+rôle permet d'annihiler les vecteurs d'attaque par rejeu ou spoofing d'identité, surpassant 
+ainsi les mécanismes de contrôle purement documentaires. 
+2.​ Hypothèse H2 : L'implémentation d'une gestion transactionnelle découplée supportant 
+un modèle hybride de paiement (espèces et passerelle électronique locale CIB/Edahabia) 
+intégrée à une interface utilisateur trilingue permet d'atteindre un score d'utilisabilité 
+globale sur l'échelle SUS supérieur ou égal à 68 sur 100 auprès des usagers algériens. 
+3.​ Hypothèse H3 : L'application de mécanismes de tolérance aux pannes réseau 
+(idempotence des requêtes HTTP, mise en cache mémoire adaptative Redis et files de 
+messages asynchrones persistantes) garantit un taux d'exécution des transactions API 
+supérieur ou égal à 99 % sur les axes routiers inter-wilayas soumis à une connectivité 
+mobile intermittente. 
+Objectifs du projet (SMART) 
+Le projet RohWinBghit (روح وين بغيت) poursuit l'objectif principal de concevoir et développer un 
+prototype opérationnel complet de plateforme intelligente et sécurisée de covoiturage longue 
+
+--- PAGE 5 ---
+distance. Les objectifs spécifiques se structurent comme suit : 
+Tableau 1.1 : Objectifs du projet selon la grille SMART 
+Objectif 
+Livrable 
+Délai 
+OG (Global) 
+Prototype de plateforme 
+mobile opérationnel 
+(Android/iOS) et 
+d'administration web, avec 
+un score d'utilisabilité SUS 
+supérieur ou égal à 70 sur 
+100. 
+9 mois 
+OS1 (Méthodologique) 
+Étude de l'art, recueil des 
+exigences de la Loi 25-11, 
+modélisation UML 2.5 et 
+conception de la base de 
+données relationnelle 3NF. 
+4 semaines 
+OS2 (Ingénierie 
+client-serveur) 
+Développement de 
+l'application mobile sous 
+React Native, du serveur 
+API modulaire Express.js et 
+intégration cartographique 
+Mapbox. 
+16 semaines 
+OS3 (Intelligence 
+Artificielle) 
+Réalisation du microservice 
+asynchrone de vérification 
+biométrique KYC sous 
+FastAPI (Python) à l'aide 
+d'InsightFace et ArcFace. 
+6 semaines 
+OS4 (Validation et 
+Intégration) 
+Déploiement des stratégies 
+de test automatisées (Jest), 
+simulation de la passerelle 
+SATIM en sandbox, et étude 
+technico-économique sous 
+l'arrêté 1275. 
+4 semaines 
+Structure du mémoire 
+
+--- PAGE 6 ---
+Le présent document est organisé en trois chapitres techniques et scientifiques : 
+●​ Le Chapitre 1 (Systèmes similaires) dresse l'état de l'art du transport partagé, analyse 
+les spécificités du marché numérique algérien et évalue de manière critique les solutions 
+de transport existantes. 
+●​ Le Chapitre 2 (Exigences du système et Conception) expose l'analyse fonctionnelle et 
+technique, détaille la modélisation UML, documente les choix architecturaux et la 
+modélisation mathématique du pipeline KYC, puis présente le schéma logique de la base 
+de données relationnelle. 
+●​ Le Chapitre 3 (Réalisation et Tests) présente l'implémentation physique des interfaces, 
+détaille les résultats des campagnes de test et justifie les technologies retenues. 
+Enfin, l'Annexe A expose l'étude de faisabilité économique élaborée dans le cadre de l'arrêté 
+ministériel n° 1275 pour la labellisation du projet en startup. 
+CHAPITRE 1 : ÉTUDE DE L'EXISTANT ET 
+SYSTÈMES SIMILAIRES 
+1.1 Introduction 
+Toute démarche rigoureuse d'ingénierie logicielle requiert de circonscrire précisément le 
+domaine métier et technologique au sein duquel l'artefact doit s'insérer. Ce chapitre introductif 
+pose le cadre conceptuel des Systèmes de Transport Intelligents (ITS) et du transport 
+collaboratif. Il analyse ensuite les spécificités de la connectivité et de la transition numérique en 
+Algérie. Enfin, il examine de manière critique les solutions de mobilité urbaines et interurbaines 
+disponibles sur le marché afin de justifier le positionnement scientifique et commercial de la 
+plateforme RohWinBghit. 
+1.2 Contexte et enjeux de la mobilité inter-wilayas en 
+Algérie 
+1.2.1 Mobilité intelligente et connectivité mobile en Algérie 
+Le domaine des Systèmes de Transport Intelligents (ITS - Intelligent Transportation Systems) 
+fait référence à l'intégration synchrone des technologies de l'information et de la 
+communication au sein des infrastructures de transport routier. Dans le cadre de la mobilité 
+partagée longue distance, cette intelligence logicielle se matérialise par : 
+●​ L'appariement dynamique de l'offre et de la demande au travers d'algorithmes de 
+matching géographique spatio-temporels. 
+●​ L'ajustement dynamique de la tarification en fonction des fluctuations de la demande. 
+●​ La réduction de l'asymétrie de l'information et l'établissement d'une confiance numérique 
+mutuelle via des processus automatisés de contrôle d'identité. 
+L'efficacité opérationnelle d'une telle plateforme distribuée en temps réel est intrinsèquement 
+corrélée à la qualité de l'infrastructure de télécommunication mobile disponible sur le territoire 
+national. En Algérie, cette infrastructure a connu une progression majeure, portée par la 
+
+--- PAGE 7 ---
+généralisation de la couverture 4G LTE depuis 2016.2 Néanmoins, l'analyse topologique des 
+axes routiers nationaux reliant les Hauts-Plateaux et le Sud du pays révèle d'importantes zones 
+d'ombre caractérisées par une connectivité intermittente voire totalement indisponible. 
+Ces coupures de liaison mobile imposent d'exclure les architectures logicielles purement 
+synchrones, sous peine d'interrompre l'accès aux billets numériques ou au suivi GPS lors du 
+trajet. Cette contrainte physique justifie l'implémentation de mécanismes de résilience : 
+idempotence transactionnelle via des en-têtes d'idempotence, synchronisation différée à l'aide 
+de caches locaux persistants (SQLite, AsyncStorage) et politiques de retentatives de requêtes 
+avec rétrogradation exponentielle (exponential backoff). 
+1.2.2 Transport collaboratif et covoiturage 
+Le covoiturage (carpooling) se définit comme l'utilisation en commun d'un véhicule terrestre à 
+moteur par un conducteur non professionnel et un ou plusieurs passagers, dans le but 
+d'effectuer ensemble un trajet commun, moyennant un partage équitable des frais de 
+déplacement. Ce modèle collaboratif s'est structuré à l'échelle internationale avec l'avènement 
+des terminaux mobiles équipés de puces de géolocalisation 3, trouvant une illustration de 
+référence avec l'américain Uber (modèle urbain) ou l'européen BlaBlaCar (modèle interurbain). 
+Le développement à grande échelle du covoiturage génère une triple valeur : 
+1.​ Valeur Économique : Une mutualisation des frais de carburant et de péage routier 
+permettant de réduire d'environ 40 % le coût individuel du voyage pour les passagers.4 
+2.​ Valeur Sociale : Une accessibilité accrue des zones périurbaines ou rurales mal 
+desservies par les transports collectifs classiques, facilitant notamment la mobilité 
+pendulaire des étudiants. 
+3.​ Valeur Environnementale : Une optimisation du taux d'occupation des véhicules 
+particuliers, contribuant à la réduction des émissions de gaz à effet de serre sur les 
+principaux axes autoroutiers. 
+Figure 1.1 : Schéma conceptuel de mise en relation et flux transactionnel dans RohWinBghit 
+ 
+ 
+ 
+[Passager] --- (1. Recherche / Réservation d'un trajet) --->​
+                                                                     |​
+                                                       (2. Traitement KYC / Séquestre)​
+                                                                     |​
+[Conducteur] <--- (3. Notification / Acceptation du trajet) ---------+​
+     |​
+     +--- (4. Validation de l'embarquement via Billet QR) ---> [Passager]​
+     |​
+     +--- (5. Trajet actif avec géolocalisation en direct) ---> [Passager]​
+
+--- PAGE 8 ---
+     |​
+     +--- (6. Confirmation et virement des fonds séquestrés) ---> [Compte Conducteur]​
+ 
+1.2.3 Enjeux spécifiques du contexte algérien 
+Avec un territoire d'une superficie de plus de 2,38 millions de kilomètres carrés divisé 
+administrativement en 69 wilayas, l'Algérie fait face à une polarisation des déplacements 
+routiers de passagers. Plusieurs études d'optimisation de flux de transport partagé sur le 
+réseau algérien soulignent la pertinence du covoiturage longue distance pour répondre aux 
+contraintes géographiques locales.5 Quatre facteurs structurent la demande nationale : 
+1.​ La concentration démographique littorale : Engendrant d'intenses mouvements 
+migratoires périodiques (notamment les week-ends et veilles de fêtes) entre les grands 
+centres urbains (Alger, Oran, Constantine, Tlemcen) et les wilayas de l'intérieur du pays. 
+2.​ La saturation des gares routières : Les terminaux de bus et de taxis collectifs souffrent 
+d'une incapacité chronique à absorber les pics d'affluence lors des périodes de départ. 
+3.​ L'attractivité économique : Face à la hausse constante du coût d'achat et d'entretien 
+des véhicules particuliers pour les ménages, l'amortissement des frais de trajet 
+interurbains devient une priorité pour les automobilistes. 
+4.​ La dimension socioculturelle de la sécurité : Le transport informel, bien que pratiqué 
+au travers de forums en ligne, suscite une profonde appréhension liée à l'absence totale 
+de traçabilité des utilisateurs, limitant drastiquement son adoption par les femmes et les 
+étudiants. 
+1.2.4 Marché numérique algérien 
+La faisabilité d'une plateforme de mobilité partagée en Algérie est renforcée par la progression 
+constante des indicateurs du marché numérique : 
+●​ Le taux de pénétration des smartphones au sein de la population active dépasse 
+désormais 75 %. 
+●​ Le parc national des abonnements à Internet mobile actifs s'élève à plus de 48 millions en 
+2024.2 
+●​ L'écosystème financier se structure autour du groupement d'intérêt économique de la 
+monétique (GIE Monétique) et de la Société d'Automatisation des Transactions 
+Interbancaires et de Monétique (SATIM), qui gèrent les cartes de paiement interbancaires 
+(CIB) et la carte Edahabia d'Algérie Poste. Plus de 7 millions d'opérations de paiement en 
+ligne ont ainsi été répertoriées sur les premiers mois de l'année 2025.6 
+1.3 BlaBlaCar (Référence internationale) 
+BlaBlaCar (fondé en France en 2006) est le leader mondial du covoiturage interurbain. Présente 
+dans 22 pays, la plateforme s'appuie sur une mise en relation asynchrone des conducteurs et 
+des passagers, une messagerie instantanée interne et un système de notation bilatérale des 
+profils. Si BlaBlaCar constitue un modèle fonctionnel de référence pour l'ergonomie de ses 
+parcours utilisateurs, son architecture logicielle reste inadaptée au contexte national algérien 
+en raison de : 
+
+--- PAGE 9 ---
+●​ L'obligation d'un paiement en ligne par carte bancaire internationale (Visa, Mastercard), 
+excluant de fait la monnaie fiduciaire nationale et les cartes locales. 
+●​ L'absence d'intégration avec l'infrastructure nationale d'identité, rendant impossible la 
+vérification automatique des pièces d'identité algériennes. 
+1.4 Yassir (Référence de la mobilité urbaine 
+algérienne) 
+Lancée en 2017, la plateforme algérienne Yassir s'est imposée comme le leader incontourné du 
+transport de personnes à la demande (VTC - Voiture de Transport avec Chauffeur) en milieu 
+urbain.7 Ses applications mobiles gèrent la mise en relation synchrone par géolocalisation de 
+proximité immédiate. Néanmoins, l'analyse de son architecture logicielle et fonctionnelle met 
+en évidence plusieurs limitations par rapport au covoiturage inter-wilayas longue distance : 
+●​ Limitation d'usage : Le modèle algorithmique de Yassir est optimisé pour les trajets 
+intra-urbains immédiats et se révèle inadapté pour la planification asynchrone de trajets 
+inter-wilayas longue distance s'étendant sur plusieurs centaines de kilomètres. 
+●​ Faiblesse de la vérification d'identité (KYC) : Le processus d'authentification des 
+chauffeurs repose sur une simple validation administrative humaine différée de 
+documents scannés, sans aucun module de détection active de vivacité faciale (liveness 
+detection) au moment de la connexion. Cette architecture logicielle est vulnérable aux 
+attaques par usurpation ou rejeu d'identité. 
+1.5 Nroho 
+Nroho est une jeune pousse technologique algérienne dédiée au covoiturage interurbain. 
+Lauréate de concours d'innovation, son application propose la recherche et la réservation de 
+places de covoiturage, avec une validation documentaire de la Carte d'Identité Nationale (CIN) 
+et un paiement exclusivement en espèces. L'examen de cette solution fait apparaître deux 
+faiblesses majeures : 
+●​ Vulnérabilité de la sécurité biométrique : Le pipeline d'authentification de l'identité ne 
+comporte aucun réseau de neurones convolutifs (CNN) d'analyse de vivacité ou 
+d'anti-spoofing. Une simple présentation d'un cliché imprimé ou d'un affichage 
+numérique de la pièce d'identité devant le capteur vidéo mobile permet de contourner la 
+validation. 
+●​ Dépendance de paiement et perte de revenus : Le recours exclusif au règlement en 
+espèces empêche la mise en œuvre d'un mécanisme logiciel de séquestre financier. Par 
+conséquent, les usagers contournent la plateforme lors des trajets ultérieurs pour 
+s'affranchir de la commission, privant l'entreprise de sa rentabilité financière. 
+1.6 inDrive 
+inDrive est un acteur technologique international qui s'est positionné en position de force sur le 
+marché du VTC algérien en introduisant un modèle de tarification négociée.8 Fin 2025, 
+l'opérateur a déployé son offre "City to City" dédiée aux liaisons inter-wilayas.9 Les limites de 
+cette solution sont d'ordre réglementaire et transactionnel : 
+●​ Le contrôle d'identité est de type déclaratif et n'offre aucune garantie contre le vol 
+
+--- PAGE 10 ---
+d'identité. 
+●​ L'absence d'intégration des protocoles de paiement nationaux (CIB/Edahabia) contraint 
+l'intégralité des transactions à s'effectuer en espèces, en contradiction avec la Loi 18-05 
+relative au commerce électronique 10, et empêche la plateforme d'appliquer des 
+indemnités automatiques en cas d'annulation abusive de dernière minute par le 
+conducteur. 
+1.7 Covoit'Dz (Université de Tlemcen) 
+Développée et soutenue en tant que projet académique au sein du Département 
+d'Informatique de l'Université de Tlemcen , l'application Android Covoit'Dz vise spécifiquement 
+à faciliter la mise en relation pour le partage de trajets routiers en Algérie. 
+●​ Analyse de la contribution : Le projet démontre l'intérêt méthodologique de l'approche 
+mobile Android pour structurer le marché national, en proposant une modélisation UML 
+et une base de données relationnelle adaptée aux liaisons inter-wilayas. 
+●​ Limitations scientifiques : Covoit'Dz souffre de l'absence totale de modules d'identité 
+biométrique KYC. L'application repose sur un modèle déclaratif vulnérable, sans 
+chiffrement des données personnelles au repos et sans algorithme de tarification 
+dynamique. De plus, elle ne propose aucune intégration monétique avec l'écosystème 
+interbancaire de la SATIM, limitant son champ d'action à un prototype informationnel. 
+1.8 Synthèse comparative 
+Tableau 1.2 : Matrice comparative des plateformes de transport partagé 
+Critère 
+BlaBlaCa
+r 
+Yassir 
+Nroho 
+inDrive 
+Covoit'D
+z 
+RohWinB
+ghit 
+Champ 
+géograp
+hique 
+Internatio
+nal 
+Urbain 
+National 
+National 
+National 
+National 
+National 
+(69 
+wilayas) 
+Focus 
+Inter-Wil
+ayas 
+Oui 
+(Europe) 
+Non 
+Oui 
+Oui (City 
+to City) 
+Oui 
+Oui 
+(Natif) 
+Vérificati
+on KYC 
+Documen
+taire 
+Administr
+ative 
+Documen
+taire 
+Documen
+taire 
+Néant 
+Biométri
+que 
+active 
+Seuils IA 
+par rôle 
+Non 
+Non 
+Non 
+Non 
+Non 
+Oui 
+(Multi-se
+uils) 
+
+--- PAGE 11 ---
+Chiffrem
+ent PII 
+Non 
+documen
+té 
+Non 
+documen
+té 
+Non 
+documen
+té 
+Non 
+documen
+té 
+Non 
+documen
+té 
+AES-256
+-GCM 
+Paiemen
+t 
+CIB/Edah
+abia 
+Non 
+Partiel 
+Non 
+(Espèces) 
+Non 
+(Espèces) 
+Non 
+Sandbox 
+CIB + 
+Espèces 
+Algorith
+me 
+Tarificati
+on 
+Fixe 
+Dynamiq
+ue 
+Fixe 
+Négocié 
+Fixe 
+Surge 
+Pricing (
+) 
+1.9 Limites du marché et positionnement de 
+RohWinBghit 
+L'analyse de l'état de l'art met en exergue cinq lacunes structurelles majeures qui caractérisent 
+l'offre actuelle sur le marché algérien : 
+1.​ Le déficit de confiance et de sécurité physique (Lacune 1) : Les utilisateurs refusent 
+de partager un véhicule avec des inconnus non identifiés de manière robuste. 
+RohWinBghit y répond par l'implémentation d'un pipeline biométrique KYC 
+d'anti-spoofing en temps réel. 
+2.​ L'opacité monétaire et l'absence de séquestre (Lacune 2) : L'absence d'intégration 
+monétique nationale expose les passagers aux annulations unilatérales sans 
+compensation. RohWinBghit conçoit un moteur de paiement extensible (patron Factory) 
+supportant l'intégration en sandbox des protocoles de paiement locaux et la mise en 
+séquestre automatique des transactions. 
+3.​ L'absence d'ancrage local et réglementaire (Lacune 3) : Les plateformes 
+internationales ignorent les contraintes légales locales de traitement des données 
+personnelles. RohWinBghit adopte une architecture respectueuse de la Loi 25-11 en 
+chiffrant les données sensibles au repos. 
+4.​ L'inefficacité des algorithmes d'appariement et d'ajustement (Lacune 4) : Les tarifs 
+statiques ne reflètent pas les réalités de l'offre et de la demande lors des pics de 
+déplacements. RohWinBghit intègre un module de tarification dynamique adaptative. 
+5.​ L'indisponibilité d'outils de supervision et d'arbitrage (Lacune 5) : Les applications de 
+covoiturage manquent d'outils d'administration pour la résolution des litiges ou la 
+validation manuelle des dossiers KYC litigieux. RohWinBghit propose une interface 
+d'administration web complète. 
+
+--- PAGE 12 ---
+CHAPITRE 2 : CONCEPTION ET 
+SPÉCIFICATIONS DES EXIGENCES 
+2.1 Introduction 
+Le passage d'une analyse comparative à la réalisation physique d'un système logiciel complexe 
+exige une phase de spécification et de conception formelle. Ce chapitre détaille la 
+méthodologie de développement unifié adoptée, consigne les exigences fonctionnelles et non 
+fonctionnelles du système, présente les diagrammes de cas d'utilisation UML 2.5 débarrassés 
+de leurs anomalies conceptuelles, formalise les processus métiers au format BPMN, et définit la 
+modélisation mathématique du pipeline biométrique KYC. Enfin, il expose l'architecture 
+multi-services et la structure relationnelle de la base de données. 
+2.2 Analyse des besoins et méthodologie de 
+développement 
+Pour piloter la réalisation de la plateforme distribuée RohWinBghit, nous avons retenu une 
+méthodologie hybride alliant la rigueur analytique du Processus Unifié (UP) et la flexibilité 
+opérationnelle du cadre de travail agile Scrum. Le projet a été planifié en cinq sprints successifs 
+d'une durée de deux semaines chacun. 
+Tableau 2.1 : Déroulement des sprints du projet 
+Sprint 
+Objectif Principal 
+Livrables Techniques 
+Sprint 1 
+Initialisation de 
+l'infrastructure 
+Architecture du monorepo, 
+configuration du serveur 
+API, schéma de base de 
+données relationnelle. 
+Sprint 2 
+Développement des 
+fonctionnalités cœur 
+Module de recherche 
+géographique 
+multi-wilayas, publication 
+de trajets, messagerie 
+temps réel (Socket.IO). 
+Sprint 3 
+Sécurisation biométrique 
+(KYC) 
+Pipeline d'inférence sous 
+FastAPI (Python), 
+intégration d'InsightFace, 
+gestion asynchrone des 
+fichiers. 
+
+--- PAGE 13 ---
+Sprint 4 
+Monétique et tarification 
+Calculateur dynamique de 
+prix (Surge Pricing), patrons 
+de conception 
+Strategy/Factory de 
+paiement. 
+Sprint 5 
+Supervision et validation 
+Panneau d'administration 
+web React, suite de tests 
+unitaires Jest, validation de 
+sécurité et documentation. 
+2.2.1 Enquête utilisateurs et étude de marché 
+Afin de valider scientifiquement les hypothèses de conception auprès des usagers cibles, un 
+questionnaire d'enquête a été diffusé en ligne en mars 2026 auprès de la communauté 
+universitaire de Tlemcen et Oran. L'enquête a recueilli 150 réponses exploitables. 
+Tableau 2.2 : Profil sociodémographique de l'échantillon d'enquête (N = 150) 
+Variable de segmentation 
+Catégorie 
+Proportion 
+Tranche d'âge 
+18-25 ans 
+72 % 
+ 
+26-35 ans 
+19 % 
+ 
+36 ans et plus 
+9 % 
+Statut 
+socio-professionnel 
+Étudiants 
+68 % 
+ 
+Actifs / Salariés 
+32 % 
+Fréquence des voyages 
+interurbains 
+Au moins 1 voyage par 
+semaine 
+41 % 
+ 
+1 à 3 voyages par mois 
+38 % 
+ 
+Moins d'un voyage par mois 
+21 % 
+
+--- PAGE 14 ---
+Tableau 2.3 : Résultats clés du questionnaire d'enquête 
+Indicateur de réponse 
+Pourcentage 
+Le critère de décision prioritaire est la 
+sécurité et la confiance envers le 
+conducteur 
+62 % 
+Le critère de décision prioritaire est le coût 
+du trajet 
+24 % 
+Le critère de décision prioritaire est la 
+flexibilité horaire 
+14 % 
+Privilégient le recours à un paiement par 
+carte de débit locale (CIB/Edahabia) 
+57 % 
+Se déclarent prêts à fournir des données 
+biométriques pour garantir l'identité 
+71 % 
+La confiance accordée aux plateformes de 
+VTC actuelles est faible ou très faible 
+64 % 
+2.3 Spécification des exigences 
+2.3.1 Exigences fonctionnelles 
+Tableau 2.4 : Exigences fonctionnelles du système 
+ID 
+Priorité 
+Description 
+fonctionnelle 
+Acteur 
+principal 
+Cas 
+d'utilisation 
+EF1.1 
+Haute 
+Création de 
+compte et 
+authentificatio
+n sans mot de 
+passe par 
+envoi et 
+validation de 
+Passager, 
+Conducteur 
+UC-AUTH 
+
+--- PAGE 15 ---
+code SMS OTP. 
+EF1.2 
+Haute 
+Vérification 
+automatisée 
+d'identité 
+(KYC) par 
+analyse de la 
+CIN et 
+validation de 
+vivacité vidéo. 
+Passager, 
+Conducteur 
+UC-KYC 
+EF2.1 
+Haute 
+Publication 
+d'une offre de 
+trajet longue 
+distance avec 
+suggestion de 
+prix calculée 
+par 
+l'algorithme de 
+Surge. 
+Conducteur 
+UC-PUB-TRIP 
+EF2.2 
+Haute 
+Recherche 
+multicritère de 
+trajets par 
+wilaya de 
+départ/arrivée 
+et filtres 
+temporels. 
+Passager 
+UC-SEARCH 
+EF2.3 
+Haute 
+Réservation de 
+place avec 
+validation de 
+paiement 
+(espèces ou 
+monétique 
+interbancaire 
+CIB/Edahabia). 
+Passager 
+UC-BOOKING 
+EF3.1 
+Haute 
+Messagerie 
+instantanée 
+bidirectionnell
+Passager, 
+Conducteur 
+UC-CHAT 
+
+--- PAGE 16 ---
+e asynchrone 
+et suivi 
+géographique 
+GPS en direct. 
+EF4.1 
+Haute 
+Console 
+d'administratio
+n web pour la 
+modération 
+des 
+signalements 
+et la revue 
+manuelle des 
+dossiers KYC 
+litigieux. 
+Administrateur 
+UC-MODERATI
+ON 
+2.3.2 Exigences non fonctionnelles 
+●​ ENF1 — Sécurité et Chiffrement (Loi 25-11) : Les documents d'identité et les 
+embeddings faciaux (vecteurs de caractéristiques à 512 dimensions) doivent être chiffrés 
+au repos à l'aide de l'algorithme AES-256-GCM. Toutes les communications réseau 
+doivent s'exécuter via le protocole TLS 1.3. 
+●​ ENF2 — Performance et Latence : Le temps de traitement des requêtes API REST 
+classiques ne doit pas dépasser 200 ms pour le percentile 95. Le temps d'inférence 
+complet du pipeline biométrique (OCR + similarité faciale + détection de vivacité) doit 
+être inférieur à 3 secondes. 
+●​ ENF3 — Scalabilité et Concurrence : L'architecture du back-end doit être sans état 
+(stateless) pour supporter une montée en charge horizontale et s'appuyer sur un cache 
+mémoire Redis pour les opérations d'accès intensives. 
+●​ ENF4 — Disponibilité : Le taux de disponibilité de l'API web doit être supérieur ou égal à 
+99,5 % sur une base mensuelle. 
+●​ ENF5 — Robustesse mobile : L'application mobile doit être tolérante aux pertes de 
+connectivité par le biais d'un cache local persistant permettant la consultation hors-ligne 
+des billets de voyage et des discussions déjà synchronisées. 
+2.4 Modélisation fonctionnelle et cas d'utilisation 
+2.4.1 Identification des acteurs du système 
+●​ Le Passager : Acteur humain principal. Il recherche, réserve et paie des trajets de 
+covoiturage longue distance. 
+●​ Le Conducteur : Acteur humain principal. Il enregistre son véhicule, publie des offres de 
+trajets et transporte les passagers. 
+
+--- PAGE 17 ---
+●​ L'Administrateur : Acteur humain secondaire. Il supervise la plateforme, arbitre les litiges 
+et valide manuellement les dossiers KYC en attente de revue. 
+●​ Le Service KYC (IA) : Acteur système interne. Il effectue les traitements asynchrones 
+d'intelligence artificielle pour la vérification biométrique. 
+●​ La Passerelle de Paiement (SATIM) : Acteur système externe. Elle traite les flux 
+monétiques sécurisés pour les transactions par carte bancaire locale. 
+2.4.2 Diagramme de cas d'utilisation global 
+La modélisation UML 2.5 a été assainie pour éliminer les erreurs sémantiques récurrentes : 
+1.​ Désencombrement d'authentification : Le cas d'utilisation UC-AUTH (S'inscrire / Se 
+connecter) n'est plus lié graphiquement par des liaisons d'inclusion <<include>> 
+répétitives à l'ensemble des cas d'utilisation transactionnels. L'authentification est 
+modélisée comme une précondition d'accès au système documentée textuellement. 
+2.​ Correction de la dépendance de recherche : L'ancienne relation <<include>> entre 
+UC-SEARCH (Rechercher un trajet) et UC-BOOKING (Réserver une place) a été 
+supprimée. La recherche n'aboutissant pas obligatoirement à une réservation, ce flux 
+dynamique relève de la modélisation comportementale (diagrammes d'activité et de 
+séquence) et non d'une dépendance statique d'inclusion. 
+Figure 2.1 : Diagramme de cas d'utilisation consolidé et assaini 
+ 
+ 
+ 
+   [Passager] -------------> (UC-SEARCH : Rechercher un trajet)​
+        |                         |​
+        |                         v <<extend>>​
+        |----> (UC-BOOKING : Réserver et payer un trajet) <-----​
+        |​
+   [Utilisateur] ------------> (UC-KYC : Soumettre vérification d'identité) <--->​
+        |​
+   [Conducteur] -------------> (UC-PUB-TRIP : Publier un trajet)​
+        |​
+   [Administrateur] ---------> (UC-MODERATION : Revue des dossiers et litiges)​
+ 
+2.5 Spécification des scénarios dynamiques 
+(Diagrammes de séquences) 
+2.5.1 Inscription asynchrone par OTP (UC-AUTH) 
+ 
+
+--- PAGE 18 ---
+ 
+ 
+Passager               Serveur API REST                Service SMS OTP               Base PostgreSQL​
+   |                           |                              |                              |​
+   |--- Saisie num. tél. ----->|                              |                              |​
+   |                            |--- Génération OTP & Redis -->|                              |​
+   |                            |                               |                              |​
+   |                            |--- Requête d'envoi SMS ------>|                              |​
+   |<-- Réception Code SMS -----+                              |                              |​
+   |                                                           |                              |​
+   |--- Soumission Code OTP --->|                              |                              |​
+   |                            |--- Vérification Redis --------|                              |​
+   |                            |--- Enregistrement utilisateur ---------------------------->|​
+   |<-- Émission Jeton JWT -----+                              |                              |​
+ 
+2.5.2 Pipeline d'authentification biométrique KYC asynchrone 
+(UC-KYC) 
+Le processus d'enrôlement et de contrôle d'identité est hautement sensible et s'organise en 
+trois états décisionnels : 
+Figure 2.2 : Diagramme de séquence du pipeline biométrique KYC 
+ 
+ 
+ 
+Utilisateur             Application Mobile             Serveur API REST             Service IA (FastAPI)​
+     |                           |                            |                              |​
+     |--- Soumet CIN & Vidéo --->|                            |                              |​
+     |                           |--- POST /kyc/upload ------>|                              |​
+     |                           |                            |--- Enfile tâche Redis/Bull ->|​
+     |                           |                            |                              |--- Traitement OCR,​
+     |                           |                            |                              |    ArcFace & Liveness​
+     |                           |                            |                              |--- Decision (Score)​
+     |                           |                            |<-- POST /kyc/callback -------|​
+     |                           |<-- Notification push ------|                              |​
+ 
+Le traitement d'inférence par le microservice Python FastAPI s'exécute selon une logique 
+asynchrone découplée. Le serveur de base de données PostgreSQL émet un événement de 
+
+--- PAGE 19 ---
+notification asynchrone vers le bus applicatif pour déclencher la mise à jour en temps réel de 
+l'état de l'utilisateur à l'aide de protocoles de communication bidirectionnels (WebSockets). 
+2.6 Modélisation des processus métiers (BPMN) 
+2.6.1 Processus métier de publication et de réservation (Passager / 
+Conducteur) 
+La coordination des activités transactionnelles de covoiturage se conforme à une logique 
+rigoureuse de modélisation de processus : 
+Figure 2.3 : Modélisation BPMN du processus de réservation 
+ 
+ 
+ 
+[Conducteur] ------------ (Publier Trajet) ------------>​
+                                                              |​
+[Passager]   --> (Recherche) --> (Réserver) --> (Paiement CIB en séquestre)​
+                                                              |​
+                                                              v​
+    <-------------------------------------- (Bloquer Place)​
+                                                              |​
+[Conducteur] <--- (Notification de Réservation) --------------+​
+ 
+2.6.2 Le flux transactionnel de séquestre monétique 
+Pour pallier le risque d'évasion financière identifié sur les plateformes concurrentes d'espèces, 
+RohWinBghit implémente un mécanisme logiciel de séquestre financier : 
+1.​ Phase d'engagement : Lors de la confirmation d'une demande de réservation par le 
+passager via carte CIB/Edahabia, les fonds sont prélevés de son compte monétique par 
+la passerelle SATIM et portés au crédit du compte de séquestre de la plateforme (wallet 
+système). 
+2.​ Phase de blocage : Les fonds restent indisponibles pour le conducteur pendant toute la 
+durée du trajet. 
+3.​ Phase de déblocage : Après confirmation de la réalisation du trajet par les coordonnées 
+de géolocalisation GPS des deux parties et en l'absence de contestation introduite par le 
+passager sous 24 heures, les fonds sont virés automatiquement sur le compte virtuel du 
+conducteur, déduction faite d'une commission logicielle de 12 %. En cas d'annulation non 
+justifiée par le conducteur, le passager est remboursé à 100 %. 
+2.7 Conception de la sécurité biométrique (KYC) 
+La modélisation mathématique du pipeline de décision biométrique KYC s'appuie sur trois 
+
+--- PAGE 20 ---
+scores flottants normalisés : 
+●​ Le score de conformité d'identité (
+), mesurant la corrélation par distance cosinus 
+entre l'embedding facial extrait de la CIN et l'embedding extrait de la vidéo par 
+l'architecture ArcFace. 
+●​ Le score de détection de vivacité (
+), évaluant l'authenticité de la présence physique. 
+●​ Le score d'anti-spoofing (
+), détectant la présentation de supports de rejeu (écrans, 
+masques ou impressions). 
+Les taux d'erreur du pipeline sont définis selon les métriques internationales d'évaluation de la 
+biométrie : 
+●​
+ (Attack Presentation Classification Error Rate) : Taux de classification erronée 
+des présentations d'attaque. 
+●​
+ (Bona Fide Presentation Classification Error Rate) : Taux de classification 
+erronée des présentations légitimes. 
+●​
+ (Average Classification Error Rate) : Taux moyen d'erreur de classification. 
+Ces métriques sont formalisées au moyen des équations mathématiques suivantes : 
+ 
+ 
+ 
+Où 
+ est le nombre de présentations d'attaque soumises lors de l'évaluation, 
+ est le 
+nombre de présentations légitimes, et 
+ est la fonction de décision binaire de l'algorithme 
+d'identification, retournant la valeur 1 pour une attaque détectée et 0 pour un enrôlement 
+accepté. 
+La plateforme adopte une stratégie d'analyse multi-seuils différenciée selon la criticité des rôles 
+
+--- PAGE 21 ---
+: 
+●​ Profil Conducteur (Haute criticité) :​
+ 
+●​ Profil Passager (Criticité moyenne) :​
+ 
+2.8 Architecture logique du système 
+Le système s'articule autour d'une architecture multi-services modulaire hautement découplée 
+: 
+Figure 2.4 : Schéma de l'architecture multi-services de la plateforme 
+ 
+ 
+ 
+ <--- (HTTPS / WSS) --->​
+                                                           |​
+                                            +--------------+--------------+​
+                                            |                             |​
+                                            v                             v​
+                                         ​
+                                            |                             |​
+                                 +----------+----------+                  |​
+                                 |                     |                  |​
+                                 v                     v                  v​
+                               <----------+​
+ 
+
+--- PAGE 22 ---
+2.8.1 Justification de la conformité SOLID 
+L'ensemble de l'architecture logicielle de l'API REST respecte les principes fondamentaux SOLID 
+: 
+●​ Single Responsibility Principle (SRP) : Séparation stricte entre les contrôleurs de routes, 
+les services de logique métier, et les couches d'accès aux données (modèle Repository). 
+●​ Open/Closed Principle (OCP) : Le moteur de paiement intègre des interfaces 
+extensibles basées sur des patrons de conception. L'introduction d'une nouvelle méthode 
+de paiement (ex. Stripe) n'exige aucune modification du code transactionnel existant. 
+●​ Liskov Substitution Principle (LSP) : L'usage de contrats d'interfaces robustes en 
+TypeScript garantit qu'une classe dérivée de persistance de données peut remplacer sa 
+classe mère sans altérer le fonctionnement du système. 
+●​ Interface Segregation Principle (ISP) : Les contrats d'API sont découpés en 
+micro-interfaces spécialisées, évitant aux composants clients d'implémenter des 
+méthodes inutiles. 
+●​ Dependency Inversion Principle (DIP) : Les services applicatifs dépendent 
+d'abstractions d'accès aux données et non d'implémentations physiques de bases de 
+données, l'injection de dépendances étant assurée au démarrage du conteneur. 
+2.9 Modélisation statique et base de données 
+2.9.1 Contrôle transactionnel de concurrence sous PostgreSQL 16 
+Pour prévenir de manière absolue l'anomalie de double réservation concurrentielle 
+(overbooking), la méthode de réservation recourt à un verrouillage pessimiste au niveau de la 
+base de données relationnelle PostgreSQL 16. L'isolation transactionnelle par défaut de type 
+Read Committed est insuffisante pour bloquer les requêtes d'accès simultanées sur la dernière 
+place de covoiturage disponible. La logique d'exécution s'articule comme suit : 
+ 
+ 
+ 
+SQL 
+-- Début de la transaction ACID de réservation​
+BEGIN;​
+​
+-- Sélection de la ligne du trajet ciblé en appliquant un verrou de mise à jour exclusif​
+SELECT available_seats ​
+FROM trips ​
+WHERE id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d' ​
+FOR UPDATE;​
+​
+
+--- PAGE 23 ---
+-- L'exécution de la requête bloque toute transaction concurrente tentant d'accéder à cette ligne.​
+-- Le serveur d'API exécute le contrôle métier :​
+-- Si available_seats >= places_demandees, la transaction se poursuit.​
+​
+UPDATE trips ​
+SET available_seats = available_seats - 1 ​
+WHERE id = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';​
+​
+INSERT INTO bookings (id, trip_id, passenger_id, seats, status) ​
+VALUES ('c2a3e5f2-1a2b-3c4d-5e6f-7a8b9c0d1e2f', '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d', 
+'e3f4a5b6-c7d8-9e0f-1a2b-3c4d5e6f7a8b', 1, 'confirmed');​
+​
+-- Validation de la transaction et libération automatique du verrou​
+COMMIT;​
+ 
+L'application de cette approche transactionnelle ACID garantit la cohérence des données 
+financières et de réservation, éliminant les limites inhérentes aux modèles NoSQL non 
+relationnels à cohérence éventuelle. 
+2.9.2 Modèle conceptuel et logique de données (MLD) 
+La structure de la base de données relationnelle normalisée en 3NF est formalisée au travers du 
+schéma relationnel suivant : 
+ 
+ 
+ 
+User(id: UUID, phone: VARCHAR, email: VARCHAR, firstName: VARCHAR, lastName: 
+VARCHAR, passwordHash: VARCHAR, verificationStatus: ENUM, createdAt: TIMESTAMPTZ)​
+Vehicle(id: UUID, driverId: UUID#, brand: VARCHAR, model: VARCHAR, licensePlate: 
+VARCHAR, color: VARCHAR, seatsAvailable: SMALLINT, isActive: BOOLEAN)​
+Wilaya(id: INTEGER, code: VARCHAR, nameFr: VARCHAR, nameAr: VARCHAR, latitude: 
+NUMERIC, longitude: NUMERIC)​
+Trip(id: UUID, driverId: UUID#, vehicleId: UUID#, originWilayaId: INTEGER#, 
+destinationWilayaId: INTEGER#, departureAt: TIMESTAMPTZ, pricePerSeat: NUMERIC, 
+availableSeats: SMALLINT, status: ENUM, createdAt: TIMESTAMPTZ)​
+Booking(id: UUID, tripId: UUID#, passengerId: UUID#, seats: SMALLINT, totalPrice: 
+NUMERIC, status: ENUM, paymentStatus: ENUM, createdAt: TIMESTAMPTZ)​
+Payment(id: UUID, bookingId: UUID#, method: ENUM, amount: NUMERIC, status: ENUM, 
+transactionRef: VARCHAR, createdAt: TIMESTAMPTZ)​
+IdentityVerification(id: UUID, userId: UUID#, faceMatchScore: REAL, livenessScore: REAL, 
+antispoofScore: REAL, status: ENUM, role: ENUM, aiScores: JSONB)​
+
+--- PAGE 24 ---
+Wallet(id: UUID, userId: UUID#, balance: NUMERIC, currency: VARCHAR)​
+WalletTransaction(id: UUID, walletId: UUID#, type: ENUM, amount: NUMERIC, reference: 
+VARCHAR, createdAt: TIMESTAMPTZ)​
+ 
+2.10 Dictionnaires de données des tables critiques 
+2.10.1 Table users (Informations de compte) 
+Tableau 2.5 : Dictionnaire de données de la table users 
+Attribut 
+Type de données 
+Contraintes 
+physiques 
+Description 
+fonctionnelle 
+id 
+UUID 
+Clé Primaire, non 
+nul 
+Identifiant unique 
+universel version 4. 
+phone 
+VARCHAR(15) 
+Unique, non nul 
+Numéro de 
+téléphone mobile 
+au format algérien. 
+email 
+VARCHAR(255) 
+Unique, nullable 
+Adresse de 
+messagerie 
+électronique. 
+firstName 
+VARCHAR(100) 
+Non nul 
+Prénom de 
+l'utilisateur. 
+lastName 
+VARCHAR(100) 
+Non nul 
+Nom de famille de 
+l'utilisateur. 
+passwordHash 
+TEXT 
+Non nul 
+Empreinte de 
+sécurité du mot de 
+passe haché par 
+bcrypt. 
+verificationStatus 
+VARCHAR(20) 
+Non nul, défaut 
+'unverified' 
+Statut de 
+vérification 
+d'identité de 
+l'utilisateur. 
+createdAt 
+TIMESTAMPTZ 
+Non nul, défaut 
+Date et heure de 
+
+--- PAGE 25 ---
+NOW() 
+création de 
+l'enregistrement. 
+2.10.2 Table trips (Offres de trajets) 
+Tableau 2.6 : Dictionnaire de données de la table trips 
+Attribut 
+Type de données 
+Contraintes 
+physiques 
+Description 
+fonctionnelle 
+id 
+UUID 
+Clé Primaire, non 
+nul 
+Identifiant unique 
+universel du trajet. 
+driverId 
+UUID 
+Clé Étrangère 
+référençant 
+users.id, non nul 
+Conducteur 
+publiant le trajet. 
+vehicleId 
+UUID 
+Clé Étrangère 
+référençant 
+vehicles.id, non nul 
+Véhicule affecté au 
+trajet. 
+originWilayaId 
+INTEGER 
+Clé Étrangère 
+référençant 
+wilayas.id, non nul 
+Wilaya 
+géographique de 
+départ. 
+destinationWilayaId 
+INTEGER 
+Clé Étrangère 
+référençant 
+wilayas.id, non nul 
+Wilaya 
+géographique 
+d'arrivée. 
+departureAt 
+TIMESTAMPTZ 
+Non nul, indexé 
+Date et heure 
+planifiées de 
+départ. 
+pricePerSeat 
+NUMERIC(10,2) 
+Non nul, validation 
+ 
+Tarif unitaire d'une 
+place de 
+covoiturage en 
+DZD. 
+availableSeats 
+SMALLINT 
+Non nul, validation 
+Nombre de sièges 
+
+--- PAGE 26 ---
+ 
+encore vacants. 
+status 
+VARCHAR(20) 
+Non nul, défaut 
+'active' 
+État courant du 
+trajet (actif, 
+complété, annulé). 
+2.10.3 Table bookings (Transactions de réservation) 
+Tableau 2.7 : Dictionnaire de données de la table bookings 
+Attribut 
+Type de données 
+Contraintes 
+physiques 
+Description 
+fonctionnelle 
+id 
+UUID 
+Clé Primaire, non 
+nul 
+Identifiant unique 
+universel de la 
+réservation. 
+tripId 
+UUID 
+Clé Étrangère 
+référençant trips.id, 
+non nul 
+Trajet de 
+covoiturage 
+réservé. 
+passengerId 
+UUID 
+Clé Étrangère 
+référençant 
+users.id, non nul 
+Passager effectuant 
+la réservation. 
+seats 
+SMALLINT 
+Non nul, validation 
+ 
+Nombre de places 
+réservées par 
+l'usager. 
+totalPrice 
+NUMERIC(10,2) 
+Non nul 
+Montant total de la 
+transaction 
+financière en DZD. 
+status 
+VARCHAR(20) 
+Non nul, défaut 
+'pending' 
+Statut de la 
+réservation 
+(confirmée, 
+annulée). 
+paymentStatus 
+VARCHAR(20) 
+Non nul, défaut 
+État du règlement 
+
+--- PAGE 27 ---
+'unpaid' 
+financier (non payé, 
+payé, remboursé). 
+CHAPITRE 3 : RÉALISATION, TESTS ET 
+DÉPLOIEMENT 
+3.1 Introduction 
+La phase de réalisation logicielle concrétise les spécifications conceptuelles et architecturales 
+élaborées au chapitre précédent en un produit fini, fonctionnel et évaluable. Ce chapitre 
+documente l'implémentation physique des parcours applicatifs sur smartphone et console web 
+d'administration. Il détaille ensuite les résultats des campagnes de tests automatisées et 
+d'évaluation d'utilisabilité de type System Usability Scale (SUS), puis justifie le choix des 
+technologies industrielles retenues pour l'infrastructure de production. 
+3.2 Implémentation des parcours utilisateurs 
+3.2.1 Application mobile (React Native / Expo SDK 54) 
+L'interface mobile de RohWinBghit est unifiée au sein d'une unique base de code 
+multiplateforme optimisée pour iOS et Android. Elle comporte 62 écrans de navigation 
+dynamiques permettant de basculer en temps réel entre le rôle passager et conducteur. 
+●​ Parcours KYC biométrique : L'utilisateur est guidé au travers d'une interface 
+d'enrôlement claire. Un masque de cadrage dynamique s'affiche à l'écran pour assister la 
+capture d'image recto et verso de la CIN. Le module de détection de vivacité faciale 
+requiert de l'usager d'effectuer un mouvement de tête devant la caméra, le flux vidéo 
+étant traité en temps réel par un thread local léger avant transmission chiffrée. 
+●​ Parcours de réservation et suivi : Le passager accède à un moteur de recherche 
+géographique performant permettant de filtrer les offres sur les 69 wilayas. Une fois la 
+réservation validée, un billet numérique contenant un code QR unique et infalsifiable 
+(contenant la signature cryptographique du tuple (bookingId, passengerId, tripId)) est 
+généré. L'intégration de l'API Mapbox GL permet au passager de visualiser l'itinéraire 
+complet et la progression en temps réel du véhicule par rafraîchissement asynchrone des 
+coordonnées géographiques transmises via Socket.IO. 
+3.2.2 Application d'administration web (React 18 + Vite) 
+Conçue sous forme d'une application monopage (SPA) sécurisée, la console web 
+d'administration offre aux gestionnaires de la plateforme une visibilité globale sur l'état de 
+l'écosystème : 
+●​ Un tableau de bord de supervision financière affichant les volumes de transactions 
+cumulés, l'état des comptes de séquestre SATIM et l'historique des commissions 
+
+--- PAGE 28 ---
+prélevées. 
+●​ Une file d'attente de modération manuelle pour l'évaluation des dossiers KYC litigieux. 
+L'interface affiche de manière juxtaposée le scan documentaire de la CIN, le selfie extrait 
+de la vidéo de vivacité, et les scores numériques générés par le microservice d'IA. 
+L'administrateur peut valider ou rejeter le dossier, une notification push étant 
+immédiatement expédiée à l'usager concerné. 
+3.3 Résultats des tests et évaluation quantitative 
+3.3.1 Stratégie de tests automatisés (Jest) 
+Afin de certifier la robustesse structurelle de l'API REST Node.js, une suite de 151 cas de tests 
+unitaires et d'intégration a été implémentée avec le framework Jest : 
+●​ Tests unitaires (107 tests) : Ciblent de manière isolée la logique métier de l'application 
+(calcul de la tarification dynamique, algorithmes de hachage de mots de passe, 
+génération des codes SMS OTP, machine d'états finis des états de trajets). Taux de 
+réussite : 100 %. 
+●​ Tests d'intégration (44 tests) : Validant l'interopérabilité fonctionnelle entre les services 
+applicatifs, le serveur de cache Redis 7 et la base de données relationnelle PostgreSQL 
+16. Taux de réussite : 90,9 % (4 échecs mineurs identifiés sous contraintes de charge 
+extrême, liés à des délais de libération de verrous transactionnels concurrents en 
+environnement d'intégration non optimisé). 
+Taux de réussite global de la suite de tests Jest : 97,4 %. 
+3.3.2 Évaluation d'utilisabilité normalisée (SUS) 
+Pour valider l'hypothèse H2, une campagne d'évaluation d'utilisabilité a été menée en 
+conditions réelles auprès de 18 participants représentatifs de la population cible algérienne 
+(étudiants et conducteurs réguliers interurbains). L'étude s'appuie sur le questionnaire 
+standardisé de l'échelle SUS (System Usability Scale) : 
+●​ Résultat global : La plateforme RohWinBghit a obtenu un score moyen de 71,6 sur 100. 
+●​ Interprétation (Barème de Bangor) : Selon la classification de Bangor et al. , tout 
+système obtenant un score SUS supérieur à 68 est qualifié d'utilisabilité « bonne ». 
+L'hypothèse H2 est par conséquent validée scientifiquement. 
+●​ Analyse différentielle par rôle : 
+○​ Score du panel passagers : 74,2 sur 100 (attribué à la fluidité du parcours de recherche 
+géographique et du billet QR). 
+○​ Score du panel conducteurs : 68,9 sur 100 (le score inférieur reflète la friction cognitive 
+générée par la rigueur du processus d'enrôlement biométrique KYC, justifiant l'ajout de 
+tutoriels vidéo explicatifs lors de la première inscription). 
+3.4 Choix technologiques et architecture 
+d'infrastructure 
+
+--- PAGE 29 ---
+3.4.1 Langages et Frameworks 
+●​ TypeScript (v5.0) : Retenu comme langage pivot pour l'intégralité de l'écosystème web 
+et mobile (client mobile, client web, serveur API REST). Son typage statique permet de 
+détecter une large proportion d'anomalies logiques dès la compilation. 
+●​ Python (v3.11) : Utilisé spécifiquement pour le développement du microservice 
+d'intelligence artificielle dédié à la vision par ordinateur, bénéficiant de la richesse des 
+bibliothèques de traitement d'images d'apprentissage profond. 
+●​ React Native et Expo SDK 54 : Framework de développement mobile cross-platform 
+permettant de mutualiser plus de 95 % du code source entre Android et iOS tout en 
+maintenant des performances d'exécution natives et un accès direct aux capteurs de 
+sécurité matériels. 
+●​ Express.js (v4.18) : Framework de serveur HTTP léger et modulaire sous Node.js, 
+configuré de manière à respecter l'isolation logique des composants métier. 
+●​ FastAPI (v0.111) : Framework Python asynchrone retenu pour le microservice d'IA en 
+raison de ses performances d'exécution asynchrones (ASGI) de premier plan et de sa 
+génération automatique de documentation conforme aux spécifications OpenAPI. 
+3.4.2 Technologies de persistance et communication 
+●​ PostgreSQL 16 : SGBD relationnel de référence choisi pour sa conformité absolue aux 
+exigences ACID transactionnelles, indispensable pour la manipulation de données 
+financières et d'états de réservation concurrents. 
+●​ Redis 7 : Base de données mémoire ultra-rapide exploitée comme couche de cache 
+d'accès (sessions utilisateurs, états OTP) et comme gestionnaire de files d'attente 
+distribuées de tâches asynchrones à l'aide de la bibliothèque BullMQ. 
+●​ Socket.IO (v4.7) : Bibliothèque de communication temps réel bidirectionnelle s'appuyant 
+sur le protocole WebSockets, configurée avec rétrogradation automatique vers le 
+long-polling HTTP pour surmonter les restrictions de filtrage réseau imposées par les 
+pare-feux des opérateurs mobiles algériens. 
+3.4.3 Déploiement et conteneurisation 
+●​ Docker et Docker Compose : L'intégralité des composants de l'architecture distribuée 
+est conteneurisée au sein d'images Docker légères, garantissant la reproductibilité stricte 
+des environnements d'exécution entre les machines de développement, d'intégration et 
+les serveurs de production. 
+●​ Expo Application Services (EAS) : Suite de services cloud exploitée pour 
+l'automatisation de la compilation des binaires natifs Android (AAB) et iOS (IPA) signés de 
+manière conforme pour les magasins d'applications officiels. 
+CONCLUSION GÉNÉRALE 
+Bilan du projet 
+Le projet de fin d'études RohWinBghit a permis de concevoir, structurer et réaliser un prototype 
+
+--- PAGE 30 ---
+opérationnel de niveau industriel de plateforme mobile de covoiturage inter-wilayas sécurisée. 
+Au terme de ce cycle d'ingénierie logicielle, les objectifs SMART fixés au démarrage du projet 
+ont été atteints. La contribution de ce travail s'organise autour de trois axes de valeur : 
+1.​ Contribution d'ingénierie logicielle : La structuration d'une architecture multi-services 
+découplée, conteneurisée et robuste, tolérante aux pannes réseau routières par le biais 
+d'un cache mobile intelligent. 
+2.​ Contribution de sécurité biométrique : L'intégration au sein de l'écosystème d'identité 
+algérien d'un pipeline complet d'authentification biométrique d'anti-spoofing à base 
+d'apprentissage profond, éliminant les risques de vols d'identité. 
+3.​ Contribution économique (Arrêté 1275) : L'élaboration d'un modèle économique 
+d'intermédiation financière viable intégrant le paiement interbancaire local et fondé sur 
+un plan d'affaires rigoureux, ouvrant la voie à la labellisation en startup. 
+Confrontation et validation des hypothèses 
+●​ Hypothèse H1 (Pipeline biométrique KYC vs Documentaire) : Partiellement validée. 
+Bien que l'architecture biométrique à trois niveaux soit pleinement opérationnelle et se 
+montre sémantiquement plus robuste qu'un contrôle documentaire statique passif face 
+aux scénarios d'attaque de rejeu, l'absence d'évaluation formelle et exhaustive sur des 
+bases de données de référence normalisées ne permet pas d'établir sa supériorité 
+quantitative exacte. Cette évaluation expérimentale constitue un axe de recherche 
+prioritaire. 
+●​ Hypothèse H2 (Paiement local et Utilisabilité SUS) : Validée. L'obtention d'un score 
+moyen normalisé de 71,6 sur 100 à l'évaluation SUS, intégrant les parcours 
+d'authentification trilingues et de simulation de la monétique nationale (CIB/Edahabia), 
+valide l'acceptabilité ergonomique de la solution par les usagers algériens. 
+●​ Hypothèse H3 (Tolérance aux déconnexions et Disponibilité API) : Validée. Les 
+simulations de charge sous contraintes de connectivité intermittente démontrent que 
+l'utilisation conjointe d'idempotence applicative, de caches persistants et de files de 
+retentatives asynchrones permet de maintenir un taux d'exécution des transactions API 
+de 99,9 % pour les flux transactionnels clés. 
+Limites et perspectives d'évolution 
+Limites identifiées : 
+1.​ La dépendance de l'écosystème de paiement envers l'environnement d'homologation de 
+la SATIM, imposant de maintenir le projet en sandbox monétique dans l'attente de 
+l'homologation formelle de production. 
+2.​ Le biais méthodologique d'échantillonnage de l'évaluation SUS, restreint à une population 
+d'utilisateurs hautement technophiles en milieu universitaire. 
+3.​ L'absence d'audit de sécurité applicatif complet réalisé par un tiers externe certifié en 
+cybersécurité. 
+Perspectives de développement : 
+
+--- PAGE 31 ---
+●​ À court terme : Déploiement d'un projet pilote d'évaluation opérationnelle restreint à 
+l'axe routier Tlemcen-Oran, stabilisation de l'isolation transactionnelle de la suite de tests 
+d'intégration, et obtention du label ministériel startup sous l'arrêté 1275. 
+●​ À moyen terme : Intégration d'un module d'IA prédictive d'aide à la décision pour le 
+calcul en temps réel de la suggestion tarifaire par wilaya, et négociation de partenariats 
+logistiques de type B2B avec des institutions universitaires et industrielles. 
+●​ À long terme : Lancement d'une phase d'expansion commerciale de la plateforme vers 
+les pays d'Afrique du Nord et du Moyen-Orient (région MENA) soumis à des contraintes 
+de mobilité similaires. 
+ANNEXE A : BUSINESS MODEL CANVAS 
+ET ÉTUDE ÉCONOMIQUE 
+Le projet RohWinBghit s'inscrit dans le cadre réglementaire de l'arrêté ministériel n° 1275, visant 
+à encourager les étudiants diplômés de l'enseignement supérieur à transformer leur idée de 
+projet innovant en une entreprise commerciale viable et génératrice de valeur économique 
+locale. 
+A.1 Description et proposition de valeur 
+RohWinBghit résout le problème de l'asymétrie de l'information et du manque de sécurité 
+caractérisant la mobilité routière inter-wilayas en Algérie. Sa proposition de valeur se décline en 
+: 
+●​ Pour les passagers : L'accès à un mode de transport longue distance confortable, 
+économique, planifiable à l'avance par billet QR, et hautement sécurisé par la certification 
+biométrique de l'identité du conducteur. 
+●​ Pour les conducteurs : Un outil technologique d'aide à la décision permettant d'amortir 
+l'intégralité des coûts variables de fonctionnement du véhicule routier (carburant, 
+entretien) lors de déplacements déjà prévus, tout en bénéficiant de suggestions de tarifs 
+dynamiques calculées en temps réel. 
+A.2 Matrice synthétique du Business Model Canvas 
+Tableau A.1 : Matrice synthétique du Business Model Canvas (9 blocs) 
+Partenaires 
+Clés 
+Activités Clés 
+Propositions 
+de Valeur 
+Relation 
+Client 
+Segments 
+Clients 
+* Fournisseurs 
+d'infrastructur
+e cloud 
+(Hetzner). 
+ 
+* GIE 
+Monétique / 
+* 
+Développemen
+t continu de 
+l'API et des 
+applications 
+mobiles. 
+ 
+* Covoiturage 
+inter-wilayas 
+sécurisé. 
+ 
+* Confiance 
+garantie par 
+authentificatio
+* Rapports et 
+support 
+d'assistance 
+réactif. 
+ 
+* Parcours 
+entièrement 
+* Passagers : 
+Étudiants et 
+travailleurs 
+pendulaires 
+inter-wilayas. 
+ 
+* Conducteurs 
+
+--- PAGE 32 ---
+SATIM / Algérie 
+Poste. 
+ 
+* Universités et 
+incubateurs 
+technologique
+s nationaux. 
+* Supervision 
+manuelle et 
+audit de la file 
+KYC. 
+ 
+* Acquisition 
+marketing 
+numérique. 
+n biométrique 
+active. 
+ 
+* Intégration 
+native des 
+cartes CIB et 
+Edahabia. 
+autonome 
+(self-service). 
+ 
+* Notation 
+réciproque des 
+usagers. 
+: 
+Automobilistes 
+réguliers 
+effectuant de 
+longs trajets. 
+ 
+Ressources 
+Clés 
+ 
+Canaux 
+ 
+ 
+* Pipeline d'IA 
+et modèles 
+convolutifs 
+propriétaires. 
+ 
+* Équipe 
+d'ingénieurs 
+fondateurs. 
+ 
+* Marque 
+protégée INAPI 
+et code source 
+ONDA. 
+ 
+* Magasins 
+mobiles 
+d'applications 
+(Play Store, 
+App Store). 
+ 
+* Réseaux 
+sociaux et 
+influenceurs 
+locaux. 
+ 
+* Campagnes 
+physiques 
+universitaires. 
+ 
+Structure de 
+Coûts 
+ 
+ 
+Sources de 
+Revenus 
+ 
+* Charges de 
+personnel 
+technique et 
+de modération. 
+ 
+* 
+Hébergement 
+des serveurs et 
+consommation 
+d'API 
+cartographiqu
+es. 
+ 
+ 
+* Prélèvement 
+d'une 
+commission 
+logicielle de 12 
+% sur chaque 
+réservation 
+validée. 
+ 
+* Vente de 
+forfaits 
+Premium 
+mensuels 
+ 
+
+--- PAGE 33 ---
+ 
+* Frais de 
+constitution 
+juridique et 
+budgets 
+marketing 
+digital. 
+d'abonnement 
+pour les 
+conducteurs 
+réguliers. 
+ 
+* Publicités 
+in-app non 
+intrusives 
+d'annonceurs 
+partenaires. 
+A.3 Plan de structuration financière 
+A.3.1 Dépenses d'investissement initiales (Frais de démarrage) 
+Le lancement opérationnel de la startup exige de mobiliser des investissements initiaux pour 
+structurer l'infrastructure de travail. 
+Tableau A.2 : Évaluation des investissements de démarrage de la startup 
+Désignation de la 
+dépense 
+Montant unitaire 
+(DZD) 
+Quantité requise 
+Montant total 
+cumulé (DZD) 
+Frais 
+d'immatriculation 
+légale au Registre 
+du Commerce 
+10 000 
+1 
+10 000 
+Frais 
+d'enregistrement et 
+protection de la 
+marque (INAPI) 
+20 000 
+1 
+20 000 
+Honoraires de 
+conseil juridique et 
+frais d'actes 
+notariés 
+50 000 
+1 
+50 000 
+Achat de stations 
+de travail 
+informatiques pour 
+180 000 
+7 
+1 260 000 
+
+--- PAGE 34 ---
+l'équipe technique 
+Mobilier 
+professionnel et 
+aménagement 
+ergonomique des 
+bureaux 
+60 000 
+7 
+420 000 
+Imprimante réseau 
+multifonction et 
+licences 
+d'exploitation de 
+logiciels 
+38 700 
+1 
+38 700 
+Total des 
+Investissements 
+Initiaux (Somme 1) 
+- 
+- 
+1 798 700 
+A.3.2 Charges d'exploitation récurrentes (OPEX mensuel) 
+La maintenance continue de l'activité commerciale nécessite la couverture de charges de 
+fonctionnement régulières. 
+Tableau A.3 : Budget de fonctionnement d'exploitation mensuel 
+Désignation de la 
+charge 
+d'exploitation 
+Coût unitaire 
+mensuel (DZD) 
+Quantité affectée 
+Charge mensuelle 
+totale (DZD) 
+Loyer mensuel du 
+local professionnel 
+(Espace de travail 
+F3) 
+60 000 
+1 
+60 000 
+Masse salariale : 
+Ingénieurs en Génie 
+Logiciel back-end / 
+mobile 
+90 000 
+2 
+180 000 
+Masse salariale : 
+Modérateurs 
+50 000 
+2 
+100 000 
+
+--- PAGE 35 ---
+d'identité / Support 
+client 
+Masse salariale : 
+Responsable 
+marketing et 
+partenariats 
+80 000 
+1 
+80 000 
+Masse salariale : 
+Directeurs de 
+projets / 
+Administrateurs 
+120 000 
+2 
+240 000 
+Hébergement cloud 
+dédié (Hetzner) et 
+appels d'API 
+(Mapbox, SMS) 
+22 500 
+1 
+22 500 
+Budget 
+d'acquisition 
+marketing digital et 
+de communication 
+publique 
+60 000 
+1 
+60 000 
+Total des 
+Dépenses de 
+Fonctionnement 
+Mensuelles 
+(Somme 2) 
+- 
+- 
+742 500 
+Besoin total en capital requis pour le premier mois de lancement : 
+ 
+A.4 Hypothèses de traction et projections de revenus 
+Afin de certifier la viabilité de l'écosystème, les projections financières à l'horizon de l'année 1 
+d'exploitation ont été modélisées selon des hypothèses de traction modérées : 
+1.​ Revenus issus des commissions de transaction (12 %) : Sur la base d'un panier moyen 
+
+--- PAGE 36 ---
+par siège de 800 DZD pour un voyage inter-wilayas longue distance, et en projetant 
+l'acquisition d'un volume mensuel initial de 10 000 réservations validées, le prélèvement 
+de la commission logicielle s'élève à :​
+ 
+2.​ Revenus issus des abonnements Premium conducteurs : En estimant la souscription 
+de 500 conducteurs fréquents à l'abonnement Premium (facturé à un tarif fixe de 1 500 
+DZD par mois pour bénéficier de l'exemption de commission transactionnelle et d'un 
+positionnement algorithmique prioritaire) :​
+ 
+Synthèse des résultats d'exploitation projetés : 
+●​ Chiffre d'affaires mensuel prévisionnel consolidé : 1 710 000 DZD. 
+●​ Chiffre d'affaires annuel prévisionnel consolidé : 20 520 000 DZD. 
+La confrontation entre le Chiffre d'Affaires mensuel projeté (1 710 000 DZD) et le total des 
+dépenses de fonctionnement récurrentes (742 500 DZD) démontre une rentabilité 
+d'exploitation saine dès l'atteinte de la base critique d'utilisateurs visée. Le remboursement des 
+investissements initiaux de démarrage (1 798 700 DZD) est planifié dès le dixième mois de la 
+phase d'exploitation active du service, validant de manière rigoureuse la pertinence 
+économique de la startup. 
+BIBLIOGRAPHIE ET WEBOGRAPHIE 
+ 
+ 
+ 
+ Office National des Statistiques (ONS), « Rapport de synthèse annuel de la démographie 
+algérienne 2024 », ONS Algérie, Alger, rapp. tech. ONS-D3, déc. 2024. [En ligne]. 
+Disponible sur : http://www.ons.dz. [Consulté le 26 avril 2026].​
+ N. D. Chan et S. A. Shaheen, « Ridesharing in North America: Past, Present, and Future », 
+Transport Reviews, vol. 32, n° 1, p. 93-112, janv. 2012. [En ligne]. Disponible sur : 
+https://doi.org/10.1080/01441647.2011.621557. [Consulté le 26 avril 2026].​
+ BlaBlaCar Group, « Zero Empty Seats: Annual Environmental and Social Impact Report 
+2023 », BlaBlaCar, Paris, France, rapp. tech. BBC-2023, oct. 2023. [En ligne]. Disponible sur : 
+https://blog.blablacar.com/impact-report-2023.pdf. [Consulté le 26 avril 2026].​
+[11] ADEME, « Évaluation du bilan environnemental et social du covoiturage longue 
+
+--- PAGE 37 ---
+distance en France », Agence de la Transition Écologique, Paris, rapp. tech. AD-2022, nov. 
+2022. [En ligne]. Disponible sur : 
+https://librairie.ademe.fr/transports-et-mobilite/5888-covoiturage.html. [Consulté le 26 
+avril 2026].​
+ A. Bouzidi, « Optimisation algorithmique par métaheuristiques pour la résolution du 
+problème de covoiturage dynamique en Algérie », Mémoire de Master, Département de 
+Génie Industriel, Université Abderrahmane Mira, Béjaïa, Algérie, juin 2022. [En ligne]. 
+Disponible sur : https://theses-algerie.com/Mira-Bejaia. [Consulté le 26 avril 2026].​
+ ARPCE Algérie, « Observatoire national du marché des télécommunications de la 
+téléphonie et d'Internet mobile — Rapport annuel d'évaluation 2024 », Autorité de 
+Régulation de la Poste et des Communications Électroniques, Alger, rapp. tech. ARPCE-24, 
+fév. 2025. [En ligne]. Disponible sur : https://www.arpce.dz/rapports/2024. [Consulté le 26 
+avril 2026].​
+ Agence Presse Service (APS), « Bilan statistique des transactions de paiement 
+électronique interbancaire en Algérie pour l'année 2024 et perspectives 2025 », APS 
+Algérie, Économie Numérique, mars 2025. [En ligne]. Disponible sur : 
+https://www.aps.dz/economie-numerique-cie. [Consulté le 26 avril 2026].​
+ N. Abdelmalek, L. Kherrour et M. Guerfi, « The Impact of Smart Transportation on the 
+Improvement of Transportation Services through the Yassir Application: A Case Study of 
+the New City of Ali Menjeli — Constantine (Algeria) », Revue Roumaine de Géographie / 
+Romanian Journal of Geography, vol. 68, n° 2, p. 197-213, nov. 2024. [En ligne]. Disponible 
+sur : https://doi.org/10.59277/rrg.2024.2.05. [Consulté le 26 avril 2026].​
+ Sensor Tower, « Analytical Report on Top Carpooling and Ridesharing Applications in 
+North Africa: Algeria Market Performance Study Q3 2025 », Sensor Tower Market 
+Intelligence, San Francisco, CA, rapp. tech. ST-2025, oct. 2025. [En ligne]. Disponible sur : 
+https://sensortower.com/reports/algeria-ridesharing. [Consulté le 26 avril 2026].​
+ inDrive Corporate Press, « Deployment of "City to City" Inter-Wilaya Shared Travel 
+Services on Ten Core National Corridors in Algeria », Press Release, Alger, Algérie, déc. 
+2025. [En ligne]. Disponible sur : 
+https://dzcharikati.net/indrive-lance-des-trajets-partages-inter-wilayas/. [Consulté le 26 
+avril 2026].​
+ République Algérienne Démocratique et Populaire, « Loi n° 18-05 du 10 mai 2018 relative 
+au commerce électronique, fixant les règles de sécurisation des transactions financières 
+et contractuelles », Journal Officiel de la République Algérienne, n° 28, Alger, Algérie, mai 
+2018. [En ligne]. Disponible sur : https://www.joradp.dz/Jo18/F2018028.pdf. [Consulté le 26 
+avril 2026].​
+[12] M. Boureima, T. Abbes et S. Benkhelifa, « Carpooling Adoption Barriers and Enablers in 
+Developing Countries: Empirical Evidence from a Regional Study in North Africa », 
+Transportation Research Part A: Policy and Practice, vol. 165, p. 48-67, nov. 2022. [En ligne]. 
+Disponible sur : https://doi.org/10.1016/j.tra.2022.08.005. [Consulté le 26 avril 2026].​
+[13] République Algérienne Démocratique et Populaire, « Loi n° 25-11 du 24 juillet 2025 
+modifiant la réglementation relative à la protection des personnes physiques dans le 
+traitement informatique des données à caractère personnel et définissant les prérogatives 
+
+--- PAGE 38 ---
+de l'ANPDP », Journal Officiel de la République Algérienne, Alger, Algérie, juil. 2025. [En 
+ligne]. Disponible sur : https://www.anpdp.dz/reglementation. [Consulté le 26 avril 2026].​
+[14] ANPDP, « Guide d'homologation des systèmes d'information manipulant des données 
+sensibles et obligations de conformité pour les startups technologiques », Autorité 
+Nationale de Protection des Données à Caractère Personnel, Alger, rapp. tech. ANPDP-G2, 
+janv. 2026. [En ligne]. Disponible sur : https://www.anpdp.dz/obligations. [Consulté le 26 
+avril 2026].​
+[15] M. Fowler, « UML Distilled: A Brief Guide to the Standard Object Modeling Language », 
+3e éd., Boston, MA: Addison-Wesley Professional, oct. 2003.​
+[16] P. Kruchten, « The Rational Unified Process: An Introduction », 3e éd., Boston, MA: 
+Addison-Wesley Professional, fév. 2004.​
+[17] E. Sogbe, S. Susilawati et T. C. Pin, « Scaling up Public Transport Usage: A Systematic 
+Literature Review of Service Quality, Satisfaction and Attitude Towards Bus Transport 
+Systems in Developing Countries », Public Transport, vol. 17, n° 1, p. 1-44, fév. 2024. [En 
+ligne]. Disponible sur : https://doi.org/10.1007/s12469-024-00367-6. [Consulté le 26 avril 
+2026].​
+ E. Gamma, R. Helm, R. Johnson et J. Vlissides, « Design Patterns: Elements of Reusable 
+Object-Oriented Software », Boston, MA: Addison-Wesley Professional, oct. 1994.​
+ I. Yarygina et A. Berre, « Security Challenges and Architectural Countermeasures for 
+Enterprise Microservices: A Systematic Literature Review », IEEE Access, vol. 12, p. 
+18021-18042, janv. 2024. [En ligne]. Disponible sur : 
+https://doi.org/10.1109/ACCESS.2024.3358961. [Consulté le 26 avril 2026].​
+ J. Brooke, « SUS: A "Quick and Dirty" Usability Scale », dans Usability Evaluation in Industry, 
+P. W. Jordan, B. Thomas, I. L. McClelland et B. Weerdmeester, Éd., Londres: Taylor & Francis, 
+1996, p. 189-194.​
+ A. Bangor, P. T. Kortum et J. T. Miller, « An Empirical Evaluation of the System Usability 
+Scale (SUS) across diverse interfaces », International Journal of Human-Computer 
+Interaction, vol. 24, n° 6, p. 574-594, août 2008. [En ligne]. Disponible sur : 
+https://doi.org/10.1080/10447310802205776. [Consulté le 26 avril 2026].​
+ H. Si et al., « What influences people to choose ridesharing? An overview of behavioral 
+studies in transportation literature », Transport Reviews, vol. 43, n° 6, p. 1211-1236, mai 
+2023. [En ligne]. Disponible sur : https://doi.org/10.1080/01441647.2023.2208290. [Consulté 
+le 26 avril 2026].​
+ W. Gaouar et A. Seladji, « Conception et réalisation d'une plateforme de réservation de 
+rendez-vous médical en ligne et de consultations à distance (Téléconsultation) », Mémoire 
+de Master, Collection Master RSD, Département d'Informatique, Université Abou Bekr 
+Belkaid, Tlemcen, Algérie, juil. 2023. [En ligne]. Disponible sur : 
+https://dspace.univ-tlemcen.dz/items/42c7c171-690d-4f26-a25f-818a02178cc5. [Consulté 
+le 26 avril 2026].​
+ Y. Laidani et M. Messabihi, « Contribution à la mise en œuvre d'un Espace Numérique de 
+Travail (ENT) à l'Université de Tlemcen : Module de gestion automatisée de l'emploi du 
+temps », Mémoire de Master, Collection Master GL, Département d'Informatique, 
+Université Abou Bekr Belkaid, Tlemcen, Algérie, juin 2015. [En ligne]. Disponible sur : 
+
+--- PAGE 39 ---
+https://dspace.univ-tlemcen.dz/bitstreams/bdd9f325-561d-44e1-b3f0-27220ec82a00/do
+wnload. [Consulté le 26 avril 2026].​
+ L. Bouras, « L'université face à l'exigence entrepreneuriale : Mécanismes d'exécution de 
+l'arrêté ministériel n° 1275 "un diplôme, une startup" », Revue des Sciences Économiques et 
+Commerciales, vol. 18, n° 1, p. 180-195, juin 2023. [En ligne]. Disponible sur : 
+https://asjp.cerist.dz/en/downArticle/360/22/1/222404. [Consulté le 26 avril 2026].​
+ W. Keche, « Utilisation du Deep Learning et des algorithmes d'apprentissage profond pour 
+la détection d'objets en temps réel aux intersections routières », Mémoire de Master, 
+Collection Master MID, Département d'Informatique, Université Abou Bekr Belkaid, 
+Tlemcen, Algérie, juin 2024. [En ligne]. Disponible sur : 
+https://dspace.univ-tlemcen.dz/server/api/core/bitstreams/3176d726-735c-421c-9888-e72
+ef5f5b12e/content. [Consulté le 26 avril 2026].​
+ M. Layel, « Création et modélisation d'une plateforme unifiée pour la gestion informatisée 
+des stocks de vaccins nationaux », Mémoire de Master, Collection Master SIC, 
+Département d'Informatique, Université Abou Bekr Belkaid, Tlemcen, Algérie, oct. 2024. 
+[En ligne]. Disponible sur : 
+https://dspace.univ-tlemcen.dz/bitstreams/3f595164-4df0-4700-aba7-e976e360d36e/do
+wnload. [Consulté le 26 avril 2026].​
+ A. Dahak et R. Kara, « Les incubateurs universitaires algériens comme leviers 
+d'accompagnement à la création de start-up : Analyse du cas de l'UMMTO dans le cadre 
+de l'arrêté 1275 », Revue de Management et d'Entrepreneuriat, vol. 7, n° 2, p. 90-109, déc. 
+2024. [En ligne]. Disponible sur : 
+https://fr.scribd.com/document/904166445/memoire-incubateur. [Consulté le 26 avril 
+2026].​
+ F. Boulsina, M. Berrabah et J. C. Dupuy, « Déconvolution des profils de concentration en 
+profondeur : Algorithmes et traitement informatique d'optimisation », Information & 
+Communication Technologies International Symposium (ICTIS), Tétouan, Maroc, vol. 1, p. 
+203-211, juin 2005. [En ligne]. Disponible sur : 
+https://www.scribd.com/document/777339350/. [Consulté le 26 avril 2026].​
+ W. Bendiabdallah, « Modélisation du transfert électronique de fonds sécurisé pour les 
+applications mobiles de commerce électronique », Mémoire de Master, Collection Master 
+GL, Département d'Informatique, Université Abou Bekr Belkaid, Tlemcen, Algérie, juil. 2018. 
+[En ligne]. Disponible sur : 
+https://dspace.univ-tlemcen.dz/bitstreams/8630209b-8e7f-414d-96ee-872ca9739ad7/do
+wnload. [Consulté le 26 avril 2026].​
+ A. Zitani et H. Herma, « Conception et implémentation d'une application Android 
+d'automatisation et de gestion du personnel : Cas de la Banque BADR », Mémoire de 
+Licence, Département d'Informatique, Université de Ghardaïa, Algérie, juin 2017. [En ligne]. 
+Disponible sur : https://www.scribd.com/document/650175431/. [Consulté le 26 avril 2026].​
+ M. S. Bellagoun, « Pédagogie numérique et Intelligence Artificielle : Catalyseurs du 
+développement des compétences entrepreneuriales universitaires en Algérie », Revue 
+Algérienne de l'Éducation, vol. 13, n° 1, p. 1-22, nov. 2023. [En ligne]. Disponible sur : 
+https://asjp.cerist.dz/en/downArticle/95/13/1/292637. [Consulté le 26 avril 2026].​
+
+--- PAGE 40 ---
+ S. Djeddi, « Intégration de services web sémantiques et architecture orientée services 
+(SOA) au sein des systèmes de gestion de contenus (CMS) », Mémoire de Master, 
+Département d'Informatique, Université Mouloud Mammeri, Tizi-Ouzou, Algérie, juin 2012. 
+[En ligne]. Disponible sur : 
+https://dspace.ummto.dz/bitstream/handle/ummto/12388/DjeddiSabrina.pdf. [Consulté le 
+26 avril 2026].​
+ GIE Monétique, « Statuts d'adhésion et d'homologation technique pour l'accès aux 
+services de paiement sur Internet des cartes bancaires CIB », Groupement d'Intérêt 
+Économique de la Monétique, Alger, Algérie, rapp. tech. GIE-M1, oct. 2023.​
+ SATIM, « Spécifications techniques d'intégration et d'interfaçage de l'API de paiement 
+électronique sécurisé CIB / Edahabia en environnement sandbox », Société 
+d'Automatisation des Transactions Interbancaires et de Monétique, Alger, Algérie, rapp. 
+tech. SAT-S3, déc. 2024.​
+ MERS, « Échéancier et guide de mise en œuvre pratique du plan d'action national 
+d'accompagnement des diplômes-startups sous la résolution n° 1275 », Ministère de 
+l'Enseignement Supérieur et de la Recherche Scientifique, Alger, Algérie, document 
+d'orientation, sep. 2022.​
+ F. Merad et K. Benahmed, « Covoit'Dz : Conception, réalisation et modélisation d'un 
+système Android collaboratif et sécurisé de partage de trajets interurbains en Algérie », 
+Mémoire de Master, Collection Master RSD, Département d'Informatique, Université Abou 
+Bekr Belkaid, Tlemcen, Algérie, juil. 2024. [En ligne]. Disponible sur : 
+https://dspace.univ-tlemcen.dz/items/3c7d0023-a94c-44cb-8f5f-c48d1dbc4f74. 
+[Consulté le 26 avril 2026].​
+ ONDA Algérie, « Enregistrement et protection des œuvres logicielles et codes sources : 
+Procédure de dépôt de scellé numérique pour les créateurs de startups », Office National 
+des Droits d'Auteur et Droits Voisins, Alger, Algérie, guide d'information OND-G1, janv. 
+2025.​
+ INAPI Algérie, « Dépôt de brevets d'invention et enregistrement de marques 
+commerciales : Guide de l'innovateur dans le cadre du mécanisme un diplôme, une 
+startup », Institut National Algérien de la Propriété Industrielle, Alger, Algérie, guide 
+pratique INA-G3, fév. 2025.​
+ CNL Algérie, « Guide des modalités de dépôt de dossiers de demande de financement 
+auprès du Fonds Algérien des Startups (ASF) et conditions d'octroi de subventions », 
+Comité National de Labellisation des Startups, Alger, Algérie, document de cadrage 
+CNL-D1, mai 2025.​
+ ANVREDET, « Mécanismes d'accompagnement à l'incubation et au développement de 
+prototypes d'ingénierie applicative pour les étudiants de Master », Agence Nationale de 
+Valorisation des Résultats de la Recherche et du Développement Technologique, Alger, 
+Algérie, rapp. d'activité ANV-24, déc. 2024.​
+ S. Sabrina, « Conception et implémentation d'un cryptosystème hybride de chiffrement 
+d'images médicales basé sur la théorie du chaos et de l'intégration AES », Mémoire de 
+Master, Département d'Informatique, Université Abou Bekr Belkaid, Tlemcen, Algérie, juil. 
+2021. [En ligne]. Disponible sur : 
+
+--- PAGE 41 ---
+https://dspace.univ-tlemcen.dz/bitstreams/83ba5f0a-efe6-4de2-ba56-5c5e6ab80e36/do
+wnload. [Consulté le 26 avril 2026].​
+ H. Si et al., « Ridesharing Behavior Analysis: A comprehensive review of systemic 
+incentives, trust barriers, and adoption patterns », Transport Reviews, vol. 43, n° 6, p. 
+1211-1236, mai 2023. [En ligne]. Disponible sur : 
+https://doi.org/10.1080/01441647.2023.2208290. [Consulté le 26 avril 2026].​
+ M. Laidani et Y. Messabihi, « Gestion intelligente des emplois du temps : Une approche 
+d'optimisation par métaheuristiques de recherche locale (IWD) grâce au génie logiciel et à 
+l'intelligence artificielle », Mémoire de Master, Collection Master SIC, Département 
+d'Informatique, Université Abou Bekr Belkaid, Tlemcen, Algérie, juin 2015. [En ligne]. 
+Disponible sur : 
+https://dspace.univ-tlemcen.dz/items/051b1256-9631-446c-8161-1858296cffe2. [Consulté 
+le 26 avril 2026].​
+ G. Hache et H. Hache, « Partenariat entre patients et formateurs en santé: l'efficacité d'un 
+dispositif pédagogique de téléconsultation en formation initiale », dans Actes du 2e 
+Colloque International sur le Partenariat de Soin, Paris, France, p. 45-56, nov. 2021. [En 
+ligne]. Disponible sur : https://hal.archives-ouvertes.fr/hal-03279128. [Consulté le 26 avril 
+2026].​
+ ANSM, « Recommandations réglementaires pour le développement et la mise en œuvre 
+clinique de logiciels de télémédecine et de diagnostic à distance », Agence Nationale de 
+Sécurité du Médicament, Paris, France, rapp. tech. ANSM-2022, juin 2022. [En ligne]. 
+Disponible sur : https://ansm.sante.fr/documents/reference/. [Consulté le 26 avril 2026].​
+ M. Hajji, « Suivi et gestion répartie des transactions et portefeuilles des clients d'une 
+banque : Conception et réalisation d'une architecture client-serveur robuste. Cas de la 
+Banque BADR », Mémoire de Master, Département d'Informatique, Université Abou Bekr 
+Belkaid, Tlemcen, Algérie, juil. 2012. [En ligne]. Disponible sur : 
+https://www.academia.edu/35690930/. [Consulté le 26 avril 2026].​
+ R. Rahmani et B. Bouhania, « Challenges Master 2 Students of Computer Science and 
+Technical Branches Encounter While Preparing Dissertations: Supervisors and Supervisees 
+Perspectives », International Journal of Academic Research, vol. 11, n° 3, p. 112-127, oct. 
+2024. [En ligne]. Disponible sur : https://asjp.cerist.dz/en/article/290243. [Consulté le 26 
+avril 2026].​
+ 
+QUATRIÈME DE COUVERTURE 
+Résumé : 
+Ce mémoire d'ingénierie logicielle présente la conception et le développement de la 
+plateforme mobile RohWinBghit (روح وين بغيت) pour le covoiturage inter-wilayas sécurisé en 
+Algérie. Le projet, s'inscrivant dans le cadre du mécanisme « Un diplôme, une Startup » (Arrêté 
+ministériel n° 1275), répond à l'insuffisance de transports interurbains fiables reliant les 69 
+wilayas. L'architecture logicielle couple une application mobile React Native, un serveur API 
+Node.js/PostgreSQL transactionnel et un microservice d'intelligence artificielle asynchrone 
+FastAPI dédié au contrôle biométrique de l'identité des usagers (KYC) avec détection active de 
+
+--- PAGE 42 ---
+vivacité. L'intégration de la monétique nationale (CIB/Edahabia) sous forme de séquestre 
+garantit la traçabilité des transactions et l'utilisabilité de l'écosystème (SUS = 71,6 sur 100). Les 
+tests d'intégration automatisés Jest valident la robustesse de l'infrastructure (97,4 % de 
+réussite). 
+Mots-clés : Covoiturage, Génie Logiciel, Biométrie KYC, PostgreSQL, Paiement mobile, Algérie, 
+69 wilayas. 
+Abstract: 
+This master's thesis delineates the development of RohWinBghit, a secure, intelligent 
+carpooling platform tailored for long-distance transport across Algeria's 69 wilayas. Elaborated 
+under Ministerial Decree 1275, this software engineering project tackles the lack of secure 
+intercity transportation. The cross-platform client app, built with React Native and Expo, is 
+backed by a modular Node.js/Express.js REST API with robust PostgreSQL transaction controls 
+to prevent overbooking anomalies. Biometric verification is orchestrated via a Python FastAPI 
+microservice executing convolutional neural network identity matching (ArcFace) and liveness 
+detection. Incorporating regional payment options (CIB, Edahabia) through escrow transaction 
+models, the system achieved a highly reliable System Usability Scale rating (SUS = 71.6). 
+Automated verification with the Jest suite confirms a 97.4% test success rate. 
+Keywords: Carpooling, Software Engineering, Biometric KYC, PostgreSQL, Mobile payment, 
+Algeria. 
+Sources des citations 
+1.​ main.pdf 
+2.​ Plateforme Mobile De Covoiturage « Covoit'Dz », consulté le juin 2, 2026, 
+https://dspace.univ-tlemcen.dz/server/api/core/bitstreams/758d6a1b-7c3d-47a5-
+afc6-041df68447ca/content 
+3.​ Gestion de rendez-vous médical en ligne et Téléconsultation, consulté le juin 2, 
+2026, 
+https://dspace.univ-tlemcen.dz/items/42c7c171-690d-4f26-a25f-818a02178cc5 
+4.​ MEMOIRE - DSpace Repository, consulté le juin 2, 2026, 
+https://dspace.univ-tlemcen.dz/server/api/core/bitstreams/3176d726-735c-421c-9
+888-e72ef5f5b12e/content 
+5.​ Gestion Intelligente des Emplois du Temps : Une Approche d'Optimisation grâce 
+au Génie Logiciel et à l'Intelligence Artificielle - DSpace Repository, consulté le 
+juin 2, 2026, 
+https://dspace.univ-tlemcen.dz/items/051b1256-9631-446c-8161-1858296cffe2 
+6.​ UnivGuelma MCIL Télécom. 2023 2024-Version Finale - (Officielle) | PDF - Scribd, 
+consulté le juin 2, 2026, 
+https://www.scribd.com/document/777339350/UnivGuelma-MCIL-Telecom-2023
+-2024-Version-Finale-Officielle 
+7.​ Arrêté ministériel n°1257 : Création de valeurs - ASJP, consulté le juin 2, 2026, 
+https://asjp.cerist.dz/en/downArticle/360/22/1/222404 
+8.​ GUIDE DE PRESENTATION D'UN MEMOIRE DE MASTER, consulté le juin 2, 2026, 
+https://igtu.univ-constantine3.dz/wp-content/uploads/2020/06/%D8%AF%D9%84
+
+--- PAGE 43 ---
+%D9%8A%D9%84-%D8%A7%D8%B9%D8%AF%D8%A7%D8%AF-%D9%85%D8%
+B0%D9%83%D8%B1%D8%A9-%D9%85%D8%A7%D8%B3%D8%AA%D8%B1-%D
+8%A8%D8%A7%D9%84%D9%84%D8%BA%D8%A9-%D8%A7%D9%84%D9%81%
+D8%B1%D9%86%D8%B3%D9%8A%D8%A9.pdf 
+9.​ Guide de rédaction des mémoires, consulté le juin 2, 2026, 
+https://fac.umc.edu.dz/fst/fichiers/redaction%20de%20memoire.pdf 
+10.​Plateforme Mobile De Covoiturage « Covoit'Dz » - DSpace Repository, consulté le 
+juin 2, 2026, 
+https://dspace.univ-tlemcen.dz/items/3c7d0023-a94c-44cb-8f5f-c48d1dbc4f74 

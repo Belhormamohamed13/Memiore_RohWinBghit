@@ -20,7 +20,7 @@ TS-03 & Publication de trajet & Conducteur KYC validé, véhicule enregistré & 
 \hline
 TS-04 & Réservation de place & Trajet existant avec places libres & 1. Recherche trajet.\newline 2. Sélection de places.\newline 3. Réservation. & Nombre de places diminué de 1, notification envoyée au conducteur. & \textbf{Succès} \\
 \hline
-TS-05 & Paiement électronique & Réservation initiée & 1. Choix Edahabia.\newline 2. Saisie carte sandbox.\newline 3. Validation SATIM. & Débit simulé avec succès, statut réservation mis à \texttt{confirmed}. & \textbf{Succès} \\
+TS-05 & Paiement électronique & Réservation initiée & 1. Choix carte (CIB/Edahabia).\newline 2. Redirection Chargily Pay V2.\newline 3. Validation sandbox. & Débit simulé, notification webhook traitée, réservation confirmée. & \textbf{Succès} \\
 \hline
 TS-06 & Messagerie WebSocket & Trajet réservé & 1. Ouverture chat.\newline 2. Envoi message.\newline 3. Vérification réception. & Message délivré instantanément via Socket.IO, persisté en base. & \textbf{Succès} \\
 \hline

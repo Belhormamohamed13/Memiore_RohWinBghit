@@ -19,8 +19,11 @@ node "PC Administrateur" <<Device>> as AdminPC {
 ' ===== SERVICES TIERS =====
 cloud "Services externes" {
   node "Firebase Cloud Messaging\n(Push notifications)" as FCM
-  node "Passerelles de paiement\nCIB / Edahabia / Cash" as PaymentGateway
+  node "Chargily Pay V2\n(Passerelle de paiement CIB/Edahabia)" as PaymentGateway
   node "Mapbox API\n(Cartographie + routage)" as Mapbox
+  node "Twilio API\n(Envoi SMS OTP)" as Twilio
+  node "SendGrid API\n(E-mails transactionnels)" as SendGrid
+  node "Sentry\n(Supervision d'erreurs)" as Sentry
 }
 
 ' ===== INFRASTRUCTURE SERVEUR =====
@@ -32,6 +35,7 @@ node "Serveur Cloud (AWS / DigitalOcean)" <<Linux Ubuntu>> {
     component "Socket.IO Server\n(Realtime Chat + Presence)" as Socket
     component "PaymentFactory\n(CIB / Edahabia / Cash)" as PatPay
     component "NotificationService\n(FCM Admin SDK + DB)" as NotifSvc
+    component "BullMQ Workers\n(Tâches d'arrière-plan)" as Workers
   }
 
   node "Microservice IA" <<Docker Container>> as IA {
@@ -43,10 +47,10 @@ node "Serveur Cloud (AWS / DigitalOcean)" <<Linux Ubuntu>> {
 
   node "Bases de données" <<Docker Container>> {
     database "PostgreSQL" <<RDBMS>> as PG {
-      [users / trip_requests / trips /\nbookings / identity_verifications /\nfraud_events / face_embeddings /\nwallets / notifications / chats]
+      [PostgreSQL 16 Database\n(29+ tables: users, trips, etc.)]
     }
     database "Redis" <<In-Memory>> as Redis {
-      [Surge cache / Token blacklist /\nSocket pub-sub / Rate limit]
+      [Redis 7 Server\n(Surge cache, BullMQ queues,\nToken blacklist, Socket pub-sub)]
     }
   }
 }
@@ -70,6 +74,9 @@ Express --> Redis : TCP/IP (ioredis)
 Express --> Files : fs (multer)
 Express ..> FastAPI : HTTP (verify-full, check-liveness)
 
+Workers --> Redis : TCP/IP (BullMQ queues)
+Workers --> PG : TCP/IP (Knex ORM)
+
 FastAPI --> PG : TCP/IP (embeddings)
 FastAPI --> Files : fs (lecture images KYC)
 
@@ -77,5 +84,8 @@ Socket --> Redis : Pub/Sub
 
 Express ..> FCM : HTTPS (FCM Admin SDK)
 Express ..> PaymentGateway : HTTPS
+Express ..> Twilio : HTTPS
+Express ..> SendGrid : HTTPS
+Express ..> Sentry : HTTPS
 
 @enduml

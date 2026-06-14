@@ -30,6 +30,9 @@ package "AI Service — FastAPI :8001" <<Frame>> #FFF9C4 {
 }
 
 cloud "Sentry 10.45.0\nMonitoring" as sentry #EEEEEE
+cloud "Chargily Pay V2\nPayment Gateway" as chargily #EEEEEE
+cloud "Twilio API\nSMS OTP Service" as twilio #EEEEEE
+cloud "SendGrid API\nEmail Service" as sendgrid #EEEEEE
 
 mobile -[#1565C0]-> gw : HTTPS REST + WebSocket
 web -[#1565C0]-> gw : HTTPS REST
@@ -43,4 +46,7 @@ ctrl --> pg
 svc --> redis
 ctrl ..> ai : HTTP multipart\nX-Internal-Secret
 sentry ..> gw
+patterns --> chargily : Redirection & Webhook
+svc --> twilio : SMS OTP
+svc --> sendgrid : Transactional Email
 @enduml

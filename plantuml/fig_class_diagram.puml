@@ -94,7 +94,7 @@ class FraudEvent <<Identity>> {
 ' ===== TRAJET (vert) =====
 class Vehicle <<Trip>> {
   + id : UUID
-  + user_id : UUID
+  + owner_id : UUID
   + make : String
   + model : String
   + license_plate_encrypted : String
@@ -154,13 +154,16 @@ class Booking <<Booking>> {
   + cancel()
 }
 
-class Payment <<Booking>> {
+class PaymentSession <<Booking>> {
   + id : UUID
+  + user_id : UUID
   + booking_id : UUID
-  + method : String
+  + provider : String
+  + provider_checkout_id : String
+  + payment_method : String
   + amount : Float
   + status : String
-  + transaction_ref : String
+  + checkout_url : String
   --
   + process()
   + refund()
@@ -239,7 +242,7 @@ Trip "1" -- "1" Vehicle : "utilise"
 Trip "1" *-- "0..*" Booking : "contient"
 Trip "1" -- "0..1" Chat : "associé à"
 
-Booking "1" -- "1" Payment : "génère"
+Booking "1" -- "0..1" PaymentSession : "génère"
 Booking "1" -- "0..2" Review : "donne lieu à"
 
 Wallet "1" *-- "0..*" WalletTransaction : "historique"

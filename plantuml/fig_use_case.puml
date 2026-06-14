@@ -2,88 +2,123 @@
 !include theme_rohwinbghit.puml
 
 left to right direction
-title Diagramme de cas d'utilisation — RohWinBghit
+skinparam nodesep 20
+skinparam ranksep 30
 
-' ===== ACTEURS COLORÉS =====
+actor "Utilisateur" as Usr
 actor "Passager" as Pax
 actor "Conducteur" as Drv
 actor "Administrateur" as Adm
 
+actor "Service IA\n(FastAPI)" as AIS <<System>>
+actor "Passerelle de Paiement\n(Chargily Pay V2)" as PayGateway <<System>>
+
+Usr <|-- Pax
+Usr <|-- Drv
+
+' Align actors vertically on the left (right means down in left-to-right direction)
+Usr -[hidden]right-> Pax
+Pax -[hidden]right-> Drv
+Drv -[hidden]right-> Adm
 
 rectangle "Système RohWinBghit" {
+  
+  rectangle "Gestion Identité & Profil" as Core {
+    usecase "S'inscrire" as UC_Register <<Common>>
+    usecase "S'authentifier (OTP)" as UC_Auth <<Common>>
+    usecase "Gérer son profil" as UC_Profile <<Common>>
+    usecase "Vérification KYC" as UC_KYC <<Common>>
+  }
+  
+  rectangle "Recherche & Réservation" as BookingGroup {
+    usecase "Rechercher un trajet" as UC_Search <<Passenger>>
+    usecase "Réserver une place" as UC_Book <<Passenger>>
+    usecase "Payer le trajet" as UC_Pay <<Passenger>>
+    usecase "Annuler réservation" as UC_CancelBook <<Passenger>>
+    usecase "Publier une demande" as UC_Request <<Passenger>>
+    usecase "Noter le conducteur" as UC_Review <<Passenger>>
+  }
+  
+  rectangle "Publication & Offres" as PublishGroup {
+    usecase "Ajouter un véhicule" as UC_AddVehicle <<Driver>>
+    usecase "Publier un trajet" as UC_Publish <<Driver>>
+    usecase "Gérer les réservations" as UC_Manage <<Driver>>
+    usecase "Accepter le passager" as UC_Accept <<Driver>>
+    usecase "Refuser le passager" as UC_Reject <<Driver>>
+    usecase "Annuler le trajet" as UC_CancelTrip <<Driver>>
+    usecase "Recevoir les gains" as UC_Earn <<Driver>>
+  }
+  
+  rectangle "Embarquement & Sécurité" as SecurityGroup {
+    usecase "Check-In biométrique mutuel" as UC_Checkin <<Common>>
+    usecase "Embarquement QR" as UC_QrBoarding <<Common>>
+    usecase "Vérification faciale" as UC_FacialVerification <<Common>>
+    usecase "Suivi GPS en direct" as UC_GpsTracking <<Common>>
+  }
 
-  ' --- Accès commun (gris) ---
-  usecase "S'inscrire" as UC_Register <<Common>>
-  usecase "S'authentifier" as UC_Auth <<Common>>
-  usecase "Vérification KYC" as UC_KYC <<Common>>
-  usecase "Gérer son profil" as UC_Profile <<Common>>
-  usecase "Recevoir notifications" as UC_Notif <<Common>>
-  usecase "Communiquer (chat)" as UC_Chat <<Common>>
-
-  ' --- Passager (bleu) ---
-  usecase "Rechercher un trajet" as UC_Search <<Passenger>>
-  usecase "Réserver une place" as UC_Book <<Passenger>>
-  usecase "Payer le trajet" as UC_Pay <<Passenger>>
-  usecase "Annuler réservation" as UC_CancelBook <<Passenger>>
-  usecase "Publier une demande" as UC_Request <<Passenger>>
-  usecase "Noter le conducteur" as UC_Review <<Passenger>>
-
-  ' --- Conducteur (vert) ---
-  usecase "Ajouter un véhicule" as UC_AddVehicle <<Driver>>
-  usecase "Publier un trajet" as UC_Publish <<Driver>>
-  usecase "Gérer les réservations" as UC_Manage <<Driver>>
-  usecase "Accepter le passager" as UC_Accept <<Driver>>
-  usecase "Refuser le passager" as UC_Reject <<Driver>>
-  usecase "Annuler le trajet" as UC_CancelTrip <<Driver>>
-  usecase "Recevoir les gains" as UC_Earn <<Driver>>
-
-  ' --- Administrateur (orange) ---
-  usecase "Tableau de bord" as UC_AdminDash <<Admin>>
-  usecase "Valider KYC" as UC_AdminKyc <<Admin>>
-  usecase "Modérer les utilisateurs" as UC_AdminUsers <<Admin>>
-  usecase "Superviser les trajets" as UC_AdminTrips <<Admin>>
+  rectangle "Portefeuille & Services" as ServiceGroup {
+    usecase "Gérer son portefeuille" as UC_Wallet <<Common>>
+    usecase "Communiquer (chat)" as UC_Chat <<Common>>
+    usecase "Recevoir notifications" as UC_Notif <<Common>>
+  }
+  
+  rectangle "Console d'Administration" as AdminGroup {
+    usecase "Tableau de bord" as UC_AdminDash <<Admin>>
+    usecase "Valider KYC" as UC_AdminKyc <<Admin>>
+    usecase "Modérer les utilisateurs" as UC_AdminUsers <<Admin>>
+    usecase "Superviser les trajets" as UC_AdminTrips <<Admin>>
+  }
 }
 
-' ===== LIAISONS PASSAGER =====
-Pax --> UC_Register
-Pax --> UC_Auth
-Pax --> UC_KYC
-Pax --> UC_Profile
-Pax --> UC_Notif
-Pax --> UC_Chat
+' Relations d'héritage d'acteur et liaisons aux cas
+Usr --> UC_Register
+Usr --> UC_Auth
+Usr --> UC_Profile
+Usr --> UC_KYC
+Usr --> UC_Notif
+Usr --> UC_Chat
+Usr --> UC_Wallet
+Usr --> UC_GpsTracking
+
 Pax --> UC_Search
 Pax --> UC_Book
+Pax --> UC_CancelBook
 Pax --> UC_Request
 Pax --> UC_Review
+Pax --> UC_Checkin
 
-' ===== LIAISONS CONDUCTEUR =====
-Drv --> UC_Register
-Drv --> UC_Auth
-Drv --> UC_KYC
-Drv --> UC_Profile
-Drv --> UC_Notif
-Drv --> UC_Chat
 Drv --> UC_AddVehicle
 Drv --> UC_Publish
 Drv --> UC_Manage
+Drv --> UC_CancelTrip
 Drv --> UC_Earn
+Drv --> UC_Checkin
 
-' ===== LIAISONS ADMINISTRATEUR =====
-Adm --> UC_Auth
 Adm --> UC_AdminDash
 Adm --> UC_AdminKyc
 Adm --> UC_AdminUsers
 Adm --> UC_AdminTrips
 
-' ===== RELATIONS UML (sémantique corrigée) =====
-' include : base ..> inclus
+' Relations de dépendance
 UC_Book ..> UC_Pay : <<include>>
 UC_Publish ..> UC_AddVehicle : <<include>>
+UC_Checkin ..> UC_QrBoarding : <<include>>
+UC_Checkin ..> UC_FacialVerification : <<include>>
 
-' extend : extension ..> base
-UC_CancelBook ..> UC_Book : <<extend>>
+UC_Review ..> UC_Book : <<extend>>
 UC_Accept ..> UC_Manage : <<extend>>
 UC_Reject ..> UC_Manage : <<extend>>
-UC_CancelTrip ..> UC_Publish : <<extend>>
+
+' Acteurs externes
+UC_KYC --> AIS
+UC_Checkin --> AIS
+UC_Pay --> PayGateway
+
+' Grid layout structure helpers
+Core -[hidden]right-> BookingGroup
+BookingGroup -[hidden]right-> PublishGroup
+Core -[hidden]down-> SecurityGroup
+BookingGroup -[hidden]down-> ServiceGroup
+PublishGroup -[hidden]down-> AdminGroup
 
 @enduml

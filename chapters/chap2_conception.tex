@@ -212,7 +212,7 @@ US-02 & Conducteur & En tant que conducteur, je veux pouvoir accepter ou rejeter
 \hline
 US-03 & Passager & En tant que passager, je veux rechercher un trajet par wilaya et date, avec des filtres avancés, afin de planifier mon voyage. & - Formulaire trilingue.\newline - Tri par prix, note, heure.\newline - Statut KYC du conducteur visible. & Haute \\
 \hline
-US-04 & Passager & En tant que passager vérifié, je veux réserver une place et payer via Edahabia, CIB ou espèces, afin de sécuriser mon trajet. & - Intégration sandbox SATIM.\newline - Notification push conducteur.\newline - Remboursement auto si refus. & Haute \\
+US-04 & Passager & En tant que passager vérifié, je veux réserver une place et payer via Edahabia, CIB ou espèces, afin de sécuriser mon trajet. & - Intégration sandbox Chargily Pay V2.\newline - Notification push conducteur.\newline - Remboursement auto si refus. & Haute \\
 \hline
 US-05 & Admin & En tant qu'administrateur, je veux consulter et traiter la file d'attente KYC, afin de garantir la sécurité. & - Comparaison visuelle des documents.\newline - Scores InsightFace/Liveness.\newline - Notification auto de décision. & Critique \\
 \hline
@@ -275,7 +275,10 @@ La figure~\ref{fig:uc-global} présente, sur une même vue, les trois acteurs hu
 \label{fig:uc-global}
 \end{figure}
 
-Trois familles de cas se dégagent~: les cas \textit{transverses} (s'inscrire, se connecter par OTP, compléter le \textsc{kyc}), les cas \textit{transactionnels} (publier, rechercher, réserver, payer) et les cas \textit{relationnels} (messagerie, notation, signalement). Les relations \texttt{<<include>>} matérialisent les préconditions structurelles~; les relations \texttt{<<extend>>} illustrent les actions facultatives.
+Trois familles de cas se dégagent~: les cas \textit{transverses} (s'inscrire, se connecter par OTP, compléter le \textsc{kyc}, gérer son profil), les cas \textit{transactionnels} (publier, rechercher, réserver, payer) et les cas \textit{relationnels} (messagerie, notation, signalement). Les relations \texttt{<<include>>} matérialisent les préconditions structurelles~; les relations \texttt{<<extend>>} illustrent les actions facultatives.
+
+Outre les acteurs humains (Passager, Conducteur et Administrateur), le système intègre deux acteurs externes critiques~: la \textbf{Passerelle de Paiement (Chargily Pay V2)} qui prend en charge les flux transactionnels CIB/Edahabia (en relation avec le cas \textit{Payer le trajet}), et le \textbf{Service IA (FastAPI)} responsable des traitements biométriques complexes (\textit{Vérification KYC} et \textit{Check-In biométrique mutuel}). Des cas d'utilisation additionnels sécurisent les parcours : l'\textbf{Embarquement QR} (double validation à la montée), la \textbf{Vérification faciale} (face-match), le \textbf{Suivi GPS en direct} du trajet, la \textbf{Gestion du portefeuille} numérique (Wallet) et le \textbf{Check-In biométrique mutuel} en face-à-face, combinant la lecture de billet QR et la comparaison faciale via l'IA.
+
 
 Le tableau~\ref{tab:tracabilite} établit la traçabilité entre les besoins fonctionnels et les cas d'utilisation, garantissant la couverture exhaustive des exigences spécifiées.
 
@@ -308,6 +311,7 @@ Modération et validation \textsc{kyc} & Administrateur & UC-MODERATION \\
   \label{tab:tracabilite}
 \end{table}
 
+\newpage
 \section{Diagrammes de classes}
 \label{sec:classes}
 
@@ -343,35 +347,38 @@ Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs att
 \rowcolor{rohlight}
 \textbf{Classe} & \textbf{Attributs principaux} & \textbf{Méthodes métier} \\
 \hline
-\texttt{User} (\textit{Abstraite}) & id, phone, email, firstName, lastName, verificationStatus, createdAt & register(), verifyOtp(), completeKyc() \\
+\texttt{User} (\textit{Abstraite}) & id, phone, email, password, first\_name, last\_name, identity\_status, created\_at & register(), verifyOtp(), completeKyc() \\
 \hline
-\texttt{Passenger} & paymentMethods, averagePassengerRating & reserveTrip(), cancelReservation() \\
+\texttt{Passenger} & payment\_methods, average\_passenger\_rating & reserveTrip(), cancelReservation() \\
 \hline
-\texttt{Driver} & driverScore, vehicleId, verificationId & publishTrip(), manageBooking() \\
+\texttt{Driver} & driver\_score, vehicle\_id, identity\_verification\_id & publishTrip(), manageBooking() \\
 \hline
-\texttt{Admin} & adminLevel & moderateReview(), reviewKyc() \\
+\texttt{Admin} & admin\_level & moderateReview(), reviewKyc() \\
 \hline
-\texttt{Vehicle} & id, driverId, brand, model, licensePlate, color, seatsAvailable & register(), update(), deactivate() \\
+\texttt{Vehicle} & id, owner\_id, make, model, license\_plate\_encrypted, color, seats\_available, is\_verified & register(), deactivate() \\
 \hline
-\texttt{Trip} & id, driverId, vehicleId, originWilayaId, destinationWilayaId, departureAt, pricePerSeat, availableSeats, status & publish(), cancel(), computeSurgePrice() \\
+\texttt{routes} & id, from\_wilaya\_id, to\_wilaya\_id, from\_city, to\_city, distance\_km, duration\_minutes, route\_geometry, waypoints & register(), computeDistance() \\
 \hline
-\texttt{TripRequest} & id, passengerId, fromWilayaCode, toWilayaCode, requestedDate, seats, status & create(), match(), expire() \\
+\texttt{Trip} & id, driver\_id, vehicle\_id, from\_wilaya\_id, from\_city, to\_wilaya\_id, to\_city, departure\_date, departure\_time, price\_per\_seat, available\_seats, status & publish(), cancel() \\
 \hline
-\texttt{Booking} & id, tripId, passengerId, seats, totalPrice, status, paymentStatus & confirm(), cancel(), generateQr() \\
+\texttt{TripRequest} & id, passenger\_id, from\_wilaya\_code, to\_wilaya\_code, date, seats, status & create(), match(), expire() \\
 \hline
-\texttt{Payment} & id, bookingId, method, amount, status, transactionRef & process(), refund() \\
+\texttt{Booking} & id, trip\_id, passenger\_id, num\_seats, total\_price, status, payment\_status, payment\_method & confirm(), cancel(), generateQr() \\
 \hline
-\texttt{IdentityVerification} & id, userId, faceMatchScore, livenessScore, antispoofScore, status, role & submit(), processAI(), reviewManually() \\
+\texttt{PaymentSession} & id, user\_id, booking\_id, provider, provider\_checkout\_id, payment\_method, amount, status, checkout\_url, created\_at & process(), refund() \\
 \hline
-\texttt{FraudEvent} & id, userId, verificationId, eventType, severity & flag(), investigate() \\
+\texttt{IdentityVerification} & id, user\_id, face\_match\_score, liveness\_score, antispoof\_score, status & submit(), processAI(), reviewManually() \\
 \hline
-\texttt{Wallet / WalletTransaction} & balance, currency / type, amount, reference & credit(), debit(), record() \\
+\texttt{FraudEvent} & id, user\_id, verification\_id, event\_type, severity, reason & flag(), investigate() \\
 \hline
-\texttt{Chat / Message} & id, tripId, senderId, content, sentAt & send(), markAsRead() \\
+\texttt{Wallet / WalletTransaction} & balance, currency / type, amount, balance\_after & credit(), debit() / record() \\
 \hline
-\texttt{Notification} & id, userId, type, title, body & dispatch(), markAsRead() \\
+\texttt{Chat / Message} & id, user1\_id, user2\_id, trip\_id, last\_message\_id, last\_message\_at / id, chat\_id, sender\_id, content, read\_at & send(), markAsRead() \\
 \hline
-\texttt{Review} & id, tripId, authorId, targetId, rating & submit(), moderate() \\
+\texttt{Notification} & id, user\_id, type, title, message, is\_read & dispatch(), markAsRead() \\
+\hline
+\texttt{Review} & id, booking\_id, trip\_id, reviewer\_id, reviewee\_id, rating, comment & submit(), moderate() \\
+
 \hline
 \end{tabularx}
   \caption{Description des classes du domaine}
@@ -398,15 +405,17 @@ phone & \texttt{VARCHAR(15)} & UNIQUE, NOT NULL & Numéro de téléphone algéri
 \hline
 email & \texttt{VARCHAR(255)} & UNIQUE, NULLABLE & Adresse e-mail optionnelle \\
 \hline
-firstName & \texttt{VARCHAR(100)} & NOT NULL & Prénom \\
+first\_name & \texttt{VARCHAR(100)} & NOT NULL & Prénom \\
 \hline
-lastName & \texttt{VARCHAR(100)} & NOT NULL & Nom de famille \\
+last\_name & \texttt{VARCHAR(100)} & NOT NULL & Nom de famille \\
 \hline
-passwordHash & \texttt{TEXT} & NOT NULL & Hash bcrypt (coût 10) \\
+password & \texttt{TEXT} & NOT NULL & Hash bcrypt (coût 10) \\
 \hline
-verificationStatus & \texttt{ENUM} & NOT NULL, DEFAULT 'unverified' & \{unverified, pending, verified, rejected\} \\
+role & \texttt{VARCHAR(20)} & NOT NULL & Rôle de l'utilisateur (passenger, driver, admin) \\
 \hline
-createdAt & \texttt{TIMESTAMPTZ} & NOT NULL, DEFAULT NOW() & Horodatage de création \\
+verification\_status & \texttt{ENUM} & NOT NULL, DEFAULT 'unverified' & \{unverified, pending, verified, rejected\} \\
+\hline
+created\_at & \texttt{TIMESTAMPTZ} & NOT NULL, DEFAULT NOW() & Horodatage de création \\
 \hline
 \end{tabularx}
   \caption{Dictionnaire de données --- Table \texttt{users}}
@@ -423,17 +432,17 @@ createdAt & \texttt{TIMESTAMPTZ} & NOT NULL, DEFAULT NOW() & Horodatage de créa
 \hline
 id & \texttt{UUID} & PK & Identifiant unique \\
 \hline
-driverId & \texttt{UUID} & FK $\to$ users, NOT NULL & Conducteur propriétaire \\
+driver\_id & \texttt{UUID} & FK $\to$ users, NOT NULL & Conducteur propriétaire \\
 \hline
-originWilayaId & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya de départ \\
+from\_wilaya\_id & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya de départ \\
 \hline
-destinationWilayaId & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya d'arrivée \\
+to\_wilaya\_id & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya d'arrivée \\
 \hline
-departureAt & \texttt{TIMESTAMPTZ} & NOT NULL, INDEXED & Date et heure de départ \\
+departure\_time & \texttt{TIMESTAMPTZ} & NOT NULL, INDEXED & Date et heure de départ \\
 \hline
-pricePerSeat & \texttt{NUMERIC(10,2)} & NOT NULL, CHECK $> 0$ & Tarif unitaire en DZD \\
+price\_per\_seat & \texttt{NUMERIC(10,2)} & NOT NULL, CHECK $> 0$ & Tarif unitaire en DZD \\
 \hline
-availableSeats & \texttt{SMALLINT} & NOT NULL, CHECK $\geq 0$ & Places restantes \\
+available\_seats & \texttt{SMALLINT} & NOT NULL, CHECK $\geq 0$ & Places restantes \\
 \hline
 status & \texttt{ENUM} & NOT NULL & \{active, full, departed, completed, cancelled\} \\
 \hline
@@ -452,17 +461,17 @@ status & \texttt{ENUM} & NOT NULL & \{active, full, departed, completed, cancell
 \hline
 id & \texttt{UUID} & PK & Identifiant unique \\
 \hline
-tripId & \texttt{UUID} & FK $\to$ trips, NOT NULL & Trajet réservé \\
+trip\_id & \texttt{UUID} & FK $\to$ trips, NOT NULL & Trajet réservé \\
 \hline
-passengerId & \texttt{UUID} & FK $\to$ users, NOT NULL & Passager réservant \\
+passenger\_id & \texttt{UUID} & FK $\to$ users, NOT NULL & Passager réservant \\
 \hline
-seats & \texttt{SMALLINT} & NOT NULL, CHECK $\geq 1$ & Nombre de places réservées \\
+num\_seats & \texttt{SMALLINT} & NOT NULL, CHECK $\geq 1$ & Nombre de places réservées \\
 \hline
-totalPrice & \texttt{NUMERIC(10,2)} & NOT NULL & Montant total (avec surge) \\
+total\_price & \texttt{NUMERIC(10,2)} & NOT NULL & Montant total (avec surge) \\
 \hline
 status & \texttt{ENUM} & NOT NULL & \{pending, confirmed, cancelled, completed\} \\
 \hline
-paymentStatus & \texttt{ENUM} & NOT NULL & \{unpaid, paid, refunded\} \\
+payment\_status & \texttt{ENUM} & NOT NULL & \{unpaid, paid, refunded\} \\
 \hline
 \end{tabularx}
   \caption{Dictionnaire de données --- Table \texttt{bookings}}
@@ -479,19 +488,19 @@ paymentStatus & \texttt{ENUM} & NOT NULL & \{unpaid, paid, refunded\} \\
 \hline
 id & \texttt{UUID} & PK & Identifiant unique \\
 \hline
-userId & \texttt{UUID} & FK $\to$ users, NOT NULL & Utilisateur vérifié \\
+user\_id & \texttt{UUID} & FK $\to$ users, NOT NULL & Utilisateur vérifié \\
 \hline
-faceMatchScore & \texttt{REAL} & NULLABLE & Score de similarité faciale $\in [0; 1]$ \\
+face\_match\_score & \texttt{REAL} & NULLABLE & Score de similarité faciale $\in [0; 1]$ \\
 \hline
-livenessScore & \texttt{REAL} & NULLABLE & Score de détection de vivacité \\
+liveness\_score & \texttt{REAL} & NULLABLE & Score de détection de vivacité \\
 \hline
-antispoofScore & \texttt{REAL} & NULLABLE & Score anti-spoofing CNN \\
+antispoof\_score & \texttt{REAL} & NULLABLE & Score anti-spoofing CNN \\
 \hline
 status & \texttt{ENUM} & NOT NULL & \{pending, verified, pending\_review, rejected\} \\
 \hline
 role & \texttt{ENUM} & NOT NULL & \{passenger, driver\} --- détermine les seuils \\
 \hline
-aiScores & \texttt{JSONB} & NULLABLE & Payload brut multi-dimensionnel du service IA \\
+ai\_raw\_result & \texttt{JSONB} & NULLABLE & Payload brut multi-dimensionnel du service IA \\
 \hline
 \end{tabularx}
   \caption{Dictionnaire de données --- Table \texttt{identity\_verifications}}
@@ -506,27 +515,33 @@ Le passage du diagramme de classes au schéma relationnel suit les règles class
 
 \begin{highlight}
 \small
-\texttt{User}(\underline{id}, phone, email, firstName, lastName, dateOfBirth, passwordHash, verificationStatus, createdAt)\\[2pt]
-\texttt{Role}(\underline{id}, name, permissions)\\[2pt]
-\texttt{UserRole}(\underline{\#userId}, \underline{\#roleId})\\[2pt]
-\texttt{Vehicle}(\underline{id}, \#driverId, brand, model, licensePlate, color, seatsAvailable, isActive)\\[2pt]
-\texttt{Wilaya}(\underline{id}, code, nameFr, nameAr, latitude, longitude)\\[2pt]
-\texttt{Route}(\underline{id}, \#driverId, \#fromWilayaCode, \#toWilayaCode, isHabitual, frequency)\\[2pt]
-\texttt{Trip}(\underline{id}, \#driverId, \#vehicleId, \#originWilayaId, \#destinationWilayaId, departureAt, pricePerSeat, availableSeats, status, createdAt)\\[2pt]
-\texttt{TripRequest}(\underline{id}, \#passengerId, \#fromWilayaCode, \#toWilayaCode, requestedDate, seats, status, expiresAt)\\[2pt]
-\texttt{Booking}(\underline{id}, \#tripId, \#passengerId, seats, totalPrice, status, paymentStatus, createdAt)\\[2pt]
-\texttt{Payment}(\underline{id}, \#bookingId, method, amount, status, transactionRef, createdAt)\\[2pt]
-\texttt{IdentityVerification}(\underline{id}, \#userId, idFrontUrl, idBackUrl, videoUrl, faceMatchScore, livenessScore, antispoofScore, status, role, reviewedBy)\\[2pt]
-\texttt{FraudEvent}(\underline{id}, \#userId, \#verificationId, eventType, severity, reason, aiScores, createdAt)\\[2pt]
-\texttt{FaceEmbedding}(\underline{id}, \#userId, embedding, version, createdAt)\\[2pt]
-\texttt{SurgePricingRule}(\underline{id}, wilayaCode, dayOfWeek, hourStart, hourEnd, multiplier, isActive)\\[2pt]
-\texttt{Wallet}(\underline{id}, \#userId, balance, currency)\\[2pt]
-\texttt{WalletTransaction}(\underline{id}, \#walletId, type, amount, reference, createdAt)\\[2pt]
-\texttt{Chat}(\underline{id}, \#tripId, createdAt)\\[2pt]
-\texttt{Message}(\underline{id}, \#chatId, \#senderId, content, sentAt, readAt)\\[2pt]
-\texttt{Notification}(\underline{id}, \#userId, type, title, body, data, readAt, createdAt)\\[2pt]
-\texttt{Review}(\underline{id}, \#tripId, \#authorId, \#targetId, rating, comment, createdAt)
+\texttt{users}(\underline{id}, phone, email, password, first\_name, last\_name, date\_of\_birth, role, verification\_status, identity\_status, created\_at)\\[2pt]
+\texttt{vehicles}(\underline{id}, \#owner\_id, make, model, license\_plate\_encrypted, color, seats, is\_active)\\[2pt]
+\texttt{wilayas}(\underline{code}, name\_fr, name\_ar, latitude, longitude)\\[2pt]
+\texttt{routes}(\underline{id}, \#from\_wilaya\_id, \#to\_wilaya\_id, from\_city, to\_city, distance\_km, duration\_minutes, route\_geometry, waypoints)\\[2pt]
+\texttt{trips}(\underline{id}, \#driver\_id, \#vehicle\_id, \#from\_wilaya\_id, \#to\_wilaya\_id, departure\_time, price\_per\_seat, available\_seats, status, created\_at)\\[2pt]
+\texttt{trip\_requests}(\underline{id}, \#passenger\_id, \#from\_wilaya\_code, \#to\_wilaya\_code, date, seats, status, expires\_at)\\[2pt]
+\texttt{bookings}(\underline{id}, \#trip\_id, \#passenger\_id, num\_seats, total\_price, status, payment\_status, payment\_method, created\_at)\\[2pt]
+\texttt{payment\_sessions}(\underline{id}, \#user\_id, \#booking\_id, provider, provider\_checkout\_id, payment\_method, amount, status, checkout\_url, created\_at)\\[2pt]
+\texttt{payment\_methods}(\underline{id}, \#user\_id, type, card\_number\_encrypted, card\_number\_iv, card\_number\_auth\_tag, card\_number\_salt, last\_four, cardholder\_name, expiry\_month, expiry\_year, is\_default, created\_at)\\[2pt]
+\texttt{identity\_verifications}(\underline{id}, \#user\_id, id\_card\_front\_url, id\_card\_back\_url, selfie\_url, video\_url, face\_match\_score, liveness\_score, status, created\_at)\\[2pt]
+\texttt{fraud\_events}(\underline{id}, \#user\_id, \#verification\_id, event\_type, severity, reason, created\_at)\\[2pt]
+\texttt{wallets}(\underline{id}, \#user\_id, balance, currency)\\[2pt]
+\texttt{wallet\_transactions}(\underline{id}, \#wallet\_id, type, amount, balance\_after, reference\_id, reference\_type, created\_at)\\[2pt]
+\texttt{chats}(\underline{id}, \#user1\_id, \#user2\_id, \#trip\_id, last\_message\_id, last\_message\_at)\\[2pt]
+\texttt{messages}(\underline{id}, \#chat\_id, \#sender\_id, content, type, read\_at, created\_at)\\[2pt]
+\texttt{notifications}(\underline{id}, \#user\_id, type, title, message, is\_read, created\_at)\\[2pt]
+\texttt{reviews}(\underline{id}, \#booking\_id, \#trip\_id, \#reviewer\_id, \#reviewee\_id, review\_type, rating, comment, created\_at)\\[2pt]
+\textit{Modules d'extensions :}\\[2pt]
+\texttt{rides}(\underline{id}, \#passenger\_id, \#driver\_id, status, created\_at)\\[2pt]
+\texttt{earnings}(\underline{id}, \#driver\_id, \#ride\_id, \#booking\_id, amount, earned\_at)\\[2pt]
+\texttt{gift\_cards}(\underline{id}, code, amount, is\_redeemed, redeemed\_by, created\_at)\\[2pt]
+\texttt{transport\_schedules}(\underline{id}, type, from\_city, to\_city, from\_station, to\_station, departure\_time, arrival\_time, price, company\_name, train\_class, seats\_available, is\_available, created\_at)\\[2pt]
+\texttt{transport\_bookings}(\underline{id}, \#user\_id, \#schedule\_id, seats\_booked, total\_price, status, booking\_reference, payment\_method, created\_at)
 \end{highlight}
+
+Il est important de souligner la distinction structurelle entre les tables \texttt{routes} et \texttt{trips}. La table \texttt{routes} stocke uniquement les informations géographiques globales et statiques sur les itinéraires inter-wilayas (wilayas de départ/arrivée, villes, géométrie du tracé, waypoints, distance et durée estimées). Elle n'est en aucun cas liée à un conducteur particulier. En revanche, la table \texttt{trips} représente les trajets réels et dynamiques publiés par les conducteurs, en référençant un véhicule, une date et heure de départ précises, un nombre de places disponibles, et un prix par siège. Cette modélisation découple proprement la géographie des données transactionnelles de covoiturage.
+
 
 \clearpage
 \section{Diagrammes de séquences}
@@ -581,7 +596,7 @@ Le processus de connexion ultérieur repose sur la même vérification OTP, sans
       \item Le passager sélectionne le trajet et le nombre de places.
       \item Il choisit le mode de paiement (carte CIB/Edahabia ou espèces).
       \item Le système vérifie la disponibilité des places et calcule le prix (FareService).
-      \item Le passager valide le paiement via la passerelle (SATIM/Edahabia sandbox).
+      \item Le passager valide le paiement via la passerelle (redirection vers Chargily Pay V2 sandbox).
       \item Le système confirme la réservation et notifie le conducteur.
     \end{enumerate}
   \item \textbf{Post-conditions :} Réservation créée à l'état \textit{confirmed}, places débitées, notification envoyée.
@@ -602,7 +617,7 @@ Du côté conducteur, le flux de réservation est déclenché par la réception 
 \subsection{Réservation avec paiement multi-méthodes (vue technique)}
 \label{sec:seq-paiement}
 
-Le flux de paiement multi-méthodes s'appuie sur le patron de conception \textit{Strategy/Factory}. Lorsqu'une réservation est confirmée, le \texttt{PaymentService} instancie dynamiquement la stratégie de paiement appropriée selon le choix de l'utilisateur~: \texttt{SatimStrategy} pour les cartes CIB, \texttt{EdahabiaStrategy} pour Edahabia/BaridiMob, ou \texttt{CashStrategy} pour le paiement en espèces à l'embarquement. Le montant est placé en séquestre sur le portefeuille interne de la plateforme (table \texttt{wallets}) et n'est libéré vers le conducteur qu'après achèvement du trajet et expiration du délai de contestation de 24~heures, déduction faite de la commission de 12\,\%. Ce mécanisme de séquestre protège simultanément le passager contre la non-prestation et la plateforme contre les impayés.
+Le flux de paiement multi-méthodes s'appuie sur le patron de conception \textit{Strategy/Factory}. Lorsqu'une réservation est confirmée, le \texttt{PaymentService} instancie dynamiquement la stratégie de paiement appropriée selon le choix de l'utilisateur~: \texttt{CIBStrategy} pour les cartes CIB (opérée par la passerelle Chargily Pay V2), \texttt{EdahabiaStrategy} pour Edahabia/BaridiMob (opérée également par Chargily Pay V2), ou \texttt{CashStrategy} pour le paiement en espèces à l'embarquement. La plateforme ne se connecte pas directement aux serveurs de la SATIM, mais délègue la gestion de la redirection de paiement et la vérification des signatures HMAC de webhook au service de Chargily Pay V2. Le montant est placé en séquestre sur le portefeuille interne de la plateforme (table \texttt{wallets}) et n'est libéré vers le conducteur qu'après achèvement du trajet et expiration du délai de contestation de 24~heures, déduction faite de la commission de 12\,\%. Ce mécanisme de séquestre protège simultanément le passager contre la non-prestation et la plateforme contre les impayés.
 
 \subsection{Vérification KYC biométrique}
 \label{sec:seq-kyc}
@@ -650,7 +665,6 @@ Le flux de paiement multi-méthodes s'appuie sur le patron de conception \textit
 \label{fig:seq-trip-request}
 \end{figure}
 
-\clearpage
 \section{Modélisation BPMN}
 \label{sec:bpmn}
 
@@ -659,7 +673,7 @@ La modélisation des processus métier via la notation \textsc{bpmn} (\textit{Bu
 \subsection{Publication d'un trajet}
 \label{sec:bpmn-driver}
 
-La figure~\ref{fig:proc-driver} décrit le parcours du conducteur, depuis son inscription et sa vérification d'identité (KYC) jusqu'à la publication de trajets et l'encaissement de ses revenus. Le processus d'inscription d'un conducteur avec mise en attente \textsc{kyc} s'articule comme suit. L'utilisateur saisit son numéro de téléphone et reçoit un code \textsc{otp} par \textsc{sms}. Après validation, il complète son profil personnel puis enregistre son véhicule. Le système initialise alors son statut de vérification à \textit{unverified} et le redirige vers le parcours \textsc{kyc}~: capture du recto et du verso de la carte nationale d'identité, puis capture vidéo de vivacité (3~secondes). Les artefacts sont téléversés de manière asynchrone vers le microservice FastAPI, qui exécute le pipeline d'inférence en quatre étages (extraction \textsc{ocr}, comparaison faciale ArcFace~\cite{deng_arcface_2019}, détection de vivacité, anti-spoofing). Le résultat est une décision à trois états~: si l'ensemble des scores dépasse les seuils conducteur ($S_{\text{facial}} \geq 0{,}65$, $S_{\text{liveness}} \geq 0{,}65$, $S_{\text{antispoof}} \geq 0{,}60$), le statut passe directement à \textit{verified} et le conducteur peut publier des trajets. Si les scores sont intermédiaires, le dossier est placé en file d'attente \textit{pending\_review} pour examen humain par un administrateur. En cas de score inférieur au seuil d'échec critique ($< 0{,}30$), le système enregistre automatiquement un événement de fraude dans la table \texttt{fraud\_events} et rejette la demande.
+La figure~\ref{fig:proc-driver} décrit le parcours du conducteur, depuis son inscription et sa vérification d'identité (KYC) jusqu'à la publication de trajets et l'encaissement de ses revenus. Le processus d'inscription d'un conducteur avec mise en attente \textsc{kyc} s'articule comme suit. L'utilisateur saisit son numéro de téléphone et reçoit un code \textsc{otp} par \textsc{sms}. Après validation, il complète son profil personnel puis enregistre son véhicule. Le système initialise alors son statut de vérification à \textit{unverified} et le redirige vers le parcours \textsc{kyc}~: capture du recto et du verso de la carte nationale d'identité, puis capture vidéo de vivacité (3~secondes). Les artefacts sont téléversés de manière asynchrone vers le microservice FastAPI, qui exécute le pipeline d'inférence en quatre étages (extraction \textsc{ocr}, comparaison faciale ArcFace~\cite{deng_arcface_2019}, détection de vivacité, anti-spoofing). Le résultat est une décision à trois états~: si l'ensemble des scores dépasse les seuils conducteur ($S_{\text{facial}} \geq 0{,}65$, $S_{\text{liveness}} \geq 0{,}65$, $S_{\text{antispoof}} \geq 0{,}60$), le statut passe directement à \textit{verified} et le conducteur peut publier des trajets. Si les scores sont intermédiaires, le dossier est placé en file d'attente \textit{pending\_review} pour examen humain par un administrateur. En cas de score inférieur au seuil d'échec critique pour la comparaison faciale ($S_{\text{facial}} < 0{,}45$) ou la détection de vivacité ($S_{\text{liveness}} < 0{,}30$), le système enregistre automatiquement un événement de fraude dans la table \texttt{fraud\_events} et rejette la demande.
 
 \begin{figure}[H]
 \centering
@@ -673,7 +687,7 @@ La figure~\ref{fig:proc-driver} décrit le parcours du conducteur, depuis son in
 \subsection{Réservation d'un trajet}
 \label{sec:bpmn-passenger}
 
-La figure~\ref{fig:proc-passenger} illustre le processus de recherche, de réservation et de paiement électronique sécurisé suivi par le passager. Le flux transactionnel de séquestre du paiement électronique obéit à une logique de protection bilatérale. Lorsqu'un passager confirme une réservation et choisit un paiement par carte \textsc{cib} ou \textit{Edahabia}, le montant total est débité du compte du passager via la passerelle \textsc{satim} et immédiatement crédité sur le portefeuille interne de la plateforme (table \texttt{wallets}), et non sur celui du conducteur. Les fonds demeurent en séquestre jusqu'à l'achèvement effectif du trajet. Lorsque le conducteur marque le trajet comme terminé et que le passager ne conteste pas dans un délai de 24~heures, la plateforme libère automatiquement les fonds vers le portefeuille du conducteur, après déduction de la commission de 12\,\%. En cas d'annulation par le conducteur avant le départ, un remboursement intégral est déclenché automatiquement. Ce mécanisme de séquestre élimine le risque de non-prestation tout en sécurisant les revenus de la plateforme.
+La figure~\ref{fig:proc-passenger} illustre le processus de recherche, de réservation et de paiement électronique sécurisé suivi par le passager. Le flux transactionnel de séquestre du paiement électronique obéit à une logique de protection bilatérale. Lorsqu'un passager confirme une réservation et choisit un paiement par carte \textsc{cib} ou \textit{Edahabia}, le montant total est débité du compte du passager via la passerelle \textbf{Chargily Pay V2} et immédiatement crédité sur le portefeuille interne de la plateforme (table \texttt{wallets}), et non sur celui du conducteur. Les fonds demeurent en séquestre jusqu'à l'achèvement effectif du trajet. Lorsque le conducteur marque le trajet comme terminé et que le passager ne conteste pas dans un délai de 24~heures, la plateforme libère automatiquement les fonds vers le portefeuille du conducteur, après déduction de la commission de 12\,\%. En cas d'annulation par le conducteur avant le départ, un remboursement intégral est déclenché automatiquement. Ce mécanisme de séquestre élimine le risque de non-prestation tout en sécurisant les revenus de la plateforme.
 
 \begin{figure}[H]
 \centering
@@ -785,7 +799,7 @@ La plateforme adopte une stratégie d'analyse multi-seuils différenciée selon 
 \begin{equation}
 \text{Statut} = \begin{cases} 
 \text{Accepté} & \text{si } S_{id} \geq 0{,}65 \wedge S_{liv} \geq 0{,}65 \wedge S_{as} \geq 0{,}60 \\
-\text{Rejeté} & \text{si } S_{id} < 0{,}30 \vee S_{liv} < 0{,}30 \\
+\text{Rejeté} & \text{si } S_{id} < 0{,}45 \vee S_{liv} < 0{,}30 \\
 \text{Revue Manuelle} & \text{sinon}
 \end{cases}
 \end{equation}
@@ -794,7 +808,7 @@ La plateforme adopte une stratégie d'analyse multi-seuils différenciée selon 
 \begin{equation}
 \text{Statut} = \begin{cases} 
 \text{Accepté} & \text{si } S_{id} \geq 0{,}60 \wedge S_{liv} \geq 0{,}55 \wedge S_{as} \geq 0{,}50 \\
-\text{Rejeté} & \text{si } S_{id} < 0{,}30 \vee S_{liv} < 0{,}30 \\
+\text{Rejeté} & \text{si } S_{id} < 0{,}45 \vee S_{liv} < 0{,}30 \\
 \text{Revue Manuelle} & \text{sinon}
 \end{cases}
 \end{equation}
@@ -810,9 +824,9 @@ La synthèse de ces seuils décisionnels configurés pour le microservice d'IA e
 \rowcolor{rohlight}
 \textbf{Rôle de l'utilisateur} & \textbf{Identité ($S_{id}$)} & \textbf{Vivacité ($S_{liv}$)} & \textbf{Anti-spoofing ($S_{as}$)} & \textbf{Action de rejet immédiat} \\
 \hline
-\textbf{Conducteur} (Haute criticité) & $\geq 0{,}65$ & $\geq 0{,}65$ & $\geq 0{,}60$ & Si $S_{id} < 0{,}30$ ou $S_{liv} < 0{,}30$ \\
+\textbf{Conducteur} (Haute criticité) & $\geq 0{,}65$ & $\geq 0{,}65$ & $\geq 0{,}60$ & Si $S_{id} < 0{,}45$ ou $S_{liv} < 0{,}30$ \\
 \hline
-\textbf{Passager} (Criticité moyenne) & $\geq 0{,}60$ & $\geq 0{,}55$ & $\geq 0{,}50$ & Si $S_{id} < 0{,}30$ ou $S_{liv} < 0{,}30$ \\
+\textbf{Passager} (Criticité moyenne) & $\geq 0{,}60$ & $\geq 0{,}55$ & $\geq 0{,}50$ & Si $S_{id} < 0{,}45$ ou $S_{liv} < 0{,}30$ \\
 \hline
 \end{tabularx}
 \caption{Seuils de décision et de classification biométrique KYC par rôle}

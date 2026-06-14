@@ -50,7 +50,9 @@ main.pdf
 annexes_standalone.pdf
 memoire_rohwinbghit.pdf
 
-# ─── PowerPoint scratch / test output ────────────────────────────────────────
+# ─── PowerPoint and PDF exclusions ──────────────────────────────────────────
+*.pdf
+*.pptx
 test_out.pptx
 RohWinBghit_v2.pptx
 

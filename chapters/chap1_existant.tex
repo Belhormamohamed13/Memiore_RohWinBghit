@@ -203,7 +203,7 @@ La Figure~\ref{fig:covoitdz} présente l'interface d'accueil de l'application un
 Développée et soutenue en tant que projet académique au sein du Département d'Informatique de l'Université de Tlemcen~\cite{merad_covoitdz_2024}, l'application Android Covoit'Dz vise spécifiquement à faciliter la mise en relation pour le partage de trajets routiers en Algérie.
 \begin{itemize}
   \item \textbf{Analyse de la contribution~:} Le projet démontre l'intérêt méthodologique de l'approche mobile Android pour structurer le marché national, en proposant une modélisation UML et une base de données relationnelle adaptée aux liaisons inter-wilayas.
-  \item \textbf{Limitations scientifiques~:} Covoit'Dz souffre de l'absence totale de modules d'identité biométrique KYC. L'application repose sur un modèle déclaratif vulnérable, sans chiffrement des données personnelles au repos et sans algorithme de tarification dynamique. De plus, elle ne propose aucune intégration monétique avec l'écosystème interbancaire de la SATIM, limitant son champ d'action à un prototype informationnel.
+  \item \textbf{Limitations scientifiques~:} Covoit'Dz souffre de l'absence totale de modules d'identité biométrique KYC. L'application repose sur un modèle déclaratif vulnérable, sans chiffrement des données personnelles au repos et sans algorithme de tarification dynamique. De plus, elle ne propose aucune intégration monétique avec l'écosystème de paiement interbancaire national (CIB / Edahabia), limitant son champ d'action à un prototype informationnel.
 \end{itemize}
 
 \section{Synthèse des systèmes concurrents}
@@ -229,7 +229,7 @@ Authentification KYC & Standard & Standard & CIN + \textit{selfie} & Documentair
 \hline
 Seuils IA par rôle & Non & Non & Non & Non & Non & \textbf{Oui ($\geq 0{,}65$ / $\geq 0{,}60$)} \\
 \hline
-Paiement CIB / Edahabia & Non & Partiel & Non (cash) & Non (cash) & Non & \textbf{Sandbox + espèces} \\
+Paiement CIB / Edahabia & Non & Partiel & Non (cash) & Non (cash) & Non & \textbf{Chargily (Sandbox) + espèces} \\
 \hline
 Messagerie temps réel & Oui & Oui & Oui & Oui & Non & \textbf{Oui (Socket.IO)} \\
 \hline
@@ -256,7 +256,7 @@ L'analyse comparative met en évidence cinq limites structurelles majeures qui d
 
 \begin{enumerate}[leftmargin=1.8em]
   \item \textbf{Confiance limitée (Lacune~1)~:} Les plateformes existantes se limitent à une vérification documentaire sans contrôle de vivacité ni anti-\textit{spoofing}. \textit{RohWinBghit} y répond par un pipeline biométrique à trois niveaux (OCR, comparaison faciale, détection de vivacité) avec des seuils différenciés par rôle.
-  \item \textbf{Paiement électronique non intégré (Lacune~2)~:} Le règlement en espèces reste la norme quasi-exclusive. \textit{RohWinBghit} intègre trois méthodes coexistantes~: espèces (opérationnel), \textsc{cib} et \textit{Edahabia} (sandbox), avec une architecture extensible (patron \textit{Factory}).
+  \item \textbf{Paiement électronique non intégré (Lacune~2)~:} Le règlement en espèces reste la norme quasi-exclusive. \textit{RohWinBghit} intègre trois méthodes coexistantes~: espèces (opérationnel), et cartes de paiement \textsc{cib} / \textit{Edahabia} via la passerelle de paiement en ligne \textbf{Chargily Pay V2} (sandbox), avec une architecture extensible (patron \textit{Factory}).
   \item \textbf{Couverture interurbaine parcellaire (Lacune~3)~:} Les acteurs proposent des lignes géographiques rigides. \textit{RohWinBghit} prend en charge nativement les 69~wilayas avec interface trilingue arabe/français/anglais.
   \item \textbf{Absence d'outils de modération (Lacune~4)~:} Les applications manquent de panneaux de contrôle pour la validation \textsc{kyc} et la gestion des litiges. \textit{RohWinBghit} intègre une interface web d'administration dédiée.
   \item \textbf{Absence de tarification dynamique et de matching inversé (Lacune~5)~:} Il n'existe aucun moteur de matching intelligent ni mécanisme de \textit{surge pricing}. \textit{RohWinBghit} propose un prototype de tarification dynamique et un mécanisme de demande de trajet (matching inversé).
