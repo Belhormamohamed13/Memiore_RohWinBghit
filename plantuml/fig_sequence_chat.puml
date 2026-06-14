@@ -1,0 +1,72 @@
+@startuml fig_sequence_chat
+!include theme_rohwinbghit.puml
+skinparam style strictuml
+skinparam SequenceMessageAlignment center
+
+title Séquence — Messagerie Temps Réel (Sockets & Persistance)
+
+actor "Expéditeur (Passager/Conducteur)" as Exp
+participant "App Expéditeur\n(React Native)" as AppE
+participant "Backend Socket.IO\n(Express.js)" as API
+database "Base de Données\n(PostgreSQL)" as DB
+participant "App Destinataire\n(React Native)" as AppD
+actor "Destinataire (Conducteur/Passager)" as Dest
+
+== Phase 1 : Initialisation de la Session de Chat ==
+
+Exp -> AppE : Ouvrir l'écran de discussion
+AppE -> API : émettre 'join' { chatId }
+API -> API : Rejoindre la room socket 'chat:${chatId}'
+API --> AppE : Confirmation d'abonnement à la room
+
+== Phase 2 : Envoi d'un Message Temps Réel ==
+
+Exp -> AppE : Saisir un texte et cliquer sur "Envoyer"
+AppE -> AppE : Générer un tempId (identifiant local temporaire)
+AppE -> API : émettre 'chat:send' via WebSocket\n{ chatId, receiverId, content, tempId, type: 'text' }
+activate API
+
+API -> DB : Sauvegarder le message dans la table messages
+API -> DB : Mettre à jour last_message_id et last_message_at dans chats
+DB --> API : Message enregistré avec succès (ID UUIDv4, created_at)
+
+API -> Socket : émettre 'chat:receive' vers le destinataire\n(room 'user:${receiverId}')
+activate Socket
+Socket --> AppD : Réception temps réel du message
+AppD --> Dest : Affichage du message dans l'interface
+deactivate Socket
+
+API -> Socket : émettre 'chat:sent' vers l'expéditeur\n(room 'user:${senderId}')
+activate Socket
+Socket --> AppE : Acknowledge : Remplacer tempId par l'ID réel\n(Icône : envoyé ✓)
+deactivate Socket
+deactivate API
+
+== Phase 3 : Indicateurs de Saisie (Typing Indicators) ==
+
+Exp -> AppE : Commencer à saisir du texte...
+AppE -> API : émettre 'chat:typing' { chatId, receiverId }
+activate API
+API -> Socket : Relayer 'chat:typing' vers destinataire
+Socket --> AppD : Afficher : "[Expéditeur] écrit..."
+deactivate API
+
+Exp -> AppE : Arrêter de saisir du texte ou envoyer
+AppE -> API : émettre 'chat:stopTyping' { chatId, receiverId }
+activate API
+API -> Socket : Relayer 'chat:stopTyping' vers destinataire
+Socket --> AppD : Retirer l'indicateur de saisie
+deactivate API
+
+== Phase 4 : Accusé de Réception (Read Receipts) ==
+
+Dest -> AppD : Lire le message reçu
+AppD -> API : POST /api/chats/:chatId/read
+activate API
+API -> DB : Mettre à jour read_at = NOW() pour les messages reçus
+DB --> API : OK (IDs des messages lus)
+API -> Socket : émettre 'chat:delivered' vers expéditeur
+Socket --> AppE : Mettre à jour l'état de lecture\n(Icône : lu ✓✓)
+deactivate API
+
+@enduml

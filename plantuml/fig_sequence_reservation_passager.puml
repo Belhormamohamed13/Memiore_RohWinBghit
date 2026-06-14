@@ -1,44 +1,70 @@
 @startuml fig_sequence_reservation_passager
 !include theme_rohwinbghit.puml
+skinparam style strictuml
+skinparam SequenceMessageAlignment center
 
 title Diagramme de séquence — Réservation côté Passager (RohWinBghit)
 
-actor "r : Passager" as P
-participant "System" as S
-database "BDD" as DB
+actor "Passager" as P
+participant "App Mobile\n(React Native)" as App
+participant "Backend API\n(Express.js)" as API
+database "Base de Données\n(PostgreSQL)" as DB
+participant "Service Notification\n(Expo FCM)" as Notif
+actor "Conducteur" as D
 
-P -> S : Rechercher des covoiturages\n(filtres : wilaya, date, places)
-S -> DB : Envoyer les données
-DB --> S : Liste des covoiturages disponibles
-S --> P : Afficher les covoiturages disponibles
+P -> App : Rechercher des covoiturages\n(wilayas, date, places)
+App -> API : GET /api/trips (filtres)
+activate API
 
-P -> S : Afficher les détails du covoiturage
-S --> P : Détails (conducteur, prix, itinéraire)
+API -> DB : Rechercher les trajets actifs et disponibles
+DB --> API : Résultats de recherche (avec note & KYC conducteur)
+API --> App : Retourner la liste des trajets
+deactivate API
+App --> P : Afficher les trajets disponibles
 
-P -> S : Réserver le covoiturage\n(choix du moyen de paiement)
-S -> DB : Créer la réservation (status = pending)
-S --> P : Envoyer une requête et une notification au conducteur
+P -> App : Sélectionner un trajet + Réserver\n(choix du mode de paiement)
+App -> API : POST /api/bookings\n{ trip_id, num_seats, payment_method }
+activate API
+
+API -> DB : Enregistrer la réservation (status = 'pending')
+DB --> API : Réservation créée
+API -> Notif : Déclencher notification 'booking_new'
+activate Notif
+Notif -> D : Notification push : Nouvelle réservation en attente
+deactivate Notif
+API --> App : Réservation enregistrée
+deactivate API
+App --> P : Afficher le billet numérique (QR code en attente)
 
 alt Acceptée
-
-  S --> P : Recevoir notification (Requête acceptée)
-
-  P -> S : Marquer le covoiturage comme terminé
-  S -> DB : Mettre à jour le trajet (status = completed)
-  DB --> S : OK
-  S --> P : Recevoir notification de fin
-
-  P -> S : Noter le conducteur (1 à 5 étoiles)
-  S -> DB : Enregistrer la note et l'avis
-  DB --> S : OK
-  S --> P : Confirmation de la notation
-
+  D -> API : POST /api/bookings/:id/status { status: 'confirmed' }
+  activate API
+  API -> DB : Mettre à jour la réservation (status = 'confirmed')
+  API -> Notif : Déclencher notification 'booking_confirmed'
+  activate Notif
+  Notif -> P : Notification push : Réservation confirmée ! ✅
+  deactivate Notif
+  API --> D : Confirmation de mise à jour
+  deactivate API
+  P -> App : Afficher le billet (QR code mis à jour)
 else Refusée
-  S --> P : Recevoir notification (Requête refusée)
-else Annulation
-  P -> S : Annuler le trajet
-  S -> DB : Mettre à jour la réservation\n(status = cancelled)
-  S --> P : Confirmation de l'annulation
+  D -> API : POST /api/bookings/:id/status { status: 'rejected' }
+  activate API
+  API -> DB : Mettre à jour la réservation (status = 'rejected')
+  API -> Notif : Déclencher notification 'booking_cancelled'
+  activate Notif
+  Notif -> P : Notification push : Réservation refusée par le conducteur ❌
+  deactivate Notif
+  API --> D : Confirmation de rejet
+  deactivate API
+else Annulée par le passager
+  P -> App : Annuler la réservation
+  App -> API : POST /api/bookings/:id/cancel
+  activate API
+  API -> DB : Mettre à jour la réservation (status = 'cancelled'),\nrestaurer les sièges sur le trajet
+  API --> App : Annulation confirmée
+  deactivate API
+  App --> P : Confirmer l'annulation
 end
 
 @enduml

@@ -1,0 +1,65 @@
+@startuml fig_sequence_gps
+!include theme_rohwinbghit.puml
+skinparam style strictuml
+skinparam SequenceMessageAlignment center
+
+title Séquence — Suivi GPS et Télétransmission de Position en Temps Réel
+
+actor "Conducteur" as D
+participant "App Conducteur\n(React Native)" as AppD
+participant "Backend Socket.IO\n(Express.js)" as API
+database "Redis Cache\n(GEO Pool)" as Redis
+database "Base de Données\n(PostgreSQL)" as DB
+participant "App Passager\n(React Native)" as AppP
+actor "Passager" as P
+
+== Phase 1 : Mise en Ligne et Initialisation du Suivi ==
+
+D -> AppD : Activer le mode "En Ligne"
+AppD -> API : émettre 'driver:go_online' { vehicleId, lat, lng }
+activate API
+API -> Redis : GEOADD drivers:online lng lat driverId\n(Enregistrer position géographique)
+API -> DB : Mettre à jour le dernier horodatage d'activité
+API --> AppD : Mode en ligne activé
+deactivate API
+
+AppD -> AppD : Initialiser le service de géolocalisation en arrière-plan
+
+== Phase 2 : Flux de Télétransmission GPS en Cours de Trajet ==
+
+loop Toutes les 10 secondes (ou sur changement de position significatif)
+  AppD -> API : émettre 'driver:location_update' { lat, lng, heading } via WebSocket
+  activate API
+  
+  API -> Redis : GEOPOS / GEOADD drivers:online lng lat driverId\n(Mettre à jour la géolocalisation dans le cache)
+  
+  API -> Redis : GET rwb:driver:${driverId}:active_ride\n(Vérifier s'il y a une course en cours)
+  Redis --> API : activeRideId (ID de la course)
+  
+  alt Course Active (Trajet démarré)
+    API -> DB : Récupérer la destination (dropoff_lat, dropoff_lng, passenger_id)
+    DB --> API : Détails de la destination et ID du passager
+    
+    API -> API : Calculer la distance restante (formule de haversine) et\nestimer le temps restant (ETA)
+    
+    API -> Socket : émettre 'ride:driver_location' vers le passager\n(room 'user:${passenger_id}')
+    activate Socket
+    Socket --> AppP : Réception temps réel { lat, lng, heading, etaSeconds, distanceRemaining }
+    deactivate Socket
+    
+    AppP -> AppP : Recalculer le tracé Mapbox et déplacer le marqueur du véhicule
+    AppP --> P : Afficher la position de la voiture sur la carte et l'ETA en direct
+  end
+  deactivate API
+end
+
+== Phase 3 : Déconnexion ==
+
+D -> AppD : Désactiver le mode "En Ligne" / Se déconnecter
+AppD -> API : émettre 'driver:go_offline'
+activate API
+API -> Redis : ZREM drivers:online driverId\n(Retirer du pool GEO de Redis)
+API --> AppD : Confirmation hors ligne
+deactivate API
+
+@enduml

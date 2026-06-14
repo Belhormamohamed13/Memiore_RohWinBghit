@@ -1,0 +1,130 @@
+@startuml fig_sequence_checkin
+!include theme_rohwinbghit.puml
+skinparam style strictuml
+skinparam SequenceMessageAlignment center
+
+title Séquence — Embarquement Biométrique Mutuel (Check-in en Face-à-Face)
+
+actor "Passager" as P
+participant "App Passager\n(React Native)" as AppP
+actor "Conducteur" as D
+participant "App Conducteur\n(React Native)" as AppD
+participant "Backend API\n(Express.js)" as API
+database "Base de Données\n(PostgreSQL)" as DB
+participant "Service IA\n(FastAPI)" as AI
+participant "Socket.IO\n(Temps Réel)" as Socket
+participant "Service Notification\n(Expo FCM)" as Notif
+
+== Phase 1 : Génération et Scan du Billet QR ==
+
+P -> AppP : Ouvrir le billet du trajet (30 min avant départ)
+AppP -> API : GET /api/checkin/ticket-token/:bookingId
+activate API
+API -> DB : Vérifier la réservation (status = 'confirmed', non annulée)
+DB --> API : Réservation valide
+API -> API : Générer un jeton cryptographique checkin_token (expire dans 2h)
+API -> DB : Sauvegarder checkin_token et checkin_token_expires_at
+API --> AppP : Retourner le token d'embarquement
+deactivate API
+AppP -> AppP : Générer et afficher le code QR à l'écran
+
+D -> AppD : Ouvrir le scanner de billets de l'application
+D -> AppP : Scanner le code QR du Passager
+AppD -> API : POST /api/checkin/scan { token }
+activate API
+
+API -> DB : Valider le token et vérifier l'appartenance au trajet du conducteur
+API -> DB : Vérifier la présence des embeddings KYC des deux utilisateurs (source='selfie')
+DB --> API : Embeddings présents
+
+API -> Socket : émettre 'checkin:started' vers la room du passager
+activate Socket
+Socket --> AppP : Notification Sockets : Début de l'embarquement
+deactivate Socket
+
+API -> Notif : Envoyer notification d'embarquement au passager
+activate Notif
+Notif --> P : Push notification : Le conducteur a scanné votre billet !
+deactivate Notif
+
+API --> AppD : Retourner les détails de la réservation et succès du scan
+deactivate API
+
+AppP --> P : Activer la caméra frontale pour scanner le conducteur
+AppD --> D : Activer la caméra frontale pour scanner le passager
+
+== Phase 2 : Vérification Biométrique Mutuelle des Visages ==
+
+loop Streaming des images de la caméra (des deux côtés simultanément)
+  
+  alt Conducteur filme le Passager (Vérification du Passager)
+    AppD -> API : POST /api/checkin/:bookingId/verify-face (envoi trame image)
+    activate API
+    API -> AI : Extraire embedding de la trame (POST /check-liveness)
+    activate AI
+    AI --> API : Embedding extrait
+    deactivate AI
+    API -> DB : Récupérer l'embedding KYC d'origine du Passager
+    API -> API : Calculer la similarité cosinus (score >= 0.35)
+    
+    alt Match validé
+      API -> API : Incrémenter streak de validation du Passager (streakKey)
+      alt Streak >= 2 consécutifs
+        API -> DB : Enregistrer la validation (passenger_face_verified_at = NOW())
+        API -> Socket : émettre 'checkin:peer-verified' (passenger) vers conducteur
+        API --> AppD : { sideVerified: true, matched: true, bothVerified }
+      else Streak < 2
+        API --> AppD : { sideVerified: false, matched: true, message: "confirmation..." }
+      end
+    else Non match / Streak réinitialisé
+      API --> AppD : { sideVerified: false, matched: false }
+    end
+    deactivate API
+  end
+  
+  alt Passager filme le Conducteur (Vérification du Conducteur)
+    AppP -> API : POST /api/checkin/:bookingId/verify-face (envoi trame image)
+    activate API
+    API -> AI : Extraire embedding de la trame (POST /check-liveness)
+    activate AI
+    AI --> API : Embedding extrait
+    deactivate AI
+    API -> DB : Récupérer l'embedding KYC d'origine du Conducteur
+    API -> API : Calculer la similarité cosinus (score >= 0.35)
+    
+    alt Match validé
+      API -> API : Incrémenter streak de validation du Conducteur (streakKey)
+      alt Streak >= 2 consécutifs
+        API -> DB : Enregistrer la validation (driver_face_verified_at = NOW())
+        API -> Socket : émettre 'checkin:peer-verified' (driver) vers passager
+        API --> AppP : { sideVerified: true, matched: true, bothVerified }
+      else Streak < 2
+        API --> AppP : { sideVerified: false, matched: true, message: "confirmation..." }
+      end
+    else Non match / Streak réinitialisé
+      API --> AppP : { sideVerified: false, matched: false }
+    end
+    deactivate API
+  end
+  
+end
+
+== Phase 3 : Finalisation de l'Embarquement ==
+
+alt Les deux côtés sont vérifiés (bothVerified = true)
+  API -> DB : Ouvrir transaction :\n- Enregistrer checked_in_at = NOW()\n- Supprimer checkin_token de la réservation
+  DB --> API : COMMIT réussi
+  
+  API -> Socket : émettre 'checkin:complete' vers passager et conducteur
+  activate Socket
+  Socket --> AppP : Afficher "Embarquement Validé" (Badge vert)
+  Socket --> AppD : Afficher "Embarquement Validé"
+  deactivate Socket
+  
+  API -> Notif : Envoyer notification push de confirmation finale
+  activate Notif
+  Notif --> P : Push notification : Embarquement mutuel confirmé, bon voyage !
+  deactivate Notif
+end
+
+@enduml

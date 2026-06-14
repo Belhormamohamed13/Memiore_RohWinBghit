@@ -240,7 +240,7 @@
 {\LARGE \textit{\textbf{(RohWinBghit)}}}\\[2.5em]
 \begin{minipage}{0.48\textwidth}
 \raggedright
-\textbf{Realisee par :}\\[2pt]
+\textbf{Realisee par :}\\[1pt]
 \quad --- AHMED BACHA Djamel Eddine\\
 \quad --- BELHORMA Sidi Mohammed Reduane\\[1.5em]
 \textcolor{blue!70!black}{\textbf{Projet labellisé Startup par le Ministère}}\\
@@ -249,7 +249,7 @@
 \hfill
 \begin{minipage}{0.48\textwidth}
 \raggedleft
-\textbf{Encadrante :}\\[2pt]
+\textbf{Encadrante :}\\[1pt]
 Mme BENLEDGHEM Rafika
 \end{minipage}\\[3em]
 \begin{tabular}{ll}
@@ -1047,30 +1047,30 @@ role & VARCHAR(20) & \textit{driver} ou \textit{passenger} \\
 
 Le passage du diagramme de classes au schéma relationnel suit les règles classiques de transformation. Les principales relations sont représentées ci-dessous (les clés primaires sont soulignées, les clés étrangères préfixées par~\#).
 
-\begin{highlight}
-\small
-\texttt{users}(\underline{id}, phone, email, password, first\_name, last\_name, date\_of\_birth, role, verification\_status, identity\_status, created\_at)\\[2pt]
-\texttt{vehicles}(\underline{id}, \#owner\_id, make, model, license\_plate\_encrypted, color, seats, is\_active)\\[2pt]
-\texttt{wilayas}(\underline{code}, name\_fr, name\_ar, latitude, longitude)\\[2pt]
-\texttt{routes}(\underline{id}, \#from\_wilaya\_id, \#to\_wilaya\_id, from\_city, to\_city, distance\_km, duration\_minutes, route\_geometry, waypoints)\\[2pt]
-\texttt{trips}(\underline{id}, \#driver\_id, \#vehicle\_id, \#from\_wilaya\_id, \#to\_wilaya\_id, departure\_time, price\_per\_seat, available\_seats, status, created\_at)\\[2pt]
-\texttt{trip\_requests}(\underline{id}, \#passenger\_id, \#from\_wilaya\_code, \#to\_wilaya\_code, date, seats, status, expires\_at)\\[2pt]
-\texttt{bookings}(\underline{id}, \#trip\_id, \#passenger\_id, num\_seats, total\_price, status, payment\_status, payment\_method, created\_at)\\[2pt]
-\texttt{payment\_sessions}(\underline{id}, \#user\_id, \#booking\_id, provider, provider\_checkout\_id, payment\_method, amount, status, checkout\_url, created\_at)\\[2pt]
-\texttt{payment\_methods}(\underline{id}, \#user\_id, type, card\_number\_encrypted, card\_number\_iv, card\_number\_auth\_tag, card\_number\_salt, last\_four, cardholder\_name, expiry\_month, expiry\_year, is\_default, created\_at)\\[2pt]
-\texttt{identity\_verifications}(\underline{id}, \#user\_id, id\_card\_front\_url, id\_card\_back\_url, selfie\_url, video\_url, face\_match\_score, liveness\_score, status, created\_at)\\[2pt]
-\texttt{fraud\_events}(\underline{id}, \#user\_id, \#verification\_id, event\_type, severity, reason, created\_at)\\[2pt]
-\texttt{wallets}(\underline{id}, \#user\_id, balance, currency)\\[2pt]
-\texttt{wallet\_transactions}(\underline{id}, \#wallet\_id, type, amount, balance\_after, reference\_id, reference\_type, created\_at)\\[2pt]
-\texttt{chats}(\underline{id}, \#user1\_id, \#user2\_id, \#trip\_id, last\_message\_id, last\_message\_at)\\[2pt]
-\texttt{messages}(\underline{id}, \#chat\_id, \#sender\_id, content, type, read\_at, created\_at)\\[2pt]
-\texttt{notifications}(\underline{id}, \#user\_id, type, title, message, is\_read, created\_at)\\[2pt]
-\texttt{reviews}(\underline{id}, \#booking\_id, \#trip\_id, \#reviewer\_id, \#reviewee\_id, review\_type, rating, comment, created\_at)\\[2pt]
-\textit{Modules d'extensions :}\\[2pt]
-\texttt{rides}(\underline{id}, \#passenger\_id, \#driver\_id, status, created\_at)\\[2pt]
-\texttt{earnings}(\underline{id}, \#driver\_id, \#ride\_id, \#booking\_id, amount, earned\_at)\\[2pt]
-\texttt{gift\_cards}(\underline{id}, code, amount, is\_redeemed, redeemed\_by, created\_at)\\[2pt]
-\texttt{transport\_schedules}(\underline{id}, type, from\_city, to\_city, from\_station, to\_station, departure\_time, arrival\_time, price, company\_name, train\_class, seats\_available, is\_available, created\_at)\\[2pt]
+\begin{highlight}[breakable=false]
+\singlespacing\footnotesize
+\texttt{users}(\underline{id}, phone, email, password, first\_name, last\_name, date\_of\_birth, role, verification\_status, identity\_status, created\_at)\\[1pt]
+\texttt{vehicles}(\underline{id}, \#owner\_id, make, model, license\_plate\_encrypted, color, seats, is\_active)\\[1pt]
+\texttt{wilayas}(\underline{code}, name\_fr, name\_ar, latitude, longitude)\\[1pt]
+\texttt{routes}(\underline{id}, \#from\_wilaya\_id, \#to\_wilaya\_id, from\_city, to\_city, distance\_km, duration\_minutes, route\_geometry, waypoints)\\[1pt]
+\texttt{trips}(\underline{id}, \#driver\_id, \#vehicle\_id, \#from\_wilaya\_id, \#to\_wilaya\_id, departure\_time, price\_per\_seat, available\_seats, status, created\_at)\\[1pt]
+\texttt{trip\_requests}(\underline{id}, \#passenger\_id, \#from\_wilaya\_code, \#to\_wilaya\_code, date, seats, status, expires\_at)\\[1pt]
+\texttt{bookings}(\underline{id}, \#trip\_id, \#passenger\_id, num\_seats, total\_price, status, payment\_status, payment\_method, created\_at)\\[1pt]
+\texttt{payment\_sessions}(\underline{id}, \#user\_id, \#booking\_id, provider, provider\_checkout\_id, payment\_method, amount, status, checkout\_url, created\_at)\\[1pt]
+\texttt{payment\_methods}(\underline{id}, \#user\_id, type, card\_number\_encrypted, card\_number\_iv, card\_number\_auth\_tag, card\_number\_salt, last\_four, cardholder\_name, expiry\_month, expiry\_year, is\_default, created\_at)\\[1pt]
+\texttt{identity\_verifications}(\underline{id}, \#user\_id, id\_card\_front\_url, id\_card\_back\_url, selfie\_url, video\_url, face\_match\_score, liveness\_score, status, created\_at)\\[1pt]
+\texttt{fraud\_events}(\underline{id}, \#user\_id, \#verification\_id, event\_type, severity, reason, created\_at)\\[1pt]
+\texttt{wallets}(\underline{id}, \#user\_id, balance, currency)\\[1pt]
+\texttt{wallet\_transactions}(\underline{id}, \#wallet\_id, type, amount, balance\_after, reference\_id, reference\_type, created\_at)\\[1pt]
+\texttt{chats}(\underline{id}, \#user1\_id, \#user2\_id, \#trip\_id, last\_message\_id, last\_message\_at)\\[1pt]
+\texttt{messages}(\underline{id}, \#chat\_id, \#sender\_id, content, type, read\_at, created\_at)\\[1pt]
+\texttt{notifications}(\underline{id}, \#user\_id, type, title, message, is\_read, created\_at)\\[1pt]
+\texttt{reviews}(\underline{id}, \#booking\_id, \#trip\_id, \#reviewer\_id, \#reviewee\_id, review\_type, rating, comment, created\_at)\\[1pt]
+\textit{Modules d'extensions :}\\[1pt]
+\texttt{rides}(\underline{id}, \#passenger\_id, \#driver\_id, status, created\_at)\\[1pt]
+\texttt{earnings}(\underline{id}, \#driver\_id, \#ride\_id, \#booking\_id, amount, earned\_at)\\[1pt]
+\texttt{gift\_cards}(\underline{id}, code, amount, is\_redeemed, redeemed\_by, created\_at)\\[1pt]
+\texttt{transport\_schedules}(\underline{id}, type, from\_city, to\_city, from\_station, to\_station, departure\_time, arrival\_time, price, company\_name, train\_class, seats\_available, is\_available, created\_at)\\[1pt]
 \texttt{transport\_bookings}(\underline{id}, \#user\_id, \#schedule\_id, seats\_booked, total\_price, status, booking\_reference, payment\_method, created\_at)
 \end{highlight}
 

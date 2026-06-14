@@ -3,72 +3,133 @@
 skinparam style strictuml
 skinparam SequenceMessageAlignment center
 
+title Séquence — Vérification d'Identité (KYC) Biométrique Multi-Étapes
 
-title Séquence — Vérification d'Identité (KYC) Biométrique
+actor "Utilisateur" as U
+participant "App Mobile\n(React Native)" as App
+participant "Backend API\n(Express.js)" as API
+database "PostgreSQL\n(Base de Données)" as DB
+participant "Service IA\n(FastAPI)" as AI
+participant "Service Notification\n(Expo FCM)" as Notif
+actor "Administrateur" as Admin
 
-actor "Conducteur / Passager" as User #BBDEFB
-participant "Application Mobile" as App #ECEFF1
-participant "Service de Vérification" as Node #ECEFF1
-participant "Module d'Intelligence Artificielle" as IA #FFE0B2
-database "Base de Données" as DB #FFF9C4
-participant "Service de Notification" as Notif #FFE0B2
-participant "Portail Administration" as Admin #FFCDD2
+== Phase 1 : Démarrage et Upload de la Carte d'Identité (CIN) ==
 
-' === ÉTAPE 1 : ENVOI DE LA CARTE D'IDENTITÉ ===
-User -> App : 1. Scanner la carte d'identité (recto/verso)
-App -> App : Extraire les informations textuelles\nde la carte d'identité
-App -> Node : 2. Transmettre les images de la carte et les informations lues
-activate Node
-Node -> DB : 3. Enregistrer les images de la carte et définir le statut en attente
-Node -> DB : Créer une demande de vérification d'identité
-Node --> App : 4. Confirmation de réception (vidéo de contrôle requise)
-deactivate Node
+U -> App : Saisir et capturer CIN recto/verso
+App -> API : POST /api/verification/upload-cin\n{ cin_recto, cin_verso, document_type, OCR_data }
+activate API
 
-' === ÉTAPE 2 : CAPTURE VIDÉO DE CONTRÔLE ===
-User -> App : 5. Réaliser la capture vidéo de contrôle (3s)
-App -> Node : 6. Transmettre la vidéo de contrôle et le rôle
-activate Node
-Node -> DB : Mettre à jour la demande de vérification (statut en cours de traitement)
-Node --> App : Confirmation d'envoi (traitement en cours)
+API -> DB : Créer/Mettre à jour la session de vérification (status = 'pending')
+API -> API : Chiffrer les fichiers à l'état de repos (AES-256-GCM)
 
-' === ÉTAPE 3 : ANALYSE PAR INTELLIGENCE ARTIFICIELLE ===
-Node -> IA : 7. Demander l'analyse de la carte et de la vidéo
-activate IA
-IA -> IA : 8. Comparer les visages (carte d'identité vs vidéo)
-IA -> IA : 9. Vérifier le mouvement et la présence physique
-IA -> IA : 10. Détecter d'éventuelles tentatives de fraude
-IA --> Node : 11. Retourner les scores d'analyse et de validation
-deactivate IA
+API -> AI : [Asynchrone] Extraire embedding photo CIN (POST /extract-face)
+activate AI
+AI --> API : Embedding facial (Float32Array)
+deactivate AI
+API -> DB : Sauvegarder l'embedding dans la table face_embeddings
 
-' === ÉTAPE 4 : DÉCISION MÉTIER (3 états) ===
-Node -> Node : Évaluer les scores selon le rôle
+API -> AI : [Asynchrone] Contrôler l'authenticité de la pièce (POST /check-document)
+activate AI
+AI --> API : Score de détection de réaffichage (screen_score)
+deactivate AI
+API -> DB : Mettre à jour doc_screen_score et doc_screen_warning (si score >= 0.65)
 
-alt Validation automatique (scores élevés)
-  Node -> DB : 12a. Enregistrer la validation finale de l'identité
-  Node -> Notif : 13a. Demander l'envoi d'une notification de succès
-  Notif -> User : Notification push : Identité vérifiée ✅
-else Vérification manuelle requise (scores intermédiaires)
-  Node -> DB : 12b. Définir le statut en attente de vérification manuelle
-  Node -> Notif : 13b. Demander l'envoi d'une notification d'attente
-  Notif -> User : Notification push : Vérification manuelle en cours
-else Rejet automatique (scores faibles / fraude suspectée)
-  Node -> DB : 12c. Enregistrer le rejet de l'identité
-  Node -> DB : 14. Enregistrer un signalement de fraude potentielle
-  Node -> Notif : 15. Demander l'envoi d'une notification de rejet
-  Notif -> User : Notification push : Vérification d'identité refusée ❌
-  Node -> Notif : 16. Signaler l'alerte de fraude aux administrateurs
-  Notif -> Admin : Alerte sur le portail d'administration
+API --> App : Retourner succès (CIN enregistrée, prêt pour le selfie)
+deactivate API
+
+== Phase 2 : Capture du Selfie et Vérification Biométrique ==
+
+U -> App : Effectuer la capture du selfie (détection de vie)
+App -> API : POST /api/verification/upload-face\n{ selfie }
+activate API
+
+API -> AI : Comparer CIN vs Selfie (POST /verify-face)
+activate AI
+AI --> API : { faceMatchScore, rawSimilarity, isLive, livenessScore }
+deactivate AI
+
+alt Similarté critique (rawSimilarity < 0.25) [Tentative d'Imposture]
+  API -> API : Supprimer le fichier selfie
+  API -> DB : Mettre à jour verification (status = 'rejected', reason)
+  API -> DB : Enregistrer un signalement de fraude (fraud_events)
+  API -> DB : Mettre à jour l'utilisateur (identity_status = 'rejected')
+  API --> App : Retourner Erreur 422 : Visage ne correspond pas
+  App --> U : Afficher message de rejet de sécurité
+  
+  API -> Notif : Envoyer alerte de fraude aux administrateurs (Expo FCM)
+  activate Notif
+  Notif --> Admin : Push notification : Tentative de fraude KYC détectée ! ⚠️
+  deactivate Notif
+
+else Échec détection de vie (isLive === false) [Rejeu / Photo papier]
+  API -> API : Supprimer le fichier selfie
+  API --> App : Retourner Erreur 422 : Échec du contrôle de vivacité
+  App --> U : Demander de reprendre la photo (éclairage, mouvement)
+
+else Biométrie valide / Ambiguë (rawSimilarity >= 0.25 && isLive === true)
+  API -> API : Chiffrer le fichier selfie (AES-256-GCM)
+  API -> DB : Mettre à jour identity_verifications (scores, selfie_url)
+  
+  API -> AI : [Asynchrone] Extraire et stocker embedding selfie (POST /check-liveness)
+  activate AI
+  AI --> API : Embedding facial selfie
+  deactivate AI
+  API -> DB : Enregistrer embedding selfie dans face_embeddings
+  
+  alt Score global >= Seuil d'Approbation (0.80 Conducteur / 0.70 Passager)
+    API -> DB : Mettre à jour verification (status = 'verified')
+    API -> DB : Mettre à jour l'utilisateur (identity_status = 'verified')
+    API -> Notif : Envoyer notification de succès
+    activate Notif
+    Notif --> U : Push notification : Votre identité est vérifiée ✅
+    deactivate Notif
+  else Score global >= Seuil de Revue Manuelle (0.60)
+    API -> DB : Mettre à jour verification (status = 'pending_review')
+    API -> DB : Mettre à jour l'utilisateur (identity_status = 'pending')
+    API -> Notif : Envoyer notification de mise en attente
+    activate Notif
+    Notif --> U : Push notification : KYC en cours d'examen manuel (24h)
+    deactivate Notif
+  else Score global < 0.60
+    API -> DB : Mettre à jour verification (status = 'rejected')
+    API -> DB : Enregistrer l'événement de fraude de sévérité moyenne
+    API -> DB : Mettre à jour l'utilisateur (identity_status = 'rejected')
+    API -> Notif : Envoyer notification d'échec
+    activate Notif
+    Notif --> U : Push notification : Échec de la vérification d'identité ❌
+    deactivate Notif
+  end
+  API --> App : Retourner succès (Statut actuel de la vérification)
 end
-deactivate Node
+deactivate API
 
-' === ÉTAPE 5 : CONSULTATION STATUT / MODÉRATION ADMIN ===
-App -> Node : 17. Demander le statut de la vérification
-Node --> App : Retourner le statut actuel
-App --> User : Afficher le statut final
+== Phase 3 : Revue Manuelle par l'Administrateur (Si statut 'pending_review') ==
 
-note over Admin
-  Si vérification manuelle requise :
-  Valider la demande manuellement
-  ou Rejeter la demande manuellement
-end note
+Admin -> App : Consulter la file d'attente (GET /api/verification/admin/queue)
+App -> API : Demander la liste des dossiers
+API -> DB : Récupérer les dossiers 'pending_review'
+DB --> API : Dossiers + scores IA + avertissements écran
+API --> App : Afficher la file
+App --> Admin : Présenter la comparaison côte à côte
+
+alt Validation manuelle
+  Admin -> App : Approuver le dossier
+  App -> API : POST /api/verification/admin/:id/approve
+  activate API
+  API -> DB : Mettre à jour verification (status='verified') & user (identity_status='verified')
+  API -> Notif : Déclencher notification succès
+  Notif --> U : Push notification : Identité approuvée manuellement ! ✅
+  API --> App : Renvoyer succès
+  deactivate API
+else Rejet manuel
+  Admin -> App : Rejeter le dossier
+  App -> API : POST /api/verification/admin/:id/reject\n{ reason }
+  activate API
+  API -> DB : Mettre à jour verification (status='rejected') & user (identity_status='rejected')
+  API -> Notif : Déclencher notification rejet
+  Notif --> U : Push notification : Identité rejetée : [motif] ❌
+  API --> App : Renvoyer succès
+  deactivate API
+end
+
 @enduml

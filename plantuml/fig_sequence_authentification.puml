@@ -1,26 +1,44 @@
 @startuml fig_sequence_authentification
 !include theme_rohwinbghit.puml
+skinparam style strictuml
+skinparam SequenceMessageAlignment center
 
 title Diagramme de séquence — Authentification (RohWinBghit)
 
-actor "r : Utilisateur" as U
-participant "System" as S
-database "BDD" as DB
+actor "Utilisateur" as U
+participant "App Mobile\n(React Native)" as App
+participant "Backend API\n(Express.js)" as API
+participant "Service SMS\n(Twilio)" as SMS
+database "Base de Données\n(PostgreSQL)" as DB
 
-U -> S : Demander une connexion
-S --> U : Afficher la boîte d'authentification
+U -> App : Saisir son numéro de téléphone
+App -> API : POST /api/auth/send-otp\n{ phone }
+activate API
 
-alt Téléphone & OTP corrects
-  U -> S : Saisir numéro et code OTP
-  S -> DB : Rechercher l'utilisateur
-  DB --> S : Utilisateur trouvé
-  S -> S : Vérifier statut KYC + générer JWT
-  S --> U : Affichage page d'accueil\n(redirection selon le rôle :\nPassager / Conducteur / Admin)
-else Téléphone ou OTP incorrect
-  U -> S : Saisir des informations invalides
-  S -> DB : Rechercher l'utilisateur
-  DB --> S : Aucun résultat\nou code OTP non valide
-  S --> U : Numéro ou code OTP incorrect
+API -> DB : Rechercher l'utilisateur par téléphone
+DB --> API : Utilisateur trouvé (id, role, status)
+API -> DB : Enregistrer l'OTP (otp_verifications)\n[otp_hash, expires_at]
+API -> SMS : Demander l'envoi du code OTP (6 chiffres)
+activate SMS
+SMS --> U : SMS contenant le code OTP
+deactivate SMS
+API --> App : Message : OTP envoyé avec succès
+deactivate API
+
+U -> App : Saisir le code OTP reçu
+App -> API : POST /api/auth/verify-otp\n{ phone, code }
+activate API
+
+API -> DB : Valider le code (otp_hash) et l'expiration
+alt Code OTP correct
+  DB --> API : OTP valide, utilisateur existant trouvé
+  API -> API : Générer la paire de jetons JWT\n(Access Token + Refresh Token)
+  API --> App : Authentification réussie + Tokens + Profil
+  App --> U : Affichage de l'accueil\n(redirection selon le rôle :\nPassager / Conducteur / Admin)
+else Code OTP incorrect / expiré
+  API --> App : Erreur 401 : OTP invalide ou expiré
+  App --> U : Afficher message d'erreur
 end
+deactivate API
 
 @enduml

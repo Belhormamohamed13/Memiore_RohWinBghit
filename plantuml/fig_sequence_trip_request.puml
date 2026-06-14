@@ -3,71 +3,81 @@
 skinparam style strictuml
 skinparam SequenceMessageAlignment center
 
+title Séquence — Demande de Trajet (Matching Inverse)
 
-title Séquence — Demande de trajet (Passager publie, Conducteurs alertés)
+actor "Passager" as Pax
+participant "App Passager\n(React Native)" as AppP
+participant "Backend API\n(Express.js)" as API
+database "Base de Données\n(PostgreSQL)" as DB
+participant "Socket.IO\n(Temps Réel)" as Socket
+participant "Service Notification\n(Expo FCM)" as Notif
+actor "Conducteur" as Drv
+participant "App Conducteur\n(React Native)" as AppD
 
-actor "Passager" as Pax #BBDEFB
-participant "Application Passager" as AppP #ECEFF1
-participant "Gestionnaire de Trajets" as API #ECEFF1
-database "Base de Données" as DB #FFF9C4
-participant "Service de Mise en Relation" as Match #FFE0B2
-participant "Service de Notification" as Notif #FFE0B2
-actor "Conducteur ciblé" as Drv #C8E6C9
-participant "Application Conducteur" as AppD #ECEFF1
+== Phase 1 : Publication de la Demande par le Passager ==
 
-' === 1. CRÉATION DE LA DEMANDE ===
-Pax -> AppP : 1. Saisir les détails du trajet\n(Wilayas de départ/destination, date, places)
-AppP -> API : 2. Envoyer la demande de trajet
+Pax -> AppP : Remplir les détails du trajet souhaité\n(Wilayas de départ/destination, date, places)
+AppP -> API : POST /api/trip-requests\n{ fromWilayaCode, toWilayaCode, date, seats, ... }
 activate API
 
-API -> DB : 3. Enregistrer la demande (statut ouverte, validité de 24h)
-activate DB
-DB --> API : Identifiant de la demande
-deactivate DB
+API -> DB : Enregistrer la demande (status = 'open')
+DB --> API : Demande enregistrée (ID UUIDv4)
 
-API --> AppP : 4. Confirmation de la création de la demande
-AppP --> Pax : "Recherche de conducteurs en cours..."
+API -> Socket : émettre à la room 'requests:${fromWilayaCode}'\nl'événement 'trip_request:new'
+activate Socket
+Socket --> AppD : Mise à jour temps réel : Nouvelle demande à proximité
+deactivate Socket
 
-' === 2. RECHERCHE DE CORRESPONDANCE (asynchrone) ===
-API -> Match : 5. Déclencher la recherche de conducteurs correspondants
-activate Match
-Match -> DB : 6. Rechercher les conducteurs vérifiés\nayant un itinéraire correspondant
-activate DB
-DB --> Match : Liste des conducteurs éligibles
-deactivate DB
-Match --> API : Identifiants des conducteurs correspondants
-deactivate Match
-
-' === 3. DIFFUSION DES NOTIFICATIONS ===
-loop Pour chaque conducteur concerné
-  API -> Notif : 7. Demander l'envoi de la notification de trajet
-  activate Notif
-  Notif -> DB : Enregistrer la notification
-  Notif -> Drv : 8. Envoyer la notification push
-  deactivate Notif
-end
+API --> AppP : Demande publiée avec succès
 deactivate API
+AppP --> Pax : Afficher : "Recherche de conducteurs en cours..."
 
-' === 4. ACTION DU CONDUCTEUR ===
-Drv -> AppD : 9. Consulter la notification
-AppD -> API : 10. Demander la liste des demandes de trajet disponibles
+== Phase 2 : Consultation par le Conducteur ==
+
+Drv -> AppD : Consulter les demandes disponibles dans ma région
+AppD -> API : GET /api/trip-requests/available?from_wilaya_code=...
 activate API
-API -> DB : 11. Récupérer les demandes de trajet ouvertes et valides
-DB --> API : Liste des demandes
-API --> AppD : Retourner les détails des demandes
+API -> DB : Récupérer les demandes de trajet 'open' correspondantes
+DB --> API : Liste des demandes actives
+API --> AppD : Retourner les demandes de trajet
 deactivate API
-AppD --> Drv : Afficher la demande détaillée
-Drv -> AppD : 12. Choisir de proposer un trajet
+AppD --> Drv : Afficher la liste des demandes de trajet
 
-' === 5. RÉSOLUTION ===
-AppD -> API : 13. Envoyer la proposition de trajet
+== Phase 3 : Proposition de Trajet par le Conducteur ==
+
+Drv -> AppD : Choisir une demande et proposer un trajet
+AppD -> API : POST /api/trips (avec le champ tripRequestId)
 activate API
-API -> DB : 14. Créer et enregistrer le trajet proposé
-API -> DB : 15. Marquer la demande initiale comme associée
-API -> Notif : 16. Demander l'envoi de la confirmation au passager
+
+API -> DB : Commencer Transaction SQL :\n- Créer le trajet (trips & trip_waypoints)\n- Lier à la demande : Mettre à jour trip_requests (status = 'trip_proposed', proposed_trip_id, proposed_by_driver_id)
+DB --> API : Transaction COMMIT réussie
+
+API -> Notif : Déclencher notification 'trip_request_proposed'
 activate Notif
-Notif -> Pax : Envoyer la notification push de confirmation
+Notif --> Pax : Push notification : Un conducteur propose un trajet pour votre demande !
 deactivate Notif
-API --> AppD : 17. Confirmer la création du trajet au conducteur
+
+API -> Socket : émettre 'trip_request:updated' (status = 'trip_proposed') vers passager
+API --> AppD : Proposition envoyée et trajet créé
 deactivate API
+
+== Phase 4 : Confirmation Finale par le Passager ==
+
+Pax -> AppP : Accepter la proposition du conducteur
+AppP -> API : POST /api/trip-requests/:id/confirm
+activate API
+
+API -> DB : Commencer Transaction SQL :\n- Créer la réservation bookings (status='pending', payment_status='unpaid')\n- Décrémenter les places sur le trajet trips\n- Confirmer la demande : Mettre à jour trip_requests (status = 'confirmed')
+DB --> API : Transaction COMMIT réussie
+
+API -> Notif : Déclencher notification 'trip_request_confirmed'
+activate Notif
+Notif --> Drv : Push notification : Le passager a accepté votre proposition ! ✅
+deactivate Notif
+
+API -> Socket : émettre 'trip_request:confirmed' vers conducteur et passager
+API --> AppP : Confirmation validée, redirection vers le paiement
+deactivate API
+AppP --> Pax : Afficher l'écran de règlement ou le billet QR
+
 @enduml

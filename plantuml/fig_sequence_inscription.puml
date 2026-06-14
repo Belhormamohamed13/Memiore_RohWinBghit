@@ -3,36 +3,46 @@
 skinparam style strictuml
 skinparam SequenceMessageAlignment center
 
-
 title Diagramme de séquence — Inscription (RohWinBghit)
 
-actor "r : Utilisateur" as U
-participant "System" as S
-database "BDD" as DB
+actor "Utilisateur" as U
+participant "App Mobile\n(React Native)" as App
+participant "Backend API\n(Express.js)" as API
+participant "Service SMS\n(Twilio)" as SMS
+database "Base de Données\n(PostgreSQL)" as DB
 
-U -> S : Affichage de l'écran d'accueil
-U -> S : Demander à s'inscrire
+U -> App : Saisir le numéro de téléphone et rôle
+App -> API : POST /api/auth/send-otp\n{ phone, role }
+activate API
 
-alt Rôle de l'utilisateur (Conducteur / Passager)
+API -> DB : Rechercher l'utilisateur existant
+API -> DB : Enregistrer l'OTP (otp_verifications)\n[otp_hash, expires_at, role]
+API -> SMS : Demander l'envoi du SMS OTP
+activate SMS
+SMS --> U : Envoyer le code OTP par SMS (6 chiffres)
+deactivate SMS
+API --> App : Message : OTP envoyé avec succès
+deactivate API
 
-  alt Téléphone & code de validation corrects
-    U -> S : Saisir le numéro de téléphone
-    S -> DB : Vérifier la disponibilité du numéro
-    DB --> S : Numéro disponible
-    S --> U : Envoi du code de validation par SMS
-    U -> S : Saisir le code de validation reçu
-    S -> S : Vérifier le code de validation
-    S --> U : Code de validation validé
-    U -> S : Saisir les informations de profil\n(Nom, Prénom, Email, Mot de passe)
-    S -> DB : Enregistrer les données de l'utilisateur
-    DB --> S : Utilisateur créé
-    S --> U : Inscription réussie\n(Rôle attribué : passager ou conducteur)
-  else Code de validation invalide ou expiré
-    U -> S : Saisir un code de validation incorrect
-    S -> S : Vérifier le code de validation
-    S --> U : Message : Code de validation invalide ou expiré
-  end
+U -> App : Saisir le code OTP reçu
+App -> API : POST /api/auth/verify-otp\n{ phone, code }
+activate API
 
+API -> DB : Comparer le code (otp_hash)\net valider la date d'expiration
+alt Code OTP correct (Utilisateur non enregistré)
+  DB --> API : OTP valide, aucun utilisateur trouvé
+  API --> App : { needsRegistration: true, registrationToken }
+  
+  U -> App : Saisir les informations de profil\n(Nom, Prénom, Genre, Date de naissance, Wilaya)
+  App -> API : POST /api/auth/complete-registration\n{ registrationToken, firstName, lastName, ... }
+  API -> DB : Créer l'utilisateur (identity_status = 'unverified')
+  DB --> API : Utilisateur créé (ID UUIDv4)
+  API --> App : Inscription réussie + Paire de jetons JWT
+  App --> U : Redirection vers l'accueil (Passager / Conducteur)
+else Code OTP incorrect / expiré
+  API --> App : Erreur 401 : Code OTP invalide ou expiré
+  App --> U : Afficher message d'erreur
 end
+deactivate API
 
 @enduml

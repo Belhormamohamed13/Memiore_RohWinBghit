@@ -3,78 +3,113 @@
 skinparam style strictuml
 skinparam SequenceMessageAlignment center
 
+title Séquence — Réservation et Paiement Multi-Méthodes (Chargily V2 & Wallet)
 
-title Séquence — Réservation + Paiement (PaymentFactory + Surge)
+actor "Passager" as Pax
+participant "App Mobile\n(React Native)" as App
+participant "Backend API\n(Express.js)" as API
+database "PostgreSQL\n(Base de Données)" as DB
+participant "Chargily Pay V2\n(Passerelle)" as Chargily
+participant "Socket.IO\n(Temps Réel)" as Socket
+participant "Service Notification\n(Expo FCM)" as Notif
+actor "Conducteur" as Drv
 
-actor "Passager" as Pax #BBDEFB
-participant "Application Mobile" as App #ECEFF1
-participant "Gestionnaire de Réservations" as API #ECEFF1
-participant "Calculateur de Tarifs" as Surge #FFE0B2
-participant "Gestionnaire de Paiement" as Pay #FFE0B2
-database "Base de Données" as DB #FFF9C4
-participant "Service de Notification" as Notif #FFE0B2
-actor "Conducteur" as Drv #C8E6C9
+== Phase 1 : Création de la Réservation (Transaction SQL & Verrouillage) ==
 
-' === PHASE 1 : INITIALISATION ===
-Pax -> App : 1. Cliquer sur "Réserver" (places souhaitées)
-App -> API : 2. Envoyer la demande de réservation
+Pax -> App : Cliquer sur "Réserver" (choix méthode + places)
+App -> API : POST /api/bookings\n{ trip_id, num_seats, payment_method }
 activate API
 
-API -> DB : 3. Vérifier la disponibilité des places sur le trajet
+API -> DB : Commencer une Transaction SQL
 activate DB
-DB --> API : Détails du trajet (places restantes, tarif de base)
-deactivate DB
 
-' === PHASE 2 : CALCUL DU PRIX ET TARIFICATION DYNAMIQUE ===
-API -> Surge : 4. Demander le calcul du tarif final
-activate Surge
-Surge -> Surge : Consulter la mémoire cache pour les règles temporaires de tarification dynamique
-Surge -> DB : Si données absentes de la mémoire : Récupérer les règles de tarification de la base
-Surge --> API : Retourner le tarif final calculé (tarif ajusté selon l'offre et la demande)
-deactivate Surge
+API -> DB : Verrouiller la ligne du trajet\n(SELECT ... FOR UPDATE)
+DB --> API : Trajet verrouillé (available_seats, price)
 
-' === PHASE 3 : PAIEMENT ===
-API -> Pay : 5. Lancer le traitement du paiement
-activate Pay
-Pay -> Pay : Sélectionner le mode de paiement choisi\n(Carte CIB / carte Edahabia / espèces)
-Pay -> Pay : Exécuter la transaction correspondante
-Pay --> API : Retourner le résultat de la transaction
-deactivate Pay
-
-' === PHASE 4 : ENREGISTREMENT ===
-alt Paiement validé (carte) ou paiement en espèces accepté
-  API -> DB : 6. Ouvrir une transaction d'écriture sécurisée
-  API -> DB : 7. Enregistrer la réservation (statut en attente de confirmation)
-  API -> DB : 8. Valider et confirmer l'écriture en base
-  activate DB
-  DB --> API : Confirmation de l'enregistrement de la réservation
+API -> DB : Vérifier la disponibilité et doublon
+alt Places disponibles && Pas de doublon
+  API -> DB : Décrémenter les places sur le trajet (trips & waypoints)
+  
+  alt Méthode = Wallet (Portefeuille interne)
+    API -> DB : Verrouiller le portefeuille passager (SELECT ... FOR UPDATE)
+    API -> DB : Vérifier le solde (solde >= total_price)
+    API -> DB : Débiter le portefeuille & créer wallet_transaction
+    API -> DB : Enregistrer la réservation (status='confirmed', payment_status='paid')
+  else Méthode = CIB / Edahabia / Cash
+    API -> DB : Enregistrer la réservation (status='pending', payment_status='unpaid')
+  end
+  
+  API -> DB : Valider et Valider (COMMIT) la Transaction
+  DB --> API : Transaction COMMIT réussie
   deactivate DB
-
-  API -> Notif : 9. Demander l'envoi d'une notification au conducteur
-  activate Notif
-  Notif -> DB : Enregistrer la notification
-  Notif -> Drv : Envoyer la notification push : Nouvelle réservation en attente
-  deactivate Notif
-
-  API --> App : 10. Retourner la réservation enregistrée
-  App --> Pax : Afficher : En attente de confirmation
-else Échec du paiement
-  API -> Pay : Annuler ou rembourser si prélèvement partiel effectué
-  API --> App : Signaler l'erreur de réservation et de paiement
-  App --> Pax : Afficher : Erreur lors du paiement
+  API --> App : Retourner la réservation créée (status, ID)
+else Erreurs (Complet, Doublon, Solde insuffisant)
+  API -> DB : Annuler (ROLLBACK) la Transaction
+  API --> App : Retourner Erreur HTTP (400/409/422)
+  App --> Pax : Afficher message d'erreur
 end
 deactivate API
 
-' === PHASE 5 : CONFIRMATION DU CONDUCTEUR ===
-Drv -> App : 11. Accepter la demande de réservation
-App -> API : 12. Envoyer l'acceptation de la réservation
-activate API
-API -> DB : 13. Mettre à jour la réservation (statut confirmée)
-API -> DB : 14. Réduire le nombre de places disponibles pour ce trajet
-API -> Notif : 15. Demander l'envoi de la confirmation au passager
-activate Notif
-Notif -> Pax : Envoyer la notification push : Réservation confirmée ✅
-deactivate Notif
-API --> App : Confirmer la réussite de l'opération
-deactivate API
+== Phase 2 : Traitement du Paiement (Si CIB ou Edahabia choisi) ==
+
+alt Méthode = CIB / Edahabia (Redirection Chargily Pay V2)
+  App -> API : POST /api/payments/chargily/checkout\n{ purpose: 'booking', paymentMethod: 'cib'|'edahabia', bookingId }
+  activate API
+  
+  API -> DB : Créer une session de paiement (payment_sessions, status='pending')
+  API -> Chargily : Créer Checkout (POST /v2/checkouts)\n[Header: Secret Key, metadata: session_id]
+  activate Chargily
+  Chargily --> API : Session créée (checkout_url, checkout_id)
+  deactivate Chargily
+  
+  API -> DB : Mettre à jour payment_sessions (checkout_url, checkout_id)
+  API --> App : Retourner { sessionId, checkoutUrl }
+  deactivate API
+  
+  App -> Pax : Rediriger vers la page hébergée de Chargily
+  Pax -> Chargily : Effectuer le paiement sur la page sécurisée
+  
+  == Phase 3 : Validation asynchrone par Webhook ==
+  
+  Chargily -> API : Notification Webhook (POST /api/payments/chargily/webhook)\n[Header: Signature HMAC-SHA256, payload]
+  activate API
+  
+  API -> API : Vérifier la signature HMAC-SHA256 avec la clé secrète Webhook
+  alt Signature valide
+    API -> DB : Commencer Transaction SQL (FOR UPDATE sur la session de paiement)
+    alt EventType = 'checkout.paid' (Succès)
+      API -> DB : Mettre à jour payment_sessions (status = 'paid')
+      API -> DB : Confirmer la réservation (status = 'confirmed', payment_status = 'paid')
+      API -> DB : Valider (COMMIT) la Transaction
+      API --> Chargily : Renvoyer HTTP 200 OK
+      
+      API -> Socket : émettre 'booking:confirmed' vers passager
+      API -> Socket : émettre 'booking:new' vers conducteur
+      API -> Notif : Envoyer notifications de confirmation (FCM)
+      activate Notif
+      Notif --> Pax : Push notification : Réservation confirmée !
+      Notif --> Drv : Push notification : Nouvelle réservation en attente !
+      deactivate Notif
+    else EventType = 'checkout.failed' / 'checkout.canceled' (Échec)
+      API -> DB : Mettre à jour payment_sessions (status = 'failed')
+      API -> DB : Annuler la réservation (status = 'cancelled', payment_status = 'failed')
+      API -> DB : Restituer/incrémenter les places sur le trajet (trips & waypoints)
+      API -> DB : Valider (COMMIT) la Transaction
+      API --> Chargily : Renvoyer HTTP 200 OK
+    end
+  else Signature invalide
+    API --> Chargily : Renvoyer HTTP 403 Forbidden
+  end
+  deactivate API
+  
+  == Phase 4 : Retour sur l'Application Mobile ==
+  
+  Chargily -> App : Rediriger le passager vers l'application (Success / Failure URL)
+  App -> API : Interroger le statut (GET /api/payments/chargily/session/:sessionId)
+  API -> DB : Lire le statut de la session de paiement
+  DB --> API : Statut actuel ('paid' / 'failed' / 'pending')
+  API --> App : Retourner le statut
+  App --> Pax : Afficher l'écran de résultat (Billet avec QR Code ou Échec)
+end
+
 @enduml
