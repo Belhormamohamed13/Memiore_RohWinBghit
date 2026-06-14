@@ -56,6 +56,8 @@ const IMG_KYC_INTRO     = path.join(__dirname, "Screen_Mobile", "17_kyc_intro.pn
 const IMG_KYC_FACE      = path.join(__dirname, "Screen_Mobile", "20_kyc_capture_visage.png");
 const IMG_SEQ_CHECKIN   = path.join(__dirname, "figures", "fig_sequence_checkin.png");
 const IMG_SEQ_BOOKING   = path.join(__dirname, "figures", "fig_sequence_booking.png");
+const IMG_ARCHITECTURE_DIAG = path.join(__dirname, "figures", "Architecture.png");
+const IMG_DEPLOYMENT_CLOUD   = path.join(__dirname, "figures", "déploiement_cloud.png");
 
 // Helper to encode image files to Base64 data URLs for reliable pptxgenjs embedding in Node.js
 const toBase64 = (filePath) => {
@@ -88,6 +90,8 @@ verifyPath(IMG_KYC_INTRO, "KYC Screen 1 (Intro)");
 verifyPath(IMG_KYC_FACE, "KYC Screen 2 (Face)");
 verifyPath(IMG_SEQ_CHECKIN, "Check-in Sequence Diagram");
 verifyPath(IMG_SEQ_BOOKING, "Booking Sequence Diagram");
+verifyPath(IMG_ARCHITECTURE_DIAG, "Architecture Diagram");
+verifyPath(IMG_DEPLOYMENT_CLOUD, "Deployment Cloud Screen");
 
 // ─── INITIALIZE PRESENTATION ────────────────────────────────────────────────
 const pres = new pptxgen();
@@ -914,111 +918,16 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Architecture Multi-Services Distribuée", "Méthodologie & Architecture", "13/33");
 
-    // Drawing a simplified text-based architecture diagram using shapes and arrows
-    // Layer 1: App Mobile (Clients)
-    const clientX = 0.6;
-    const clientY = 1.8;
-    const boxW = 1.8;
-    const boxH = 0.8;
-    drawCard(s, clientX, clientY, boxW, boxH, { line: { color: COLOR_PRIMARY_DARK, width: 1 } });
-    s.addText("App Mobile\n(React Native / Expo)", {
-        x: clientX, y: clientY, w: boxW, h: boxH,
-        fontSize: 10.5, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-
-    // Arrow Client -> Nginx
-    s.addText("HTTPS / WS\n→", {
-        x: clientX + boxW, y: clientY, w: 0.95, h: boxH,
-        fontSize: 9.5, bold: true, color: COLOR_GOLD,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
-    });
-
-    // Layer 2: Nginx (Proxy)
-    const nginxX = clientX + boxW + 0.95;
-    drawCard(s, nginxX, clientY, boxW, boxH, { line: { color: COLOR_PRIMARY_DARK, width: 1 } });
-    s.addText("NGINX\n(Reverse Proxy)", {
-        x: nginxX, y: clientY, w: boxW, h: boxH,
-        fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-
-    // Arrow Nginx -> Express
-    s.addText("REST API\n→", {
-        x: nginxX + boxW, y: clientY, w: 0.95, h: boxH,
-        fontSize: 9.5, bold: true, color: COLOR_GOLD,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
-    });
-
-    // Layer 3: Express (API Server)
-    const expressX = nginxX + boxW + 0.95;
-    drawCard(s, expressX, clientY, boxW, boxH, { line: { color: COLOR_PRIMARY_DARK, width: 1.5 } });
-    s.addText("Express API\n(Node.js REST)", {
-        x: expressX, y: clientY, w: boxW, h: boxH,
-        fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-
-    // Down Arrows from Express
-    s.addText("↓", { x: expressX + (boxW - 0.5) / 2, y: clientY + boxH, w: 0.5, h: 0.4, fontSize: 18, bold: true, color: COLOR_GOLD, align: "center" });
-
-    // Databases & Services Row (Y=3.3)
-    const dbY = 3.3;
-    const dbW = 1.8;
-    const dbH = 0.8;
-
-    // Database 1: PostgreSQL
-    drawCard(s, 0.6, dbY, dbW, dbH);
-    s.addText("PostgreSQL 16\n(Persistance relationnelle)", {
-        x: 0.6, y: dbY, w: dbW, h: dbH,
-        fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-
-    // Database 2: Redis
-    drawCard(s, 2.8, dbY, dbW, dbH);
-    s.addText("Redis 7 Cache\n(BullMQ & Sessions)", {
-        x: 2.8, y: dbY, w: dbW, h: dbH,
-        fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-
-    // AI Service: FastAPI
-    drawCard(s, 5.0, dbY, dbW, dbH, { line: { color: COLOR_GOLD, width: 1 } });
-    s.addText("FastAPI KYC (IA)\n(Python / InsightFace)", {
-        x: 5.0, y: dbY, w: dbW, h: dbH,
-        fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-
-    // External Integrations
-    drawCard(s, 7.2, dbY, dbW, dbH);
-    s.addText("Services Externes\n(Chargily, Mapbox, FCM)", {
-        x: 7.2, y: dbY, w: dbW, h: dbH,
-        fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-
-    // Connection lines/arrows for services
-    s.addText("←", { x: 2.4, y: dbY + 0.25, w: 0.4, h: 0.3, fontSize: 16, bold: true, color: COLOR_GOLD, align: "center" });
-    s.addText("↔", { x: 4.6, y: dbY + 0.25, w: 0.4, h: 0.3, fontSize: 16, bold: true, color: COLOR_GOLD, align: "center" });
-    s.addText("→", { x: 6.8, y: dbY + 0.25, w: 0.4, h: 0.3, fontSize: 16, bold: true, color: COLOR_GOLD, align: "center" });
-
-    // Architectural Legend Footer
-    const fy = 4.45;
-    s.addShape("roundRect", {
-        x: 0.5, y: fy, w: 9.0, h: 0.55,
-        fill: { color: "E8F5EE" },
-        line: { color: COLOR_MEDIUM_GREEN, width: 0.5 },
-        rectRadius: 0.08
-    });
-    s.addText("Légende : App Mobile gère l'UI client  •  Express API assure l'orchestration métier  •  FastAPI s'occupe des calculs IA", {
-        x: 0.5, y: fy, w: 9.0, h: 0.55,
-        fontSize: 10.5, color: COLOR_PRIMARY_DARK, bold: true,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
-    });
+    const archImgData = toBase64(IMG_ARCHITECTURE_DIAG);
+    if (archImgData) {
+        s.addImage({
+            data: archImgData,
+            x: 0.5, y: 1.25,
+            w: 9.0, h: 3.9,
+            sizing: { type: "contain", w: 9.0, h: 3.9 }
+        });
+    }
 }
-
 // =============================================================================
 // SLIDE 14 — WORKFLOW SIMPLIFIÉ KYC (Pipeline Horizontal Modernisé)
 // =============================================================================
@@ -1446,79 +1355,16 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "21/33");
 
-    // Left Column: Deployment Details Card
-    const lx = 0.5;
-    const ly = 1.3;
-    const lw = 3.9;
-    const lh = 3.8;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-
-    s.addText("Infrastructure & Services Cloud", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    const components = [
-        {
-            layer: "1. Interfaces (Clients)",
-            desc: "App Mobile cross-platform (React Native) et Dashboard Administration Web (React / Vite)."
-        },
-        {
-            layer: "2. Serveur Web & API (Routing)",
-            desc: "NGINX (Reverse Proxy & SSL) redirigeant vers l'API Node.js/Express (métier) et le service IA FastAPI/Python."
-        },
-        {
-            layer: "3. Stockage de Données (Storage)",
-            desc: "Base PostgreSQL 16 relationnelle, cache/queue Redis 7, et stockage de fichiers locaux (Multer)."
-        },
-        {
-            layer: "4. Services Externes (Third-party)",
-            desc: "API Mapbox (navigation), Firebase Cloud Messaging (notifications), et Chargily Pay V2 (paiement CIB/Edahabia)."
-        }
-    ];
-
-    components.forEach((comp, i) => {
-        const cy = ly + 0.6 + i * 0.76;
-
-        s.addText(comp.layer, {
-            x: lx + 0.2, y: cy, w: lw - 0.4, h: 0.20,
-            fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-            fontFace: FONT_TITLE, align: "left"
+    const deployImgData = toBase64(IMG_DEPLOYMENT_CLOUD);
+    if (deployImgData) {
+        s.addImage({
+            data: deployImgData,
+            x: 0.5, y: 1.25,
+            w: 9.0, h: 3.9,
+            sizing: { type: "contain", w: 9.0, h: 3.9 }
         });
-
-        s.addText(comp.desc, {
-            x: lx + 0.2, y: cy + 0.20, w: lw - 0.4, h: 0.50,
-            fontSize: 9, color: COLOR_DARK_TEXT,
-            fontFace: FONT_BODY, align: "left", valign: "top"
-        });
-    });
-
-    // Monitoring badge at the bottom of left card
-    s.addShape("roundRect", { x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.3, fill: { color: COLOR_BG_DARK }, line: { width: 0 }, rectRadius: 0.04 });
-    s.addText("Supervision en Production : Sentry 10.45.0", {
-        x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.3,
-        fontSize: 8.5, bold: true, color: COLOR_WHITE,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
-    });
-
-    // Right Column: Diagram card
-    const rx = 4.6;
-    const rw = 4.9;
-    drawCard(s, rx, ly, rw, lh);
-    s.addText("Diagramme de Topologie & Déploiement", {
-        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    const deploymentData = toBase64(IMG_DEPLOYMENT);
-    if (deploymentData) {
-        s.addImage({ data: deploymentData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
     }
 }
-
 // =============================================================================
 // SLIDE 19 — SECTION DIVIDER 05 (Résultats & Validation)
 // =============================================================================
