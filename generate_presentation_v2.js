@@ -1,6 +1,6 @@
 /**
  * RohWinBghit — Master's Thesis Defense Presentation Redesign
- * 31 slides of polished, visual content using Forest & Moss design system.
+ * 33 slides of polished, visual content using Forest & Moss design system.
  * Usage: node "generate_presentation_v2.js"
  */
 
@@ -258,7 +258,7 @@ function drawCard(slide, x, y, w, h, options = {}) {
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Plan de la Présentation", "Plan", "02/32");
+    applyContentSlideTemplate(s, "Plan de la Présentation", "Plan", "02/33");
 
     const sections = [
         { num: "01", title: "Introduction & Problématique", sub: "Mobilité inter-wilayas • Enjeux", active: true },
@@ -358,7 +358,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "La Mobilité Inter-Wilayas en Algérie", "Introduction & Problématique", "04/32");
+    applyContentSlideTemplate(s, "La Mobilité Inter-Wilayas en Algérie", "Introduction & Problématique", "04/33");
 
     const kpis = [
         { num: "6.3M", label: "étudiants", desc: "d'étudiants universitaires effectuent des trajets inter-wilayas chaque année" },
@@ -429,7 +429,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Le Problème de Confiance & Sécurité", "Introduction & Problématique", "05/32");
+    applyContentSlideTemplate(s, "Le Problème de Confiance & Sécurité", "Introduction & Problématique", "05/33");
 
     // Research Question Box
     const qy = 1.25;
@@ -499,7 +499,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Trois Hypothèses de Travail", "Introduction & Problématique", "06/32");
+    applyContentSlideTemplate(s, "Trois Hypothèses de Travail", "Introduction & Problématique", "06/33");
 
     const hyps = [
         {
@@ -585,7 +585,7 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Analyse Concurrentielle", "Contexte & Cadre Légal", "08/32");
+    applyContentSlideTemplate(s, "Analyse Concurrentielle", "Contexte & Cadre Légal", "08/33");
 
     // Table Data
     const tableRows = [
@@ -632,7 +632,7 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
             { text: "Non (cash)" },
             { text: "Non (cash)" },
             { text: "Non", options: { color: COLOR_RED } },
-            { text: "SATIM / CIB", options: { color: COLOR_PRIMARY_DARK, bold: true } }
+            { text: "Chargily Pay V2", options: { color: COLOR_PRIMARY_DARK, bold: true } }
         ],
         [
             { text: "Tarif Dynamique" },
@@ -684,7 +684,7 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Cadre Réglementaire : Loi 25-11", "Contexte & Cadre Légal", "09/32");
+    applyContentSlideTemplate(s, "Cadre Réglementaire : Loi 25-11", "Contexte & Cadre Légal", "09/33");
 
     s.addText("Protection des données personnelles dans le contexte algérien", {
         x: 0.5, y: 1.0, w: 9.0, h: 0.3,
@@ -747,7 +747,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Gestion Agile : 5 Sprints en 10 Semaines", "Méthodologie & Architecture", "11/32");
+    applyContentSlideTemplate(s, "Gestion Agile : 5 Sprints en 10 Semaines", "Méthodologie & Architecture", "11/33");
 
     const sprints = [
         { name: "Sprint 1 : Auth & Profils", time: "Semaines 1-2", pts: "21 SP", pct: 100 },
@@ -837,7 +837,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Stack Technique Moderne", "Méthodologie & Architecture", "12/32");
+    applyContentSlideTemplate(s, "Stack Technique Moderne", "Méthodologie & Architecture", "12/33");
 
     const layers = [
         { title: "FRONTEND MOBILE", content: "React Native (Expo SDK 54), TypeScript, Mapbox SDK, Socket.io client, Zustand." },
@@ -912,7 +912,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Architecture Multi-Services Distribuée", "Méthodologie & Architecture", "13/32");
+    applyContentSlideTemplate(s, "Architecture Multi-Services Distribuée", "Méthodologie & Architecture", "13/33");
 
     // Drawing a simplified text-based architecture diagram using shapes and arrows
     // Layer 1: App Mobile (Clients)
@@ -993,7 +993,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 
     // External Integrations
     drawCard(s, 7.2, dbY, dbW, dbH);
-    s.addText("Services Externes\n(SATIM, Mapbox, FCM)", {
+    s.addText("Services Externes\n(Chargily, Mapbox, FCM)", {
         x: 7.2, y: dbY, w: dbW, h: dbH,
         fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
         fontFace: FONT_TITLE, align: "center", valign: "middle"
@@ -1020,113 +1020,112 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 }
 
 // =============================================================================
-// SLIDE 14 — PIPELINE BIOMÉTRIQUE KYC D'IA (Restructurée avec diagramme réel et captures)
+// SLIDE 14 — WORKFLOW SIMPLIFIÉ KYC (Pipeline Horizontal Modernisé)
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Pipeline Biométrique KYC d'IA", "Méthodologie & Architecture", "14/32");
+    applyContentSlideTemplate(s, "Workflow Simplifié KYC", "Méthodologie & Architecture", "14/33");
 
-    // Left block: Explanation of the 3-step KYC Pipeline
-    const lx = 0.5;
-    const ly = 1.2;
-    const lw = 3.9;
-    const lh = 3.95;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_GOLD }, line: { width: 0 } });
-
-    s.addText("Pipeline de Validation KYC", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
+    // Introduction text
+    s.addText("Pour garantir la sécurité et la conformité, chaque utilisateur suit un parcours de validation d'identité fluide et automatisé en 5 étapes clés.", {
+        x: 0.5, y: 1.15, w: 9.0, h: 0.35,
+        fontSize: 11, italic: true, color: COLOR_MUTED_TEXT,
+        fontFace: FONT_BODY, align: "left"
     });
 
-    // Vertical steps
-    const kycSteps = [
-        { num: "1", title: "OCR Document (CNI)", desc: "Extraction automatique des données d'identité recto/verso (Nom, Prénom, Date de Naissance, Numéro de carte)." },
-        { num: "2", title: "ArcFace Match", desc: "Comparaison de similarité faciale entre la photo extraite de la CNI et le Selfie. Seuil de validation strict fixé à ≥ 0.65." },
-        { num: "3", title: "Détection de Vivacité", desc: "Algorithme anti-spoofing en temps réel (analyse de texture et de clignement) pour rejeter les rejeux d'images/vidéos." }
+    const steps = [
+        { num: "1", title: "Candidat", desc: "Lancement du processus de certification depuis le profil utilisateur.", icon: "👤" },
+        { num: "2", title: "Documents", desc: "Upload en direct des photos de la CNI (recto/verso) et d'un selfie.", icon: "📂" },
+        { num: "3", title: "Analyse IA", desc: "OCR FastAPI, comparaison faciale ArcFace et test de vivacité (Liveness).", icon: "🤖" },
+        { num: "4", title: "Décision", desc: "Validation automatique instantanée ou renvoi en modération manuelle.", icon: "⚖" },
+        { num: "5", title: "Certifié", desc: "Badge de confiance vert octroyé pour un accès complet.", icon: "✓" }
     ];
 
-    kycSteps.forEach((st, i) => {
-        const sy = ly + 0.6 + i * 0.95;
+    const cardW = 1.4;
+    const cardH = 2.4;
+    const gap = 0.45;
+    const startX = 0.5;
+    const ly = 1.7;
 
-        // Number circle
+    steps.forEach((st, i) => {
+        const cx = startX + i * (cardW + gap);
+        const isLast = i === steps.length - 1;
+
+        // Draw Card
+        if (isLast) {
+            // Highlighted final step card
+            drawCard(s, cx, ly, cardW, cardH, {
+                fill: "E8F5EE",
+                line: { color: COLOR_MEDIUM_GREEN, width: 1.5 }
+            });
+        } else {
+            // Standard step card
+            drawCard(s, cx, ly, cardW, cardH);
+        }
+
+        // Left vertical indicator line inside card
+        s.addShape("rect", {
+            x: cx, y: ly + 0.1, w: 0.06, h: cardH - 0.2,
+            fill: { color: isLast ? COLOR_MEDIUM_GREEN : COLOR_PRIMARY_DARK },
+            line: { width: 0 }
+        });
+
+        // Step Number Badge (Circle)
         s.addShape("ellipse", {
-            x: lx + 0.2, y: sy + 0.02, w: 0.32, h: 0.32,
-            fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }
+            x: cx + 0.2, y: ly + 0.2, w: 0.32, h: 0.32,
+            fill: { color: isLast ? COLOR_MEDIUM_GREEN : COLOR_PRIMARY_DARK },
+            line: { width: 0 }
         });
         s.addText(st.num, {
-            x: lx + 0.2, y: sy + 0.02, w: 0.32, h: 0.32,
-            fontSize: 10, bold: true, color: COLOR_GOLD,
+            x: cx + 0.2, y: ly + 0.2, w: 0.32, h: 0.32,
+            fontSize: 10, bold: true, color: isLast ? COLOR_GOLD : COLOR_WHITE,
             fontFace: FONT_BODY, align: "center", valign: "middle"
+        });
+
+        // Icon Text (Unicode Symbol)
+        s.addText(st.icon, {
+            x: cx + 0.7, y: ly + 0.15, w: cardW - 0.8, h: 0.4,
+            fontSize: 20, color: isLast ? COLOR_MEDIUM_GREEN : COLOR_PRIMARY_DARK,
+            fontFace: FONT_BODY, align: "right", valign: "middle"
         });
 
         // Step Title
         s.addText(st.title, {
-            x: lx + 0.6, y: sy, w: lw - 0.7, h: 0.25,
-            fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
+            x: cx + 0.2, y: ly + 0.65, w: cardW - 0.3, h: 0.25,
+            fontSize: 11.5, bold: true, color: isLast ? COLOR_MEDIUM_GREEN : COLOR_PRIMARY_DARK,
             fontFace: FONT_TITLE, align: "left"
         });
 
         // Step Description
         s.addText(st.desc, {
-            x: lx + 0.6, y: sy + 0.22, w: lw - 0.7, h: 0.7,
-            fontSize: 9, color: COLOR_MUTED_TEXT,
+            x: cx + 0.2, y: ly + 0.95, w: cardW - 0.3, h: 1.3,
+            fontSize: 8.5, color: isLast ? COLOR_PRIMARY_DARK : COLOR_MUTED_TEXT,
             fontFace: FONT_BODY, align: "left", valign: "top"
         });
+
+        // Draw connecting arrow if not the last step
+        if (!isLast) {
+            const arrowX = cx + cardW + 0.05;
+            s.addShape("line", {
+                x: arrowX, y: ly + (cardH / 2), w: gap - 0.1, h: 0,
+                line: { color: COLOR_GOLD, width: 2, endArrowType: "triangle" }
+            });
+        }
     });
 
-    // Performance note at the bottom of left card
-    s.addShape("roundRect", { x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.4, fill: { color: "E8F5EE" }, line: { width: 0 }, rectRadius: 0.04 });
-    s.addText("Performance : Temps moyen < 3.2s  •  FAR < 0.01%", {
-        x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.4,
-        fontSize: 9, bold: true, color: COLOR_MEDIUM_GREEN,
+    // Performance statistics badge at the bottom
+    s.addShape("roundRect", {
+        x: 0.5, y: 4.35, w: 9.0, h: 0.45,
+        fill: { color: "E8F5EE" },
+        line: { color: COLOR_MEDIUM_GREEN, width: 0.5 },
+        rectRadius: 0.04
+    });
+    s.addText("Pipeline Optimisé : Temps moyen de traitement < 3.2 secondes  •  Taux de fausse acceptation (FAR) < 0.01%", {
+        x: 0.5, y: 4.35, w: 9.0, h: 0.45,
+        fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
         fontFace: FONT_BODY, align: "center", valign: "middle"
     });
-
-    // Right side: Diagram and Real Screenshots
-    const rx = 4.6;
-    const rw = 4.9;
-
-    // Card 1: Sequence Diagram
-    drawCard(s, rx, ly, rw, 2.5);
-    s.addText("Diagramme de Séquence KYC", {
-        x: rx + 0.2, y: ly + 0.1, w: rw - 0.4, h: 0.25,
-        fontSize: 10.5, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-    const kycSeqData = toBase64(IMG_SEQ_KYC);
-    if (kycSeqData) {
-        s.addImage({ data: kycSeqData, x: rx + 0.2, y: ly + 0.4, w: rw - 0.4, h: 2.0 });
-    }
-
-    // Card 2: Real Mobile Screens
-    drawCard(s, rx, ly + 2.65, rw, 1.3);
-    s.addText("Écrans Mobiles KYC réels", {
-        x: rx + 0.2, y: ly + 2.7, w: rw - 0.4, h: 0.2,
-        fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    const imgH = 0.95;
-    const imgW = 0.54; // aspect ratio ~ 9:16
-    
-    const kycIntroData = toBase64(IMG_KYC_INTRO);
-    if (kycIntroData) {
-        s.addImage({ data: kycIntroData, x: rx + 0.2, y: ly + 2.95, w: imgW, h: imgH });
-    }
-    const kycFaceData = toBase64(IMG_KYC_FACE);
-    if (kycFaceData) {
-        s.addImage({ data: kycFaceData, x: rx + 0.85, y: ly + 2.95, w: imgW, h: imgH });
-    }
-
-    s.addText("1. Introduction KYC : Informations réglementaires.\n2. Capture du visage en direct avec détection de vivacité.\nComparaison instantanée via microservice FastAPI (Python).", {
-        x: rx + 1.5, y: ly + 2.95, w: rw - 1.6, h: imgH,
-        fontSize: 8.5, color: COLOR_MUTED_TEXT,
-        fontFace: FONT_BODY, align: "left", valign: "middle"
-    });
 }
-
 // =============================================================================
 // SLIDE 15 — SECTION DIVIDER 04 (Conception & Modélisation)
 // =============================================================================
@@ -1137,7 +1136,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/32");
+    applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/33");
 
     // Left Column: Actor details card
     const lx = 0.5;
@@ -1155,7 +1154,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 
     const actors = [
         { name: "Administrateur", desc: "Gère les comptes utilisateurs, valide les dossiers KYC litigieux et modère les signalements.", color: COLOR_PRIMARY_DARK },
-        { name: "Passager", desc: "Recherche des trajets, réserve en ligne (SATIM/CIB) et valide son embarquement via QR Code.", color: COLOR_MEDIUM_GREEN },
+        { name: "Passager", desc: "Recherche des trajets, réserve en ligne (Chargily Pay V2) et valide son embarquement via QR Code.", color: COLOR_MEDIUM_GREEN },
         { name: "Conducteur", desc: "Enregistre ses véhicules, propose des trajets inter-wilayas et valide l'embarquement du passager.", color: COLOR_GOLD }
     ];
 
@@ -1202,7 +1201,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/32");
+    applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/33");
 
     // Left Column: Summary card
     const lx = 0.5;
@@ -1231,7 +1230,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
         },
         {
             title: "3. Transactions & Services (Core)",
-            desc: "• Payment & Wallet : Portefeuille local et transactions SATIM.\n• Notification & Review : Suivi temps réel et notations.",
+            desc: "• Payment & Wallet : Portefeuille local et transactions Chargily.\n• Notification & Review : Suivi temps réel et notations.",
             color: COLOR_GOLD
         }
     ];
@@ -1275,7 +1274,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Diagramme de Séquence : Réservation", "Conception & Modélisation", "18/32");
+    applyContentSlideTemplate(s, "Diagramme de Séquence : Réservation", "Conception & Modélisation", "18/33");
 
     // Left Column: Process card
     const lx = 0.5;
@@ -1347,11 +1346,105 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 }
 
 // =============================================================================
-// SLIDE 19 — TOPOLOGIE DU DÉPLOIMENT CLOUD (Split layout avec diagramme réel)
+// SLIDE 19 — DIAGRAMME DE SÉQUENCE : VALIDATION KYC (UML)
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "19/32");
+    applyContentSlideTemplate(s, "Diagramme de Séquence : Validation KYC", "Conception & Modélisation", "19/33");
+
+    // Left Column: Explanation card
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 3.9;
+    const lh = 3.8;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
+
+    s.addText("Modélisation du Flux KYC", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    s.addText("Le diagramme illustre le protocole d'échange sécurisé entre les clients, l'API et le module IA :\n\n" +
+             "1. Envoi asynchrone des médias (CNI et Selfie) chiffrés en HTTPS.\n" +
+             "2. Routage vers le KycController qui orchestre les appels vers le microservice FastAPI.\n" +
+             "3. Analyse IA séquentielle : extraction OCR des champs, prédiction ArcFace de similarité faciale, et vérification Liveness.\n" +
+             "4. Persistance du statut de confiance et émission d'un token d'identité mis à jour.", {
+        x: lx + 0.2, y: ly + 0.6, w: lw - 0.4, h: 3.0,
+        fontSize: 9.5, color: COLOR_DARK_TEXT,
+        fontFace: FONT_BODY, align: "left", valign: "top"
+    });
+
+    // Right Column: Diagram card
+    const rx = 4.6;
+    const rw = 4.9;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Spécification UML : Diagramme de Séquence KYC", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    const kycSeqData = toBase64(IMG_SEQ_KYC);
+    if (kycSeqData) {
+        s.addImage({ data: kycSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    }
+}
+
+// =============================================================================
+// SLIDE 20 — DIAGRAMME DE SÉQUENCE : EMBARQUEMENT BIOMÉTRIQUE (UML)
+// =============================================================================
+{
+    const s = pres.addSlide();
+    applyContentSlideTemplate(s, "Diagramme de Séquence : Embarquement", "Conception & Modélisation", "20/33");
+
+    // Left Column: Explanation card
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 3.9;
+    const lh = 3.8;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
+
+    s.addText("Protocole de Check-in", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    s.addText("Le protocole d'embarquement biométrique mutuel garantit une sécurité maximale avant le départ :\n\n" +
+             "1. Le conducteur initie la validation en scannant le code QR du passager via le CheckinController.\n" +
+             "2. Les selfies du passager et du conducteur sont capturés instantanément en direct.\n" +
+             "3. Le service FastAPI compare les deux visages par rapport aux templates KYC enregistrés.\n" +
+             "4. Si validé, le statut du billet passe à 'EMBARQUÉ' et la transaction financière est débloquée.", {
+        x: lx + 0.2, y: ly + 0.6, w: lw - 0.4, h: 3.0,
+        fontSize: 9.5, color: COLOR_DARK_TEXT,
+        fontFace: FONT_BODY, align: "left", valign: "top"
+    });
+
+    // Right Column: Diagram card
+    const rx = 4.6;
+    const rw = 4.9;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Spécification UML : Séquence d'Embarquement", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    const checkinSeqData = toBase64(IMG_SEQ_CHECKIN);
+    if (checkinSeqData) {
+        s.addImage({ data: checkinSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    }
+}
+
+// =============================================================================
+// SLIDE 21 — TOPOLOGIE DU DÉPLOIMENT CLOUD (Split layout avec diagramme réel)
+// =============================================================================
+{
+    const s = pres.addSlide();
+    applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "21/33");
 
     // Left Column: Deployment Details Card
     const lx = 0.5;
@@ -1382,7 +1475,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
         },
         {
             layer: "4. Services Externes (Third-party)",
-            desc: "API Mapbox (navigation), Firebase Cloud Messaging (notifications), et SATIM Sandbox (paiement sécurisé)."
+            desc: "API Mapbox (navigation), Firebase Cloud Messaging (notifications), et Chargily Pay V2 (paiement CIB/Edahabia)."
         }
     ];
 
@@ -1436,7 +1529,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "21/32");
+    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "23/33");
 
     // Left Column: Donut, Progress bars and Coverage stats
     const lx = 0.5;
@@ -1543,7 +1636,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Score SUS de 71.6 : Usabilité Validée", "Résultats & Validation", "22/32");
+    applyContentSlideTemplate(s, "Score SUS de 71.6 : Usabilité Validée", "Résultats & Validation", "24/33");
 
     // Score Circle Card (Left)
     drawCard(s, 0.6, 1.4, 2.2, 2.5);
@@ -1638,7 +1731,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Validation des Trois Hypothèses", "Résultats & Validation", "23/32");
+    applyContentSlideTemplate(s, "Validation des Trois Hypothèses", "Résultats & Validation", "25/33");
 
     const hyps = [
         {
@@ -1753,7 +1846,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         fontSize: 9, bold: true, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "left"
     });
-    s.addText("24/32", {
+    s.addText("26/33", {
         x: 8.5, y: 0.18, w: 1.0, h: 0.22,
         fontSize: 10, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "right"
@@ -1783,7 +1876,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
     const badges = [
         { icon: "APP", label: "Application Mobile" },
         { icon: "KYC", label: "KYC Biometrique"    },
-        { icon: "PAY", label: "Paiement SATIM/CIB"  },
+        { icon: "PAY", label: "Chargily Pay V2"  },
         { icon: "GPS", label: "GPS Temps Reel"      },
     ];
     const badgeW   = 1.52;
@@ -2007,7 +2100,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         x: 0, y: 5.30, w: SW, h: 0.325,
         fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }
     });
-    s.addText("RohWinBghit  •  Parcours Passager Complet  •  Verification KYC + Paiement SATIM + Suivi GPS", {
+    s.addText("RohWinBghit  •  Parcours Passager Complet  •  Verification KYC + Chargily Pay V2 + Suivi GPS", {
         x: 0, y: 5.30, w: SW, h: 0.325,
         fontSize: 10, bold: true, color: COLOR_MUTED_TEXT,
         fontFace: FONT_BODY, align: "center", valign: "middle"
@@ -2024,7 +2117,7 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Business Model Canvas (condensé)", "Modèle Économique", "26/32");
+    applyContentSlideTemplate(s, "Business Model Canvas (condensé)", "Modèle Économique", "28/33");
 
     s.addText("Business Model & Financials", {
         x: 0.5, y: 1.0, w: 9.0, h: 0.3,
@@ -2039,12 +2132,12 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
     // Partenaires Clés
     drawCard(s, 0.5, by, 1.7, bh);
     s.addText("Partenaires Clés", { x: 0.5, y: by + 0.1, w: 1.7, h: 0.22, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• SATIM / GIE Monétique\n• Universités DZ\n• Assurances locales\n• Hébergeurs Cloud", { x: 0.6, y: by + 0.35, w: 1.5, h: bh - 0.45, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("• Chargily Pay V2\n• Universités DZ\n• Assurances locales\n• Hébergeurs Cloud", { x: 0.6, y: by + 0.35, w: 1.5, h: bh - 0.45, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
     // Activités & Ressources
     drawCard(s, 2.3, by, 1.7, 0.95);
     s.addText("Activités Clés", { x: 2.3, y: by + 0.08, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Matching trajets\n• Pipeline KYC\n• Séquestre SATIM", { x: 2.4, y: by + 0.3, w: 1.5, h: 0.6, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("• Matching trajets\n• Pipeline KYC\n• Séquestre Chargily", { x: 2.4, y: by + 0.3, w: 1.5, h: 0.6, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
     drawCard(s, 2.3, by + 1.05, 1.7, 0.9);
     s.addText("Ressources Clés", { x: 2.3, y: by + 1.1, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
@@ -2095,7 +2188,7 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Modèle de Revenus & Prévisions Financières", "Modèle Économique", "27/32");
+    applyContentSlideTemplate(s, "Modèle de Revenus & Prévisions Financières", "Modèle Économique", "29/33");
 
     // Left column: 3 cards
     const cardW = 4.0;
@@ -2188,12 +2281,12 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Bilan & Contributions Académiques", "Conclusion & Perspectives", "29/32");
+    applyContentSlideTemplate(s, "Bilan & Contributions Académiques", "Conclusion & Perspectives", "31/33");
 
     const contributions = [
         { title: "Infrastructure de Confiance", desc: "Premier pipeline KYC biométrique d'identification (OCR + ArcFace + Liveness) adapté aux spécificités administratives algériennes." },
         { title: "IA Souveraine", desc: "Modèles d'IA exécutant les inférences localement sur serveurs nationaux, respectant la Loi 25-11 sur la non-transfrontalisation." },
-        { title: "Monétique Locale", desc: "Première intégration de séquestre monétaire SATIM/CIB/Edahabia dédiée à la sécurisation des covoiturages inter-wilayas." },
+        { title: "Monétique Locale", desc: "Première intégration de séquestre monétaire via Chargily Pay V2 (CIB/Edahabia) dédiée à la sécurisation des covoiturages inter-wilayas." },
         { title: "Validation Empirique", desc: "97.4% de réussite sur la suite de tests Jest automatisés et score SUS de 71.6/100 validant la fluidité de l'expérience utilisateur." }
     ];
 
@@ -2237,90 +2330,11 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 
 // =============================================================================
 // =============================================================================
-// SLIDE 30 — EMBARQUEMENT BIOMÉTRIQUE MUTUEL (CHECK-IN) (Split layout avec diagramme réel)
-// =============================================================================
-{
-    const s = pres.addSlide();
-    applyContentSlideTemplate(s, "L'Embarquement Biométrique Mutuel (Check-in)", "Résultats & Validation", "30/32");
-
-    // Left Column: Process card
-    const lx = 0.5;
-    const ly = 1.3;
-    const lw = 4.2;
-    const lh = 3.8;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-
-    s.addText("Double Validation Biométrique", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    s.addText("Pour éliminer toute usurpation d'identité en face-à-face, la plateforme n'autorise le départ qu'après validation biométrique mutuelle via le CheckinController et le microservice d'IA.", {
-        x: lx + 0.2, y: ly + 0.55, w: lw - 0.4, h: 0.65,
-        fontSize: 9.5, color: COLOR_DARK_TEXT,
-        fontFace: FONT_BODY, align: "left", valign: "top"
-    });
-
-    // 3-step timeline / vertical steps
-    const checkinSteps = [
-        { num: "01", title: "Scan du Code QR", desc: "Le passager présente son billet. Le conducteur scanne le code QR sécurisé." },
-        { num: "02", title: "Double Capture Visage", desc: "Capture en temps réel des visages du passager et du conducteur." },
-        { num: "03", title: "Décision ArcFace", desc: "Comparaison avec les photos KYC (similarité ≥ 0.45, streak ≥ 2 trames)." }
-    ];
-
-    checkinSteps.forEach((step, i) => {
-        const sy = ly + 1.25 + i * 0.82;
-
-        // Number Badge
-        s.addShape("ellipse", {
-            x: lx + 0.2, y: sy + 0.02, w: 0.28, h: 0.28,
-            fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }
-        });
-        s.addText(step.num, {
-            x: lx + 0.2, y: sy + 0.02, w: 0.28, h: 0.28,
-            fontSize: 8.5, bold: true, color: COLOR_GOLD,
-            fontFace: FONT_BODY, align: "center", valign: "middle"
-        });
-
-        // Step Title
-        s.addText(step.title, {
-            x: lx + 0.55, y: sy, w: lw - 0.65, h: 0.2,
-            fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-            fontFace: FONT_TITLE, align: "left"
-        });
-
-        // Step Desc
-        s.addText(step.desc, {
-            x: lx + 0.55, y: sy + 0.2, w: lw - 0.65, h: 0.55,
-            fontSize: 8.5, color: COLOR_MUTED_TEXT,
-            fontFace: FONT_BODY, align: "left", valign: "top"
-        });
-    });
-
-    // Right Column: Diagram card
-    const rx = 4.9;
-    const rw = 4.6;
-    drawCard(s, rx, ly, rw, lh);
-    s.addText("Diagramme de Séquence de l'Embarquement", {
-        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    const checkinSeqData = toBase64(IMG_SEQ_CHECKIN);
-    if (checkinSeqData) {
-        s.addImage({ data: checkinSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
-    }
-}
-
-// =============================================================================
 // SLIDE 30 — LIMITES & PERSPECTIVES D'ÉVOLUTION
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Limites & Perspectives d'Évolution", "Conclusion & Perspectives", "31/32");
+    applyContentSlideTemplate(s, "Limites & Perspectives d'Évolution", "Conclusion & Perspectives", "32/33");
 
     const colW = 4.35;
     const colH = 3.1;
@@ -2338,7 +2352,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
     });
 
     const limits = [
-        "Paiement monétique simulé en mode sandbox (non connecté à la production SATIM).",
+        "Paiement monétique simulé en mode sandbox (non connecté à la production réelle).",
         "Échantillon d'usabilité SUS modeste (N=18 utilisateurs testés en interne).",
         "Tests de charge et d'accès concurrents massifs non réalisés en conditions réelles.",
         "Pipeline KYC entraîné et testé sur un dataset d'images nationaux restreint."
@@ -2368,7 +2382,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
     const perspectives = [
         "Tarification dynamique de type Surge Pricing par Machine Learning (demande spatio-temporelle).",
         "Déploiement d'une phase pilote expérimentale : Tlemcen → Oran → Alger.",
-        "Intégration en production avec protocoles SATIM / CIB / Edahabia réels.",
+        "Intégration en production avec protocoles Chargily Pay V2 / Edahabia réels.",
         "Extension du modèle de service vers le transport collaboratif de colis (C2C)."
     ];
 
