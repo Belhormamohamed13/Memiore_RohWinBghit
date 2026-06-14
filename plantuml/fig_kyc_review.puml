@@ -5,7 +5,7 @@ start
 :File KYC conducteurs (paginees, filtrable);
 :Profil : Nom / Telephone / Wilaya / Date;
 :Documents : CNI recto/verso + Permis;
-:Scores IA FastAPI :8001 (InsightFace buffalo_l);
+:Scores IA FastAPI :8001 (InsightFace antelopev2);
 fork
     :Face Match : 0.94;
 fork again

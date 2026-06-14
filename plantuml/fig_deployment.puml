@@ -40,7 +40,7 @@ node "Serveur Cloud (AWS / DigitalOcean)" <<Linux Ubuntu>> {
 
   node "Microservice IA" <<Docker Container>> as IA {
     component "FastAPI :8001\n(Python 3.11)" as FastAPI
-    component "InsightFace buffalo_l\n(Face embeddings)" as IF
+    component "InsightFace antelopev2\n(Face embeddings)" as IF
     component "Liveness + Anti-spoof\n(OpenCV / custom)" as LiveAS
     component "MRZ + Card Validator" as CardVal
   }

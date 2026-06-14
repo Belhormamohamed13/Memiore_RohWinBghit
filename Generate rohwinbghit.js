@@ -838,7 +838,7 @@ async function buildPresentation() {
 
         archBox(0.5, 1.4, 4.4, 0.75, "📱 CLIENTS", ["App Mobile (React Native / Expo SDK 54)", "Dashboard Web d'Administration (React / Vite)"], C.accentGreen, 65);
         archBox(0.5, 2.22, 4.4, 1.05, "⚙️ BACKEND principal (Express.js)", ["Passerelle API, routage géographique, surge pricing", "PaymentFactory (CIB, Edahabia, Cash)", "Queues asynchrones avec BullMQ 5.71"], C.accentGreen, 70);
-        archBox(0.5, 3.35, 4.4, 0.75, "🧠 SERVICE IA (FastAPI)", ["Inférence d'InsightFace (buffalo_l)", "Vivacité active & détection anti-spoofing"], C.accentGreen, 65);
+        archBox(0.5, 3.35, 4.4, 0.75, "🧠 SERVICE IA (FastAPI)", ["Inférence d'InsightFace (antelopev2)", "Vivacité active & détection anti-spoofing"], C.accentGreen, 65);
         archBox(0.5, 4.18, 4.4, 0.8, "💾 PERSISTANCE & CACHE", ["PostgreSQL 16 (verrous ACID FOR UPDATE)", "Redis 7 (cache de session et BullMQ queues)"], C.gold, 70);
 
         // Right Panel: Deployment Diagram Container
@@ -864,7 +864,7 @@ async function buildPresentation() {
 
         const steps = [
             [icons.idCard, "1. Extraction OCR de la CIN", "Validation de la présence de la carte d'identité, contrôle de format et extraction du nom/prénom."],
-            [icons.brain, "2. Comparaison faciale", "Extraction d'embeddings faciaux à 512 dimensions par ArcFace (buffalo_l) et calcul de la distance cosinus."],
+            [icons.brain, "2. Comparaison faciale", "Extraction d'embeddings faciaux à 512 dimensions par ArcFace (antelopev2) et calcul de la distance cosinus."],
             [icons.stopwatch, "3. Détection de vivacité", "Vérification active de la présence physique (anti-spoofing) par analyse du mouvement (flux vidéo)."]
         ];
 

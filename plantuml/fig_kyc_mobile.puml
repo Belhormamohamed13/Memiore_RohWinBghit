@@ -17,7 +17,7 @@ note right : MLKit OCR\n@infinitered/mlkit\nextraction CIN
 
 |Ecran 3 - Liveness Selfie|
 :Cadre oval - Centrez visage;
-note right : InsightFace buffalo_l\nFastAPI :8001
+note right : InsightFace antelopev2\nFastAPI :8001
 :Score IA : 0.94 (global pondere);
 note right : Seuils conducteur :\nface >= 0.65\nliveness >= 0.65\nantispoof >= 0.60
 :KYC Approuve;

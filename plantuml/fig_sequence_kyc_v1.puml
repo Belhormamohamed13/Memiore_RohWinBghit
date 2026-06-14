@@ -25,7 +25,7 @@ Mobile -> Express : POST /api/verification/face
 Express -> FastAPI : POST /verify-full\n{cin_recto, liveness_video, role=driver}\n[Header: X-Internal-Secret]
 
 note over FastAPI #FFF9C4
-  Pipeline InsightFace buffalo_l :
+  Pipeline InsightFace antelopev2 :
   1. FaceAnalyzer.extract_embedding(CIN)
   2. average_embedding_from_video(video)
   3. cosine similarity -> face_score
