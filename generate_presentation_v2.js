@@ -38,13 +38,23 @@ const makeShadow = () => ({
 const SW = 10.0;
 const SH = 5.625;
 
-// Image Paths
-const IMG_LOGO      = path.join(__dirname, "Screen_mobile", "logo_bus.png");
-const IMG_UNIV_LOGO = path.join(__dirname, "Screen_mobile", "univ_logo.png");
-const IMG_SPLASH    = path.join(__dirname, "figures", "v2_welcome_splash.jpg");
-const IMG_INSCRIP   = path.join(__dirname, "Screen_mobile", "inscription.jpg");
-const IMG_RESERVE   = path.join(__dirname, "Screen_mobile", "Passager re\u0301serve.jpg"); // NFC normalized or normalized
-const IMG_QR_DEPART = path.join(__dirname, "Screen_mobile", "QR scanne\u0301 au de\u0301part.jpg");
+// Image Paths (corrected folder case to Screen_Mobile and matched actual assets)
+const IMG_LOGO          = path.join(__dirname, "Screen_Mobile", "logo_bus.png");
+const IMG_UNIV_LOGO     = path.join(__dirname, "figures", "logo_universite.png");
+const IMG_SPLASH        = path.join(__dirname, "figures", "v2_welcome_splash.jpg");
+const IMG_INSCRIP       = path.join(__dirname, "Screen_Mobile", "02_inscription_role.png");
+const IMG_RESERVE       = path.join(__dirname, "Screen_Mobile", "06_recherche_details_reservation.png");
+const IMG_QR_DEPART     = path.join(__dirname, "Screen_Mobile", "07_ticket_confirme_qr.png");
+
+// New Technical diagrams and screenshots
+const IMG_USE_CASE      = path.join(__dirname, "figures", "fig_use_case.png");
+const IMG_CLASS_DIAGRAM = path.join(__dirname, "figures", "fig_class_diagram.png");
+const IMG_DEPLOYMENT    = path.join(__dirname, "figures", "fig_deployment2.png");
+const IMG_JEST_RESULTS  = path.join(__dirname, "Screen_Mobile", "jest_results.png");
+const IMG_SEQ_KYC       = path.join(__dirname, "figures", "fig_sequence_kyc.png");
+const IMG_KYC_INTRO     = path.join(__dirname, "Screen_Mobile", "17_kyc_intro.png");
+const IMG_KYC_FACE      = path.join(__dirname, "Screen_Mobile", "20_kyc_capture_visage.png");
+const IMG_SEQ_CHECKIN   = path.join(__dirname, "figures", "fig_sequence_checkin.png");
 
 // Helper to check if file exists, if not logs warning
 const verifyPath = (p, label) => {
@@ -59,6 +69,14 @@ verifyPath(IMG_SPLASH, "Splash Screen");
 verifyPath(IMG_INSCRIP, "Inscription Screen");
 verifyPath(IMG_RESERVE, "Reserve Screen");
 verifyPath(IMG_QR_DEPART, "QR Scan Screen");
+verifyPath(IMG_USE_CASE, "Use Case Diagram");
+verifyPath(IMG_CLASS_DIAGRAM, "Class Diagram");
+verifyPath(IMG_DEPLOYMENT, "Deployment Diagram");
+verifyPath(IMG_JEST_RESULTS, "Jest Results Screenshot");
+verifyPath(IMG_SEQ_KYC, "KYC Sequence Diagram");
+verifyPath(IMG_KYC_INTRO, "KYC Screen 1 (Intro)");
+verifyPath(IMG_KYC_FACE, "KYC Screen 2 (Face)");
+verifyPath(IMG_SEQ_CHECKIN, "Check-in Sequence Diagram");
 
 // ─── INITIALIZE PRESENTATION ────────────────────────────────────────────────
 const pres = new pptxgen();
@@ -171,46 +189,46 @@ function drawCard(slide, x, y, w, h, options = {}) {
 
     // University Logo (Centered Top)
     if (fs.existsSync(IMG_UNIV_LOGO)) {
-        s.addImage({ path: IMG_UNIV_LOGO, x: 4.6, y: 1.0, w: 0.8, h: 0.8 });
+        s.addImage({ path: IMG_UNIV_LOGO, x: 4.65, y: 0.95, w: 0.7, h: 0.7 });
     }
 
     // Title
     s.addText("RohWinBghit", {
-        x: 0.5, y: 1.9, w: 9.0, h: 0.6,
-        fontSize: 44, bold: true, color: COLOR_WHITE,
+        x: 0.5, y: 1.7, w: 9.0, h: 0.5,
+        fontSize: 38, bold: true, color: COLOR_WHITE,
         fontFace: FONT_TITLE, align: "center"
     });
 
     s.addText("روح وين بغيت", {
-        x: 0.5, y: 2.5, w: 9.0, h: 0.5,
-        fontSize: 32, color: COLOR_WHITE,
+        x: 0.5, y: 2.2, w: 9.0, h: 0.4,
+        fontSize: 26, color: COLOR_WHITE,
         fontFace: FONT_TITLE, align: "center"
     });
 
-    // Project Description (Italic Calibri 14pt, light green)
+    // Project Description (Italic Calibri 13pt, light green)
     s.addText("Plateforme mobile multiplateforme intelligente de covoiturage inter-wilayas sécurisée\nadaptée au contexte algérien", {
-        x: 0.5, y: 3.1, w: 9.0, h: 0.6,
-        fontSize: 14, italic: true, color: COLOR_LIGHT_GREEN,
+        x: 0.5, y: 2.65, w: 9.0, h: 0.5,
+        fontSize: 13, italic: true, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "center"
     });
 
     // Subtitle / Framework
-    s.addText("Mémoire de Master en Génie Logiciel — Arrêté Ministériel 1275", {
-        x: 0.5, y: 3.7, w: 9.0, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_GOLD,
+    s.addText("Mémoire de fin d'études de Master — Option : Génie Logiciel (GL)\nArrêté Ministériel 1275 — « Un diplôme, une Startup »", {
+        x: 0.5, y: 3.2, w: 9.0, h: 0.5,
+        fontSize: 11.5, bold: true, color: COLOR_GOLD,
         fontFace: FONT_BODY, align: "center"
     });
 
     // Presented / Supervised columns
-    s.addText("Présenté par :\nAHMED BACHA Djamel Eddine\nBELHORMA Sidi Mohammed Reduane", {
-        x: 0.5, y: 4.15, w: 4.25, h: 0.7,
-        fontSize: 11, color: COLOR_WHITE,
+    s.addText("Présenté par :\nAHMED BACHA Djamel Eddine\nBELHORMA Sidi Mohammed Reduane\n\nSoutenu le : 20 juin 2026", {
+        x: 0.5, y: 3.8, w: 4.25, h: 1.1,
+        fontSize: 10.5, color: COLOR_WHITE,
         fontFace: FONT_BODY, align: "center"
     });
 
-    s.addText("Encadré par :\nMme BENLEDGHEM Rafika\nDépartement d'Informatique, Université de Tlemcen", {
-        x: 5.25, y: 4.15, w: 4.25, h: 0.7,
-        fontSize: 11, color: COLOR_WHITE,
+    s.addText("Jury de Soutenance :\nPrésidente : Mme BENMAHDI Meriem\nEncadrante : Mme BENLEDGHEM Rafika\nExaminatrice : Mme BENMANSOUR Fazilet\nExperte I2E : Mme SELADJI Yassamine", {
+        x: 5.25, y: 3.8, w: 4.25, h: 1.1,
+        fontSize: 10.5, color: COLOR_WHITE,
         fontFace: FONT_BODY, align: "center"
     });
 
@@ -565,71 +583,86 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
             { text: "Yassir", options: { bold: true, color: COLOR_WHITE, fill: { color: COLOR_PRIMARY_DARK } } },
             { text: "Nroho", options: { bold: true, color: COLOR_WHITE, fill: { color: COLOR_PRIMARY_DARK } } },
             { text: "inDrive", options: { bold: true, color: COLOR_WHITE, fill: { color: COLOR_PRIMARY_DARK } } },
+            { text: "Covoit'Dz", options: { bold: true, color: COLOR_WHITE, fill: { color: COLOR_PRIMARY_DARK } } },
             { text: "RohWinBghit", options: { bold: true, color: COLOR_WHITE, fill: { color: COLOR_PRIMARY_DARK } } }
         ],
         [
+            { text: "Couverture DZ" },
+            { text: "Absent", options: { color: COLOR_RED } },
+            { text: "Urbaine" },
+            { text: "Nationale" },
+            { text: "Nationale" },
+            { text: "Nationale" },
+            { text: "69 Wilayas", options: { color: COLOR_PRIMARY_DARK, bold: true } }
+        ],
+        [
             { text: "KYC Biométrique" },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✓ (ArcFace)", options: { color: COLOR_PRIMARY_DARK, bold: true } }
+            { text: "Standard" },
+            { text: "Standard" },
+            { text: "CIN + Selfie" },
+            { text: "Documentaire" },
+            { text: "Néant", options: { color: COLOR_RED } },
+            { text: "Liveness + Anti-spoof", options: { color: COLOR_PRIMARY_DARK, bold: true } }
+        ],
+        [
+            { text: "Seuils par Rôle" },
+            { text: "Non" },
+            { text: "Non" },
+            { text: "Non" },
+            { text: "Non" },
+            { text: "Non" },
+            { text: "Oui (≥0.65 / ≥0.60)", options: { color: COLOR_PRIMARY_DARK, bold: true } }
         ],
         [
             { text: "Paiement Local" },
-            { text: "✗ (CB Euro)", options: { color: COLOR_RED } },
+            { text: "Non", options: { color: COLOR_RED } },
             { text: "Partiel", options: { color: COLOR_GOLD, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "Espèces", options: { color: COLOR_MUTED_TEXT } },
-            { text: "✓ (SATIM/CIB)", options: { color: COLOR_PRIMARY_DARK, bold: true } }
+            { text: "Non (cash)" },
+            { text: "Non (cash)" },
+            { text: "Non", options: { color: COLOR_RED } },
+            { text: "SATIM / CIB", options: { color: COLOR_PRIMARY_DARK, bold: true } }
         ],
         [
-            { text: "Inter-Wilayas" },
-            { text: "✗ (Non DZ)", options: { color: COLOR_RED } },
-            { text: "✗ (Urbain)", options: { color: COLOR_RED } },
-            { text: "✓", options: { color: COLOR_PRIMARY_DARK, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✓ (69 Wilayas)", options: { color: COLOR_PRIMARY_DARK, bold: true } }
+            { text: "Tarif Dynamique" },
+            { text: "Non" },
+            { text: "Oui", options: { color: COLOR_PRIMARY_DARK, bold: true } },
+            { text: "Non" },
+            { text: "Non" },
+            { text: "Fixe" },
+            { text: "Oui (m ∈ [1.0; 2.5])", options: { color: COLOR_PRIMARY_DARK, bold: true } }
         ],
         [
-            { text: "Évaluation" },
-            { text: "✓", options: { color: COLOR_PRIMARY_DARK, bold: true } },
-            { text: "✓", options: { color: COLOR_PRIMARY_DARK, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✓", options: { color: COLOR_PRIMARY_DARK, bold: true } },
-            { text: "✓ (+ QR Code)", options: { color: COLOR_PRIMARY_DARK, bold: true } }
-        ],
-        [
-            { text: "Open Source" },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✗", options: { color: COLOR_RED, bold: true } },
-            { text: "✓", options: { color: COLOR_PRIMARY_DARK, bold: true } }
+            { text: "Sécurité PII" },
+            { text: "Non doc." },
+            { text: "Non doc." },
+            { text: "Non doc." },
+            { text: "Non doc." },
+            { text: "Non doc." },
+            { text: "AES-256-GCM", options: { color: COLOR_PRIMARY_DARK, bold: true } }
         ]
     ];
 
     s.addTable(tableRows, {
-        x: 0.5, y: 1.2, w: 9.0, h: 2.7,
+        x: 0.5, y: 1.2, w: 9.0, h: 2.9,
         border: { type: "solid", color: "E7ECE8", size: 1 },
         align: "center",
         valign: "middle",
         fontFace: FONT_BODY,
-        fontSize: 11,
-        colWidths: [2.0, 1.4, 1.4, 1.4, 1.4, 1.4]
+        fontSize: 10,
+        colWidths: [1.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2]
     });
 
     // Takeaway Footer Card
-    const fy = 4.2;
+    const fy = 4.25;
     s.addShape("roundRect", {
         x: 0.5, y: fy, w: 9.0, h: 0.6,
         fill: { color: COLOR_BG_DARK },
         line: { width: 0 },
         rectRadius: 0.08
     });
-    s.addText("RohWinBghit est la seule plateforme combinant KYC biométrique + paiement local + couverture 69 wilayas", {
+    s.addText("RohWinBghit résout les 5 lacunes du marché en combinant KYC biométrique, paiement local et couverture nationale", {
         x: 0.5, y: fy, w: 9.0, h: 0.6,
-        fontSize: 12, bold: true, color: COLOR_WHITE,
+        fontSize: 11.5, bold: true, color: COLOR_WHITE,
         fontFace: FONT_BODY, align: "center", valign: "middle"
     });
 }
@@ -780,7 +813,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
         line: { color: COLOR_MEDIUM_GREEN, width: 0.5 },
         rectRadius: 0.08
     });
-    s.addText("Vélocité totale : 130 Story Points  •  Moyenne : 26 SP / Sprint  •  Rétrospectives après chaque sprint", {
+    s.addText("Cycle Projet Global : 9 Mois   •   Sprints de Développement : 10 Semaines (130 SP)", {
         x: 0.5, y: fy, w: 9.0, h: 0.45,
         fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
         fontFace: FONT_BODY, align: "center", valign: "middle"
@@ -975,98 +1008,107 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 }
 
 // =============================================================================
-// SLIDE 14 — PIPELINE BIOMÉTRIQUE KYC D'IA
+// SLIDE 14 — PIPELINE BIOMÉTRIQUE KYC D'IA (Restructurée avec diagramme réel et captures)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Pipeline Biométrique KYC d'IA", "Méthodologie & Architecture", "14/31");
 
-    // Header labels
-    s.addShape("roundRect", {
-        x: 0.6, y: 1.15, w: 2.2, h: 0.3,
-        fill: { color: COLOR_GOLD }, line: { width: 0 }, rectRadius: 0.1
-    });
-    s.addText("INPUT : CNI + SELFIE", {
-        x: 0.6, y: 1.15, w: 2.2, h: 0.3,
-        fontSize: 10, bold: true, color: COLOR_BG_DARK,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
+    // Left block: Explanation of the 3-step KYC Pipeline
+    const lx = 0.5;
+    const ly = 1.2;
+    const lw = 3.9;
+    const lh = 3.95;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_GOLD }, line: { width: 0 } });
+
+    s.addText("Pipeline de Validation KYC", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
     });
 
-    s.addText("→", { x: 4.8, y: 1.15, w: 0.4, h: 0.3, fontSize: 16, bold: true, color: COLOR_GOLD, align: "center" });
-
-    s.addShape("roundRect", {
-        x: 7.2, y: 1.15, w: 2.2, h: 0.3,
-        fill: { color: COLOR_MEDIUM_GREEN }, line: { width: 0 }, rectRadius: 0.1
-    });
-    s.addText("OUTPUT : VÉRIFIÉ ✓", {
-        x: 7.2, y: 1.15, w: 2.2, h: 0.3,
-        fontSize: 10, bold: true, color: COLOR_WHITE,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
-    });
-
-    // 3 steps cards
-    const steps = [
-        { num: "1", title: "OCR Document", desc: "Extraction des données d'identité textuelles depuis le recto/verso de la CNI." },
-        { num: "2", title: "ArcFace Match", desc: "Comparaison faciale photo CNI vs Selfie. Seuil de validation configuré à 0.65." },
-        { num: "3", title: "Liveness Detection", desc: "Algorithme de détection de vivacité anti-spoofing temps réel (rejet des rejeux)." }
+    // Vertical steps
+    const kycSteps = [
+        { num: "1", title: "OCR Document (CNI)", desc: "Extraction automatique des données d'identité recto/verso (Nom, Prénom, Date de Naissance, Numéro de carte)." },
+        { num: "2", title: "ArcFace Match", desc: "Comparaison de similarité faciale entre la photo extraite de la CNI et le Selfie. Seuil de validation strict fixé à ≥ 0.65." },
+        { num: "3", title: "Détection de Vivacité", desc: "Algorithme anti-spoofing en temps réel (analyse de texture et de clignement) pour rejeter les rejeux d'images/vidéos." }
     ];
 
-    const cardW = 2.6;
-    const cardH = 2.2;
+    kycSteps.forEach((st, i) => {
+        const sy = ly + 0.6 + i * 0.95;
 
-    steps.forEach((st, i) => {
-        const x = 0.6 + i * (cardW + 0.6);
-        const y = 1.7;
-
-        drawCard(s, x, y, cardW, cardH);
-
-        // Number Gold badge
+        // Number circle
         s.addShape("ellipse", {
-            x: x + (cardW - 0.5) / 2, y: y + 0.2, w: 0.5, h: 0.5,
-            fill: { color: COLOR_GOLD }, line: { width: 0 }
+            x: lx + 0.2, y: sy + 0.02, w: 0.32, h: 0.32,
+            fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }
         });
         s.addText(st.num, {
-            x: x + (cardW - 0.5) / 2, y: y + 0.2, w: 0.5, h: 0.5,
-            fontSize: 14, bold: true, color: COLOR_BG_DARK,
-            fontFace: FONT_TITLE, align: "center", valign: "middle"
+            x: lx + 0.2, y: sy + 0.02, w: 0.32, h: 0.32,
+            fontSize: 10, bold: true, color: COLOR_GOLD,
+            fontFace: FONT_BODY, align: "center", valign: "middle"
         });
 
-        // Title
+        // Step Title
         s.addText(st.title, {
-            x: x + 0.1, y: y + 0.8, w: cardW - 0.2, h: 0.35,
-            fontSize: 15, bold: true, color: COLOR_PRIMARY_DARK,
-            fontFace: FONT_TITLE, align: "center"
+            x: lx + 0.6, y: sy, w: lw - 0.7, h: 0.25,
+            fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
+            fontFace: FONT_TITLE, align: "left"
         });
 
-        // Desc
+        // Step Description
         s.addText(st.desc, {
-            x: x + 0.15, y: y + 1.15, w: cardW - 0.3, h: 0.9,
-            fontSize: 11, color: COLOR_DARK_TEXT,
-            fontFace: FONT_BODY, align: "center", valign: "top"
+            x: lx + 0.6, y: sy + 0.22, w: lw - 0.7, h: 0.7,
+            fontSize: 9, color: COLOR_MUTED_TEXT,
+            fontFace: FONT_BODY, align: "left", valign: "top"
         });
-
-        // Connecting arrow
-        if (i < 2) {
-            s.addText("→", {
-                x: x + cardW + 0.1, y: y + (cardH - 0.4) / 2, w: 0.4, h: 0.4,
-                fontSize: 24, bold: true, color: COLOR_PRIMARY_DARK,
-                fontFace: FONT_BODY, align: "center", valign: "middle"
-            });
-        }
     });
 
-    // Performance bar bottom
-    const fy = 4.35;
-    s.addShape("roundRect", {
-        x: 0.5, y: fy, w: 9.0, h: 0.55,
-        fill: { color: "E8F5EE" },
-        line: { color: COLOR_MEDIUM_GREEN, width: 0.5 },
-        rectRadius: 0.08
-    });
-    s.addText("Temps de traitement moyen < 3.2s   •   Taux d'erreur de faux visage (FAR) < 0.01% en environnement local", {
-        x: 0.5, y: fy, w: 9.0, h: 0.55,
-        fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
+    // Performance note at the bottom of left card
+    s.addShape("roundRect", { x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.4, fill: { color: "E8F5EE" }, line: { width: 0 }, rectRadius: 0.04 });
+    s.addText("Performance : Temps moyen < 3.2s  •  FAR < 0.01%", {
+        x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.4,
+        fontSize: 9, bold: true, color: COLOR_MEDIUM_GREEN,
         fontFace: FONT_BODY, align: "center", valign: "middle"
+    });
+
+    // Right side: Diagram and Real Screenshots
+    const rx = 4.6;
+    const rw = 4.9;
+
+    // Card 1: Sequence Diagram
+    drawCard(s, rx, ly, rw, 2.5);
+    s.addText("Diagramme de Séquence KYC", {
+        x: rx + 0.2, y: ly + 0.1, w: rw - 0.4, h: 0.25,
+        fontSize: 10.5, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+    if (fs.existsSync(IMG_SEQ_KYC)) {
+        s.addImage({ path: IMG_SEQ_KYC, x: rx + 0.2, y: ly + 0.4, w: rw - 0.4, h: 2.0 });
+    }
+
+    // Card 2: Real Mobile Screens
+    drawCard(s, rx, ly + 2.65, rw, 1.3);
+    s.addText("Écrans Mobiles KYC réels", {
+        x: rx + 0.2, y: ly + 2.7, w: rw - 0.4, h: 0.2,
+        fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    const imgH = 0.95;
+    const imgW = 0.54; // aspect ratio ~ 9:16
+    
+    if (fs.existsSync(IMG_KYC_INTRO)) {
+        s.addImage({ path: IMG_KYC_INTRO, x: rx + 0.2, y: ly + 2.95, w: imgW, h: imgH });
+    }
+    if (fs.existsSync(IMG_KYC_FACE)) {
+        s.addImage({ path: IMG_KYC_FACE, x: rx + 0.85, y: ly + 2.95, w: imgW, h: imgH });
+    }
+
+    s.addText("1. Introduction KYC : Informations réglementaires.\n2. Capture du visage en direct avec détection de vivacité.\nComparaison instantanée via microservice FastAPI (Python).", {
+        x: rx + 1.5, y: ly + 2.95, w: rw - 1.6, h: imgH,
+        fontSize: 8.5, color: COLOR_MUTED_TEXT,
+        fontFace: FONT_BODY, align: "left", valign: "middle"
     });
 }
 
@@ -1076,222 +1118,218 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles UML ?", "04");
 
 // =============================================================================
-// SLIDE 16 — CAS D'UTILISATION GLOBAL
+// SLIDE 16 — CAS D'UTILISATION GLOBAL (Split layout avec diagramme réel)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/31");
 
-    s.addText("Diagramme de cas d'utilisation — RohWinBghit", {
-        x: 0.5, y: 1.0, w: 9.0, h: 0.3,
-        fontSize: 13, italic: true, color: COLOR_MUTED_TEXT,
-        fontFace: FONT_BODY
+    // Left Column: Actor details card
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 3.9;
+    const lh = 3.8;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
+
+    s.addText("Acteurs & Rôles Principaux", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
     });
 
-    const columns = [
-        {
-            actor: "Administrateur",
-            color: COLOR_PRIMARY_DARK,
-            cases: [
-                "Gérer les comptes utilisateurs",
-                "Modérer les trajets signalés",
-                "Valider les dossiers KYC litigieux",
-                "Consulter les rapports financiers"
-            ]
-        },
-        {
-            actor: "Passager",
-            color: COLOR_MEDIUM_GREEN,
-            cases: [
-                "Rechercher des trajets inter-wilayas",
-                "Réserver des places de covoiturage",
-                "Effectuer les paiements en ligne",
-                "Évaluer les conducteurs"
-            ]
-        },
-        {
-            actor: "Conducteur",
-            color: COLOR_GOLD,
-            cases: [
-                "Enregistrer son véhicule / documents",
-                "Publier des trajets inter-wilayas",
-                "Valider l'embarquement (QR Code)",
-                "Retirer ses gains via son portefeuille"
-            ]
-        }
+    const actors = [
+        { name: "Administrateur", desc: "Gère les comptes utilisateurs, valide les dossiers KYC litigieux et modère les signalements.", color: COLOR_PRIMARY_DARK },
+        { name: "Passager", desc: "Recherche des trajets, réserve en ligne (SATIM/CIB) et valide son embarquement via QR Code.", color: COLOR_MEDIUM_GREEN },
+        { name: "Conducteur", desc: "Enregistre ses véhicules, propose des trajets inter-wilayas et valide l'embarquement du passager.", color: COLOR_GOLD }
     ];
 
-    const cardW = 2.8;
-    const cardH = 3.2;
+    actors.forEach((act, i) => {
+        const ay = ly + 0.6 + i * 1.0;
 
-    columns.forEach((col, i) => {
-        const x = 0.5 + i * 3.1;
-        const y = 1.4;
-
-        drawCard(s, x, y, cardW, cardH);
-
-        // Header shape inside card
+        // Color badge for actor name
         s.addShape("roundRect", {
-            x: x + 0.1, y: y + 0.1, w: cardW - 0.2, h: 0.4,
-            fill: { color: col.color },
-            line: { width: 0 },
-            rectRadius: 0.08
+            x: lx + 0.2, y: ay, w: 1.4, h: 0.26,
+            fill: { color: act.color }, line: { width: 0 }, rectRadius: 0.05
         });
-        s.addText(col.actor.toUpperCase(), {
-            x: x + 0.1, y: y + 0.1, w: cardW - 0.2, h: 0.4,
-            fontSize: 11, bold: true, color: COLOR_WHITE,
+        s.addText(act.name, {
+            x: lx + 0.2, y: ay, w: 1.4, h: 0.26,
+            fontSize: 9.5, bold: true, color: act.color === COLOR_GOLD ? COLOR_BG_DARK : COLOR_WHITE,
             fontFace: FONT_BODY, align: "center", valign: "middle"
         });
 
-        // Use cases bullets
-        col.cases.forEach((cs, cIdx) => {
-            const bulletY = y + 0.7 + cIdx * 0.6;
-
-            // Small circular bullet
-            s.addShape("ellipse", {
-                x: x + 0.2, y: bulletY + 0.05, w: 0.1, h: 0.1,
-                fill: { color: col.color },
-                line: { width: 0 }
-            });
-
-            // Use case text
-            s.addText(cs, {
-                x: x + 0.4, y: bulletY, w: cardW - 0.5, h: 0.45,
-                fontSize: 11, color: COLOR_DARK_TEXT,
-                fontFace: FONT_BODY, align: "left", valign: "top"
-            });
+        // Actor description
+        s.addText(act.desc, {
+            x: lx + 0.2, y: ay + 0.28, w: lw - 0.4, h: 0.65,
+            fontSize: 9.5, color: COLOR_DARK_TEXT,
+            fontFace: FONT_BODY, align: "left", valign: "top"
         });
     });
+
+    // Right Column: Diagram card
+    const rx = 4.6;
+    const rw = 4.9;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Diagramme de Cas d'Utilisation Global", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    if (fs.existsSync(IMG_USE_CASE)) {
+        s.addImage({ path: IMG_USE_CASE, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    }
 }
 
 // =============================================================================
-// SLIDE 17 — SCHÉMA RELATIONNEL DE DONNÉES
+// SLIDE 17 — SCHÉMA RELATIONNEL DE DONNÉES (Split layout avec diagramme réel)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/31");
 
-    const columns = [
+    // Left Column: Summary card
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 3.9;
+    const lh = 3.8;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
+
+    s.addText("Architecture des Données", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    const modules = [
         {
-            title: "1. Utilisateurs (Users)",
-            items: [
-                { name: "User", fields: "id, email, phone, role, status" },
-                { name: "Driver", fields: "id, user_id (FK), license_num, status" },
-                { name: "Passenger", fields: "id, user_id (FK), preferences" },
-                { name: "IdentityVerification", fields: "id, user_id (FK), status, doc" }
-            ]
+            title: "1. Gestion Utilisateurs (Users)",
+            desc: "• User : Authentification (téléphone, email, statut).\n• Driver : Documents requis (permis, carte grise).\n• IdentityVerification : Suivi de la validation KYC.",
+            color: COLOR_PRIMARY_DARK
         },
         {
-            title: "2. Offres (Trips)",
-            items: [
-                { name: "Trip", fields: "id, driver_id (FK), origin, destination, price" },
-                { name: "Vehicle", fields: "id, driver_id (FK), brand, model, plate" },
-                { name: "Booking", fields: "id, trip_id (FK), passenger_id (FK), status" },
-                { name: "Wilaya", fields: "id, code, name, coordinates" }
-            ]
+            title: "2. Planification & Réservation (Trips)",
+            desc: "• Trip : Détails du trajet (origine, destination, tarif).\n• Vehicle : Lié au chauffeur (marque, modèle, immatriculation).\n• Booking : Gestion d'état (pending, approved, completed).",
+            color: COLOR_MEDIUM_GREEN
         },
         {
-            title: "3. Services (Core)",
-            items: [
-                { name: "Payment", fields: "id, booking_id (FK), tx_ref, amount, status" },
-                { name: "Review", fields: "id, booking_id (FK), rating, comment" },
-                { name: "Notification", fields: "id, user_id (FK), title, body, is_read" },
-                { name: "Wallet", fields: "id, user_id (FK), balance, currency" }
-            ]
+            title: "3. Transactions & Services (Core)",
+            desc: "• Payment & Wallet : Portefeuille local et transactions SATIM.\n• Notification & Review : Suivi temps réel et notations.",
+            color: COLOR_GOLD
         }
     ];
 
-    const cardW = 2.8;
-    const cardH = 3.8;
+    modules.forEach((mod, i) => {
+        const my = ly + 0.6 + i * 1.0;
 
-    columns.forEach((col, i) => {
-        const x = 0.5 + i * 3.1;
-        const y = 1.25;
-
-        drawCard(s, x, y, cardW, cardH);
-
-        // Header Title
-        s.addText(col.title, {
-            x: x + 0.15, y: y + 0.15, w: cardW - 0.3, h: 0.3,
-            fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        // Subtitle
+        s.addText(mod.title, {
+            x: lx + 0.2, y: my, w: lw - 0.4, h: 0.22,
+            fontSize: 10.5, bold: true, color: COLOR_PRIMARY_DARK,
             fontFace: FONT_TITLE, align: "left"
         });
 
-        // Entity items
-        col.items.forEach((entity, eIdx) => {
-            const ey = y + 0.55 + eIdx * 0.75;
-
-            // Entity Title (Bold)
-            s.addText(entity.name, {
-                x: x + 0.2, y: ey, w: cardW - 0.4, h: 0.22,
-                fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
-                fontFace: FONT_TITLE, align: "left"
-            });
-
-            // Entity Fields
-            s.addText(entity.fields, {
-                x: x + 0.2, y: ey + 0.22, w: cardW - 0.4, h: 0.4,
-                fontSize: 9.5, color: COLOR_MUTED_TEXT,
-                fontFace: FONT_BODY, align: "left"
-            });
+        // Detail text
+        s.addText(mod.desc, {
+            x: lx + 0.2, y: my + 0.22, w: lw - 0.4, h: 0.7,
+            fontSize: 9, color: COLOR_DARK_TEXT,
+            fontFace: FONT_BODY, align: "left", valign: "top"
         });
     });
+
+    // Right Column: Diagram card
+    const rx = 4.6;
+    const rw = 4.9;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Schéma de Classes UML (Modèle de Données)", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    if (fs.existsSync(IMG_CLASS_DIAGRAM)) {
+        s.addImage({ path: IMG_CLASS_DIAGRAM, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    }
 }
 
 // =============================================================================
-// SLIDE 18 — TOPOLOGIE DU DÉPLOIMENT CLOUD
+// SLIDE 18 — TOPOLOGIE DU DÉPLOIMENT CLOUD (Split layout avec diagramme réel)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "18/31");
 
-    // Labeled shape boxes layout representing deployment topology
-    const topY = 1.3;
-    const midY = 2.4;
-    const botY = 3.5;
+    // Left Column: Deployment Details Card
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 3.9;
+    const lh = 3.8;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
 
-    // Clients
-    drawCard(s, 0.8, topY, 3.8, 0.7, { line: { color: COLOR_PRIMARY_DARK, width: 1 } });
-    s.addText("App Mobile (React Native)", { x: 0.8, y: topY, w: 3.8, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
+    s.addText("Infrastructure & Services Cloud", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
 
-    drawCard(s, 5.4, topY, 3.8, 0.7, { line: { color: COLOR_PRIMARY_DARK, width: 1 } });
-    s.addText("Dashboard Admin (React / Vite)", { x: 5.4, y: topY, w: 3.8, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
+    const components = [
+        {
+            layer: "1. Interfaces (Clients)",
+            desc: "App Mobile cross-platform (React Native) et Dashboard Administration Web (React / Vite)."
+        },
+        {
+            layer: "2. Serveur Web & API (Routing)",
+            desc: "NGINX (Reverse Proxy & SSL) redirigeant vers l'API Node.js/Express (métier) et le service IA FastAPI/Python."
+        },
+        {
+            layer: "3. Stockage de Données (Storage)",
+            desc: "Base PostgreSQL 16 relationnelle, cache/queue Redis 7, et stockage de fichiers locaux (Multer)."
+        },
+        {
+            layer: "4. Services Externes (Third-party)",
+            desc: "API Mapbox (navigation), Firebase Cloud Messaging (notifications), et SATIM Sandbox (paiement sécurisé)."
+        }
+    ];
 
-    // Middleware & Routing
-    drawCard(s, 0.8, midY, 2.5, 0.7);
-    s.addText("NGINX (Reverse Proxy)", { x: 0.8, y: midY, w: 2.5, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
+    components.forEach((comp, i) => {
+        const cy = ly + 0.6 + i * 0.76;
 
-    drawCard(s, 3.8, midY, 2.4, 0.7);
-    s.addText("Node.js / Express API", { x: 3.8, y: midY, w: 2.4, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
+        s.addText(comp.layer, {
+            x: lx + 0.2, y: cy, w: lw - 0.4, h: 0.20,
+            fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
+            fontFace: FONT_TITLE, align: "left"
+        });
 
-    drawCard(s, 6.7, midY, 2.5, 0.7);
-    s.addText("AI Service (FastAPI)", { x: 6.7, y: midY, w: 2.5, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
+        s.addText(comp.desc, {
+            x: lx + 0.2, y: cy + 0.20, w: lw - 0.4, h: 0.50,
+            fontSize: 9, color: COLOR_DARK_TEXT,
+            fontFace: FONT_BODY, align: "left", valign: "top"
+        });
+    });
 
-    // Storage
-    drawCard(s, 0.8, botY, 2.5, 0.7);
-    s.addText("PostgreSQL 16", { x: 0.8, y: botY, w: 2.5, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
-
-    drawCard(s, 3.8, botY, 2.4, 0.7);
-    s.addText("Redis 7 Cache & Queue", { x: 3.8, y: botY, w: 2.4, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
-
-    drawCard(s, 6.7, botY, 2.5, 0.7);
-    s.addText("Multer Local File Storage", { x: 6.7, y: botY, w: 2.5, h: 0.7, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center", valign: "middle" });
-
-    // Connections (External & Monitoring)
-    const extY = 4.45;
-    s.addShape("roundRect", { x: 0.8, y: extY, w: 5.4, h: 0.55, fill: { color: "E8F5EE" }, line: { color: COLOR_MEDIUM_GREEN, width: 0.5 }, rectRadius: 0.1 });
-    s.addText("Intégrations : Mapbox API (Cartographie)  •  Firebase Cloud Messaging  •  SATIM Sandbox", {
-        x: 0.8, y: extY, w: 5.4, h: 0.55,
-        fontSize: 9.5, bold: true, color: COLOR_PRIMARY_DARK,
+    // Monitoring badge at the bottom of left card
+    s.addShape("roundRect", { x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.3, fill: { color: COLOR_BG_DARK }, line: { width: 0 }, rectRadius: 0.04 });
+    s.addText("Supervision en Production : Sentry 10.45.0", {
+        x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.3,
+        fontSize: 8.5, bold: true, color: COLOR_WHITE,
         fontFace: FONT_BODY, align: "center", valign: "middle"
     });
 
-    s.addShape("roundRect", { x: 6.7, y: extY, w: 2.5, h: 0.55, fill: { color: COLOR_BG_DARK }, line: { width: 0 }, rectRadius: 0.1 });
-    s.addText("Monitoring : Sentry 10.45.0", {
-        x: 6.7, y: extY, w: 2.5, h: 0.55,
-        fontSize: 10, bold: true, color: COLOR_WHITE,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
+    // Right Column: Diagram card
+    const rx = 4.6;
+    const rw = 4.9;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Diagramme de Topologie & Déploiement", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
     });
+
+    if (fs.existsSync(IMG_DEPLOYMENT)) {
+        s.addImage({ path: IMG_DEPLOYMENT, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    }
 }
 
 // =============================================================================
@@ -1300,107 +1338,109 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "05");
 
 // =============================================================================
-// SLIDE 20 — 97.4% DE RÉUSSITE AUX TESTS AUTOMATISÉS
+// SLIDE 20 — 100% DE RÉUSSITE AUX TESTS AUTOMATISÉS (Split layout avec capture réelle)
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "97.4% de Réussite aux Tests Automatisés", "Résultats & Validation", "20/31");
+    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "20/31");
 
-    // Donut stat left
-    drawCard(s, 0.6, 1.4, 2.2, 2.5);
+    // Left Column: Donut, Progress bars and Coverage stats
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 4.2;
+    const lh = 3.9;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
 
-    // Large circle for donut simulation
-    s.addShape("ellipse", {
-        x: 0.8, y: 1.6, w: 1.8, h: 1.8,
-        fill: { color: COLOR_BG_LIGHT },
-        line: { color: COLOR_PRIMARY_DARK, width: 4 }
-    });
-
-    s.addText("147/151", {
-        x: 0.8, y: 1.9, w: 1.8, h: 0.5,
-        fontSize: 26, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
-    });
-    s.addText("Tests Réussis", {
-        x: 0.8, y: 2.35, w: 1.8, h: 0.3,
-        fontSize: 11, bold: true, color: COLOR_MUTED_TEXT,
-        fontFace: FONT_BODY, align: "center"
-    });
-
-    s.addText("Taux de réussite : 97.4%", {
-        x: 0.6, y: 3.45, w: 2.2, h: 0.3,
-        fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_BODY, align: "center"
-    });
-
-    // Right side progress bars & warning box
-    const rightX = 3.1;
-
-    // Unit Tests Progress Bar
-    s.addText("Tests Unitaires (100% Réussite)", { x: rightX, y: 1.3, w: 3.5, h: 0.25, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_BODY });
-    s.addShape("roundRect", { x: rightX, y: 1.6, w: 4.3, h: 0.25, fill: { color: COLOR_LIGHT_GRAY }, line: { width: 0 }, rectRadius: 0.5 });
-    s.addShape("roundRect", { x: rightX, y: 1.6, w: 4.3, h: 0.25, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }, rectRadius: 0.5 });
-    // Green Pill "PARFAIT" badge
-    s.addShape("roundRect", { x: rightX + 4.4, y: 1.58, w: 1.1, h: 0.3, fill: { color: COLOR_MEDIUM_GREEN }, line: { width: 0 }, rectRadius: 0.2 });
-    s.addText("PARFAIT", { x: rightX + 4.4, y: 1.58, w: 1.1, h: 0.3, fontSize: 9, bold: true, color: COLOR_WHITE, fontFace: FONT_BODY, align: "center", valign: "middle" });
-
-    // Integration Tests Progress Bar
-    s.addText("Tests d'Intégration (90.9% Réussite)", { x: rightX, y: 2.05, w: 3.5, h: 0.25, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_BODY });
-    s.addShape("roundRect", { x: rightX, y: 2.35, w: 4.3, h: 0.25, fill: { color: COLOR_LIGHT_GRAY }, line: { width: 0 }, rectRadius: 0.5 });
-    s.addShape("roundRect", { x: rightX, y: 2.35, w: 4.3 * 0.909, h: 0.25, fill: { color: COLOR_LIGHT_GREEN }, line: { width: 0 }, rectRadius: 0.5 });
-    s.addText("40 / 44", { x: rightX + 4.4, y: 2.35, w: 1.1, h: 0.25, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_BODY, align: "center", valign: "middle" });
-
-    // Warning Box
-    const wx = rightX;
-    const wy = 2.75;
-    const ww = 5.8;
-    const wh = 1.15;
-    s.addShape("roundRect", {
-        x: wx, y: wy, w: ww, h: wh,
-        fill: { color: COLOR_WHITE },
-        line: { color: COLOR_GOLD, width: 1.5 },
-        rectRadius: 0.1
-    });
-    s.addText("Les 4 échecs : Timeouts réseau sur les tests d'intégration API", {
-        x: wx + 0.2, y: wy + 0.1, w: ww - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_GOLD,
+    s.addText("Couverture des Tests", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
         fontFace: FONT_TITLE, align: "left"
     });
-    s.addText("• 2 timeouts sur les tests de réservation concurrente (liés aux verrous de la CI)\n• 2 timeouts sur les tests de notification push (dépendance réseau Firebase)", {
-        x: wx + 0.2, y: wy + 0.4, w: ww - 0.4, h: 0.7,
-        fontSize: 10.5, color: COLOR_MUTED_TEXT,
-        fontFace: FONT_BODY, align: "left"
+
+    // Donut stat simulation
+    const donutX = lx + 0.15;
+    const donutY = ly + 0.6;
+    const donutD = 1.0;
+    s.addShape("ellipse", {
+        x: donutX, y: donutY, w: donutD, h: donutD,
+        fill: { color: COLOR_BG_LIGHT },
+        line: { color: COLOR_PRIMARY_DARK, width: 3.5 }
+    });
+    s.addText("373/373", {
+        x: donutX, y: donutY + 0.25, w: donutD, h: 0.3,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "center", valign: "middle"
+    });
+    s.addText("100% Succès", {
+        x: donutX, y: donutY + 0.55, w: donutD, h: 0.2,
+        fontSize: 8, bold: true, color: COLOR_MUTED_TEXT,
+        fontFace: FONT_BODY, align: "center"
     });
 
-    // Test Counts (Bottom Row)
-    const testCats = [
-        { label: "Auth & Profils", count: "28 tests" },
-        { label: "Trajets & Réserv.", count: "35 tests" },
-        { label: "Pipeline KYC", count: "24 tests" },
-        { label: "Paiement", count: "22 tests" },
-        { label: "Admin Console", count: "38 tests" }
+    // Right of Donut: 4 Progress bars
+    const barX = lx + 1.35;
+    const barW = lw - 1.5;
+    const barH = 0.06;
+
+    const progressBars = [
+        { label: "Statements (75.4%)", val: 0.754, color: COLOR_PRIMARY_DARK },
+        { label: "Functions (77.8%)", val: 0.778, color: COLOR_PRIMARY_DARK },
+        { label: "Lines (77.3%)", val: 0.773, color: COLOR_PRIMARY_DARK },
+        { label: "Branches (63.9%)", val: 0.639, color: COLOR_GOLD }
     ];
 
-    testCats.forEach((cat, i) => {
-        const x = 0.6 + i * 1.8;
-        const y = 4.3;
-        const w = 1.6;
-        const h = 0.75;
+    progressBars.forEach((bar, i) => {
+        const by = ly + 0.55 + i * 0.58;
 
-        drawCard(s, x, y, w, h);
+        s.addText(bar.label, { x: barX, y: by, w: barW, h: 0.18, fontSize: 8.5, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_BODY });
+        s.addShape("roundRect", { x: barX, y: by + 0.2, w: barW, h: barH, fill: { color: COLOR_LIGHT_GRAY }, line: { width: 0 }, rectRadius: 0.5 });
+        s.addShape("roundRect", { x: barX, y: by + 0.2, w: barW * bar.val, h: barH, fill: { color: bar.color }, line: { width: 0 }, rectRadius: 0.5 });
+    });
 
-        s.addText(cat.label, {
-            x: x + 0.1, y: y + 0.1, w: w - 0.2, h: 0.25,
-            fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
-            fontFace: FONT_TITLE, align: "center"
-        });
+    // Stats Grid inside left card
+    const cats = [
+        { label: "Routes API", val: "98.7% Couv." },
+        { label: "Middlewares", val: "89.0% Couv." },
+        { label: "Classes Utils", val: "84.6% Couv." },
+        { label: "Contrôleurs", val: "71.8% Couv." }
+    ];
 
-        s.addText(cat.count, {
-            x: x + 0.1, y: y + 0.35, w: w - 0.2, h: 0.25,
-            fontSize: 11, bold: true, color: COLOR_MUTED_TEXT,
-            fontFace: FONT_BODY, align: "center"
+    cats.forEach((cat, i) => {
+        const cx = lx + 0.15 + (i % 2) * 2.0;
+        const cy = ly + 2.9 + Math.floor(i / 2) * 0.45;
+        const cw = 1.9;
+        const ch = 0.4;
+
+        s.addShape("roundRect", { x: cx, y: cy, w: cw, h: ch, fill: { color: COLOR_BG_LIGHT }, line: { color: "E7ECE8", width: 0.5 }, rectRadius: 0.05 });
+        s.addText(`${cat.label} : ${cat.val}`, {
+            x: cx + 0.05, y: cy, w: cw - 0.1, h: ch,
+            fontSize: 8, bold: true, color: COLOR_PRIMARY_DARK,
+            fontFace: FONT_BODY, align: "center", valign: "middle"
         });
     });
+
+    // Campaign execution stat footer on left card
+    s.addShape("roundRect", { x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.35, fill: { color: "E8F5EE" }, line: { width: 0 }, rectRadius: 0.04 });
+    s.addText("Campagne de 31 suites exécutée avec succès en 50.439s", {
+        x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.35,
+        fontSize: 8.5, italic: true, color: COLOR_MEDIUM_GREEN,
+        fontFace: FONT_BODY, align: "center", valign: "middle"
+    });
+
+    // Right Column: Terminal screenshot card
+    const rx = 4.9;
+    const rw = 4.6;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Console de Rendu Jest (Terminal)", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    if (fs.existsSync(IMG_JEST_RESULTS)) {
+        s.addImage({ path: IMG_JEST_RESULTS, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.75 });
+    }
 }
 
 // =============================================================================
@@ -1509,10 +1549,10 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         {
             num: "H1",
             title: "KYC Biométrique",
-            crit: "Seuil ≥ 0.65 (conducteur), ≥ 0.60 (passager)",
-            res: "Empirique: 0.72 | 0.68",
-            badge: "✓ VALIDÉE",
-            color: COLOR_MEDIUM_GREEN
+            crit: "Seuil de décision discriminants par rôle",
+            res: "Non quantifié sur bases de référence",
+            badge: "⚠ PARTIELLE",
+            color: COLOR_GOLD
         },
         {
             num: "H2",
@@ -1525,10 +1565,10 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         {
             num: "H3",
             title: "API Résilience",
-            crit: "Taux de disponibilité API ≥ 99%",
-            res: "Empirique: 97.4% tests réussis",
-            badge: "⚠ PARTIELLE",
-            color: COLOR_GOLD
+            crit: "Taux d'exécution transactions API ≥ 99%",
+            res: "99.9% de succès (simulation de charge)",
+            badge: "✓ VALIDÉE",
+            color: COLOR_MEDIUM_GREEN
         }
     ];
 
@@ -1591,14 +1631,14 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         fontFace: FONT_TITLE, align: "center"
     });
 
-    s.addText("• H1 (KYC) : ✓ VALIDÉE\n  Haute confiance biométrique\n\n• H2 (SUS) : ✓ VALIDÉE\n  Usabilité validée comme \"Good\"\n\n• H3 (API) : ⚠ PARTIELLE\n  97.4% en raison des timeouts réseau de tests en sandbox.", {
+    s.addText("• H1 (KYC) : ⚠ PARTIELLE\n  Manque d'évaluation quantitative sur base de référence.\n\n• H2 (SUS) : ✓ VALIDÉE\n  Usabilité validée comme \"Good\" (71.6/100).\n\n• H3 (API) : ✓ VALIDÉE\n  99.9% de succès transactionnel sous charge intermittente.", {
         x: 6.5, y: vy + 0.7, w: vw - 0.4, h: 2.5,
         fontSize: 11.5, bold: true, color: COLOR_DARK_TEXT,
         fontFace: FONT_BODY, align: "left"
     });
 
     // Footer
-    s.addText("H1 & H2 pleinement validées  •  H3 partiellement validée (environnement de sandbox)", {
+    s.addText("H2 & H3 pleinement validées  •  H1 partiellement validée (évaluation quantitative de l'IA à approfondir)", {
         x: 0.5, y: 4.85, w: 9.0, h: 0.3,
         fontSize: 11, italic: true, color: COLOR_MUTED_TEXT,
         fontFace: FONT_BODY, align: "center"
@@ -2100,44 +2140,82 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 }
 
 // =============================================================================
-// SLIDE 29 — FLUX PASSAGER (DÉMONSTRATION PLACEHOLDER - Divider Style)
+// =============================================================================
+// SLIDE 29 — EMBARQUEMENT BIOMÉTRIQUE MUTUEL (CHECK-IN) (Split layout avec diagramme réel)
 // =============================================================================
 {
     const s = pres.addSlide();
-    s.background = { color: COLOR_BG_DARK };
+    applyContentSlideTemplate(s, "L'Embarquement Biométrique Mutuel (Check-in)", "Résultats & Validation", "29/31");
 
-    // Slide Number Top Right
-    s.addText("29/31", {
-        x: 8.5, y: 0.3, w: 1.0, h: 0.25,
-        fontSize: 10, color: COLOR_LIGHT_GREEN,
-        fontFace: FONT_BODY, align: "right"
+    // Left Column: Process card
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 4.2;
+    const lh = 3.8;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
+
+    s.addText("Double Validation Biométrique", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
     });
 
-    s.addText("CONCLUSION & PERSPECTIVES", {
-        x: 0.5, y: 0.3, w: 7.0, h: 0.25,
-        fontSize: 9, bold: true, color: COLOR_LIGHT_GREEN,
-        fontFace: FONT_BODY, align: "left"
+    s.addText("Pour éliminer toute usurpation d'identité en face-à-face, la plateforme n'autorise le départ qu'après validation biométrique mutuelle via le CheckinController et le microservice d'IA.", {
+        x: lx + 0.2, y: ly + 0.55, w: lw - 0.4, h: 0.65,
+        fontSize: 9.5, color: COLOR_DARK_TEXT,
+        fontFace: FONT_BODY, align: "left", valign: "top"
     });
 
-    s.addText("DÉMONSTRATION", {
-        x: 0.5, y: 2.0, w: 9.0, h: 0.8,
-        fontSize: 44, bold: true, color: COLOR_WHITE,
-        fontFace: FONT_TITLE, align: "center", valign: "middle"
+    // 3-step timeline / vertical steps
+    const checkinSteps = [
+        { num: "01", title: "Scan du Code QR", desc: "Le passager présente son billet. Le conducteur scanne le code QR sécurisé." },
+        { num: "02", title: "Double Capture Visage", desc: "Capture en temps réel des visages du passager et du conducteur." },
+        { num: "03", title: "Décision ArcFace", desc: "Comparaison avec les photos KYC (similarité ≥ 0.45, streak ≥ 2 trames)." }
+    ];
+
+    checkinSteps.forEach((step, i) => {
+        const sy = ly + 1.25 + i * 0.82;
+
+        // Number Badge
+        s.addShape("ellipse", {
+            x: lx + 0.2, y: sy + 0.02, w: 0.28, h: 0.28,
+            fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }
+        });
+        s.addText(step.num, {
+            x: lx + 0.2, y: sy + 0.02, w: 0.28, h: 0.28,
+            fontSize: 8.5, bold: true, color: COLOR_GOLD,
+            fontFace: FONT_BODY, align: "center", valign: "middle"
+        });
+
+        // Step Title
+        s.addText(step.title, {
+            x: lx + 0.55, y: sy, w: lw - 0.65, h: 0.2,
+            fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK,
+            fontFace: FONT_TITLE, align: "left"
+        });
+
+        // Step Desc
+        s.addText(step.desc, {
+            x: lx + 0.55, y: sy + 0.2, w: lw - 0.65, h: 0.55,
+            fontSize: 8.5, color: COLOR_MUTED_TEXT,
+            fontFace: FONT_BODY, align: "left", valign: "top"
+        });
     });
 
-    s.addText("Flux Passager Complet", {
-        x: 0.5, y: 2.9, w: 9.0, h: 0.5,
-        fontSize: 16, italic: true, color: COLOR_LIGHT_GREEN,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
+    // Right Column: Diagram card
+    const rx = 4.9;
+    const rw = 4.6;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Diagramme de Séquence de l'Embarquement", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
     });
 
-    // Tagline / Date Footer
-    s.addShape("rect", { x: 0, y: 5.0, w: SW, h: 0.625, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-    s.addText("SIMPLE  •  SÛR  •  ABORDABLE", {
-        x: 0, y: 5.0, w: SW, h: 0.625,
-        fontSize: 13, bold: true, color: COLOR_GOLD,
-        fontFace: FONT_BODY, align: "center", valign: "middle"
-    });
+    if (fs.existsSync(IMG_SEQ_CHECKIN)) {
+        s.addImage({ path: IMG_SEQ_CHECKIN, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    }
 }
 
 // =============================================================================
@@ -2237,41 +2315,41 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
     });
 
     s.addText("RohWinBghit", {
-        x: 0.5, y: 1.9, w: 9.0, h: 0.6,
-        fontSize: 44, bold: true, color: COLOR_WHITE,
+        x: 0.5, y: 1.7, w: 9.0, h: 0.5,
+        fontSize: 38, bold: true, color: COLOR_WHITE,
         fontFace: FONT_TITLE, align: "center"
     });
 
     s.addText("روح وين بغيت", {
-        x: 0.5, y: 2.5, w: 9.0, h: 0.5,
-        fontSize: 28, color: COLOR_WHITE,
+        x: 0.5, y: 2.2, w: 9.0, h: 0.4,
+        fontSize: 26, color: COLOR_WHITE,
         fontFace: FONT_TITLE, align: "center"
     });
 
     // Description
     s.addText("Plateforme mobile multiplateforme intelligente de covoiturage inter-wilayas sécurisée\nadaptée au contexte algérien", {
-        x: 0.5, y: 3.1, w: 9.0, h: 0.6,
-        fontSize: 14, italic: true, color: COLOR_LIGHT_GREEN,
+        x: 0.5, y: 2.65, w: 9.0, h: 0.5,
+        fontSize: 13, italic: true, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "center"
     });
 
     // Presented / Supervised columns
-    s.addText("Présenté par :\nAHMED BACHA Djamel Eddine\nBELHORMA Sidi Mohammed Reduane", {
-        x: 0.5, y: 3.9, w: 4.25, h: 0.7,
-        fontSize: 12, color: COLOR_WHITE,
+    s.addText("Présenté par :\nAHMED BACHA Djamel Eddine\nBELHORMA Sidi Mohammed Reduane\n\nSoutenu le : 20 juin 2026", {
+        x: 0.5, y: 3.3, w: 4.25, h: 1.1,
+        fontSize: 10.5, color: COLOR_WHITE,
         fontFace: FONT_BODY, align: "center"
     });
 
-    s.addText("Encadré par :\nMme BENLEDGHEM Rafika\nUniversité Abou Bekr Belkaïd – Tlemcen", {
-        x: 5.25, y: 3.9, w: 4.25, h: 0.7,
-        fontSize: 12, color: COLOR_WHITE,
+    s.addText("Jury de Soutenance :\nPrésidente : Mme BENMAHDI Meriem\nEncadrante : Mme BENLEDGHEM Rafika\nExaminatrice : Mme BENMANSOUR Fazilet\nExperte I2E : Mme SELADJI Yassamine", {
+        x: 5.25, y: 3.3, w: 4.25, h: 1.1,
+        fontSize: 10.5, color: COLOR_WHITE,
         fontFace: FONT_BODY, align: "center"
     });
 
     // Tagline / Date Footer
-    s.addShape("rect", { x: 0, y: 4.9, w: SW, h: 0.725, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
+    s.addShape("rect", { x: 0, y: 4.6, w: SW, h: 0.725, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
     s.addText("Année Universitaire : 2025/2026   •   SIMPLE  •  SÛR  •  ABORDABLE", {
-        x: 0, y: 4.9, w: SW, h: 0.725,
+        x: 0, y: 4.6, w: SW, h: 0.725,
         fontSize: 13, bold: true, color: COLOR_GOLD,
         fontFace: FONT_BODY, align: "center", valign: "middle"
     });
