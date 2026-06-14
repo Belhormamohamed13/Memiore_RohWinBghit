@@ -55,6 +55,16 @@ const IMG_SEQ_KYC       = path.join(__dirname, "figures", "fig_sequence_kyc.png"
 const IMG_KYC_INTRO     = path.join(__dirname, "Screen_Mobile", "17_kyc_intro.png");
 const IMG_KYC_FACE      = path.join(__dirname, "Screen_Mobile", "20_kyc_capture_visage.png");
 const IMG_SEQ_CHECKIN   = path.join(__dirname, "figures", "fig_sequence_checkin.png");
+const IMG_SEQ_BOOKING   = path.join(__dirname, "figures", "fig_sequence_booking.png");
+
+// Helper to encode image files to Base64 data URLs for reliable pptxgenjs embedding in Node.js
+const toBase64 = (filePath) => {
+    if (!fs.existsSync(filePath)) return null;
+    const ext = path.extname(filePath).toLowerCase().replace(".", "");
+    const mime = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : `image/${ext}`;
+    const base64 = fs.readFileSync(filePath, { encoding: "base64" });
+    return `${mime};base64,${base64}`;
+};
 
 // Helper to check if file exists, if not logs warning
 const verifyPath = (p, label) => {
@@ -77,6 +87,7 @@ verifyPath(IMG_SEQ_KYC, "KYC Sequence Diagram");
 verifyPath(IMG_KYC_INTRO, "KYC Screen 1 (Intro)");
 verifyPath(IMG_KYC_FACE, "KYC Screen 2 (Face)");
 verifyPath(IMG_SEQ_CHECKIN, "Check-in Sequence Diagram");
+verifyPath(IMG_SEQ_BOOKING, "Booking Sequence Diagram");
 
 // ─── INITIALIZE PRESENTATION ────────────────────────────────────────────────
 const pres = new pptxgen();
@@ -188,8 +199,9 @@ function drawCard(slide, x, y, w, h, options = {}) {
     });
 
     // University Logo (Centered Top)
-    if (fs.existsSync(IMG_UNIV_LOGO)) {
-        s.addImage({ path: IMG_UNIV_LOGO, x: 4.65, y: 0.95, w: 0.7, h: 0.7 });
+    const logoData = toBase64(IMG_UNIV_LOGO);
+    if (logoData) {
+        s.addImage({ data: logoData, x: 4.65, y: 0.95, w: 0.7, h: 0.7 });
     }
 
     // Title
@@ -246,7 +258,7 @@ function drawCard(slide, x, y, w, h, options = {}) {
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Plan de la Présentation", "Plan", "02/31");
+    applyContentSlideTemplate(s, "Plan de la Présentation", "Plan", "02/32");
 
     const sections = [
         { num: "01", title: "Introduction & Problématique", sub: "Mobilité inter-wilayas • Enjeux", active: true },
@@ -346,7 +358,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "La Mobilité Inter-Wilayas en Algérie", "Introduction & Problématique", "04/31");
+    applyContentSlideTemplate(s, "La Mobilité Inter-Wilayas en Algérie", "Introduction & Problématique", "04/32");
 
     const kpis = [
         { num: "6.3M", label: "étudiants", desc: "d'étudiants universitaires effectuent des trajets inter-wilayas chaque année" },
@@ -417,7 +429,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Le Problème de Confiance & Sécurité", "Introduction & Problématique", "05/31");
+    applyContentSlideTemplate(s, "Le Problème de Confiance & Sécurité", "Introduction & Problématique", "05/32");
 
     // Research Question Box
     const qy = 1.25;
@@ -487,7 +499,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Trois Hypothèses de Travail", "Introduction & Problématique", "06/31");
+    applyContentSlideTemplate(s, "Trois Hypothèses de Travail", "Introduction & Problématique", "06/32");
 
     const hyps = [
         {
@@ -573,7 +585,7 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Analyse Concurrentielle", "Contexte & Cadre Légal", "08/31");
+    applyContentSlideTemplate(s, "Analyse Concurrentielle", "Contexte & Cadre Légal", "08/32");
 
     // Table Data
     const tableRows = [
@@ -672,7 +684,7 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Cadre Réglementaire : Loi 25-11", "Contexte & Cadre Légal", "09/31");
+    applyContentSlideTemplate(s, "Cadre Réglementaire : Loi 25-11", "Contexte & Cadre Légal", "09/32");
 
     s.addText("Protection des données personnelles dans le contexte algérien", {
         x: 0.5, y: 1.0, w: 9.0, h: 0.3,
@@ -735,7 +747,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Gestion Agile : 5 Sprints en 10 Semaines", "Méthodologie & Architecture", "11/31");
+    applyContentSlideTemplate(s, "Gestion Agile : 5 Sprints en 10 Semaines", "Méthodologie & Architecture", "11/32");
 
     const sprints = [
         { name: "Sprint 1 : Auth & Profils", time: "Semaines 1-2", pts: "21 SP", pct: 100 },
@@ -825,7 +837,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Stack Technique Moderne", "Méthodologie & Architecture", "12/31");
+    applyContentSlideTemplate(s, "Stack Technique Moderne", "Méthodologie & Architecture", "12/32");
 
     const layers = [
         { title: "FRONTEND MOBILE", content: "React Native (Expo SDK 54), TypeScript, Mapbox SDK, Socket.io client, Zustand." },
@@ -900,7 +912,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Architecture Multi-Services Distribuée", "Méthodologie & Architecture", "13/31");
+    applyContentSlideTemplate(s, "Architecture Multi-Services Distribuée", "Méthodologie & Architecture", "13/32");
 
     // Drawing a simplified text-based architecture diagram using shapes and arrows
     // Layer 1: App Mobile (Clients)
@@ -1012,7 +1024,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Pipeline Biométrique KYC d'IA", "Méthodologie & Architecture", "14/31");
+    applyContentSlideTemplate(s, "Pipeline Biométrique KYC d'IA", "Méthodologie & Architecture", "14/32");
 
     // Left block: Explanation of the 3-step KYC Pipeline
     const lx = 0.5;
@@ -1083,8 +1095,9 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
         fontSize: 10.5, bold: true, color: COLOR_PRIMARY_DARK,
         fontFace: FONT_TITLE, align: "left"
     });
-    if (fs.existsSync(IMG_SEQ_KYC)) {
-        s.addImage({ path: IMG_SEQ_KYC, x: rx + 0.2, y: ly + 0.4, w: rw - 0.4, h: 2.0 });
+    const kycSeqData = toBase64(IMG_SEQ_KYC);
+    if (kycSeqData) {
+        s.addImage({ data: kycSeqData, x: rx + 0.2, y: ly + 0.4, w: rw - 0.4, h: 2.0 });
     }
 
     // Card 2: Real Mobile Screens
@@ -1098,11 +1111,13 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
     const imgH = 0.95;
     const imgW = 0.54; // aspect ratio ~ 9:16
     
-    if (fs.existsSync(IMG_KYC_INTRO)) {
-        s.addImage({ path: IMG_KYC_INTRO, x: rx + 0.2, y: ly + 2.95, w: imgW, h: imgH });
+    const kycIntroData = toBase64(IMG_KYC_INTRO);
+    if (kycIntroData) {
+        s.addImage({ data: kycIntroData, x: rx + 0.2, y: ly + 2.95, w: imgW, h: imgH });
     }
-    if (fs.existsSync(IMG_KYC_FACE)) {
-        s.addImage({ path: IMG_KYC_FACE, x: rx + 0.85, y: ly + 2.95, w: imgW, h: imgH });
+    const kycFaceData = toBase64(IMG_KYC_FACE);
+    if (kycFaceData) {
+        s.addImage({ data: kycFaceData, x: rx + 0.85, y: ly + 2.95, w: imgW, h: imgH });
     }
 
     s.addText("1. Introduction KYC : Informations réglementaires.\n2. Capture du visage en direct avec détection de vivacité.\nComparaison instantanée via microservice FastAPI (Python).", {
@@ -1122,7 +1137,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/31");
+    applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/32");
 
     // Left Column: Actor details card
     const lx = 0.5;
@@ -1176,8 +1191,9 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
         fontFace: FONT_TITLE, align: "left"
     });
 
-    if (fs.existsSync(IMG_USE_CASE)) {
-        s.addImage({ path: IMG_USE_CASE, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    const useCaseData = toBase64(IMG_USE_CASE);
+    if (useCaseData) {
+        s.addImage({ data: useCaseData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
     }
 }
 
@@ -1186,7 +1202,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/31");
+    applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/32");
 
     // Left Column: Summary card
     const lx = 0.5;
@@ -1248,17 +1264,94 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
         fontFace: FONT_TITLE, align: "left"
     });
 
-    if (fs.existsSync(IMG_CLASS_DIAGRAM)) {
-        s.addImage({ path: IMG_CLASS_DIAGRAM, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    const classDiagData = toBase64(IMG_CLASS_DIAGRAM);
+    if (classDiagData) {
+        s.addImage({ data: classDiagData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
     }
 }
 
 // =============================================================================
-// SLIDE 18 — TOPOLOGIE DU DÉPLOIMENT CLOUD (Split layout avec diagramme réel)
+// SLIDE 18 — DIAGRAMME DE SÉQUENCE : RÉSERVATION (Booking) (Nouveau)
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "18/31");
+    applyContentSlideTemplate(s, "Diagramme de Séquence : Réservation", "Conception & Modélisation", "18/32");
+
+    // Left Column: Process card
+    const lx = 0.5;
+    const ly = 1.3;
+    const lw = 3.9;
+    const lh = 3.8;
+    drawCard(s, lx, ly, lw, lh);
+    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
+
+    s.addText("Flux de Réservation Sécurisé", {
+        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    s.addText("Le processus de réservation implique une orchestration en temps réel entre le Passager, le Conducteur, le Service de Notification (FCM) et la Passerelle de Paiement.", {
+        x: lx + 0.2, y: ly + 0.55, w: lw - 0.4, h: 0.65,
+        fontSize: 9.5, color: COLOR_DARK_TEXT,
+        fontFace: FONT_BODY, align: "left", valign: "top"
+    });
+
+    const steps = [
+        { num: "1", title: "Demande de Réservation", desc: "Le passager sélectionne un trajet et soumet sa demande de réservation." },
+        { num: "2", title: "Séquestre de Paiement", desc: "Initiation du paiement électronique. Les fonds sont mis en séquestre sécurisé." },
+        { num: "3", title: "Notification Conducteur", desc: "Notification push instantanée envoyée au chauffeur pour acceptation ou refus." },
+        { num: "4", title: "Validation & Billet", desc: "Dès approbation du chauffeur, le billet (Boarding Pass) est généré avec son QR Code." }
+    ];
+
+    steps.forEach((st, i) => {
+        const sy = ly + 1.25 + i * 0.62;
+
+        s.addShape("ellipse", {
+            x: lx + 0.2, y: sy + 0.02, w: 0.24, h: 0.24,
+            fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }
+        });
+        s.addText(st.num, {
+            x: lx + 0.2, y: sy + 0.02, w: 0.24, h: 0.24,
+            fontSize: 8, bold: true, color: COLOR_GOLD,
+            fontFace: FONT_BODY, align: "center", valign: "middle"
+        });
+
+        s.addText(st.title, {
+            x: lx + 0.5, y: sy, w: lw - 0.6, h: 0.18,
+            fontSize: 9.5, bold: true, color: COLOR_PRIMARY_DARK,
+            fontFace: FONT_TITLE, align: "left"
+        });
+
+        s.addText(st.desc, {
+            x: lx + 0.5, y: sy + 0.18, w: lw - 0.6, h: 0.4,
+            fontSize: 8.5, color: COLOR_MUTED_TEXT,
+            fontFace: FONT_BODY, align: "left", valign: "top"
+        });
+    });
+
+    // Right Column: Diagram card
+    const rx = 4.6;
+    const rw = 4.9;
+    drawCard(s, rx, ly, rw, lh);
+    s.addText("Diagramme de Séquence de Réservation", {
+        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
+        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
+        fontFace: FONT_TITLE, align: "left"
+    });
+
+    const bookingSeqData = toBase64(IMG_SEQ_BOOKING);
+    if (bookingSeqData) {
+        s.addImage({ data: bookingSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    }
+}
+
+// =============================================================================
+// SLIDE 19 — TOPOLOGIE DU DÉPLOIMENT CLOUD (Split layout avec diagramme réel)
+// =============================================================================
+{
+    const s = pres.addSlide();
+    applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "19/32");
 
     // Left Column: Deployment Details Card
     const lx = 0.5;
@@ -1327,8 +1420,9 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
         fontFace: FONT_TITLE, align: "left"
     });
 
-    if (fs.existsSync(IMG_DEPLOYMENT)) {
-        s.addImage({ path: IMG_DEPLOYMENT, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    const deploymentData = toBase64(IMG_DEPLOYMENT);
+    if (deploymentData) {
+        s.addImage({ data: deploymentData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
     }
 }
 
@@ -1338,11 +1432,11 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "05");
 
 // =============================================================================
-// SLIDE 20 — 100% DE RÉUSSITE AUX TESTS AUTOMATISÉS (Split layout avec capture réelle)
+// SLIDE 21 — 100% DE RÉUSSITE AUX TESTS AUTOMATISÉS (Split layout avec capture réelle)
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "20/31");
+    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "21/32");
 
     // Left Column: Donut, Progress bars and Coverage stats
     const lx = 0.5;
@@ -1438,8 +1532,9 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         fontFace: FONT_TITLE, align: "left"
     });
 
-    if (fs.existsSync(IMG_JEST_RESULTS)) {
-        s.addImage({ path: IMG_JEST_RESULTS, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.75 });
+    const jestData = toBase64(IMG_JEST_RESULTS);
+    if (jestData) {
+        s.addImage({ data: jestData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.75 });
     }
 }
 
@@ -1448,7 +1543,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Score SUS de 71.6 : Usabilité Validée", "Résultats & Validation", "21/31");
+    applyContentSlideTemplate(s, "Score SUS de 71.6 : Usabilité Validée", "Résultats & Validation", "22/32");
 
     // Score Circle Card (Left)
     drawCard(s, 0.6, 1.4, 2.2, 2.5);
@@ -1543,7 +1638,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Validation des Trois Hypothèses", "Résultats & Validation", "22/31");
+    applyContentSlideTemplate(s, "Validation des Trois Hypothèses", "Résultats & Validation", "23/32");
 
     const hyps = [
         {
@@ -1658,7 +1753,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         fontSize: 9, bold: true, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "left"
     });
-    s.addText("23/31", {
+    s.addText("24/32", {
         x: 8.5, y: 0.18, w: 1.0, h: 0.22,
         fontSize: 10, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "right"
@@ -1742,7 +1837,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
     const VIDEO_PATH = path.join(__dirname, "RohWinBghit_Demo.mp4");
     const SPLASH_FALLBACK = fs.existsSync(IMG_SPLASH)
         ? IMG_SPLASH
-        : path.join(__dirname, "Screen_mobile", "Screen1.jpg");
+        : path.join(__dirname, "Screen_Mobile", "01_landing_onboarding.png"); // Real fallback
     if (fs.existsSync(VIDEO_PATH)) {
         s.addMedia({
             type: "video",
@@ -1777,8 +1872,9 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
             fill: { color: "050F0A" }, line: { width: 0 }, rectRadius: 0.07
         });
         // Écran : splash screen
-        if (fs.existsSync(SPLASH_FALLBACK)) {
-            s.addImage({ path: SPLASH_FALLBACK, x: iPhX, y: iPhY, w: iPhW, h: iPhH });
+        const splashData = toBase64(SPLASH_FALLBACK);
+        if (splashData) {
+            s.addImage({ data: splashData, x: iPhX, y: iPhY, w: iPhW, h: iPhH });
         } else {
             s.addShape("roundRect", {
                 x: iPhX, y: iPhY, w: iPhW, h: iPhH,
@@ -1928,7 +2024,7 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Business Model Canvas (condensé)", "Modèle Économique", "25/31");
+    applyContentSlideTemplate(s, "Business Model Canvas (condensé)", "Modèle Économique", "26/32");
 
     s.addText("Business Model & Financials", {
         x: 0.5, y: 1.0, w: 9.0, h: 0.3,
@@ -1999,7 +2095,7 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Modèle de Revenus & Prévisions Financières", "Modèle Économique", "26/31");
+    applyContentSlideTemplate(s, "Modèle de Revenus & Prévisions Financières", "Modèle Économique", "27/32");
 
     // Left column: 3 cards
     const cardW = 4.0;
@@ -2092,7 +2188,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Bilan & Contributions Académiques", "Conclusion & Perspectives", "28/31");
+    applyContentSlideTemplate(s, "Bilan & Contributions Académiques", "Conclusion & Perspectives", "29/32");
 
     const contributions = [
         { title: "Infrastructure de Confiance", desc: "Premier pipeline KYC biométrique d'identification (OCR + ArcFace + Liveness) adapté aux spécificités administratives algériennes." },
@@ -2141,11 +2237,11 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 
 // =============================================================================
 // =============================================================================
-// SLIDE 29 — EMBARQUEMENT BIOMÉTRIQUE MUTUEL (CHECK-IN) (Split layout avec diagramme réel)
+// SLIDE 30 — EMBARQUEMENT BIOMÉTRIQUE MUTUEL (CHECK-IN) (Split layout avec diagramme réel)
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "L'Embarquement Biométrique Mutuel (Check-in)", "Résultats & Validation", "29/31");
+    applyContentSlideTemplate(s, "L'Embarquement Biométrique Mutuel (Check-in)", "Résultats & Validation", "30/32");
 
     // Left Column: Process card
     const lx = 0.5;
@@ -2213,8 +2309,9 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
         fontFace: FONT_TITLE, align: "left"
     });
 
-    if (fs.existsSync(IMG_SEQ_CHECKIN)) {
-        s.addImage({ path: IMG_SEQ_CHECKIN, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+    const checkinSeqData = toBase64(IMG_SEQ_CHECKIN);
+    if (checkinSeqData) {
+        s.addImage({ data: checkinSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
     }
 }
 
@@ -2223,7 +2320,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Limites & Perspectives d'Évolution", "Conclusion & Perspectives", "30/31");
+    applyContentSlideTemplate(s, "Limites & Perspectives d'Évolution", "Conclusion & Perspectives", "31/32");
 
     const colW = 4.35;
     const colH = 3.1;
@@ -2301,7 +2398,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 }
 
 // =============================================================================
-// SLIDE 31 — CLOSING / THANK YOU SLIDE (Dark Background)
+// SLIDE 32 — CLOSING / THANK YOU SLIDE (Dark Background)
 // =============================================================================
 {
     const s = pres.addSlide();
@@ -2357,9 +2454,14 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 
 // ─── SAVE PRESENTATION ──────────────────────────────────────────────────────
 const outPath = path.join(__dirname, "RohWinBghit_Presentation_v2.pptx");
+const outPathOriginal = path.join(__dirname, "RohWinBghit_Presentation.pptx");
 pres.writeFile({ fileName: outPath })
     .then(() => {
         console.log("✅ Success: Presentation v2 generated at:", outPath);
+        return pres.writeFile({ fileName: outPathOriginal });
+    })
+    .then(() => {
+        console.log("✅ Success: Original Presentation generated at:", outPathOriginal);
         process.exit(0);
     })
     .catch(err => {
