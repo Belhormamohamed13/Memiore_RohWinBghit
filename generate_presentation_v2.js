@@ -1741,74 +1741,70 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet ?", "06");
 
 // =============================================================================
-// SLIDE 25 — BUSINESS MODEL CANVAS (CONDENSÉ)
+// SLIDE 25 — BUSINESS MODEL CANVAS (PREMIUM)
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Business Model Canvas (condensé)", "Modèle Économique", "28/33");
+    applyContentSlideTemplate(s, "Business Model Canvas (RohWinBghit)", "Modèle Économique", "28/33");
 
-    s.addText("Business Model & Financials", {
+    s.addText("Cadre stratégique global de notre modèle d'affaires pour le marché algérien", {
         x: 0.5, y: 1.0, w: 9.0, h: 0.3,
-        fontSize: 13, italic: true, color: COLOR_MUTED_TEXT,
+        fontSize: 12, italic: true, color: COLOR_MUTED_TEXT,
         fontFace: FONT_BODY
     });
 
-    // 6-block BMC Grid
     const by = 1.35;
     const bh = 1.95;
 
-    // Partenaires Clés
+    // Col 1 : Partenaires Clés
     drawCard(s, 0.5, by, 1.7, bh);
-    s.addText("Partenaires Clés", { x: 0.5, y: by + 0.1, w: 1.7, h: 0.22, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Chargily Pay V2\n• Universités DZ\n• Assurances locales\n• Hébergeurs Cloud", { x: 0.6, y: by + 0.35, w: 1.5, h: bh - 0.45, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("🤝 Partenaires", { x: 0.5, y: by + 0.1, w: 1.7, h: 0.22, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Mapbox / Firebase\n• Chargily Pay V2\n• SNTF & SOGRAAL\n• Assureurs locaux", { x: 0.55, y: by + 0.38, w: 1.6, h: bh - 0.45, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 12 });
 
-    // Activités & Ressources
+    // Col 2 Top : Activités Clés
     drawCard(s, 2.3, by, 1.7, 0.95);
-    s.addText("Activités Clés", { x: 2.3, y: by + 0.08, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Matching trajets\n• Pipeline KYC\n• Séquestre Chargily", { x: 2.4, y: by + 0.3, w: 1.5, h: 0.6, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("⚙️ Activités", { x: 2.3, y: by + 0.08, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Matching trajets\n• Pipeline KYC IA\n• Séquestre paiements", { x: 2.35, y: by + 0.28, w: 1.6, h: 0.6, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
+    // Col 2 Bottom : Ressources Clés
     drawCard(s, 2.3, by + 1.05, 1.7, 0.9);
-    s.addText("Ressources Clés", { x: 2.3, y: by + 1.1, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Code proprietary\n• Serveur VPS local\n• Modèles IA", { x: 2.4, y: by + 1.32, w: 1.5, h: 0.6, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("💻 Ressources", { x: 2.3, y: by + 1.1, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Code propriétaire\n• Serveurs Cloud\n• Modèle antelopev2", { x: 2.35, y: by + 1.3, w: 1.6, h: 0.55, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
-    // Propositions de Valeur
-    drawCard(s, 4.1, by, 1.7, bh, { fill: "E8F5EE", line: { color: COLOR_PRIMARY_DARK, width: 1 } });
-    s.addText("Propositions de Valeur", { x: 4.1, y: by + 0.1, w: 1.7, h: 0.22, fontSize: 10.5, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Covoiturage KYC\n• 69 wilayas\n• Paiement DZD\n• Tarifs réduits\n• Billet QR Code", { x: 4.2, y: by + 0.35, w: 1.5, h: bh - 0.45, fontSize: 9.5, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_BODY });
+    // Col 3 Center : Propositions de Valeur (Highlighted)
+    drawCard(s, 4.1, by, 1.8, bh, { fill: "E8F5EE", line: { color: COLOR_PRIMARY_DARK, width: 1.5 } });
+    s.addText("💎 Valeur unique", { x: 4.1, y: by + 0.1, w: 1.8, h: 0.22, fontSize: 11, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• 1er covoiturage vérifié\n• Sécurité KYC IA\n• Cartes CIB/Edahabia\n• Tarifs réduits\n• Billet QR sécurisé", { x: 4.15, y: by + 0.38, w: 1.7, h: bh - 0.45, fontSize: 9, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_BODY, lineSpacing: 11 });
 
-    // Relations & Canaux
-    drawCard(s, 5.9, by, 1.7, 0.95);
-    s.addText("Relations Clients", { x: 5.9, y: by + 0.08, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Support client\n• Notation mutuelle\n• Notifications push", { x: 6.0, y: by + 0.3, w: 1.5, h: 0.6, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    // Col 4 Top : Relations Clients
+    drawCard(s, 6.0, by, 1.7, 0.95);
+    s.addText("💬 Relations", { x: 6.0, y: by + 0.08, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Support réactif 24/7\n• Notation mutuelle\n• Notifications push", { x: 6.05, y: by + 0.28, w: 1.6, h: 0.6, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
-    drawCard(s, 5.9, by + 1.05, 1.7, 0.9);
-    s.addText("Canaux", { x: 5.9, y: by + 1.1, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Stores d'applications\n• Campus univ.\n• Réseaux sociaux", { x: 6.0, y: by + 1.32, w: 1.5, h: 0.6, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    // Col 4 Bottom : Canaux
+    drawCard(s, 6.0, by + 1.05, 1.7, 0.9);
+    s.addText("📲 Canaux", { x: 6.0, y: by + 1.1, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Apps iOS & Android\n• Bouche-à-oreille\n• Campus universitaires", { x: 6.05, y: by + 1.3, w: 1.6, h: 0.55, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
-    // Segments Clients
-    drawCard(s, 7.7, by, 1.8, bh);
-    s.addText("Segments Clients", { x: 7.7, y: by + 0.1, w: 1.8, h: 0.22, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Étudiants (68%)\n• Pendulaires réguliers\n• Chauffeurs (frais)\n• Familles", { x: 7.8, y: by + 0.35, w: 1.6, h: bh - 0.45, fontSize: 9.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    // Col 5 : Segments Clients
+    drawCard(s, 7.8, by, 1.7, bh);
+    s.addText("👥 Segments", { x: 7.8, y: by + 0.1, w: 1.7, h: 0.22, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Étudiants (68%)\n• Travailleurs actifs\n• Conducteurs\n• Familles", { x: 7.85, y: by + 0.38, w: 1.6, h: bh - 0.45, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 12 });
 
-    // Metric groups (Below BMC)
+    // Bottom Row : Structure de Coûts & Sources de Revenus
     const my = 3.45;
-    const mw = 2.8;
+    const mw = 4.4;
     const mh = 1.35;
 
-    // Modèle de Revenus
+    // Structure de Coûts
     drawCard(s, 0.5, my, mw, mh);
-    s.addText("Modèle de Revenus", { x: 0.5, y: my + 0.1, w: mw, h: 0.25, fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Commission 12% sur billets\n• Premium Driver : 500 DA / mois\n• Partenariats B2B (Publicités)", { x: 0.65, y: my + 0.38, w: mw - 0.3, h: 0.85, fontSize: 10, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("💸 Structure de Coûts", { x: 0.5, y: my + 0.1, w: mw, h: 0.25, fontSize: 11.5, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Coûts Cloud & DevOps : Inférence IA FastAPI, serveurs de production.\n• Acquisition Marketing : Publicités ciblées, campagnes campus.\n• Ressources Humaines : Équipe technique & agents de modération KYC.", { x: 0.65, y: my + 0.38, w: mw - 0.3, h: 0.85, fontSize: 9, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 11 });
 
-    // Année 1 Chiffres clés
-    drawCard(s, 3.6, my, mw, mh);
-    s.addText("Chiffres Clés (Année 1)", { x: 3.6, y: my + 0.1, w: mw, h: 0.25, fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Volume transactionnel : 15.5M DA\n• Chiffre d'Affaires Net : 6.7M DA\n• Point mort atteint à 18 mois", { x: 3.75, y: my + 0.38, w: mw - 0.3, h: 0.85, fontSize: 10, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
-
-    // Métriques clés
-    drawCard(s, 6.7, my, mw, mh);
-    s.addText("Métriques de Traction", { x: 6.7, y: my + 0.1, w: mw, h: 0.25, fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Utilisateurs visés : 50 000+\n• Taux de conversion client : 15%\n• Score de satisfaction : 4.2 / 5", { x: 6.85, y: my + 0.38, w: mw - 0.3, h: 0.85, fontSize: 10, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    // Sources de Revenus
+    drawCard(s, 5.1, my, mw, mh);
+    s.addText("💰 Sources de Revenus", { x: 5.1, y: my + 0.1, w: mw, h: 0.25, fontSize: 11.5, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
+    s.addText("• Commission covoiturage : Commission de 5% à 15% sur les trajets.\n• Comm. billets bus/train : 3% à 5% via SNTF & SOGRAAL.\n• Abonnements & Publicité : Premium Conducteur (500 DA) + Ads B2B.", { x: 5.25, y: my + 0.38, w: mw - 0.3, h: 0.85, fontSize: 9, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 11 });
 }
 
 // =============================================================================
