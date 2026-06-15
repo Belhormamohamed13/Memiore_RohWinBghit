@@ -1041,310 +1041,92 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles UML ?", "04");
 
 // =============================================================================
-// SLIDE 16 — CAS D'UTILISATION GLOBAL (Split layout avec diagramme réel)
+// SLIDE 16 — CAS D'UTILISATION GLOBAL (Affichage Diagramme Unique)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/33");
 
-    // Left Column: Actor details card
-    const lx = 0.5;
-    const ly = 1.3;
-    const lw = 3.9;
-    const lh = 3.8;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-
-    s.addText("Acteurs & Rôles Principaux", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    const actors = [
-        { name: "Administrateur", desc: "Gère les comptes utilisateurs, valide les dossiers KYC litigieux et modère les signalements.", color: COLOR_PRIMARY_DARK },
-        { name: "Passager", desc: "Recherche des trajets, réserve en ligne (Chargily Pay V2) et valide son embarquement via QR Code.", color: COLOR_MEDIUM_GREEN },
-        { name: "Conducteur", desc: "Enregistre ses véhicules, propose des trajets inter-wilayas et valide l'embarquement du passager.", color: COLOR_GOLD }
-    ];
-
-    actors.forEach((act, i) => {
-        const ay = ly + 0.6 + i * 1.0;
-
-        // Color badge for actor name
-        s.addShape("roundRect", {
-            x: lx + 0.2, y: ay, w: 1.4, h: 0.26,
-            fill: { color: act.color }, line: { width: 0 }, rectRadius: 0.05
-        });
-        s.addText(act.name, {
-            x: lx + 0.2, y: ay, w: 1.4, h: 0.26,
-            fontSize: 9.5, bold: true, color: act.color === COLOR_GOLD ? COLOR_BG_DARK : COLOR_WHITE,
-            fontFace: FONT_BODY, align: "center", valign: "middle"
-        });
-
-        // Actor description
-        s.addText(act.desc, {
-            x: lx + 0.2, y: ay + 0.28, w: lw - 0.4, h: 0.65,
-            fontSize: 9.5, color: COLOR_DARK_TEXT,
-            fontFace: FONT_BODY, align: "left", valign: "top"
-        });
-    });
-
-    // Right Column: Diagram card
-    const rx = 4.6;
-    const rw = 4.9;
-    drawCard(s, rx, ly, rw, lh);
-    s.addText("Diagramme de Cas d'Utilisation Global", {
-        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
     const useCaseData = toBase64(IMG_USE_CASE);
     if (useCaseData) {
-        s.addImage({ data: useCaseData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+        s.addImage({
+            data: useCaseData,
+            x: 0.5, y: 1.25,
+            w: 9.0, h: 3.9,
+            sizing: { type: "contain", w: 9.0, h: 3.9 }
+        });
     }
 }
 
 // =============================================================================
-// SLIDE 17 — SCHÉMA RELATIONNEL DE DONNÉES (Split layout avec diagramme réel)
+// SLIDE 17 — SCHÉMA RELATIONNEL DE DONNÉES (Affichage Diagramme Unique)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/33");
 
-    // Left Column: Summary card
-    const lx = 0.5;
-    const ly = 1.3;
-    const lw = 3.9;
-    const lh = 3.8;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-
-    s.addText("Architecture des Données", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    const modules = [
-        {
-            title: "1. Gestion Utilisateurs (Users)",
-            desc: "• User : Authentification (téléphone, email, statut).\n• Driver : Documents requis (permis, carte grise).\n• IdentityVerification : Suivi de la validation KYC.",
-            color: COLOR_PRIMARY_DARK
-        },
-        {
-            title: "2. Planification & Réservation (Trips)",
-            desc: "• Trip : Détails du trajet (origine, destination, tarif).\n• Vehicle : Lié au chauffeur (marque, modèle, immatriculation).\n• Booking : Gestion d'état (pending, approved, completed).",
-            color: COLOR_MEDIUM_GREEN
-        },
-        {
-            title: "3. Transactions & Services (Core)",
-            desc: "• Payment & Wallet : Portefeuille local et transactions Chargily.\n• Notification & Review : Suivi temps réel et notations.",
-            color: COLOR_GOLD
-        }
-    ];
-
-    modules.forEach((mod, i) => {
-        const my = ly + 0.6 + i * 1.0;
-
-        // Subtitle
-        s.addText(mod.title, {
-            x: lx + 0.2, y: my, w: lw - 0.4, h: 0.22,
-            fontSize: 10.5, bold: true, color: COLOR_PRIMARY_DARK,
-            fontFace: FONT_TITLE, align: "left"
-        });
-
-        // Detail text
-        s.addText(mod.desc, {
-            x: lx + 0.2, y: my + 0.22, w: lw - 0.4, h: 0.7,
-            fontSize: 9, color: COLOR_DARK_TEXT,
-            fontFace: FONT_BODY, align: "left", valign: "top"
-        });
-    });
-
-    // Right Column: Diagram card
-    const rx = 4.6;
-    const rw = 4.9;
-    drawCard(s, rx, ly, rw, lh);
-    s.addText("Schéma de Classes UML (Modèle de Données)", {
-        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
     const classDiagData = toBase64(IMG_CLASS_DIAGRAM);
     if (classDiagData) {
-        s.addImage({ data: classDiagData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+        s.addImage({
+            data: classDiagData,
+            x: 0.5, y: 1.25,
+            w: 9.0, h: 3.9,
+            sizing: { type: "contain", w: 9.0, h: 3.9 }
+        });
     }
 }
 
 // =============================================================================
-// SLIDE 18 — DIAGRAMME DE SÉQUENCE : RÉSERVATION (Booking) (Nouveau)
+// SLIDE 18 — DIAGRAMME DE SÉQUENCE : RÉSERVATION (Booking) (Affichage Diagramme Unique)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Diagramme de Séquence : Réservation", "Conception & Modélisation", "18/33");
 
-    // Left Column: Process card
-    const lx = 0.5;
-    const ly = 1.3;
-    const lw = 3.9;
-    const lh = 3.8;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-
-    s.addText("Flux de Réservation Sécurisé", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    s.addText("Le processus de réservation implique une orchestration en temps réel entre le Passager, le Conducteur, le Service de Notification (FCM) et la Passerelle de Paiement.", {
-        x: lx + 0.2, y: ly + 0.55, w: lw - 0.4, h: 0.65,
-        fontSize: 9.5, color: COLOR_DARK_TEXT,
-        fontFace: FONT_BODY, align: "left", valign: "top"
-    });
-
-    const steps = [
-        { num: "1", title: "Demande de Réservation", desc: "Le passager sélectionne un trajet et soumet sa demande de réservation." },
-        { num: "2", title: "Séquestre de Paiement", desc: "Initiation du paiement électronique. Les fonds sont mis en séquestre sécurisé." },
-        { num: "3", title: "Notification Conducteur", desc: "Notification push instantanée envoyée au chauffeur pour acceptation ou refus." },
-        { num: "4", title: "Validation & Billet", desc: "Dès approbation du chauffeur, le billet (Boarding Pass) est généré avec son QR Code." }
-    ];
-
-    steps.forEach((st, i) => {
-        const sy = ly + 1.25 + i * 0.62;
-
-        s.addShape("ellipse", {
-            x: lx + 0.2, y: sy + 0.02, w: 0.24, h: 0.24,
-            fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 }
-        });
-        s.addText(st.num, {
-            x: lx + 0.2, y: sy + 0.02, w: 0.24, h: 0.24,
-            fontSize: 8, bold: true, color: COLOR_GOLD,
-            fontFace: FONT_BODY, align: "center", valign: "middle"
-        });
-
-        s.addText(st.title, {
-            x: lx + 0.5, y: sy, w: lw - 0.6, h: 0.18,
-            fontSize: 9.5, bold: true, color: COLOR_PRIMARY_DARK,
-            fontFace: FONT_TITLE, align: "left"
-        });
-
-        s.addText(st.desc, {
-            x: lx + 0.5, y: sy + 0.18, w: lw - 0.6, h: 0.4,
-            fontSize: 8.5, color: COLOR_MUTED_TEXT,
-            fontFace: FONT_BODY, align: "left", valign: "top"
-        });
-    });
-
-    // Right Column: Diagram card
-    const rx = 4.6;
-    const rw = 4.9;
-    drawCard(s, rx, ly, rw, lh);
-    s.addText("Diagramme de Séquence de Réservation", {
-        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
     const bookingSeqData = toBase64(IMG_SEQ_BOOKING);
     if (bookingSeqData) {
-        s.addImage({ data: bookingSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+        s.addImage({
+            data: bookingSeqData,
+            x: 0.5, y: 1.25,
+            w: 9.0, h: 3.9,
+            sizing: { type: "contain", w: 9.0, h: 3.9 }
+        });
     }
 }
 
 // =============================================================================
-// SLIDE 19 — DIAGRAMME DE SÉQUENCE : VALIDATION KYC (UML)
+// SLIDE 19 — DIAGRAMME DE SÉQUENCE : VALIDATION KYC (UML) (Affichage Diagramme Unique)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Diagramme de Séquence : Validation KYC", "Conception & Modélisation", "19/33");
 
-    // Left Column: Explanation card
-    const lx = 0.5;
-    const ly = 1.3;
-    const lw = 3.9;
-    const lh = 3.8;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-
-    s.addText("Modélisation du Flux KYC", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    s.addText("Le diagramme illustre le protocole d'échange sécurisé entre les clients, l'API et le module IA :\n\n" +
-             "1. Envoi asynchrone des médias (CNI et Selfie) chiffrés en HTTPS.\n" +
-             "2. Routage vers le KycController qui orchestre les appels vers le microservice FastAPI.\n" +
-             "3. Analyse IA séquentielle : extraction OCR des champs, prédiction ArcFace de similarité faciale, et vérification Liveness.\n" +
-             "4. Persistance du statut de confiance et émission d'un token d'identité mis à jour.", {
-        x: lx + 0.2, y: ly + 0.6, w: lw - 0.4, h: 3.0,
-        fontSize: 9.5, color: COLOR_DARK_TEXT,
-        fontFace: FONT_BODY, align: "left", valign: "top"
-    });
-
-    // Right Column: Diagram card
-    const rx = 4.6;
-    const rw = 4.9;
-    drawCard(s, rx, ly, rw, lh);
-    s.addText("Spécification UML : Diagramme de Séquence KYC", {
-        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
     const kycSeqData = toBase64(IMG_SEQ_KYC);
     if (kycSeqData) {
-        s.addImage({ data: kycSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+        s.addImage({
+            data: kycSeqData,
+            x: 0.5, y: 1.25,
+            w: 9.0, h: 3.9,
+            sizing: { type: "contain", w: 9.0, h: 3.9 }
+        });
     }
 }
 
 // =============================================================================
-// SLIDE 20 — DIAGRAMME DE SÉQUENCE : EMBARQUEMENT BIOMÉTRIQUE (UML)
+// SLIDE 20 — DIAGRAMME DE SÉQUENCE : EMBARQUEMENT BIOMÉTRIQUE (UML) (Affichage Diagramme Unique)
 // =============================================================================
 {
     const s = pres.addSlide();
     applyContentSlideTemplate(s, "Diagramme de Séquence : Embarquement", "Conception & Modélisation", "20/33");
 
-    // Left Column: Explanation card
-    const lx = 0.5;
-    const ly = 1.3;
-    const lw = 3.9;
-    const lh = 3.8;
-    drawCard(s, lx, ly, lw, lh);
-    s.addShape("rect", { x: lx, y: ly + 0.1, w: 0.08, h: lh - 0.2, fill: { color: COLOR_PRIMARY_DARK }, line: { width: 0 } });
-
-    s.addText("Protocole de Check-in", {
-        x: lx + 0.2, y: ly + 0.15, w: lw - 0.3, h: 0.35,
-        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
-    s.addText("Le protocole d'embarquement biométrique mutuel garantit une sécurité maximale avant le départ :\n\n" +
-             "1. Le conducteur initie la validation en scannant le code QR du passager via le CheckinController.\n" +
-             "2. Les selfies du passager et du conducteur sont capturés instantanément en direct.\n" +
-             "3. Le service FastAPI compare les deux visages par rapport aux templates KYC enregistrés.\n" +
-             "4. Si validé, le statut du billet passe à 'EMBARQUÉ' et la transaction financière est débloquée.", {
-        x: lx + 0.2, y: ly + 0.6, w: lw - 0.4, h: 3.0,
-        fontSize: 9.5, color: COLOR_DARK_TEXT,
-        fontFace: FONT_BODY, align: "left", valign: "top"
-    });
-
-    // Right Column: Diagram card
-    const rx = 4.6;
-    const rw = 4.9;
-    drawCard(s, rx, ly, rw, lh);
-    s.addText("Spécification UML : Séquence d'Embarquement", {
-        x: rx + 0.2, y: ly + 0.15, w: rw - 0.4, h: 0.3,
-        fontSize: 12, bold: true, color: COLOR_PRIMARY_DARK,
-        fontFace: FONT_TITLE, align: "left"
-    });
-
     const checkinSeqData = toBase64(IMG_SEQ_CHECKIN);
     if (checkinSeqData) {
-        s.addImage({ data: checkinSeqData, x: rx + 0.15, y: ly + 0.55, w: rw - 0.3, h: lh - 0.7 });
+        s.addImage({
+            data: checkinSeqData,
+            x: 0.5, y: 1.25,
+            w: 9.0, h: 3.9,
+            sizing: { type: "contain", w: 9.0, h: 3.9 }
+        });
     }
 }
 
