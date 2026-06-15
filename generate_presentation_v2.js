@@ -262,7 +262,7 @@ function drawCard(slide, x, y, w, h, options = {}) {
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Plan de la Présentation", "Plan", "02/33");
+    applyContentSlideTemplate(s, "Plan de la Présentation", "Plan", "02/34");
 
     const sections = [
         { num: "01", title: "Introduction & Problématique", sub: "Mobilité inter-wilayas • Enjeux", active: true },
@@ -362,7 +362,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "La Mobilité Inter-Wilayas en Algérie", "Introduction & Problématique", "04/33");
+    applyContentSlideTemplate(s, "La Mobilité Inter-Wilayas en Algérie", "Introduction & Problématique", "04/34");
 
     const kpis = [
         { num: "6.3M", label: "étudiants", desc: "d'étudiants universitaires effectuent des trajets inter-wilayas chaque année" },
@@ -433,7 +433,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Le Problème de Confiance & Sécurité", "Introduction & Problématique", "05/33");
+    applyContentSlideTemplate(s, "Le Problème de Confiance & Sécurité", "Introduction & Problématique", "05/34");
 
     // Research Question Box
     const qy = 1.25;
@@ -503,7 +503,7 @@ buildSectionDivider("01", "Introduction & Problématique", "Où ? Quand ? Dans q
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Trois Hypothèses de Travail", "Introduction & Problématique", "06/33");
+    applyContentSlideTemplate(s, "Trois Hypothèses de Travail", "Introduction & Problématique", "06/34");
 
     const hyps = [
         {
@@ -589,7 +589,7 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Analyse Concurrentielle", "Contexte & Cadre Légal", "08/33");
+    applyContentSlideTemplate(s, "Analyse Concurrentielle", "Contexte & Cadre Légal", "08/34");
 
     // Table Data
     const tableRows = [
@@ -688,7 +688,7 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Cadre Réglementaire : Loi 25-11", "Contexte & Cadre Légal", "09/33");
+    applyContentSlideTemplate(s, "Cadre Réglementaire : Loi 25-11", "Contexte & Cadre Légal", "09/34");
 
     s.addText("Protection des données personnelles dans le contexte algérien", {
         x: 0.5, y: 1.0, w: 9.0, h: 0.3,
@@ -751,7 +751,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Gestion Agile : 5 Sprints en 10 Semaines", "Méthodologie & Architecture", "11/33");
+    applyContentSlideTemplate(s, "Gestion Agile : 5 Sprints en 10 Semaines", "Méthodologie & Architecture", "11/34");
 
     const sprints = [
         { name: "Sprint 1 : Auth & Profils", time: "Semaines 1-2", pts: "21 SP", pct: 100 },
@@ -841,7 +841,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Stack Technique Moderne", "Méthodologie & Architecture", "12/33");
+    applyContentSlideTemplate(s, "Stack Technique Moderne", "Méthodologie & Architecture", "12/34");
 
     const layers = [
         { title: "FRONTEND MOBILE", content: "React Native (Expo SDK 54), TypeScript, Mapbox SDK, Socket.io client, Zustand." },
@@ -916,7 +916,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Architecture Multi-Services Distribuée", "Méthodologie & Architecture", "13/33");
+    applyContentSlideTemplate(s, "Architecture Multi-Services Distribuée", "Méthodologie & Architecture", "13/34");
 
     const archImgData = toBase64(IMG_ARCHITECTURE_DIAG);
     if (archImgData) {
@@ -933,7 +933,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Workflow Simplifié KYC", "Méthodologie & Architecture", "14/33");
+    applyContentSlideTemplate(s, "Workflow Simplifié KYC", "Méthodologie & Architecture", "14/34");
 
     // Introduction text
     s.addText("Pour garantir la sécurité et la conformité, chaque utilisateur suit un parcours de validation d'identité fluide et automatisé en 5 étapes clés.", {
@@ -1045,7 +1045,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/33");
+    applyContentSlideTemplate(s, "Cas d'Utilisation Global", "Conception & Modélisation", "16/34");
 
     const useCaseData = toBase64(IMG_USE_CASE);
     if (useCaseData) {
@@ -1063,7 +1063,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/33");
+    applyContentSlideTemplate(s, "Schéma Relationnel de Données", "Conception & Modélisation", "17/34");
 
     const classDiagData = toBase64(IMG_CLASS_DIAGRAM);
     if (classDiagData) {
@@ -1081,7 +1081,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Diagramme de Séquence : Réservation", "Conception & Modélisation", "18/33");
+    applyContentSlideTemplate(s, "Diagramme de Séquence : Réservation", "Conception & Modélisation", "18/34");
 
     const bookingSeqData = toBase64(IMG_SEQ_BOOKING);
     if (bookingSeqData) {
@@ -1099,7 +1099,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Diagramme de Séquence : Validation KYC", "Conception & Modélisation", "19/33");
+    applyContentSlideTemplate(s, "Diagramme de Séquence : Validation KYC", "Conception & Modélisation", "19/34");
 
     const kycSeqData = toBase64(IMG_SEQ_KYC);
     if (kycSeqData) {
@@ -1117,7 +1117,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Diagramme de Séquence : Embarquement", "Conception & Modélisation", "20/33");
+    applyContentSlideTemplate(s, "Diagramme de Séquence : Embarquement", "Conception & Modélisation", "20/34");
 
     const checkinSeqData = toBase64(IMG_SEQ_CHECKIN);
     if (checkinSeqData) {
@@ -1135,7 +1135,7 @@ buildSectionDivider("04", "Conception & Modélisation", "Quels sont les modèles
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "21/33");
+    applyContentSlideTemplate(s, "Topologie du Déploiement Cloud", "Conception & Modélisation", "21/34");
 
     const deployImgData = toBase64(IMG_DEPLOYMENT_CLOUD);
     if (deployImgData) {
@@ -1157,7 +1157,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "23/33");
+    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "23/34");
 
     // Left Column: Donut, Progress bars and Coverage stats
     const lx = 0.5;
@@ -1264,7 +1264,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Score SUS de 71.6 : Usabilité Validée", "Résultats & Validation", "24/33");
+    applyContentSlideTemplate(s, "Score SUS de 71.6 : Usabilité Validée", "Résultats & Validation", "24/34");
 
     // Score Circle Card (Left)
     drawCard(s, 0.6, 1.4, 2.2, 2.5);
@@ -1359,7 +1359,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Validation des Trois Hypothèses", "Résultats & Validation", "25/33");
+    applyContentSlideTemplate(s, "Validation des Trois Hypothèses", "Résultats & Validation", "25/34");
 
     const hyps = [
         {
@@ -1462,6 +1462,98 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 }
 
 // =============================================================================
+// SLIDE 22b (NEW) — LIMITES DE VALIDATION DU KYC BIOMÉTRIQUE
+// =============================================================================
+{
+    const s = pres.addSlide();
+    applyContentSlideTemplate(s, "Limites de Validation du KYC Biométrique", "Résultats & Validation", "26/34");
+
+    s.addText("Pourquoi le prototype KYC reste au stade de preuve de concept (POC) non certifiable", {
+        x: 0.5, y: 0.85, w: 9.0, h: 0.3,
+        fontSize: 12.5, italic: true, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY
+    });
+
+    const colW = 4.35;
+    const colH = 3.35;
+    const yVal = 1.25;
+
+    // Left Column: ISO/IEC 30107-3
+    drawCard(s, 0.5, yVal, colW, colH);
+    s.addShape("rect", { x: 0.5, y: yVal + 0.1, w: 0.08, h: colH - 0.2, fill: { color: COLOR_RED }, line: { width: 0 } });
+    
+    s.addText("Norme ISO/IEC 30107-3 (PAD)", {
+        x: 0.7, y: yVal + 0.15, w: colW - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_RED, fontFace: FONT_TITLE
+    });
+
+    const leftItems = [
+        "**Métriques Biométriques Obligatoires** : La norme exige le calcul formel de l'**APCER** (taux d'attaques réussies) et du **BPCER** (taux de rejet d'usagers légitimes).",
+        "**Instruments d'Attaque (PAI)** : L'évaluation doit mesurer la résistance face à des photos imprimées, écrans haute résolution et masques 3D.",
+        "**Seuils Objectifs** : Les seuils de décision doivent être fixés a priori (ciblant 1% ou 5% BPCER), et non ajustés empiriquement a posteriori."
+    ];
+
+    leftItems.forEach((text, idx) => {
+        const py = yVal + 0.65 + idx * 0.9;
+        s.addShape("ellipse", { x: 0.8, y: py + 0.05, w: 0.08, h: 0.08, fill: { color: COLOR_RED }, line: { width: 0 } });
+        
+        // Custom parser for markdown bold inside pptx
+        const chunks = text.split("**");
+        const textArr = [];
+        chunks.forEach((chunk, cIdx) => {
+            textArr.push({ text: chunk, options: { bold: cIdx % 2 === 1 } });
+        });
+
+        s.addText(textArr, {
+            x: 0.95, y: py, w: colW - 0.5, h: 0.85,
+            fontSize: 10, color: COLOR_DARK_TEXT, fontFace: FONT_BODY, valign: "top"
+        });
+    });
+
+    // Right Column: Risques de l'ajustement empirique
+    drawCard(s, 5.15, yVal, colW, colH);
+    s.addShape("rect", { x: 5.15, y: yVal + 0.1, w: 0.08, h: colH - 0.2, fill: { color: COLOR_GOLD }, line: { width: 0 } });
+    
+    s.addText("Limites & Certification", {
+        x: 5.35, y: yVal + 0.15, w: colW - 0.3, h: 0.35,
+        fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE
+    });
+
+    const rightItems = [
+        "**Risque de Surapprentissage (Overfitting)** : Le calibrage empirique sur données internes risque de faillir face à des conditions réelles variables.",
+        "**Biais Démographiques** : Sans évaluation sur cohortes diversifiées, les seuils empiriques peuvent induire des discriminations non maîtrisées (âge, genre).",
+        "**Certification & Régulation LCB-FT** : Une auto-validation n'a pas de valeur réglementaire. Un audit formel (iBeta / FIDO) est requis avant déploiement."
+    ];
+
+    rightItems.forEach((text, idx) => {
+        const py = yVal + 0.65 + idx * 0.9;
+        s.addShape("ellipse", { x: 5.45, y: py + 0.05, w: 0.08, h: 0.08, fill: { color: COLOR_GOLD }, line: { width: 0 } });
+        
+        // Custom parser for markdown bold inside pptx
+        const chunks = text.split("**");
+        const textArr = [];
+        chunks.forEach((chunk, cIdx) => {
+            textArr.push({ text: chunk, options: { bold: cIdx % 2 === 1 } });
+        });
+
+        s.addText(textArr, {
+            x: 5.6, y: py, w: colW - 0.5, h: 0.85,
+            fontSize: 10, color: COLOR_DARK_TEXT, fontFace: FONT_BODY, valign: "top"
+        });
+    });
+
+    // Footer warning badge
+    s.addShape("roundRect", {
+        x: 0.5, y: 4.75, w: 9.0, h: 0.45,
+        fill: { color: "FFF5F5" }, line: { color: COLOR_RED, width: 0.75 }, rectRadius: 0.05
+    });
+    s.addText("⚠️ Statut du Prototype : Le KYC biométrique est une Preuve de Concept (POC). Une validation formelle sur bases de données de référence (CASIA-FASD, OULU-NPU) est indispensable.", {
+        x: 0.5, y: 4.75, w: 9.0, h: 0.45,
+        fontSize: 9.5, bold: true, color: COLOR_RED, fontFace: FONT_BODY, align: "center", valign: "middle"
+    });
+}
+
+
+// =============================================================================
 // SLIDE 23 — DÉMONSTRATION VIDÉO DU PROTOTYPE (Redesign Premium)
 // =============================================================================
 {
@@ -1474,7 +1566,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         fontSize: 9, bold: true, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "left"
     });
-    s.addText("26/33", {
+    s.addText("27/34", {
         x: 8.5, y: 0.18, w: 1.0, h: 0.22,
         fontSize: 10, color: COLOR_LIGHT_GREEN,
         fontFace: FONT_BODY, align: "right"
@@ -1745,7 +1837,7 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Business Model Canvas (RohWinBghit)", "Modèle Économique", "28/33");
+    applyContentSlideTemplate(s, "Business Model Canvas (RohWinBghit)", "Modèle Économique", "29/34");
 
     s.addText("Cadre stratégique global de notre modèle d'affaires pour le marché algérien", {
         x: 0.5, y: 1.0, w: 9.0, h: 0.3,
@@ -1812,7 +1904,7 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Modèle de Revenus & Prévisions Financières", "Modèle Économique", "29/33");
+    applyContentSlideTemplate(s, "Modèle de Revenus & Prévisions Financières", "Modèle Économique", "30/34");
 
     // Left column: 3 cards
     const cardW = 4.0;
@@ -1905,7 +1997,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Bilan & Contributions Académiques", "Conclusion & Perspectives", "31/33");
+    applyContentSlideTemplate(s, "Bilan & Contributions Académiques", "Conclusion & Perspectives", "32/34");
 
     const contributions = [
         { title: "Infrastructure de Confiance", desc: "Premier pipeline KYC biométrique d'identification (OCR + ArcFace + Liveness) adapté aux spécificités administratives algériennes." },
@@ -1958,7 +2050,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "Limites & Perspectives d'Évolution", "Conclusion & Perspectives", "32/33");
+    applyContentSlideTemplate(s, "Limites & Perspectives d'Évolution", "Conclusion & Perspectives", "33/34");
 
     const colW = 4.35;
     const colH = 3.1;
