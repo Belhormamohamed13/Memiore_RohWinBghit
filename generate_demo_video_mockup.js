@@ -34,7 +34,7 @@ const CONFIG = {
   },
 
   baseDir:   __dirname,
-  screenDir: path.join(__dirname, 'Screen_mobile'),
+  screenDir: path.join(__dirname, 'Screen_Mobile'), // Correction de la casse
   tempDir:   path.join(__dirname, 'video_temp_mockup'),
   assetsDir: path.join(__dirname, 'assets'),
 
@@ -162,7 +162,7 @@ const CACHE_MANIFEST = path.join(CONFIG.tempDir, 'cache_manifest.json');
 function loadCacheManifest() {
   if (fs.existsSync(CACHE_MANIFEST))
     return JSON.parse(fs.readFileSync(CACHE_MANIFEST, 'utf8'));
-  return { frames: {}, version: 5, mode: CONFIG.mode };
+  return { frames: {}, version: 6, mode: CONFIG.mode };
 }
 
 function saveCacheManifest(manifest) {
@@ -205,7 +205,7 @@ function resolveImg(filename) {
   const variants = [filename, filename.normalize('NFC'), filename.normalize('NFD')];
   const dir = CONFIG.screenDir;
   if (!fs.existsSync(dir)) {
-    logger.error(`Dossier Screen_mobile inexistant : ${dir}`);
+    logger.error(`Dossier Screen_Mobile inexistant : ${dir}`);
     return null;
   }
   for (const v of variants) {
@@ -215,26 +215,30 @@ function resolveImg(filename) {
   for (const f of fs.readdirSync(dir)) {
     if (f.normalize('NFC') === filename.normalize('NFC')) return path.join(dir, f);
   }
-  logger.warn(`Asset non trouvé dans Screen_mobile: ${filename}`);
+  logger.warn(`Asset non trouvé dans Screen_Mobile: ${filename}`);
   return null;
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-//  DIMENSIONS DU MOCKUP TÉLÉPHONE (CENTRÉ)
+//  DIMENSIONS DE L'IMAGE DIRECTE (SANS MOCKUP SUPPLÉMENTAIRE)
+//  Les captures d'écran contiennent déjà un mockup intégré.
+//  On affiche l'image directement, ajustée pour une présentation
+//  harmonieuse et cohérente sur la diapositive vidéo.
 // ═══════════════════════════════════════════════════════════════════════
 
+// Zone d'affichage : on réserve un espace en haut (header) et en bas (caption)
+const IMG_MARGIN_TOP    = Math.round(90 * S);   // espace pour le header
+const IMG_MARGIN_BOTTOM = Math.round(180 * S);  // espace pour la légende
+const IMG_MAX_H         = VH - IMG_MARGIN_TOP - IMG_MARGIN_BOTTOM; // hauteur dispo
+const IMG_MAX_W         = Math.round(VW * 0.50); // max 50% de la largeur (ratio mobile)
+
+// Anciennes constantes conservées pour compatibilité (effets overlay)
 const PH_W       = Math.round(360 * S);
 const PH_H       = Math.round(720 * S);
 const PH_BEZEL   = Math.round(20 * S);
 const PH_CORNER  = Math.round(42 * S);
 const PH_TOTAL_W = PH_W + PH_BEZEL * 2;
 const PH_TOTAL_H = PH_H + PH_BEZEL * 2 + Math.round(50 * S);
-
-const PH_LEFT    = Math.floor((VW - PH_TOTAL_W) / 2);
-const PH_TOP     = Math.floor((VH - PH_TOTAL_H) / 2) - Math.round(15 * S); // décalé légèrement vers le haut
-
-const PH_SCR_L   = PH_LEFT + PH_BEZEL;
-const PH_SCR_T   = PH_TOP  + PH_BEZEL + Math.round(40 * S);
 
 const FF = `Poppins, -apple-system, Segoe UI, Roboto, Arial, sans-serif`;
 
@@ -270,7 +274,7 @@ function backgroundSVG(t = 0) {
 }
 
 /** Boîtier de téléphone réaliste */
-function phoneBezelSVG(glowColor = C.accent, glowOpacity = 0.18) {
+function phoneBezelSVG(glowColor = C.accent, glowOpacity = 0.18, opacity = 1.0) {
   const W = PH_TOTAL_W, H = PH_TOTAL_H, R = PH_CORNER;
   const sX = PH_BEZEL, sY = PH_BEZEL + Math.round(40 * S);
   return Buffer.from(`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
@@ -294,17 +298,19 @@ function phoneBezelSVG(glowColor = C.accent, glowOpacity = 0.18) {
         <stop offset="100%" stop-color="white" stop-opacity="0"/>
       </linearGradient>
     </defs>
-    <rect x="3" y="3" width="${W-6}" height="${H-6}" rx="${R}" ry="${R}" fill="url(#metal)" stroke="${C.primary}" stroke-width="1.8" filter="url(#ph-sh)"/>
-    <rect x="3" y="3" width="${W-6}" height="${H-6}" rx="${R}" ry="${R}" fill="url(#shine)" opacity="0.3"/>
-    <rect x="3" y="3" width="${W-6}" height="${H-6}" rx="${R}" ry="${R}" fill="none" stroke="${glowColor}" stroke-width="1.2" opacity="${glowOpacity * 2.5}"/>
-    <rect x="${sX}" y="${sY}" width="${PH_W}" height="${PH_H}" rx="${Math.round(20*S)}" ry="${Math.round(20*S)}" fill="white"/>
-    <ellipse cx="${W/2}" cy="${sY-20}" rx="52" ry="13" fill="${C.bgDark}" opacity="0.95"/>
-    <circle cx="${W/2-18}" cy="${sY-20}" r="4" fill="#1A1A1A"/>
-    <circle cx="${W/2+18}" cy="${sY-20}" r="3" fill="#0D47A1" opacity="0.6"/>
-    <rect x="${W/2-48}" y="${H-22}" width="96" height="5" rx="3" fill="${C.primary}" opacity="0.65"/>
-    <rect x="-3" y="${H*0.27}" width="5" height="46" rx="3" fill="${C.bgMid}" stroke="#000" stroke-width="0.5"/>
-    <rect x="-3" y="${H*0.40}" width="5" height="30" rx="3" fill="${C.bgMid}" stroke="#000" stroke-width="0.5"/>
-    <rect x="${W-2}" y="${H*0.33}" width="5" height="62" rx="3" fill="${C.bgMid}" stroke="#000" stroke-width="0.5"/>
+    <g opacity="${opacity}">
+      <rect x="3" y="3" width="${W-6}" height="${H-6}" rx="${R}" ry="${R}" fill="url(#metal)" stroke="${C.primary}" stroke-width="1.8" filter="url(#ph-sh)"/>
+      <rect x="3" y="3" width="${W-6}" height="${H-6}" rx="${R}" ry="${R}" fill="url(#shine)" opacity="0.3"/>
+      <rect x="3" y="3" width="${W-6}" height="${H-6}" rx="${R}" ry="${R}" fill="none" stroke="${glowColor}" stroke-width="1.2" opacity="${glowOpacity * 2.5}"/>
+      <rect x="${sX}" y="${sY}" width="${PH_W}" height="${PH_H}" rx="${Math.round(20*S)}" ry="${Math.round(20*S)}" fill="white"/>
+      <ellipse cx="${W/2}" cy="${sY-20}" rx="52" ry="13" fill="${C.bgDark}" opacity="0.95"/>
+      <circle cx="${W/2-18}" cy="${sY-20}" r="4" fill="#1A1A1A"/>
+      <circle cx="${W/2+18}" cy="${sY-20}" r="3" fill="#0D47A1" opacity="0.6"/>
+      <rect x="${W/2-48}" y="${H-22}" width="96" height="5" rx="3" fill="${C.primary}" opacity="0.65"/>
+      <rect x="-3" y="${H*0.27}" width="5" height="46" rx="3" fill="${C.bgMid}" stroke="#000" stroke-width="0.5"/>
+      <rect x="-3" y="${H*0.40}" width="5" height="30" rx="3" fill="${C.bgMid}" stroke="#000" stroke-width="0.5"/>
+      <rect x="${W-2}" y="${H*0.33}" width="5" height="62" rx="3" fill="${C.bgMid}" stroke="#000" stroke-width="0.5"/>
+    </g>
   </svg>`);
 }
 
@@ -351,7 +357,7 @@ function captionOverlaySVG(stepTitle, stepDesc, progress, alpha = 1.0) {
 //  EFFETS SPECIAUX DE L'APPLICATION
 // ═══════════════════════════════════════════════════════════════════════
 
-function kycScanOverlay(t) {
+function kycScanOverlay(t, opacity = 1.0) {
   const scanY = Math.round(((t * 1.5) % 1.0) * PH_H);
   return Buffer.from(`<svg width="${PH_W}" height="${PH_H}" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -360,22 +366,24 @@ function kycScanOverlay(t) {
         <stop offset="100%" stop-color="${C.cyan}" stop-opacity="0.45"/>
       </linearGradient>
     </defs>
-    <rect x="0" y="${Math.max(0, scanY - Math.round(40*S))}" width="${PH_W}" height="${Math.min(40*S, scanY)}" fill="url(#scanGrad)"/>
-    <rect x="0" y="${scanY}" width="${PH_W}" height="${Math.round(3*S)}" fill="${C.cyan}" opacity="0.9"/>
-    
-    <rect x="${Math.round(30*S)}" y="${Math.round(30*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
-    <rect x="${Math.round(30*S)}" y="${Math.round(30*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
-    <rect x="${PH_W - Math.round(55*S)}" y="${Math.round(30*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
-    <rect x="${PH_W - Math.round(34*S)}" y="${Math.round(30*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
-    
-    <rect x="${Math.round(30*S)}" y="${PH_H - Math.round(34*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
-    <rect x="${Math.round(30*S)}" y="${PH_H - Math.round(55*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
-    <rect x="${PH_W - Math.round(55*S)}" y="${PH_H - Math.round(34*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
-    <rect x="${PH_W - Math.round(34*S)}" y="${PH_H - Math.round(55*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
+    <g opacity="${opacity}">
+      <rect x="0" y="${Math.max(0, scanY - Math.round(40*S))}" width="${PH_W}" height="${Math.min(40*S, scanY)}" fill="url(#scanGrad)"/>
+      <rect x="0" y="${scanY}" width="${PH_W}" height="${Math.round(3*S)}" fill="${C.cyan}" opacity="0.9"/>
+      
+      <rect x="${Math.round(30*S)}" y="${Math.round(30*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
+      <rect x="${Math.round(30*S)}" y="${Math.round(30*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
+      <rect x="${PH_W - Math.round(55*S)}" y="${Math.round(30*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
+      <rect x="${PH_W - Math.round(34*S)}" y="${Math.round(30*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
+      
+      <rect x="${Math.round(30*S)}" y="${PH_H - Math.round(34*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
+      <rect x="${Math.round(30*S)}" y="${PH_H - Math.round(55*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
+      <rect x="${PH_W - Math.round(55*S)}" y="${PH_H - Math.round(34*S)}" width="${Math.round(25*S)}" height="${Math.round(4*S)}" fill="${C.cyan}" opacity="0.8"/>
+      <rect x="${PH_W - Math.round(34*S)}" y="${PH_H - Math.round(55*S)}" width="${Math.round(4*S)}" height="${Math.round(25*S)}" fill="${C.cyan}" opacity="0.8"/>
+    </g>
   </svg>`);
 }
 
-function qrGlowOverlay(t) {
+function qrGlowOverlay(t, opacity = 1.0) {
   const pulse = 0.5 + 0.5 * Math.abs(Math.sin(t * Math.PI * 3.2));
   return Buffer.from(`<svg width="${PH_W}" height="${PH_H}" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -384,17 +392,21 @@ function qrGlowOverlay(t) {
         <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
       </radialGradient>
     </defs>
-    <rect width="${PH_W}" height="${PH_H}" fill="url(#qrGrad)"/>
-    <rect x="${Math.round(PH_W * 0.18)}" y="${Math.round(PH_H * 0.22)}" width="${Math.round(PH_W * 0.64)}" height="${Math.round(PH_H * 0.32)}" rx="${Math.round(12*S)}" fill="none" stroke="${C.gold}" stroke-width="${(1.5 + pulse * 2.5).toFixed(2)}" opacity="${(0.3 + pulse * 0.5).toFixed(3)}"/>
+    <g opacity="${opacity}">
+      <rect width="${PH_W}" height="${PH_H}" fill="url(#qrGrad)"/>
+      <rect x="${Math.round(PH_W * 0.18)}" y="${Math.round(PH_H * 0.22)}" width="${Math.round(PH_W * 0.64)}" height="${Math.round(PH_H * 0.32)}" rx="${Math.round(12*S)}" fill="none" stroke="${C.gold}" stroke-width="${(1.5 + pulse * 2.5).toFixed(2)}" opacity="${(0.3 + pulse * 0.5).toFixed(3)}"/>
+    </g>
   </svg>`);
 }
 
-function gpsPulseOverlay(t) {
+function gpsPulseOverlay(t, opacity = 1.0) {
   const pulse = (t * 2.0) % 1.0;
   return Buffer.from(`<svg width="${PH_W}" height="${PH_H}" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="${Math.round(PH_W * 0.5)}" cy="${Math.round(PH_H * 0.51)}" r="${Math.round(40 * pulse * S)}" fill="none" stroke="${C.accent}" stroke-width="2" opacity="${(1.0 - pulse).toFixed(3)}"/>
-    <circle cx="${Math.round(PH_W * 0.5)}" cy="${Math.round(PH_H * 0.51)}" r="${Math.round(16 * S)}" fill="${C.accent}" opacity="0.3"/>
-    <circle cx="${Math.round(PH_W * 0.5)}" cy="${Math.round(PH_H * 0.51)}" r="${Math.round(6 * S)}" fill="${C.white}"/>
+    <g opacity="${opacity}">
+      <circle cx="${Math.round(PH_W * 0.5)}" cy="${Math.round(PH_H * 0.51)}" r="${Math.round(40 * pulse * S)}" fill="none" stroke="${C.accent}" stroke-width="2" opacity="${(1.0 - pulse).toFixed(3)}"/>
+      <circle cx="${Math.round(PH_W * 0.5)}" cy="${Math.round(PH_H * 0.51)}" r="${Math.round(16 * S)}" fill="${C.accent}" opacity="0.3"/>
+      <circle cx="${Math.round(PH_W * 0.5)}" cy="${Math.round(PH_H * 0.51)}" r="${Math.round(6 * S)}" fill="${C.white}"/>
+    </g>
   </svg>`);
 }
 
@@ -507,57 +519,156 @@ async function composePhoneFrame(opts, frameIdx, cacheKey, manifest) {
     return out;
   }
 
-  const alpha = fadeAlpha(t, 0.18, 0.15);
+  // 1. Durée de transition et calculs des animations fluides
+  const transDuration = 0.15; // 15% de la durée de la scène
+  let x_offset = 0;
+  let y_offset = 0;
+  let scale_factor = 1.0;
+  let opacity = 1.0;
 
-  // Apply Ken Burns Zoom
-  let kbBuf = imgBuf;
+  // Détermination de la transition dynamique selon l'acte
+  const transType = 
+      [1, 4, 10].includes(act.act) ? 'slide-h' :
+      [2, 7].includes(act.act)     ? 'slide-h-rev' :
+      [3, 8].includes(act.act)     ? 'slide-v' :
+      [5, 9].includes(act.act)     ? 'zoom' :
+      'fade';
+
+  if (t < transDuration) {
+    const t_in = t / transDuration;
+    const eased = ease.outCubic(t_in);
+    opacity = eased;
+    if (transType === 'slide-h') {
+      x_offset = Math.round(500 * (1.0 - eased) * S);
+    } else if (transType === 'slide-h-rev') {
+      x_offset = Math.round(-500 * (1.0 - eased) * S);
+    } else if (transType === 'slide-v') {
+      y_offset = Math.round(400 * (1.0 - eased) * S);
+    } else if (transType === 'zoom') {
+      scale_factor = lerp(0.8, 1.0, eased);
+    }
+  } else if (t > 1.0 - transDuration) {
+    const t_out = (1.0 - t) / transDuration;
+    const eased = ease.outCubic(t_out);
+    opacity = eased;
+    if (transType === 'slide-h') {
+      x_offset = Math.round(-500 * (1.0 - eased) * S);
+    } else if (transType === 'slide-h-rev') {
+      x_offset = Math.round(500 * (1.0 - eased) * S);
+    } else if (transType === 'slide-v') {
+      y_offset = Math.round(-400 * (1.0 - eased) * S);
+    } else if (transType === 'zoom') {
+      scale_factor = lerp(0.8, 1.0, eased);
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────────
+  //  AFFICHAGE DIRECT — Les captures contiennent déjà le mockup.
+  //  On ajuste la taille pour une présentation harmonieuse sans
+  //  ajouter de double cadre de téléphone.
+  // ──────────────────────────────────────────────────────────────────
+
+  // Calculer la taille finale de l'image en respectant le ratio original
+  const meta = await sharp(imgBuf).metadata();
+  const imgRatio = meta.width / meta.height;
+
+  // Taille cible : remplir au mieux la zone d'affichage avec marge
+  let displayH = Math.round(IMG_MAX_H * scale_factor);
+  let displayW = Math.round(displayH * imgRatio);
+
+  // Si trop large, contraint par la largeur
+  if (displayW > Math.round(IMG_MAX_W * scale_factor)) {
+    displayW = Math.round(IMG_MAX_W * scale_factor);
+    displayH = Math.round(displayW / imgRatio);
+  }
+
+  // Position centrée sur le canvas
+  const center_x = Math.round(VW / 2);
+  const center_y = IMG_MARGIN_TOP + Math.round(IMG_MAX_H / 2);
+
+  const img_left = Math.round(center_x - displayW / 2) + x_offset;
+  const img_top  = Math.round(center_y - displayH / 2) + y_offset;
+
+  // Apply Ken Burns subtle zoom
+  let finalBuf = imgBuf;
   try {
-    const zoom = lerp(1.0, 1.07, ease.inOut(t));
-    const meta = await sharp(imgBuf).metadata();
+    const zoom = lerp(1.0, 1.04, ease.inOut(t)); // zoom subtil (4%)
     const srcW = Math.round(meta.width / zoom);
     const srcH = Math.round(meta.height / zoom);
     
-    // Extract and zoom
     let zoomed = await sharp(imgBuf)
       .extract({
         left:   Math.max(0, Math.round((meta.width - srcW) / 2)),
         top:    Math.max(0, Math.round((meta.height - srcH) / 2)),
-        width:  srcW,
-        height: srcH,
+        width:  Math.min(srcW, meta.width),
+        height: Math.min(srcH, meta.height),
       })
-      .resize(PH_W, PH_H, { fit: 'fill' })
+      .resize(displayW, displayH, { fit: 'fill' })
       .png().toBuffer();
 
-    // Mask with rounded corners to fit inside the bezel perfectly
-    const roundedCornerMask = Buffer.from(
-      `<svg width="${PH_W}" height="${PH_H}"><rect x="0" y="0" width="${PH_W}" height="${PH_H}" rx="${Math.round(20*S)}" ry="${Math.round(20*S)}" fill="#fff"/></svg>`
-    );
-    kbBuf = await sharp(zoomed)
-      .composite([{ input: roundedCornerMask, blend: 'dest-in' }])
-      .png().toBuffer();
+    // Applique le fondu de transition (opacité)
+    if (opacity < 1.0) {
+      const opacityMask = Buffer.from(
+        `<svg width="${displayW}" height="${displayH}"><rect width="${displayW}" height="${displayH}" fill="#fff" opacity="${opacity}"/></svg>`
+      );
+      finalBuf = await sharp(zoomed)
+        .composite([{ input: opacityMask, blend: 'dest-in' }])
+        .png().toBuffer();
+    } else {
+      finalBuf = zoomed;
+    }
   } catch (e) {
-    logger.error(`Ken Burns error composition on frame ${frameIdx}: ${e.message}`);
+    logger.error(`Ken Burns error on frame ${frameIdx}: ${e.message}`);
+    // Fallback : redimensionner simplement
+    finalBuf = await sharp(imgBuf).resize(displayW, displayH, { fit: 'contain' }).png().toBuffer();
   }
 
-  // Generate frame layers
+  // Couches d'assemblage (SANS boîtier de téléphone)
   const bg      = backgroundSVG(t);
   const header  = headerOverlaySVG();
-  const bezel   = phoneBezelSVG(C.accent, 0.18 * alpha);
-  const caption = captionOverlaySVG(act.title, act.desc, progress, alpha);
+  const caption = captionOverlaySVG(act.title, act.desc, progress, opacity);
+
+  // Ombre portée subtile derrière l'image pour la détacher du fond
+  const shadowPad = Math.round(20 * S);
+  const shadowSVG = Buffer.from(
+    `<svg width="${displayW + shadowPad * 2}" height="${displayH + shadowPad * 2}" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="ds" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="${Math.round(12*S)}"/>
+        <feOffset dx="0" dy="${Math.round(6*S)}" result="ob"/>
+        <feFlood flood-color="#000" flood-opacity="0.45"/>
+        <feComposite in2="ob" operator="in"/>
+        <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter></defs>
+      <rect x="${shadowPad}" y="${shadowPad}" width="${displayW}" height="${displayH}" rx="${Math.round(16*S)}" fill="transparent" filter="url(#ds)"/>
+    </svg>`
+  );
+  const shadowBuf = await sharp(shadowSVG).png().toBuffer();
 
   const composites = [
-    { input: bg,      top: 0,        left: 0 },
-    { input: header,  top: 0,        left: 0 },
-    { input: bezel,   top: PH_TOP,   left: PH_LEFT },
-    { input: kbBuf,    top: PH_SCR_T, left: PH_SCR_L },
+    { input: bg,        top: 0,                               left: 0 },
+    { input: header,    top: 0,                               left: 0 },
+    { input: shadowBuf, top: img_top - shadowPad,              left: img_left - shadowPad },
+    { input: finalBuf,  top: img_top,                          left: img_left },
   ];
 
-  // Visual interactive overlays on the phone screen
-  if (scene.effect === 'kyc_scan') composites.push({ input: kycScanOverlay(t), top: PH_SCR_T, left: PH_SCR_L });
-  if (scene.effect === 'qr_glow')  composites.push({ input: qrGlowOverlay(t),  top: PH_SCR_T, left: PH_SCR_L });
-  if (scene.effect === 'gps_pulse') composites.push({ input: gpsPulseOverlay(t), top: PH_SCR_T, left: PH_SCR_L });
+  // Incrustation des effets interactifs (redimensionnés à la taille d'affichage)
+  if (scene.effect === 'kyc_scan') {
+    const scanSVG = kycScanOverlay(t, opacity);
+    const resizedScan = await sharp(scanSVG).resize(displayW, displayH).png().toBuffer();
+    composites.push({ input: resizedScan, top: img_top, left: img_left });
+  }
+  if (scene.effect === 'qr_glow') {
+    const qrSVG = qrGlowOverlay(t, opacity);
+    const resizedQR = await sharp(qrSVG).resize(displayW, displayH).png().toBuffer();
+    composites.push({ input: resizedQR, top: img_top, left: img_left });
+  }
+  if (scene.effect === 'gps_pulse') {
+    const gpsSVG = gpsPulseOverlay(t, opacity);
+    const resizedGPS = await sharp(gpsSVG).resize(displayW, displayH).png().toBuffer();
+    composites.push({ input: resizedGPS, top: img_top, left: img_left });
+  }
 
-  // Glassmorphism caption overlay at the very bottom
+  // Légende avec effet glassmorphism
   composites.push({ input: caption, top: 0, left: 0 });
 
   await sharp({ create: { width: VW, height: VH, channels: 3, background: rgb(C.bgDark) } })
@@ -582,7 +693,7 @@ async function renderFrame(act, scene, imgBuf, t, frameIdx, progress, cacheKey, 
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-//  SCÉNARIO COMPLET — DÉMO MOCKUP (PARCOURS UTILISATEUR EN 10 ÉTAPES)
+//  SCÉNARIO COMPLET — DÉMO MOCKUP (PARCOURS UTILISATEUR RÉEL)
 // ═══════════════════════════════════════════════════════════════════════
 
 const SCENARIO = [
@@ -597,8 +708,8 @@ const SCENARIO = [
     title: "1. Écran d'accueil",
     desc: "Découvrez l'interface de bienvenue et le carrousel des fonctionnalités clés.",
     scenes: [
-      { file: 'Screen1.jpg', duration: 4, label: "Écran de démarrage (Splash Screen)" },
-      { file: 'Screen2.jpg', duration: 4, label: "Onboarding & fonctionnalités clés" }
+      { file: 'd_01_ecran_accueil.png', duration: 4, label: "Écran de démarrage (Splash Screen)" },
+      { file: '01_landing_onboarding.png', duration: 4, label: "Onboarding & fonctionnalités" }
     ]
   },
   // 2. Inscription & Connexion (8s)
@@ -607,7 +718,8 @@ const SCENARIO = [
     title: "2. Inscription & Connexion",
     desc: "Créez votre compte rapidement et choisissez votre rôle : Passager ou Conducteur.",
     scenes: [
-      { file: 'inscription.jpg', duration: 8, label: "Sélection du rôle et inscription utilisateur" }
+      { file: '02_inscription_role.png', duration: 4, label: "Sélection du rôle utilisateur" },
+      { file: '03_inscription_telephone.png', duration: 4, label: "Saisie de numéro de téléphone" }
     ]
   },
   // 3. Vérification KYC (16s)
@@ -616,10 +728,10 @@ const SCENARIO = [
     title: "3. Vérification KYC Biométrique",
     desc: "Un système de sécurité avancé avec extraction OCR de la CIN et reconnaissance faciale par IA.",
     scenes: [
-      { file: 'd_27_verif_intro.png', duration: 4, label: "Introduction de la vérification d'identité" },
-      { file: 'd_28_verif_id_capture.png', duration: 4, label: "Capture de la pièce d'identité et OCR", effect: 'kyc_scan' },
-      { file: 'd_29_verif_face_capture.png', duration: 4, label: "Scan facial & détection de vivacité", effect: 'kyc_scan' },
-      { file: 'd_30_verif_pending.png', duration: 4, label: "Traitement intelligent et validation d'identité" }
+      { file: '17_kyc_intro.png', duration: 4, label: "Introduction de la vérification d'identité" },
+      { file: '19_kyc_capture_verso.png', duration: 4, label: "Capture de la pièce d'identité et OCR", effect: 'kyc_scan' },
+      { file: '20_kyc_capture_visage.png', duration: 4, label: "Scan facial & liveness par l'IA", effect: 'kyc_scan' },
+      { file: '21_kyc_verification_en_cours.png', duration: 4, label: "Validation finale du dossier KYC" }
     ]
   },
   // 4. Recherche de trajet (10s)
@@ -628,8 +740,8 @@ const SCENARIO = [
     title: "4. Recherche de Trajet",
     desc: "Saisissez votre destination et trouvez instantanément les trajets disponibles.",
     scenes: [
-      { file: 'Passager réserve.jpg', duration: 5, label: "Saisie de l'itinéraire et de la date" },
-      { file: 'p_08_search_results.png', duration: 5, label: "Recherche de trajets et liste des conducteurs vérifiés" }
+      { file: '04_accueil_passager.png', duration: 5, label: "Recherche de trajet passager" },
+      { file: '05_recherche_resultats.png', duration: 5, label: "Liste des trajets et conducteurs certifiés" }
     ]
   },
   // 5. Publication de trajet (12s)
@@ -638,17 +750,17 @@ const SCENARIO = [
     title: "5. Publication d'un Trajet",
     desc: "Conducteurs : publiez votre itinéraire en quelques clics et partagez vos frais.",
     scenes: [
-      { file: 'd_03_tab_publish.png', duration: 6, label: "Configuration du trajet (départ, arrivée, prix)" },
-      { file: 'Trajet publié.jpg', duration: 6, label: "Trajet enregistré et publié sur la carte" }
+      { file: '09_accueil_conducteur.png', duration: 6, label: "Tableau de bord de publication conducteur" },
+      { file: '10_publier_trajet_formulaire.png', duration: 6, label: "Formulaire de publication de trajet inter-wilayas" }
     ]
   },
   // 6. Réservation de trajet (8s)
   {
     act: 6, tag: "Réservation de trajet",
-    title: "6. Réservation d'un Trajet",
+    title: "6. Réservation de Trajet",
     desc: "Sélectionnez votre trajet idéal, examinez les détails et réservez instantanément.",
     scenes: [
-      { file: 'p_09_trip_details.png', duration: 8, label: "Détails du trajet et réservation passager" }
+      { file: '06_recherche_details_reservation.png', duration: 8, label: "Fiche détaillée du trajet et réservation" }
     ]
   },
   // 7. Paiement sécurisé (8s)
@@ -657,17 +769,16 @@ const SCENARIO = [
     title: "7. Paiement Sécurisé",
     desc: "Réglez vos réservations de manière sécurisée via CIB, Edahabia, ou en espèces.",
     scenes: [
-      { file: 'd_11_wallet.png', duration: 8, label: "Portefeuille numérique et passerelle de paiement" }
+      { file: '14_portefeuille_solde.png', duration: 8, label: "Portefeuille virtuel et paiement local" }
     ]
   },
   // 8. Génération du QR Code (8s)
   {
     act: 8, tag: "QR Code unique",
-    title: "8. Billet & QR Code Unique",
+    title: "8. Ticket & QR Code Unique",
     desc: "Votre ticket d'embarquement numérique est généré. Scannez au départ pour valider le trajet.",
     scenes: [
-      { file: 'p_10_ticket.png', duration: 4, label: "Billet d'embarquement avec QR Code sécurisé", effect: 'qr_glow' },
-      { file: 'QR scanné au départ.jpg', duration: 4, label: "Validation de la présence par scan de sécurité au départ", effect: 'qr_glow' }
+      { file: '07_ticket_confirme_qr.png', duration: 8, label: "Validation de présence par scan QR sécurisé", effect: 'qr_glow' }
     ]
   },
   // 9. Suivi en temps réel (10s)
@@ -676,16 +787,17 @@ const SCENARIO = [
     title: "9. Suivi GPS en Temps Réel",
     desc: "Suivez le déplacement du véhicule en temps réel sur la carte interactive.",
     scenes: [
-      { file: 'p_26_live_tracking.png', duration: 10, label: "Suivi en temps réel de la position du véhicule", effect: 'gps_pulse' }
+      { file: 'live_tracking.png', duration: 10, label: "Carte temps réel de géolocalisation", effect: 'gps_pulse' }
     ]
   },
   // 10. Profil utilisateur (8s)
   {
     act: 10, tag: "Profil utilisateur",
-    title: "10. Profil Utilisateur",
+    title: "10. Profil & Tableau de Bord",
     desc: "Gérez vos informations personnelles, vos évaluations et vos statistiques de confiance.",
     scenes: [
-      { file: 'p_05_tab_profile.png', duration: 8, label: "Profil utilisateur complet et niveau de confiance" }
+      { file: '08_profil_passager.png', duration: 4, label: "Profil utilisateur avec badge vert vérifié" },
+      { file: 'Tableau_de_Bord.png', duration: 4, label: "Statistiques et historiques des trajets" }
     ]
   },
   // OUTRO (4s)
@@ -748,9 +860,9 @@ async function processAllScenes() {
           continue;
         }
         try {
-          // Pre-load screenshot at higher resolution to preserve quality during zooms
+          // Pré-charge la capture d'écran en résolution native
+          // Les images contiennent déjà le mockup — on les charge telles quelles
           imgBuf = await sharp(imgPath)
-            .resize(PH_W * 2, PH_H * 2, { fit: 'cover', position: 'top' })
             .png().toBuffer();
         } catch (e) {
           logger.error(`Erreur chargement image ${scene.file}: ${e.message}`);
@@ -796,7 +908,7 @@ function writeConcatFile(frameList) {
     `file '${f.path.replace(/\\/g, '/')}'`,
     `duration ${f.duration.toFixed(6)}`,
   ]);
-  // FFmpeg concat bug workaround (repeat last file without duration)
+  // FFmpeg concat bug workaround
   lines.push(`file '${frameList[frameList.length - 1].path.replace(/\\/g, '/')}'`);
   fs.writeFileSync(CONCAT_FILE, lines.join('\n'));
 }
@@ -898,12 +1010,7 @@ function generateYouTubeChapters() {
 }
 
 function cleanup() {
-  // Désactivé pour préserver le cache et éviter les suppressions prématurées
-  /*
-  if (!CONFIG.cacheEnabled) {
-    try { fs.rmSync(CONFIG.tempDir, { recursive: true, force: true }); } catch (_) {}
-  }
-  */
+  // Préserve le cache
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -923,7 +1030,7 @@ function cleanup() {
   const screenFiles = fs.existsSync(CONFIG.screenDir)
     ? fs.readdirSync(CONFIG.screenDir).filter(f => /\.(png|jpg|jpeg)$/i.test(f) && !f.startsWith('.'))
     : [];
-  logger.info(`Captures disponibles dans Screen_mobile: ${screenFiles.length} fichiers`);
+  logger.info(`Captures disponibles dans Screen_Mobile: ${screenFiles.length} fichiers`);
 
   try {
     const frameList = await processAllScenes();
