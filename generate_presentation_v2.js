@@ -1365,7 +1365,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         {
             num: "H1",
             title: "KYC Biométrique",
-            crit: "Seuil de décision discriminants par rôle",
+            crit: "Seuils de décision discriminants par rôle",
             res: "Non quantifié sur bases de référence",
             badge: "⚠ PARTIELLE",
             color: COLOR_GOLD
