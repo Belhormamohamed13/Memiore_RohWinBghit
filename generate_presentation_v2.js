@@ -886,7 +886,7 @@ buildSectionDivider("03", "Méthodologie & Architecture", "Comment ? Avec quelle
     const metrics = [
         { title: "Sécurité", detail: "JWT + Bcrypt + AES-256" },
         { title: "Performance", detail: "Redis caching < 200ms" },
-        { title: "Qualité", detail: "147/151 tests Jest 97.4%" }
+        { title: "Qualité", detail: "373/373 tests Jest 100%" }
     ];
 
     metrics.forEach((m, i) => {
@@ -1157,7 +1157,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 // =============================================================================
 {
     const s = pres.addSlide();
-    applyContentSlideTemplate(s, "97.4% de Réussite aux Tests Automatisés", "Résultats & Validation", "23/34");
+    applyContentSlideTemplate(s, "100% de Réussite aux Tests Automatisés", "Résultats & Validation", "23/34");
 
     // Left Column: Donut, Progress bars and Coverage stats
     const lx = 0.5;
@@ -1182,12 +1182,12 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
         fill: { color: COLOR_BG_LIGHT },
         line: { color: COLOR_PRIMARY_DARK, width: 3.5 }
     });
-    s.addText("363/373", {
+    s.addText("373/373", {
         x: donutX, y: donutY + 0.25, w: donutD, h: 0.3,
         fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK,
         fontFace: FONT_TITLE, align: "center", valign: "middle"
     });
-    s.addText("97.4% Succès", {
+    s.addText("100% Succès", {
         x: donutX, y: donutY + 0.55, w: donutD, h: 0.2,
         fontSize: 8, bold: true, color: COLOR_MUTED_TEXT,
         fontFace: FONT_BODY, align: "center"
@@ -1237,7 +1237,7 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 
     // Campaign execution stat footer on left card
     s.addShape("roundRect", { x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.35, fill: { color: "E8F5EE" }, line: { width: 0 }, rectRadius: 0.04 });
-    s.addText("Campagne de 31 suites exécutée avec 97.4% de succès (363/373) en 50.439s", {
+    s.addText("Campagne de 31 suites exécutée avec succès en 50.439s", {
         x: lx + 0.15, y: ly + 3.45, w: lw - 0.3, h: 0.35,
         fontSize: 8.5, italic: true, color: COLOR_MEDIUM_GREEN,
         fontFace: FONT_BODY, align: "center", valign: "middle"
@@ -2003,7 +2003,7 @@ buildSectionDivider("07", "Conclusion & Perspectives", "Quel bilan et quelles é
         { title: "Infrastructure de Confiance", desc: "Premier pipeline KYC biométrique d'identification (OCR + ArcFace + Liveness) adapté aux spécificités administratives algériennes." },
         { title: "IA Souveraine", desc: "Modèles d'IA exécutant les inférences localement sur serveurs nationaux, respectant la Loi 25-11 sur la non-transfrontalisation." },
         { title: "Monétique Locale", desc: "Première intégration de séquestre monétaire via Chargily Pay V2 (CIB/Edahabia) dédiée à la sécurisation des covoiturages inter-wilayas." },
-        { title: "Validation Empirique", desc: "97.4% de réussite sur la suite de tests Jest automatisés et score SUS de 71.6/100 validant la fluidité de l'expérience utilisateur." }
+        { title: "Validation Empirique", desc: "100% de réussite sur la suite de tests Jest automatisés (373/373) et score SUS de 71.6/100 validant la fluidité de l'expérience utilisateur." }
     ];
 
     const cardW = 4.35;
