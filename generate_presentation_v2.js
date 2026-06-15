@@ -11,18 +11,18 @@ const fs = require("fs");
 // ─── DESIGN SYSTEM CONSTANTS ────────────────────────────────────────────────
 const COLOR_PRIMARY_DARK = "1B5E3B";
 const COLOR_MEDIUM_GREEN = "2E7D52";
-const COLOR_LIGHT_GREEN  = "4CAF72";
-const COLOR_GOLD         = "C9A84C";
-const COLOR_BG_LIGHT     = "F7F5F0";
-const COLOR_BG_DARK      = "0F3D2B";
-const COLOR_WHITE        = "FFFFFF";
-const COLOR_DARK_TEXT    = "1A1A1A";
-const COLOR_MUTED_TEXT   = "5A5A5A";
-const COLOR_LIGHT_GRAY   = "E0E0E0";
-const COLOR_RED          = "C0392B";
+const COLOR_LIGHT_GREEN = "4CAF72";
+const COLOR_GOLD = "C9A84C";
+const COLOR_BG_LIGHT = "F7F5F0";
+const COLOR_BG_DARK = "0F3D2B";
+const COLOR_WHITE = "FFFFFF";
+const COLOR_DARK_TEXT = "1A1A1A";
+const COLOR_MUTED_TEXT = "5A5A5A";
+const COLOR_LIGHT_GRAY = "E0E0E0";
+const COLOR_RED = "C0392B";
 
 const FONT_TITLE = "Cambria";
-const FONT_BODY  = "Calibri";
+const FONT_BODY = "Calibri";
 
 // Shadow Factory Function (Avoids mutation bugs)
 const makeShadow = () => ({
@@ -39,25 +39,25 @@ const SW = 10.0;
 const SH = 5.625;
 
 // Image Paths (corrected folder case to Screen_Mobile and matched actual assets)
-const IMG_LOGO          = path.join(__dirname, "Screen_Mobile", "logo_bus.png");
-const IMG_UNIV_LOGO     = path.join(__dirname, "figures", "logo_universite.png");
-const IMG_SPLASH        = path.join(__dirname, "figures", "v2_welcome_splash.jpg");
-const IMG_INSCRIP       = path.join(__dirname, "Screen_Mobile", "02_inscription_role.png");
-const IMG_RESERVE       = path.join(__dirname, "Screen_Mobile", "06_recherche_details_reservation.png");
-const IMG_QR_DEPART     = path.join(__dirname, "Screen_Mobile", "07_ticket_confirme_qr.png");
+const IMG_LOGO = path.join(__dirname, "Screen_Mobile", "logo_bus.png");
+const IMG_UNIV_LOGO = path.join(__dirname, "figures", "logo_universite.png");
+const IMG_SPLASH = path.join(__dirname, "figures", "v2_welcome_splash.jpg");
+const IMG_INSCRIP = path.join(__dirname, "Screen_Mobile", "02_inscription_role.png");
+const IMG_RESERVE = path.join(__dirname, "Screen_Mobile", "06_recherche_details_reservation.png");
+const IMG_QR_DEPART = path.join(__dirname, "Screen_Mobile", "07_ticket_confirme_qr.png");
 
 // New Technical diagrams and screenshots
-const IMG_USE_CASE      = path.join(__dirname, "figures", "fig_use_case.png");
+const IMG_USE_CASE = path.join(__dirname, "figures", "fig_use_case.png");
 const IMG_CLASS_DIAGRAM = path.join(__dirname, "figures", "fig_class_diagram.png");
-const IMG_DEPLOYMENT    = path.join(__dirname, "figures", "fig_deployment2.png");
-const IMG_JEST_RESULTS  = path.join(__dirname, "Screen_Mobile", "jest_results.png");
-const IMG_SEQ_KYC       = path.join(__dirname, "figures", "fig_sequence_kyc.png");
-const IMG_KYC_INTRO     = path.join(__dirname, "Screen_Mobile", "17_kyc_intro.png");
-const IMG_KYC_FACE      = path.join(__dirname, "Screen_Mobile", "20_kyc_capture_visage.png");
-const IMG_SEQ_CHECKIN   = path.join(__dirname, "figures", "fig_sequence_checkin.png");
-const IMG_SEQ_BOOKING   = path.join(__dirname, "figures", "fig_sequence_booking.png");
+const IMG_DEPLOYMENT = path.join(__dirname, "figures", "fig_deployment2.png");
+const IMG_JEST_RESULTS = path.join(__dirname, "Screen_Mobile", "jest_results.png");
+const IMG_SEQ_KYC = path.join(__dirname, "figures", "fig_sequence_kyc.png");
+const IMG_KYC_INTRO = path.join(__dirname, "Screen_Mobile", "17_kyc_intro.png");
+const IMG_KYC_FACE = path.join(__dirname, "Screen_Mobile", "20_kyc_capture_visage.png");
+const IMG_SEQ_CHECKIN = path.join(__dirname, "figures", "fig_sequence_checkin.png");
+const IMG_SEQ_BOOKING = path.join(__dirname, "figures", "fig_sequence_booking.png");
 const IMG_ARCHITECTURE_DIAG = path.join(__dirname, "figures", "Architecture.png");
-const IMG_DEPLOYMENT_CLOUD   = path.join(__dirname, "figures", "déploiement_cloud.png");
+const IMG_DEPLOYMENT_CLOUD = path.join(__dirname, "figures", "déploiement_cloud.png");
 
 // Helper to encode image files to Base64 data URLs for reliable pptxgenjs embedding in Node.js
 const toBase64 = (filePath) => {
@@ -1503,11 +1503,11 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
     // ── 4 BADGES FONCTIONNALITÉS (bande au-dessus de la vidéo) ───────────────
     const badges = [
         { icon: "APP", label: "Application Mobile" },
-        { icon: "KYC", label: "KYC Biometrique"    },
-        { icon: "PAY", label: "Chargily Pay V2"  },
-        { icon: "GPS", label: "GPS Temps Reel"      },
+        { icon: "KYC", label: "KYC Biometrique" },
+        { icon: "PAY", label: "Chargily Pay V2" },
+        { icon: "GPS", label: "GPS Temps Reel" },
     ];
-    const badgeW   = 1.52;
+    const badgeW = 1.52;
     const badgeGap = 0.12;
     const badgeStartX = 0.4;
 
@@ -1540,8 +1540,8 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
     });
 
     // ── ZONE VIDÉO GAUCHE (70 % ≈ 6.8 inch) ──────────────────────────────────
-    const VX  = 0.4;
-    const VY  = 1.74;
+    const VX = 0.4;
+    const VY = 1.74;
     const VW2 = 6.6;
     const VH2 = 3.45;
 
@@ -1642,8 +1642,8 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
     });
 
     // ── PANNEAU DROIT (30 %) — Fonctionnalités clés ───────────────────────────
-    const RX  = VX + VW2 + 0.18;
-    const RW  = SW - RX - 0.15;
+    const RX = VX + VW2 + 0.18;
+    const RW = SW - RX - 0.15;
 
     // Titre panneau
     s.addText("Fonctionnalités Clés", {
@@ -1654,12 +1654,12 @@ buildSectionDivider("05", "Résultats & Validation", "Qu'avons-nous obtenu ?", "
 
     // Liste des fonctionnalités
     const features = [
-        { check: true,  label: "Inscription & Auth",    sub: "OTP + Rôle (Passager/Chauffeur)" },
-        { check: true,  label: "KYC Biometrique",       sub: "OCR + ArcFace + Vivacite" },
-        { check: true,  label: "Publication Trajet",    sub: "Carte interactive + prix auto" },
-        { check: true,  label: "Reservation Passager",  sub: "Recherche + detail + paiement" },
-        { check: true,  label: "Billet & QR Code",      sub: "Boarding Pass + scan depart" },
-        { check: true,  label: "Suivi GPS Temps Reel",  sub: "WebSocket + Mapbox SDK" },
+        { check: true, label: "Inscription & Auth", sub: "OTP + Rôle (Passager/Chauffeur)" },
+        { check: true, label: "KYC Biometrique", sub: "OCR + ArcFace + Vivacite" },
+        { check: true, label: "Publication Trajet", sub: "Carte interactive + prix auto" },
+        { check: true, label: "Reservation Passager", sub: "Recherche + detail + paiement" },
+        { check: true, label: "Billet & QR Code", sub: "Boarding Pass + scan depart" },
+        { check: true, label: "Suivi GPS Temps Reel", sub: "WebSocket + Mapbox SDK" },
     ];
 
     const fY0 = VY + 0.32;

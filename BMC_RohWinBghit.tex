@@ -5,7 +5,15 @@
 \usepackage{polyglossia}
 \setmainlanguage{french}
 \setotherlanguage{arabic}
-\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+\newfontfamily\arabicfont[
+  Script=Arabic,
+  Scale=1.1,
+  Extension=.ttf,
+  UprightFont=Amiri-Regular,
+  BoldFont=Amiri-Bold,
+  ItalicFont=Amiri-Italic,
+  BoldItalicFont=Amiri-BoldItalic
+]{Amiri-Regular}
 
 \usepackage{geometry}
 \geometry{margin=2cm}
