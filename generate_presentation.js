@@ -723,8 +723,8 @@ async function buildPresentation() {
 
         const legalCards = [
             [icons.fileShield, "Consentement Explicite", "Collecte de données uniquement\naprès accord utilisateur (Art. 7)"],
-            [icons.key, "Chiffrement AES-256", "Données biométriques stockées\nchiffrées côté serveur (Art. 42)"],
-            [icons.gavel, "Droit à l'Effacement", "Suppression des données sur\ndemande de l'utilisateur (Art. 34)"],
+            [icons.key, "Chiffrement AES-256", "Données biométriques stockées\nchiffrées côté serveur (Art. 38)"],
+            [icons.gavel, "Droit à l'Effacement", "Suppression des données sur\ndemande de l'utilisateur (Art. 35)"],
             [icons.shieldVirus, "Traitement Local", "Aucun transfert transfrontalier\nsans cadre légal (Art. 44)"],
         ];
         legalCards.forEach(([icon, title, body], i) => {

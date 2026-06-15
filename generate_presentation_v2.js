@@ -698,9 +698,9 @@ buildSectionDivider("02", "Contexte & Cadre Légal", "Quel marché ? Quelle rég
 
     const regulations = [
         { title: "Consentement Explicite", art: "Art. 7", desc: "Collecte de données sensibles (biométrie) uniquement après accord explicite de l'utilisateur." },
-        { title: "Chiffrement AES-256", art: "Art. 42", desc: "Données biométriques et d'identification stockées sous forme chiffrée côté serveur." },
+        { title: "Chiffrement AES-256", art: "Art. 38", desc: "Données biométriques et d'identification stockées sous forme chiffrée côté serveur." },
         { title: "Traitement Local", art: "Art. 44", desc: "Traitement des données personnelles sur le territoire algérien sans transfert transfrontalier." },
-        { title: "Droit à l'Effacement", art: "Art. 34", desc: "Garantir à l'utilisateur la suppression définitive de ses données sur demande." }
+        { title: "Droit à l'Effacement", art: "Art. 35", desc: "Garantir à l'utilisateur la suppression définitive de ses données sur demande." }
     ];
 
     const cardW = 4.35;
