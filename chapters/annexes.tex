@@ -156,210 +156,147 @@ La structuration financière de \textit{RohWinBghit} se décompose entre les inv
 
 Le tableau~\ref{tab:investissements} détaille les investissements nécessaires au lancement de la startup, incluant les frais juridiques de constitution, la protection intellectuelle, ainsi que l'acquisition du matériel informatique et de l'aménagement des bureaux.
 
-\begin{table}[!htbp]
-\centering
-\begin{tabularx}{\textwidth}{|X|r|c|r|}
-\hline
-\rowcolor{rohlight}
-\textbf{Désignation} & \textbf{Montant unitaire (DZD)} & \textbf{Quantité} & \textbf{Total (DZD)} \\
-\hline
-Frais d'immatriculation au registre du commerce & 10 000 & 1 & 10 000 \\
-\hline
-Frais de dépôt de marque (INAPI) & 20 000 & 1 & 20 000 \\
-\hline
-Honoraires d'avocats / Notaire & 50 000 & 1 & 50 000 \\
-\hline
-Ordinateurs pour l'équipe & 180 000 & 7 & 1 260 000 \\
-\hline
-Bureaux et aménagement & 60 000 & 7 & 420 000 \\
-\hline
-Imprimante et licences logicielles & 38 700 & 1 & 38 700 \\
-\hline
-\rowcolor{rohlight!40}
-\multicolumn{3}{|l|}{\textbf{Total des Investissements Initiaux (Somme 1)}} & \textbf{1 798 700} \\
-\hline
-\end{tabularx}
-\caption{Tableau 1 : Investissements initiaux}
-\label{tab:investissements}
-\end{table}
+% ===== Branding Colors for BMC =====
+\definecolor{bmcgreen}{RGB}{27,94,59}        % Deep Green #1B5E3B
+\definecolor{bmclightgreen}{RGB}{232,245,238}% Soft Green #E8F5EE
+\definecolor{bmclight}{RGB}{247,245,240}     % Light Beige #F7F5F0
+\definecolor{bmcblue}{RGB}{27,94,59}         % Green synonym for existing headers
+\definecolor{bmcgold}{RGB}{201,168,76}       % Gold #C9A84C
 
-\paragraph{Dépenses régulières :}
-
-Le fonctionnement continu de la plateforme exige de faire face à des dépenses opérationnelles (OPEX). Le tableau~\ref{tab:depenses} regroupe les charges salariales, les coûts d'infrastructure et d'acquisition (marketing).
-
-\begin{table}[!htbp]
-\centering
-\begin{tabularx}{\textwidth}{|X|r|c|r|}
-\hline
-\rowcolor{rohlight}
-\textbf{Désignation} & \textbf{Montant mensuel (DZD)} & \textbf{Quantité} & \textbf{Total Mensuel (DZD)} \\
-\hline
-Loyer du bureau (F3) & 60 000 & 1 & 60 000 \\
-\hline
-Salaire Développeur & 90 000 & 2 & 180 000 \\
-\hline
-Salaire Modérateur / Support Client & 50 000 & 2 & 100 000 \\
-\hline
-Salaire Responsable Marketing & 80 000 & 1 & 80 000 \\
-\hline
-Salaire Directeur / Team Leader & 120 000 & 2 & 240 000 \\
-\hline
-Hébergement VPS (Hetzner) \& APIs (Mapbox, SMS) & 22 500 & 1 & 22 500 \\
-\hline
-Budget Marketing et Publicité & 60 000 & 1 & 60 000 \\
-\hline
-\rowcolor{rohlight!40}
-\multicolumn{3}{|l|}{\textbf{Total des Dépenses Régulières (Somme 2)}} & \textbf{742 500} \\
-\hline
-\end{tabularx}
-\caption{Tableau 2 : Dépenses régulières mensuelles}
-\label{tab:depenses}
-\end{table}
-
-\paragraph{Le coût total (1\textsuperscript{er} mois de lancement) :}
-Somme 1 + Somme 2 = 1 798 700 + 742 500 = \textbf{2 541 200 DZD}.
-
-\subsubsection{Revenue streams (Revenus)}
-
-Nous générons principalement des revenus en prélevant des commissions transactionnelles sur les mises en relation réussies, tout en proposant des services à valeur ajoutée sous forme d'abonnement pour nos conducteurs les plus actifs. Ces deux piliers assurent la rentabilité et la croissance organique de notre chiffre d'affaires.
-
-La première source de revenus provient des frais de service (commissions) appliqués à chaque trajet réservé via la plateforme. Les frais de réservation sont fixés de manière transparente à hauteur de 12\,\% du montant du trajet.
-
-\textbf{Par exemple :} si nous avons 10 000 trajets mensuels réservés via notre plateforme avec un panier moyen de 800 DZD par place, la commission de 12\,\% représenterait un montant mensuel de \textbf{960 000 DZD} et un montant annuel de \textbf{11 520 000 DZD}.
-
-En plus des frais de réservation, notre modèle économique repose sur la vente d'un abonnement « Premium » destiné aux conducteurs fréquents. Ce forfait leur octroie une meilleure visibilité dans les résultats de recherche, des badges vérifiés étendus et l'annulation des frais de commission.
-
-\textbf{Par exemple :} avec 500 conducteurs souscrivant à l'abonnement Premium à 1 500 DZD/mois, cela correspondrait à un montant mensuel de \textbf{750 000 DZD} et un montant annuel de \textbf{9 000 000 DZD}.
-
-Pour obtenir le chiffre d'affaires total prévisionnel (sur la base de ces hypothèses de traction modérées), nous additionnons les revenus provenant de chaque source :
-\begin{itemize}
-    \item \textbf{Mensuel :} 960 000 (Commissions) + 750 000 (Abonnements) = \textbf{1 710 000 DZD}
-    \item \textbf{Annuel :} 11 520 000 (Commissions) + 9 000 000 (Abonnements) = \textbf{20 520 000 DZD}
-\end{itemize}
-
-Ce modèle hybride nous assure une excellente résilience financière et permet un amortissement rapide de notre structure de coûts de 742 500 DZD/mois, dégageant ainsi une rentabilité saine dès l'acquisition de notre base critique d'utilisateurs.
-
-\begin{table}[!htbp]
-\centering
-\begin{tcolorbox}[
+% Custom Box Styles for the Landscape Grid
+\newtcolorbox{bmcblock}[2][]{
   enhanced,
-  colback=white,
-  colframe=rohblue,
+  box align=top,
+  colback=bmclight,
+  colframe=bmcgreen,
+  boxrule=1.2pt,
   arc=6pt,
-  boxrule=1.5pt,
-  boxsep=4pt,
-  left=2pt, right=2pt, top=4pt, bottom=4pt,
-  toptitle=10pt, bottomtitle=10pt,
-  title=\textbf{\large Business Model Canvas --- RohWinBghit},
+  drop fuzzy shadow=black!12!white,
+  title=#2,
   coltitle=white,
-  colbacktitle=rohblue,
-  center title
-]
-\renewcommand{\arraystretch}{1.15}
-\noindent
-\begin{tabularx}{\linewidth}{@{}
-  >{\hsize=1.0\hsize\raggedright\arraybackslash}X|
-  >{\hsize=1.0\hsize\raggedright\arraybackslash}X|
-  >{\hsize=1.0\hsize\raggedright\arraybackslash}X|
-  >{\hsize=1.0\hsize\raggedright\arraybackslash}X|
-  >{\hsize=1.0\hsize\raggedright\arraybackslash}X
-@{}}
+  colbacktitle=bmcgreen,
+  fonttitle=\bfseries\sffamily\small,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+  valign=top,
+  #1
+}
 
-\textcolor{rohblue}{\footnotesize \faHandshake\ \textbf{Partenaires Clés}} &
-\textcolor{rohblue}{\footnotesize \faCogs\ \textbf{Activités Clés}} &
-\textcolor{rohblue}{\footnotesize \faGem\ \textbf{Propositions de Valeur}} &
-\textcolor{rohblue}{\footnotesize \faHeart\ \textbf{Relation Client}} &
-\textcolor{rohblue}{\footnotesize \faUsers\ \textbf{Segments Clients}} \\[6pt]
+\newtcolorbox{bmchighlight}[2][]{
+  enhanced,
+  box align=top,
+  colback=bmclightgreen,
+  colframe=bmcgold,
+  boxrule=1.8pt,
+  arc=6pt,
+  drop fuzzy shadow=bmcgreen!20!black,
+  title=#2,
+  coltitle=white,
+  colbacktitle=bmcgold,
+  fonttitle=\bfseries\sffamily\small,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+  valign=top,
+  #1
+}
 
-\multirow{4}{*}{\scriptsize
-\begin{tabular}{@{}p{\linewidth}@{}}
-\begin{itemize}[leftmargin=1.0em, nosep]
-  \item Infrastructure (Hetzner, Mapbox)
-  \item Universités
-  \item CIB/Edahabia (Chargily)
-  \item Incubateurs (ANVREDET)
+\newgeometry{margin=1cm}%
+\begin{landscape}
+\thispagestyle{empty} % Masquer en-têtes et pieds de page pour une mise en page plein écran propre
+\centering
+\vspace*{\fill}
+{\color{bmcgreen}\Large\bfseries\sffamily Business Model Canvas -- RohWinBghit}\\[0.4cm]
+\renewcommand{\arraystretch}{1.0}%
+\begin{tabularx}{\linewidth}{@{}XXXXX@{}}%
+\begin{bmcblock}[height=8.2cm]{\faHandshake~Partenaires Clés}%
+\scriptsize
+\begin{itemize}[leftmargin=1.0em, itemsep=4pt, parsep=0pt]
+  \item \textbf{Mapbox / Firebase} : Géo-tracking \& notifications push.
+  \item \textbf{Chargily Pay V2} : Passerelle de paiement CIB/Edahabia.
+  \item \textbf{SNTF \& SOGRAAL} : Intégration bus/trains.
+  \item \textbf{Assureurs auto} : Protection des usagers.
+  \item \textbf{Twilio / SendGrid} : OTP SMS \& emails.
 \end{itemize}
-\end{tabular}
-} &
-
+\end{bmcblock} &%
+\begin{bmcblock}[height=3.9cm]{\faCogs~Activités Clés}%
 \scriptsize
-\begin{itemize}[leftmargin=1.0em, nosep]
-  \item Développement IT
-  \item Modération KYC
-  \item Acquisition client
-\end{itemize} &
-
-\multirow{4}{*}{\scriptsize
-\begin{tabular}{@{}p{\linewidth}@{}}
-\begin{itemize}[leftmargin=1.0em, nosep]
-  \item Covoiturage inter-wilayas
-  \item Sécurité (biométrie IA)
-  \item Coûts partagés
-  \item Réservation digitale garantie
+\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
+  \item \textbf{Matching intelligent} : Algorithme de mise en relation.
+  \item \textbf{Vérification KYC} : Pipeline IA FastAPI/InsightFace.
+  \item \textbf{Séquestre Chargily} : Transactions sécurisées.
 \end{itemize}
-\end{tabular}
-} &
-
+\end{bmcblock}%
+\vspace{0.4cm}%
+\begin{bmcblock}[height=3.9cm]{\faLaptop~Ressources Clés}%
 \scriptsize
-\begin{itemize}[leftmargin=1.0em, nosep]
-  \item Application automatisée
-  \item Évaluation mutuelle
-  \item SAV réactif
-\end{itemize} &
-
-\multirow{4}{*}{\scriptsize
-\begin{tabular}{@{}p{\linewidth}@{}}
-\begin{itemize}[leftmargin=1.0em, nosep]
-  \item Passagers (Étudiants, Pendulaires)
-  \item Conducteurs réguliers
-  \item Professionnels itinérants
+\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
+  \item \textbf{Code propriétaire} : React Native, Node.js.
+  \item \textbf{Hébergement Cloud} : Serveurs VPS sous Docker.
+  \item \textbf{Modèles d'IA} : InsightFace antelopev2.
+  \item \textbf{Données GPS} : Base des 69 wilayas.
 \end{itemize}
-\end{tabular}
-} \\
-
-& \vspace{4pt} \hrule \vspace{4pt} \textcolor{rohblue}{\footnotesize \faCubes\ \textbf{Ressources Clés}} & & \vspace{4pt} \hrule \vspace{4pt} \textcolor{rohblue}{\footnotesize \faBullhorn\ \textbf{Canaux}} & \\
-
-&
+\end{bmcblock} &%
+\begin{bmchighlight}[height=8.2cm]{\faGem~Proposition de Valeur}%
 \scriptsize
-\begin{itemize}[leftmargin=1.0em, nosep]
-  \item Algorithme IA KYC
-  \item Équipe fondatrice (7 pers.)
-  \item Marque déposée (INAPI)
-\end{itemize} &
-&
+\begin{itemize}[leftmargin=1.0em, itemsep=4pt, parsep=0pt]
+  \item \textbf{1\textsuperscript{ère} plateforme vérifiée} de covoiturage en Algérie.
+  \item \textbf{Sécurité KYC biométrique} : Liveness + comparaison faciale.
+  \item \textbf{Paiement local intégré} : Cartes CIB, Edahabia et espèces.
+  \item \textbf{Couverture nationale} : Connexion des 69 wilayas.
+  \item \textbf{Économique \& flexible} : Tarifs réduits adaptables.
+\end{itemize}
+\end{bmchighlight} &%
+\begin{bmcblock}[height=3.9cm]{\faHeart~Relations Clients}%
 \scriptsize
-\begin{itemize}[leftmargin=1.0em, nosep]
-  \item Play Store / App Store
-  \item Réseaux sociaux ciblés
-  \item Campus universitaires
-\end{itemize} &
-\\[4pt]
-\hline
-\end{tabularx}
+\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
+  \item \textbf{Confiance} : Profils certifiés par badge vert.
+  \item \textbf{Notation mutuelle} : Notation après chaque trajet.
+  \item \textbf{Chat temps réel} : Communication WebSockets.
+\end{itemize}
+\end{bmcblock}%
+\vspace{0.4cm}%
+\begin{bmcblock}[height=3.9cm]{\faBullhorn~Canaux}%
+\scriptsize
+\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
+  \item \textbf{App Mobile} : Versions iOS \& Android.
+  \item \textbf{Portail Web} : Site vitrine \& console admin.
+  \item \textbf{Réseaux sociaux} : Acquisition et visibilité.
+  \item \textbf{Campus} : Ambassadeurs \& parrainage.
+\end{itemize}
+\end{bmcblock} &%
+\begin{bmcblock}[height=8.2cm]{\faUsers~Segments Clients}%
+\scriptsize
+\begin{itemize}[leftmargin=1.0em, itemsep=4pt, parsep=0pt]
+  \item \textbf{Étudiants (68\,\%)} : Voyageurs réguliers, sensibles aux tarifs.
+  \item \textbf{Travailleurs actifs} : Navettes hebdomadaires inter-wilayas.
+  \item \textbf{Conducteurs particuliers} : Propriétaires cherchant à amortir leurs trajets.
+  \item \textbf{Voyageurs} : Familles en déplacement ponctuel.
+\end{itemize}
+\end{bmcblock} \\
+\end{tabularx}%
+\vspace{0.4cm}%
 
-\noindent
-\begin{tabularx}{\linewidth}{@{}
-  >{\hsize=1.0\hsize\raggedright\arraybackslash}X|
-  >{\hsize=1.0\hsize\raggedright\arraybackslash}X
-@{}}
-\textcolor{rohblue}{\small \faCoins\ \textbf{Structure de Coûts}} &
-\textcolor{rohblue}{\small \faCreditCard\ \textbf{Sources de Revenus}} \\[6pt]
-
-\footnotesize
-\begin{itemize}[leftmargin=1.2em, nosep]
-  \item Investissements initiaux : \textbf{1 798 700 DZD}
-  \item Charges courantes (salaires, hébergement, marketing) : \textbf{742 500 DZD / mois}
-\end{itemize} &
-
-\footnotesize
-\begin{itemize}[leftmargin=1.2em, nosep]
-  \item Commissions (12\,\% sur les trajets) : \textbf{$\sim$960 000 DZD / mois}
-  \item Abonnements Premium (1 500 DZD/mois) : \textbf{$\sim$750 000 DZD / mois}
-  \item Chiffre d'affaires total estimé : \textbf{1 710 000 DZD / mois}
-\end{itemize} \\[6pt]
-
-\end{tabularx}
-\end{tcolorbox}
-\caption{Vue synthétique unifiée des 9 blocs du modèle économique}
+\begin{tabularx}{\linewidth}{@{}XX@{}}%
+\begin{bmcblock}[height=3.0cm]{\faCoins~Structure de Coûts}%
+\scriptsize
+\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
+  \item \textbf{Infrastructures \& DevOps} : Hébergement Cloud, calcul GPU pour l'IA.
+  \item \textbf{Services tiers} : API Mapbox, Twilio SMS, frais transactionnels Chargily.
+  \item \textbf{Ressources Humaines} : Salaires développeurs, support et modérateurs KYC.
+  \item \textbf{Marketing} : Campagnes promotionnelles campus et parrainage (200 DZD).
+\end{itemize}
+\end{bmcblock} &%
+\begin{bmcblock}[height=3.0cm]{\faMoneyBillWave~Sources de Revenus}%
+\scriptsize
+\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
+  \item \textbf{Commission trajets} : Commission de 5\,\% à 15\,\% par réservation.
+  \item \textbf{Commission bus/train} : Commission de 3\,\% à 5\,\% sur l'offre multimodale.
+  \item \textbf{Abonnement Chauffeur} : Formule Premium à 500 DZD/mois pour plus de visibilité.
+  \item \textbf{Publicité \& Partenariats} : Affichage d'annonces ciblées B2B.
+\end{itemize}
+\end{bmcblock} \\
+\end{tabularx}%
+\vspace{0.4cm}%
+\captionof{table}{Vue synthétique unifiée des 9 blocs du modèle économique}
 \label{tab:app-bmc}
-\end{table}
+\vspace*{\fill}
+\end{landscape}
+\restoregeometry
