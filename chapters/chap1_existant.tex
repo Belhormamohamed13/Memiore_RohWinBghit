@@ -1,4 +1,4 @@
-\chapter{Systèmes similaires}
+\chapter{Étude et analyse des systèmes de covoiturage existants}
 \label{chap:etat-art}
 
 \section{Introduction}
@@ -11,7 +11,7 @@ Toute démarche d'ingénierie logicielle commence par une lecture attentive du t
 \subsection{Mobilité intelligente et connectivité mobile en Algérie}
 \label{sec:mobilite-intelligente}
 
-Le concept de \textit{Système de Transport Intelligent} (\textsc{its} --- \textit{Intelligent Transportation System}) désigne l'intégration de technologies de l'information et de la communication dans les infrastructures et les services de transport afin d'optimiser les flux de personnes et de marchandises. Dans le domaine spécifique de la mobilité partagée, cette intelligence se matérialise par la capacité de la plateforme à apparier dynamiquement l'offre et la demande en temps réel, à adapter la tarification aux conditions instantanées du marché, et à garantir la confiance entre inconnus par des mécanismes de vérification algorithmique.
+Le concept de \textit{Système de Transport Intelligent} (\textsc{its} --- \textit{Intelligent Transportation System}) désigne l'intégration de technologies de l'information et de la communication dans les infrastructures et les services de transport afin d'optimiser les flux de personnes et de marchandises. Dans le domaine spécifique de la mobilité partagée, cette intelligence se matérialise par la capacité de la plateforme à apparier dynamiquement l'offre et la demande en temps réel, à adapter la tarification aux conditions instantanées du marché, et à instaurer un cadre de confiance entre inconnus par des mécanismes de vérification algorithmique.
 
 L'efficacité d'un tel système repose de manière critique sur la qualité du réseau de télécommunications sous-jacent. En Algérie, l'infrastructure mobile a connu une évolution significative au cours des deux dernières décennies~: du \textsc{gprs} (2,5G) déployé au début des années~2000 vers le réseau \textsc{3g} inauguré par les opérateurs nationaux en 2013, puis la couverture \textsc{4g~lte} étendue progressivement à partir de 2016. Néanmoins, la réalité terrain impose une contrainte architecturale fondamentale~: sur les axes inter-wilayas traversant le Haut-Plateau et les régions steppiques, la connectivité mobile demeure intermittente. Les tunnels, les zones de faible densité de population et les transitions entre cellules de relais provoquent des coupures régulières. Cette réalité justifie scientifiquement l'adoption d'une architecture asynchrone et tolérante aux déconnexions~: requêtes idempotentes avec clé \texttt{Idempotency-Key}, files de messages persistantes (Bull/BullMQ), retentatives exponentielles via TanStack~Query, et persistance locale des données critiques sur le terminal mobile avant synchronisation différée.
 
@@ -21,6 +21,10 @@ L'efficacité d'un tel système repose de manière critique sur la qualité du r
 Le covoiturage (\textit{carpooling}) désigne le partage d'un véhicule privé entre un conducteur et un ou plusieurs passagers réalisant un trajet similaire, moyennant un partage des frais. Structuré dans les années~2000 avec l'émergence d'Internet puis du \textit{smartphone}~\cite{chan_carpooling_2012}, il a été industrialisé par des plateformes telles que \textit{BlaBlaCar} (France, 2006), qui ont facilité la mise en relation à grande échelle et introduit des mécanismes de confiance numérique.
 
 Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturage produit une triple valeur~: économique (mutualisation des frais, ~40\,\% d'économie par passager~\cite{blablacar_report_2023}), sociale (accessibilité aux zones mal desservies, démocratisation des déplacements pour les étudiants) et environnementale (réduction du nombre de véhicules, ~110~kg de CO\textsubscript{2} évités par passager/an~\cite{ademe_2022}).
+
+Concrètement, le \textbf{partage de trajet} fonctionne selon le principe suivant~: un conducteur disposant de places libres dans son véhicule les propose à des passagers effectuant un trajet similaire. Une plateforme numérique joue le rôle de tiers de confiance, assurant la mise en relation, la vérification d'identité, la gestion du paiement et le suivi du trajet. Ce modèle permet de réduire les coûts individuels de transport, de diminuer l'empreinte carbone et d'améliorer l'accessibilité des zones mal desservies par les transports en commun.
+
+\subsubsection*{Principe de fonctionnement du système de covoiturage}
 
 \begin{figure}[H]
 \centering
@@ -47,7 +51,10 @@ Lorsqu'il est correctement encadré par une plateforme numérique, le covoiturag
 }
 \caption{Schéma conceptuel de mise en relation et flux transactionnel dans RohWinBghit}
 \label{fig:concept-covoiturage}
+{\footnotesize\textit{Source~: Élaboration personnelle.}}
 \end{figure}
+
+La figure~\ref{fig:concept-covoiturage} illustre le flux transactionnel complet de mise en relation au sein de la plateforme RohWinBghit. Le processus se déroule en six étapes~: (1)~le passager recherche un trajet et effectue sa réservation~; (2)~la plateforme notifie le conducteur de la demande~; (3)~le conducteur accepte la réservation~; (4)~un billet numérique avec code QR est généré pour le passager~; (5)~le trajet est effectué avec validation GPS mutuelle~; (6)~les fonds sont versés au conducteur après déduction de la commission de 12\,\%.
 
 \subsection{Enjeux spécifiques du contexte algérien}
 \label{sec:transport-algerie}
@@ -120,6 +127,7 @@ Le marché algérien de la mobilité numérique est émergent mais dynamique. Le
   \centering
   \includegraphics[width=0.4\textwidth]{fig_blablacar}
   \caption{Interface de l'application BlaBlaCar.}
+  {\footnotesize\textit{Source~: Google Play, BlaBlaCar (2025)~\cite{googleplay_blablacar}.}}
   \label{fig:blablacar}
 \end{figure}
 
@@ -134,6 +142,7 @@ BlaBlaCar (France, 2006) reste la référence européenne et internationale du c
   \centering
   \includegraphics[width=0.4\textwidth]{fig_yassir}
   \caption{Interface de l'application Yassir.}
+  {\footnotesize\textit{Source~: Google Play, Yassir (2025)~\cite{googleplay_yassir}.}}
   \label{fig:yassir}
 \end{figure}
 
@@ -149,6 +158,7 @@ D'un point de vue architectural, la plateforme Yassir ne propose aucune vérific
   \centering
   \includegraphics[width=0.8\textwidth]{fig_heetch_temtem}
   \caption{Interfaces des applications Heetch et TemTem.}
+  {\footnotesize\textit{Source~: Google Play, Heetch~\cite{googleplay_heetch} et TemTem~\cite{googleplay_temtem} (2025).}}
   \label{fig:heetch_temtem}
 \end{figure}
 
@@ -163,6 +173,7 @@ D'autres acteurs urbains algériens comme Heetch (introduit en 2020) et TemTem o
   \centering
   \includegraphics[width=0.4\textwidth]{fig_nroho}
   \caption{Interface de l'application Nroho.}
+  {\footnotesize\textit{Source~: Google Play, Nroho (2025)~\cite{googleplay_nroho}.}}
   \label{fig:nroho}
 \end{figure}
 
@@ -170,7 +181,7 @@ La Figure~\ref{fig:nroho} présente l'interface de mise en relation de la platef
 
 Nroho est une startup algérienne de covoiturage labellisée par le Ministère de l'Économie du Savoir et lauréate du 2\textsuperscript{e}~prix à l'\textit{IsDB Pitch Competition}. L'application revendique plus de 2~000~utilisateurs actifs et propose une vérification d'identité par scan de la \gls{cin} et \textit{selfie}, un \textit{matching} par affinités, un suivi GPS temps réel et un règlement en espèces. 
 
-L'examen technique de son pipeline d'identité révèle cependant une vulnérabilité structurelle~: l'absence de réseau convolutif (\textsc{cnn}) dédié à la détection d'anti-\textit{spoofing} signifie qu'une photographie imprimée haute résolution présentée devant la caméra suffit à contourner le mécanisme de vérification. En outre, les transactions financières basées exclusivement sur un modèle fiduciaire physique induisent un risque de désintermédiation financière~: l'opérateur ne peut appliquer ni séquestre, ni frais de service garantîd sur les trajets ultérieurs négociés hors plateforme, impactant directement la viabilité du modèle économique.
+L'examen technique de son pipeline d'identité révèle cependant une vulnérabilité structurelle~: l'absence de réseau convolutif (\textsc{cnn}) dédié à la détection d'anti-\textit{spoofing} signifie qu'une photographie imprimée haute résolution présentée devant la caméra suffit à contourner le mécanisme de vérification. En outre, les transactions financières basées exclusivement sur un modèle fiduciaire physique induisent un risque de désintermédiation financière~: l'opérateur ne peut appliquer ni séquestre, ni frais de service sur les trajets ultérieurs négociés hors plateforme, impactant directement la viabilité du modèle économique.
 
 \section{inDrive}
 \label{sec:indrive}
@@ -179,6 +190,7 @@ L'examen technique de son pipeline d'identité révèle cependant une vulnérabi
   \centering
   \includegraphics[width=0.4\textwidth]{fig_indrive}
   \caption{Interface de l'application inDrive.}
+  {\footnotesize\textit{Source~: Google Play, inDrive (2025)~\cite{googleplay_indrive}.}}
   \label{fig:indrive}
 \end{figure}
 
@@ -186,7 +198,7 @@ La Figure~\ref{fig:indrive} présente l'interface de négociation de tarifs et d
 
 inDrive est un acteur international classé application de mobilité partagée \#1 en Algérie au troisième trimestre 2025~\cite{sensortower_algeria_2025}. En décembre~2025, inDrive a étendu son offre vers le covoiturage inter-wilayas (service \textit{City~to~City}) sur une dizaine d'axes initiaux~\cite{indrive_interwilaya_2025}. 
 
-La vérification d'identité y est purement documentaire (non biométrique), ce qui la rend vulnérable aux mêmes vecteurs d'attaque par photographie statique que les acteurs précédents. Plus fondamentalement, l'absence totale d'intégration des moyens de paiement électroniques algériens (\textsc{cib}, \textit{Edahabia}) force la totalité des transactions à s'effectuer en espèces, ce qui non seulement génère une opacité fiscale incompatible avec les exigences de la Loi~18-05 sur le commerce électronique~\cite{loi1805_2018}, mais empêche également la plateforme de mettre en œuvre un mécanisme de séquestre garantissant la protection financière du passager en cas d'annulation.
+La vérification d'identité y est purement documentaire (non biométrique), ce qui la rend vulnérable aux mêmes vecteurs d'attaque par photographie statique que les acteurs précédents. Plus fondamentalement, l'absence totale d'intégration des moyens de paiement électroniques algériens (\textsc{cib}, \textit{Edahabia}) force la totalité des transactions à s'effectuer en espèces, ce qui non seulement génère une opacité fiscale incompatible avec les exigences de la Loi~18-05 sur le commerce électronique~\cite{loi1805_2018}, mais empêche également la plateforme de mettre en œuvre un mécanisme de séquestre renforçant la protection financière du passager en cas d'annulation.
 
 \section{Covoit'Dz (Université de Tlemcen)}
 \label{sec:covoitdz}
@@ -195,6 +207,7 @@ La vérification d'identité y est purement documentaire (non biométrique), ce 
   \centering
   \includegraphics[width=0.4\textwidth]{fig_covoitdz}
   \caption{Interface de l'application Covoit'Dz.}
+  {\footnotesize\textit{Source~: Merad \textit{et al.}, Covoit'Dz (2024)~\cite{merad_covoitdz_2024}.}}
   \label{fig:covoitdz}
 \end{figure}
 
@@ -216,28 +229,28 @@ Afin de situer précisément notre contribution, nous présentons ci-dessous une
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\linewidth}{|l|c|c|c|c|c|X|}
+\begin{tabularx}{\linewidth}{|l|c|c|c|c|c|c|X|}
 \hline
 \rowcolor{rohlight}
-\textbf{Critère} & \textbf{BlaBlaCar} & \textbf{Yassir} & \textbf{Nroho} & \textbf{inDrive} & \textbf{Covoit'Dz} & \textbf{RohWinBghit} \\
+\textbf{Critère} & \textbf{BlaBlaCar} & \textbf{Uber} & \textbf{Yassir} & \textbf{Nroho} & \textbf{inDrive} & \textbf{Covoit'Dz} & \textbf{RohWinBghit} \\
 \hline
-Couverture en Algérie & Absent & Urbaine & Nationale & Nationale & Nationale & \textbf{Nationale (69 wilayas)} \\
+Couverture en Algérie & Absent & Absent & Urbaine & Nationale & Nationale & Nationale & \textbf{Nationale (69 wilayas)} \\
 \hline
-Focus inter-wilayas & Oui (Europe) & Non & Oui & Oui (City to City) & Oui & \textbf{Oui (natif)} \\
+Focus inter-wilayas & Oui (Europe) & Non (urbain) & Non & Oui & Oui (City to City) & Oui & \textbf{Oui (natif)} \\
 \hline
-Authentification KYC & Standard & Standard & CIN + \textit{selfie} & Documentaire & Néant & \textbf{Biométrique (Liveness + Anti-spoof)} \\
+Authentification KYC & Standard & Standard & Standard & CIN + \textit{selfie} & Documentaire & Néant & \textbf{Biométrique (Liveness + Anti-spoof)} \\
 \hline
-Seuils IA par rôle & Non & Non & Non & Non & Non & \textbf{Oui ($\geq 0{,}65$ / $\geq 0{,}60$)} \\
+Seuils IA par rôle & Non & Non & Non & Non & Non & Non & \textbf{Oui ($\geq 0{,}65$ / $\geq 0{,}60$)} \\
 \hline
-Paiement CIB / Edahabia & Non & Partiel & Non (cash) & Non (cash) & Non & \textbf{Chargily (Sandbox) + espèces} \\
+Paiement CIB / Edahabia & Non & Non & Partiel & Non (cash) & Non (cash) & Non & \textbf{Chargily (Sandbox) + espèces} \\
 \hline
-Messagerie temps réel & Oui & Oui & Oui & Oui & Non & \textbf{Oui (Socket.IO)} \\
+Messagerie temps réel & Oui & Oui & Oui & Oui & Oui & Non & \textbf{Oui (Socket.IO)} \\
 \hline
-Tarification dynamique & Non & Oui & Non & Non & Fixe & \textbf{Oui ($m \in [1{,}0;\; 2{,}5]$)} \\
+Tarification dynamique & Non & Oui (surge) & Oui & Non & Non & Fixe & \textbf{Oui ($m \in [1{,}0;\; 2{,}5]$)} \\
 \hline
-Chiffrement PII au repos & Non doc. & Non doc. & Non doc. & Non doc. & Non doc. & \textbf{AES-256-GCM} \\
+Chiffrement PII au repos & Non doc. & Non doc. & Non doc. & Non doc. & Non doc. & Non doc. & \textbf{AES-256-GCM} \\
 \hline
-Langues d'interface & FR / EN & AR / FR & AR / FR & AR / FR & FR & \textbf{AR / FR / EN} \\
+Langues d'interface & FR / EN & Multi & AR / FR & AR / FR & AR / FR & FR & \textbf{AR / FR / EN} \\
 \hline
 \end{tabularx}
   \caption{Matrice comparative approfondie des plateformes de mobilité partagée --- État du marché au 1\textsuperscript{er} mai 2026}
@@ -247,6 +260,8 @@ Langues d'interface & FR / EN & AR / FR & AR / FR & AR / FR & FR & \textbf{AR / 
 \begin{highlight}
 \textbf{Synthèse du positionnement.} \textit{RohWinBghit} ambitionne d'être une plateforme algérienne de mobilité partagée inter-wilayas techniquement aboutie : vérification biométrique à trois niveaux (identité, vivacité, anti-\textit{spoofing}), méthodes de paiement locales (espèces, CIB, \textit{Edahabia}), couverture nationale et interface trilingue. Elle s'inscrit dans la continuité de l'écosystème existant (Yassir, Heetch, Nroho, inDrive) et y apporte une proposition spécifiquement pensée pour le segment longue distance.
 \end{highlight}
+
+Les résultats du tableau~\ref{tab:comparatif} montrent que \textit{RohWinBghit} est la seule plateforme à combiner les quatre piliers fondamentaux~: vérification biométrique KYC avec seuils adaptatifs par rôle, paiement électronique via les moyens de paiement algériens (CIB/Edahabia), couverture nationale des 69~wilayas et tarification dynamique. Par ailleurs, Uber, bien qu'il constitue une référence internationale en matière de \textit{ride-hailing}, ne dispose d'aucune présence en Algérie et ne propose pas de service de covoiturage inter-wilayas. Aucune des plateformes concurrentes ne documente publiquement l'utilisation d'un chiffrement des données personnelles au repos, contrairement à \textit{RohWinBghit} qui implémente un chiffrement AES-256-GCM.
 \end{landscape}
 
 \subsection{Limites du marché et positionnement de RohWinBghit}

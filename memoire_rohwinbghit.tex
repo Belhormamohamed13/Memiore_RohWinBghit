@@ -221,6 +221,7 @@
      \usebibmacro{date+parens}%
      \clearname{editor}}}
 \begin{document}
+\pagenumbering{gobble}
 %=============================================================================
 
 %─── Page de garde ────────────────────────────────────────────────────────────
@@ -261,151 +262,33 @@ Mr. \underline{\hspace{7cm}} & Expert \\
 {\large \textbf{Annee universitaire 2025/2026}}
 \end{titlepage}
 
-%─── Tables ───────────────────────────────────────────────────────────────────
+%─── Pages liminaires (non numérotées) ─────────────────────────────────────────
+\include{frontmatter/remerciements}
+\include{frontmatter/dedicaces}
+
+%─── Tables et listes (numérotation romaine) ───────────────────────────────────
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+% 1. Table des matières
 \tableofcontents
 \newpage
+
+% 2. Liste des figures
 \listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
 \newpage
+
+% 3. Liste des tableaux
 \listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
 \newpage
 
+% 4. Liste des abréviations
+\include{frontmatter/abbreviations}
 
-\chapter*{Dédicace}
-\addcontentsline{toc}{chapter}{Dédicaces}
 
-Je dédie ce travail à mes chers parents, pour leur amour inconditionnel, leur soutien sans faille et les sacrifices consentis tout au long de mon parcours universitaire. Chaque ligne de ce mémoire porte l'empreinte de leurs encouragements constants.
-
-À mes frères et sœurs, pour leur présence réconfortante et leur foi inébranlable en mes capacités. À mes amis et collègues de promotion, pour les moments de solidarité et de partage qui ont rendu ces années d'étude plus riches et plus mémorables.
-
-À mon binôme Reduane, dont la rigueur, la passion pour le code et l'esprit d'initiative ont été des sources d'inspiration permanentes tout au long de ce projet. Ce mémoire est aussi le fruit de notre collaboration technique et humaine.
-
-\emph{Djamel Eddine}
-
-\chapter*{Dédicace}
-\addcontentsline{toc}{chapter}{Dédicaces}
-
-Je dédie ce mémoire à mes chers parents, à ma mère pour son amour infini, sa patience et ses prières qui m'ont accompagné à chaque étape, et à mon père pour sa sagesse et sa confiance constante. Vous êtes et resterez ma plus grande source de motivation.
-
-À mon frère et ma sœur, pour leur soutien moral et leur présence bienveillante dans les moments difficiles. À tous mes amis de promotion pour les souvenirs inoubliables et la solidarité qui ont marqué ces années universitaires.
-
-À mon binôme Djamel Eddine, pour son engagement technique exemplaire, sa créativité dans la résolution de problèmes complexes et sa volonté constante de repousser les limites de ce que nous pouvions réaliser ensemble.
-
-\emph{Sidi Mohammed Reduane}
-
-\chapter*{Remerciements}
-\addcontentsline{toc}{chapter}{Remerciements}
-
-Au terme de ce travail, nous souhaitons exprimer notre profonde gratitude envers toutes les personnes qui ont contribué, directement ou indirectement, à l'aboutissement de ce projet ambitieux.
-
-Nous remercions en premier lieu Dieu le Tout-Puissant de nous avoir accordé la santé, la volonté et la persévérance nécessaires pour mener à bien ce projet technique de grande envergure.
-
-Nous exprimons notre gratitude la plus sincère à notre encadrante Mme BENLEDGHEM Rafika, Maître de Conférences au Département d'Informatique de l'Université Abou Bakr Belkaid -- Tlemcen, pour son suivi rigoureux, ses orientations techniques précieuses et son soutien constant tout au long du développement de cette plateforme.
-
-Nous remercions les membres du jury pour l'honneur qu'ils nous font en évaluant ce travail, ainsi que l'ensemble des enseignants du Département d'Informatique pour la qualité de la formation dispensée.
-
-Enfin, nos remerciements les plus chaleureux vont à nos familles respectives pour leur patience, leur compréhension et leur soutien moral indéfectible durant toutes ces années d'études.
-
-\chapter*{\textarabic{ملخص}}
-\addcontentsline{toc}{chapter}{\texorpdfstring{\textarabic{ملخص}}{Résumé (Arabe)}}
-
-\begin{Arabic}
-يهدف هذا المشروع إلى تصميم وتطوير منصة رقمية متعددة المنصات للنقل المشترك بين الولايات تحت اسم RohWinBghit. يتكون النظام من أربعة مشاريع فرعية: واجهة برمجية مبنية على Node.js وExpress وKnex، تطبيق جوال بـReact Native وExpo، واجهة ويب بـReact وVite، وخدمة ذكاء اصطناعي بـFastAPI لإجراء التحقق البيومتري.
-
-تتميز المنصة بتكامل خمس طرق للدفع الإلكتروني (CIB، Edahabia، Stripe، PayPal، نقدي)، خوارزميات التسعير الديناميكي، اكتشاف الاحتيال، ونظام التحقق من الهوية بالذكاء الاصطناعي. أظهرت نتائج الاختبار أن الحل المقترح فعال وآمن وقابل للتوسع.
-
-\textbf{الكلمات المفتاحية: النقل المشترك، Express.js، React Native، Zustand، PostgreSQL، FastAPI، التحقق البيومتري، التسعير الديناميكي.}
-\end{Arabic}
-
-\chapter*{Résumé}
-\addcontentsline{toc}{chapter}{Résumé}
-
-Le présent mémoire porte sur la conception et la réalisation de RohWinBghit, un écosystème multi-plateforme de covoiturage inter-wilayas composé de quatre sous-projets complémentaires : un backend Node.js/Express/Knex/PostgreSQL, une application mobile React Native/Expo, un frontend web React/Vite/TypeScript et un service d'intelligence artificielle FastAPI dédié à la vérification biométrique.
-
-La plateforme intègre des fonctionnalités avancées dépassant largement les standards du secteur : trois méthodes de paiement opérationnelles (CIB, Edahabia en sandbox, espèces) extensibles via un pattern Factory (Stripe et PayPal prévus), un moteur de tarification dynamique (surge pricing), un système de détection de fraude en temps réel, un algorithme de scoring conducteur, et un service IA de vérification d'identité (reconnaissance faciale, détection de vivacité, anti-spoofing).
-
-La base de données PostgreSQL est structurée autour de 35+ migrations documentant l'évolution complète du schéma. La sécurité est assurée par AES-256-GCM, bcrypt, JWT, rate limiting et monitoring Sentry. Les résultats des tests de validation confirment la robustesse et la scalabilité de la solution.
-
-\textbf{Mots-clés :} covoiturage, Node.js, Express.js, Knex, PostgreSQL, React Native, Zustand, FastAPI, vérification biométrique, surge pricing, détection de fraude, RohWinBghit.
-
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{Abstract}
-
-This thesis presents the design and implementation of RohWinBghit, a multi-platform carpooling ecosystem for inter-wilaya travel in Algeria, composed of four complementary sub-projects: a Node.js/Express/Knex/PostgreSQL backend, a React Native/Expo mobile application, a React/Vite/TypeScript web frontend, and a FastAPI-based AI service dedicated to biometric identity verification.
-
-The platform integrates advanced features well beyond sector standards: five electronic payment methods (CIB, Edahabia, Stripe, PayPal, cash) via a Factory design pattern, a dynamic pricing engine (surge pricing), a real-time fraud detection system, a driver scoring algorithm, and an AI identity verification service (facial recognition, liveness detection, anti-spoofing). The PostgreSQL database comprises 35+ migrations documenting the complete schema evolution.
-
-\textbf{Keywords:} carpooling, Node.js, Express.js, Knex, PostgreSQL, React Native, Zustand, FastAPI, biometric verification, surge pricing, fraud detection, RohWinBghit.
-
-
-
-\chapter*{Liste des abréviations}
-\addcontentsline{toc}{chapter}{Liste des abréviations}
-
-\textbf{AES} : Advanced Encryption Standard (chiffrement symétrique 256 bits)
-
-\textbf{AI / IA} : Artificial Intelligence / Intelligence Artificielle
-
-\textbf{API} : Application Programming Interface
-
-\textbf{APNs} : Apple Push Notification service
-
-\textbf{ASGI} : Asynchronous Server Gateway Interface (FastAPI)
-
-\textbf{BCrypt} : Blowfish Cryptographic Hash Function (hachage mots de passe)
-
-\textbf{CIB} : Carte Interbancaire (carte bancaire nationale algérienne)
-
-\textbf{CRUD} : Create, Read, Update, Delete
-
-\textbf{CV2} : OpenCV (bibliothèque vision par ordinateur Python)
-
-\textbf{DZ} : Algérie (code pays ISO 3166-1 alpha-2)
-
-\textbf{FCM} : Firebase Cloud Messaging (notifications push Android)
-
-\textbf{GPS} : Global Positioning System
-
-\textbf{HOG} : Histogram of Oriented Gradients (descripteur visuel)
-
-\textbf{HTTP/HTTPS} : HyperText Transfer Protocol / Secure
-
-\textbf{JWT} : JSON Web Token (authentification sans état)
-
-\textbf{KYC} : Know Your Customer (vérification réglementaire d'identité)
-
-\textbf{MCD} : Modèle Conceptuel de Données
-
-\textbf{MLD} : Modèle Logique de Données
-
-\textbf{ORM} : Object-Relational Mapping
-
-\textbf{PK / FK} : Primary Key / Foreign Key (clé primaire / étrangère)
-
-\textbf{RBAC} : Role-Based Access Control
-
-\textbf{Redis} : Remote Dictionary Server (base de données clé-valeur en mémoire)
-
-\textbf{REST} : Representational State Transfer
-
-\textbf{SDK} : Software Development Kit
-
-\textbf{SPA} : Single Page Application
-
-\textbf{SQL} : Structured Query Language
-
-\textbf{SWR} : Stale-While-Revalidate (stratégie de cache)
-
-\textbf{TLS} : Transport Layer Security
-
-\textbf{UML} : Unified Modeling Language
-
-\textbf{UUID} : Universally Unique Identifier
-
-\textbf{VTC} : Véhicule de Tourisme avec Chauffeur
-
-\textbf{WSGI} : Web Server Gateway Interface (Python sync)
-
-
+\pagenumbering{arabic}
 % --- Fused: introduction_generale.tex ---
 \chapter*{Introduction générale}
 \addcontentsline{toc}{chapter}{Introduction générale}
@@ -2827,5 +2710,17 @@ En définitive, \textit{RohWinBghit} prolonge l'ambition académique initiale en
 
 
 % --- Bibliographie ---
+% ══════════════════════════════════════════════════
+%  RÉSUMÉS ET BIBLIOGRAPHIE (RETOUR AU FORMAT BLOCK)
+% ══════════════════════════════════════════════════
+\titleformat{name=\chapter,numberless}[block]
+  {\normalfont\color{rohblue}\Large\bfseries}
+  {}
+  {0pt}
+  {#1}
+\titlespacing*{name=\chapter,numberless}{0pt}{10pt}{20pt}
+
+\include{frontmatter/resume}
+
 \printbibliography[title={Bibliographie et webographie}]
 \end{document}

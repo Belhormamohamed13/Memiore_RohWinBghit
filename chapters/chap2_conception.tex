@@ -1,4 +1,4 @@
-\chapter{Analyse des Besoins et Conception}
+\chapter{Conception de la plateforme RohWinBghit}
 \label{chap:conception}
 
 \section{Introduction}
@@ -60,25 +60,25 @@ Le questionnaire a recueilli 150 réponses exploitables entre le 1\textsuperscri
 \begin{tabularx}{\textwidth}{|l|X|c|}
 \hline
 \rowcolor{rohlight}
-\textbf{Critère} & \textbf{Détail} & \textbf{Proportion} \\
+\textbf{Critère} & \textbf{Détail} & \textbf{Tendance qualitative} \\
 \hline
-Tranche d'âge & 18--25 ans & 72\,\% \\
+Tranche d'âge & 18--25 ans & Forte majorité \\
 \hline
- & 26--35 ans & 19\,\% \\
+ & 26--35 ans & Minorité significative \\
 \hline
- & 36+ ans & 9\,\% \\
+ & 36+ ans & Faible proportion \\
 \hline
-Statut & Étudiants & 68\,\% \\
+Statut & Étudiants & Grande majorité \\
 \hline
- & Salariés / indépendants & 32\,\% \\
+ & Salariés / indépendants & Proportion secondaire \\
 \hline
-Wilayas & Tlemcen, Oran, Alger, Sidi Bel Abbès, Aïn Témouchent & 84\,\% \\
+Wilayas & Tlemcen, Oran, Alger, Sidi Bel Abbès, Aïn Témouchent & Écrasante majorité \\
 \hline
-Fréquence inter-wilayas & $\geq$ 1~trajet/semaine & 41\,\% \\
+Fréquence inter-wilayas & $\geq$ 1~trajet/semaine & Proportion importante \\
 \hline
- & 1--3~trajets/mois & 38\,\% \\
+ & 1--3~trajets/mois & Proportion importante \\
 \hline
- & $<$ 1~trajet/mois & 21\,\% \\
+ & $<$ 1~trajet/mois & Minorité \\
 \hline
 \end{tabularx}
   \caption{Profil sociodémographique des répondants (N~=~150)}
@@ -91,23 +91,23 @@ Fréquence inter-wilayas & $\geq$ 1~trajet/semaine & 41\,\% \\
 \begin{tabularx}{\textwidth}{|X|c|}
 \hline
 \rowcolor{rohlight}
-\textbf{Question / Résultat clé} & \textbf{Pourcentage} \\
+\textbf{Question / Résultat clé} & \textbf{Tendance / Réponse} \\
 \hline
-\textbf{Critère n\textsuperscript{o}~1} de choix d'une plateforme de covoiturage~: \textit{sécurité et confiance dans le conducteur} & 62\,\% \\
+\textbf{Critère n\textsuperscript{o}~1} de choix d'une plateforme de covoiturage~: \textit{sécurité et confiance dans le conducteur} & Majorité des répondants \\
 \hline
-Critère n\textsuperscript{o}~2~: \textit{prix du trajet} & 24\,\% \\
+Critère n\textsuperscript{o}~2~: \textit{prix du trajet} & Minorité significative \\
 \hline
-Critère n\textsuperscript{o}~3~: \textit{disponibilité des trajets} & 14\,\% \\
+Critère n\textsuperscript{o}~3~: \textit{disponibilité des trajets} & Faible proportion \\
 \hline
-\textbf{Moyen de paiement préféré}~: paiement électronique (CIB / Edahabia / BaridiMob) & 57\,\% \\
+\textbf{Moyen de paiement préféré}~: paiement électronique (CIB / Edahabia / BaridiMob) & Majorité des répondants \\
 \hline
-Préférence paiement en espèces & 43\,\% \\
+Préférence paiement en espèces & Minorité importante \\
 \hline
-\textbf{Confiance actuelle} envers les plateformes existantes (Yassir, inDrive, Nroho)~: \textit{faible ou très faible} & 64\,\% \\
+\textbf{Confiance actuelle} envers les plateformes existantes (Yassir, inDrive, Nroho)~: \textit{faible ou très faible} & Majorité des répondants \\
 \hline
-Disposés à partager des données biométriques pour améliorer la sécurité & 71\,\% \\
+Disposés à partager des données biométriques pour améliorer la sécurité & Grande majorité \\
 \hline
-Souhaitent une fonctionnalité de \textit{suivi GPS en temps réel} & 83\,\% \\
+Souhaitent une fonctionnalité de \textit{suivi GPS en temps réel} & Écrasante majorité \\
 \hline
 \end{tabularx}
   \caption{Résultats clés du questionnaire utilisateur (mars 2026)}
@@ -154,37 +154,75 @@ Le système met en relation trois acteurs humains et plusieurs acteurs technique
 
 La consolidation des besoins repose sur le croisement des trois sources d'analyse (questionnaire, étude comparative, entretiens). Les exigences les plus fréquemment citées concernent la confiance dans le conducteur, la visibilité du prix avant réservation, la disponibilité d'un canal de discussion direct et la prise en charge des moyens de paiement locaux.
 
-\subsection{Besoins fonctionnels}
+\subsection{Exigences fonctionnelles}
 \label{sec:exigences-fonc}
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{|l|l|X|l|l|}
-\hline
-\rowcolor{rohlight}
-\textbf{ID} & \textbf{Priorité} & \textbf{Description courte} & \textbf{Acteur} & \textbf{UC} \\
-\hline
-EF1.1 & Haute & Inscription, authentification OTP et gestion profil & Passager, Conducteur & UC-AUTH \\
-\hline
-EF1.2 & Haute & Vérification d'identité biométrique (OCR + liveness) & Passager, Conducteur & UC-KYC \\
-\hline
-EF2.1 & Haute & Publication d'un trajet avec tarif dynamique & Conducteur & UC-PUB \\
-\hline
-EF2.2 & Moyenne & Validation ou refus des réservations & Conducteur & UC-BOOK \\
-\hline
-EF1.3 & Haute & Recherche de trajets avec filtres & Passager & UC-SEARCH \\
-\hline
-EF1.4 & Haute & Réservation et paiement (CIB/Edahabia/espèces) & Passager & UC-BOOK \\
-\hline
-EF1.5 & Haute & Messagerie temps réel et suivi GPS & Passager, Conducteur & UC-CHAT \\
-\hline
-EF3.1 & Haute & Tableau de bord, statistiques et gestion KYC manuel & Administrateur & UC-MOD \\
-\hline
-\end{tabularx}
-  \caption{Exigences fonctionnelles principales}
-  \label{tab:exigences-fonc}
-\end{table}
+Les exigences fonctionnelles décrivent ce que le système doit \textit{faire}. Nous les présentons ci-dessous sous forme de fiches descriptives détaillées pour chaque exigence du système :
+
+\begin{funcreq}[title={\textbf{EF~1.1 — Inscription, authentification OTP et gestion profil}}]
+\textbf{Acteurs :} Passager, Conducteur \hfill \textbf{Priorité :} Haute \\
+\textbf{Cas d'utilisation :} UC-AUTH
+\smallskip
+
+Cette exigence couvre la création de compte et l'authentification sécurisée des utilisateurs (passagers et conducteurs) sans mot de passe via l'envoi et la validation d'un code à usage unique (OTP) par SMS, ainsi que la gestion des données de leur profil utilisateur.
+\end{funcreq}
+
+\begin{funcreq}[title={\textbf{EF~1.2 — Vérification d'identité biométrique (OCR + liveness)}}]
+\textbf{Acteurs :} Passager, Conducteur \hfill \textbf{Priorité :} Haute \\
+\textbf{Cas d'utilisation :} UC-KYC
+\smallskip
+
+Assure la vérification automatisée de l'identité (KYC) des utilisateurs par l'analyse et la reconnaissance optique de caractères (OCR) de la Carte d'Identité Nationale (CIN) couplée à un test de détection de vivacité faciale (liveness detection) afin d'éviter l'usurpation d'identité.
+\end{funcreq}
+
+\begin{funcreq}[title={\textbf{EF~1.3 — Recherche de trajets avec filtres}}]
+\textbf{Acteurs :} Passager \hfill \textbf{Priorité :} Haute \\
+\textbf{Cas d'utilisation :} UC-SEARCH
+\smallskip
+
+Permet aux passagers d'effectuer des recherches multicritères de trajets disponibles en spécifiant la wilaya de départ, la wilaya d'arrivée et la date du voyage, et d'affiner les résultats grâce à des filtres avancés (tri par prix, notes, heures de départ).
+\end{funcreq}
+
+\begin{funcreq}[title={\textbf{EF~1.4 — Réservation et paiement (CIB/Edahabia/espèces)}}]
+\textbf{Acteurs :} Passager \hfill \textbf{Priorité :} Haute \\
+\textbf{Cas d'utilisation :} UC-BOOK
+\smallskip
+
+Permet aux passagers de réserver des places sur un trajet disponible et de procéder au paiement sécurisé en utilisant des cartes de débit locales (CIB ou Edahabia d'Algérie Poste) via la passerelle monétique intégrée (sandbox), ou en optant pour un règlement direct en espèces.
+\end{funcreq}
+
+\begin{funcreq}[title={\textbf{EF~1.5 — Messagerie temps réel et suivi GPS}}]
+\textbf{Acteurs :} Passager, Conducteur \hfill \textbf{Priorité :} Haute \\
+\textbf{Cas d'utilisation :} UC-CHAT
+\smallskip
+
+Fournit un canal de communication instantané et bidirectionnel par messagerie interne (Socket.IO) pour les utilisateurs associés à un même trajet, complété par le suivi cartographique en temps réel de la position GPS du véhicule lors du déroulement du voyage.
+\end{funcreq}
+
+\begin{funcreq}[title={\textbf{EF~2.1 — Publication d'un trajet avec tarif dynamique}}]
+\textbf{Acteurs :} Conducteur \hfill \textbf{Priorité :} Haute \\
+\textbf{Cas d'utilisation :} UC-PUB
+\smallskip
+
+Permet aux conducteurs de publier une offre de trajet en saisissant l'itinéraire (wilayas de départ, d'étape et de destination), la date, l'heure et le nombre de places disponibles, tout en bénéficiant d'une suggestion automatique de prix optimisée par l'algorithme de tarification dynamique (Surge Pricing).
+\end{funcreq}
+
+\begin{funcreq}[title={\textbf{EF~2.2 — Validation ou refus des réservations}}]
+\textbf{Acteurs :} Conducteur \hfill \textbf{Priorité :} Moyenne \\
+\textbf{Cas d'utilisation :} UC-BOOK
+\smallskip
+
+Permet au conducteur de consulter les demandes de réservation soumises par les passagers pour ses trajets publiés, avec la possibilité de valider ou de refuser chaque demande individuelle, déclenchant des notifications automatiques de mise à jour.
+\end{funcreq}
+
+\begin{funcreq}[title={\textbf{EF~3.1 — Tableau de bord, statistiques et gestion KYC manuel}}]
+\textbf{Acteurs :} Administrateur \hfill \textbf{Priorité :} Haute \\
+\textbf{Cas d'utilisation :} UC-MOD
+\smallskip
+
+Offre aux administrateurs de la plateforme une interface web de supervision centralisée (tableau de bord avec indicateurs de performance clés) et permet le traitement manuel des dossiers de vérification KYC mis en attente ou jugés litigieux par l'algorithme automatique.
+\end{funcreq}
+
 
 \subsection{User Stories}
 \label{sec:user-stories}
@@ -214,7 +252,7 @@ US-03 & Passager & En tant que passager, je veux rechercher un trajet par wilaya
 \hline
 US-04 & Passager & En tant que passager vérifié, je veux réserver une place et payer via Edahabia, CIB ou espèces, afin de sécuriser mon trajet. & - Intégration sandbox Chargily Pay V2.\newline - Notification push conducteur.\newline - Remboursement auto si refus. & Haute \\
 \hline
-US-05 & Admin & En tant qu'administrateur, je veux consulter et traiter la file d'attente KYC, afin de garantir la sécurité. & - Comparaison visuelle des documents.\newline - Scores InsightFace/Liveness.\newline - Notification auto de décision. & Critique \\
+US-05 & Admin & En tant qu'administrateur, je veux consulter et traiter la file d'attente KYC, afin de renforcer la sécurité. & - Comparaison visuelle des documents.\newline - Scores InsightFace/Liveness.\newline - Notification auto de décision. & Critique \\
 \hline
 \end{tabularx}
 \caption{User Stories détaillées et critères d'acceptation}
@@ -277,10 +315,19 @@ La figure~\ref{fig:uc-global} présente, sur une même vue, les trois acteurs hu
 
 Trois familles de cas se dégagent~: les cas \textit{transverses} (s'inscrire, se connecter par OTP, compléter le \textsc{kyc}, gérer son profil), les cas \textit{transactionnels} (publier, rechercher, réserver, payer) et les cas \textit{relationnels} (messagerie, notation, signalement). Les relations \texttt{<<include>>} matérialisent les préconditions structurelles~; les relations \texttt{<<extend>>} illustrent les actions facultatives.
 
+\paragraph{Sémantique des relations UML dans les diagrammes de cas d'utilisation.}
+
+Les diagrammes de cas d'utilisation UML utilisent deux types de relations stéréotypées pour structurer les comportements entre cas~:
+
+\begin{itemize}
+  \item \textbf{\texttt{\textless\textless include\textgreater\textgreater} (inclusion obligatoire)~:} Indique qu'un cas d'utilisation de base incorpore \textit{systématiquement} le comportement d'un autre cas d'utilisation. L'inclusion est obligatoire et se produit à chaque exécution du cas de base. Par exemple, dans notre système, le cas \guillemotleft~Réserver un trajet~\guillemotright{} inclut obligatoirement \guillemotleft~S'authentifier~\guillemotright, car aucune réservation ne peut être effectuée sans authentification préalable. De même, le cas \guillemotleft~Publier un trajet~\guillemotright{} inclut \guillemotleft~Compléter le KYC~\guillemotright, la vérification d'identité étant un prérequis obligatoire pour la publication.
+  \item \textbf{\texttt{\textless\textless extend\textgreater\textgreater} (extension optionnelle)~:} Indique qu'un cas d'utilisation peut \textit{optionnellement} ajouter un comportement supplémentaire à un cas de base, sous certaines conditions. L'extension ne se produit que si la condition d'extension est satisfaite. Par exemple, le cas \guillemotleft~Signaler un utilisateur~\guillemotright{} étend le cas \guillemotleft~Consulter un profil~\guillemotright, car le signalement ne se produit que dans certaines circonstances (comportement suspect ou litige).
+\end{itemize}
+
 Outre les acteurs humains (Passager, Conducteur et Administrateur), le système intègre deux acteurs externes critiques~: la \textbf{Passerelle de Paiement (Chargily Pay V2)} qui prend en charge les flux transactionnels CIB/Edahabia (en relation avec le cas \textit{Payer le trajet}), et le \textbf{Service IA (FastAPI)} responsable des traitements biométriques complexes (\textit{Vérification KYC} et \textit{Check-In biométrique mutuel}). Des cas d'utilisation additionnels sécurisent les parcours : l'\textbf{Embarquement QR} (double validation à la montée), la \textbf{Vérification faciale} (face-match), le \textbf{Suivi GPS en direct} du trajet, la \textbf{Gestion du portefeuille} numérique (Wallet) et le \textbf{Check-In biométrique mutuel} en face-à-face, combinant la lecture de billet QR et la comparaison faciale via l'IA.
 
 
-Le tableau~\ref{tab:tracabilite} établit la traçabilité entre les besoins fonctionnels et les cas d'utilisation, garantissant la couverture exhaustive des exigences spécifiées.
+Le tableau~\ref{tab:tracabilite} établit la traçabilité entre les besoins fonctionnels et les cas d'utilisation, visant à assurer la couverture des exigences spécifiées.
 
 \begin{table}[H]
 \centering
@@ -311,7 +358,6 @@ Modération et validation \textsc{kyc} & Administrateur & UC-MODERATION \\
   \label{tab:tracabilite}
 \end{table}
 
-\newpage
 \section{Diagrammes de classes}
 \label{sec:classes}
 
@@ -321,7 +367,7 @@ La classe \texttt{User} est modélisée comme classe mère abstraite, avec trois
 \begin{enumerate}
   \item \textbf{Agrégat Transport~:} \texttt{Trip}, \texttt{TripRequest}, \texttt{Route}, \texttt{Booking}, \texttt{Vehicle}.
   \item \textbf{Agrégat Paiement~:} \texttt{Payment}, \texttt{Wallet}, \texttt{WalletTransaction}, \texttt{SurgePricingRule}.
-  \item \textbf{Agrégat Identité~:} \texttt{IdentityVerification}, \texttt{FaceEmbedding}, \texttt{FraudEvent}.
+  \item \textbf{Agrégat Identité~:} \texttt{IdentityVerification}, \texttt{FaceEmbedding}, \texttt{FraudEvent}, \texttt{PlatformStats}.
   \item \textbf{Agrégat Communication~:} \texttt{Chat}, \texttt{Message}, \texttt{Notification}, \texttt{Review}.
 \end{enumerate}
 
@@ -332,7 +378,19 @@ La classe \texttt{User} est modélisée comme classe mère abstraite, avec trois
 \caption{Diagramme de classes du domaine (vue conceptuelle)}
 \label{fig:classes}
 \end{figure}
+\end{landscape}
 
+\paragraph{Justification des relations structurelles.}
+Le diagramme de classes met en œuvre quatre types de relations UML~:
+\begin{itemize}
+  \item \textbf{Héritage (généralisation)~:} \texttt{User} $\to$ \texttt{Passenger}, \texttt{Driver}, \texttt{Admin}. Les trois rôles partagent les attributs communs d'authentification et de profil (\texttt{id}, \texttt{phone}, \texttt{email}, \texttt{password}), mais diffèrent par leurs méthodes métier spécifiques (par exemple, \texttt{publishTrip()} pour le conducteur et \texttt{reserveTrip()} pour le passager).
+  \item \textbf{Composition~:} \texttt{Trip} ◆ \texttt{Booking}. La suppression d'un trajet entraîne la suppression de toutes ses réservations associées, car le cycle de vie d'une réservation est entièrement dépendant de celui du trajet. De même, \texttt{Chat} ◆ \texttt{Message}~: les messages n'existent pas sans leur conversation parente.
+  \item \textbf{Association~:} \texttt{Driver} --- \texttt{Vehicle}. Un conducteur possède un ou plusieurs véhicules (multiplicité \texttt{1..*}), mais un véhicule peut exister indépendamment d'un trajet donné. De même, \texttt{Review} associe un \texttt{Booking} à un évaluateur et un évalué.
+  \item \textbf{Dépendance~:} \texttt{PaymentSession} dépend de la stratégie de paiement instanciée dynamiquement via le patron \textit{Factory} (\texttt{CIBStrategy}, \texttt{EdahabiaStrategy}, \texttt{CashStrategy}).
+\end{itemize}
+
+
+\begin{landscape}
 \subsection{Description des classes}
 \label{sec:classes-description}
 
@@ -353,7 +411,7 @@ Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs att
 \hline
 \texttt{Driver} & driver\_score, vehicle\_id, identity\_verification\_id & publishTrip(), manageBooking() \\
 \hline
-\texttt{Admin} & admin\_level & moderateReview(), reviewKyc() \\
+\texttt{Admin} & admin\_level & moderateReview(), reviewKyc(), manageUser(), superviseTrip(), monitorBooking(), viewStatistics() \\
 \hline
 \texttt{Vehicle} & id, owner\_id, make, model, license\_plate\_encrypted, color, seats\_available, is\_verified & register(), deactivate() \\
 \hline
@@ -370,6 +428,8 @@ Le tableau~\ref{tab:classes} synthétise les entités principales avec leurs att
 \texttt{IdentityVerification} & id, user\_id, face\_match\_score, liveness\_score, antispoof\_score, status & submit(), processAI(), reviewManually() \\
 \hline
 \texttt{FraudEvent} & id, user\_id, verification\_id, event\_type, severity, reason & flag(), investigate() \\
+\hline
+\texttt{PlatformStats} & total\_users, active\_trips, total\_bookings, total\_revenue\_dzd & generateReport() \\
 \hline
 \texttt{Wallet / WalletTransaction} & balance, currency / type, amount, balance\_after & credit(), debit() / record() \\
 \hline
@@ -434,9 +494,9 @@ id & \texttt{UUID} & PK & Identifiant unique \\
 \hline
 driver\_id & \texttt{UUID} & FK $\to$ users, NOT NULL & Conducteur propriétaire \\
 \hline
-from\_wilaya\_id & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya de départ \\
+from\_wilaya\_code & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya de départ \\
 \hline
-to\_wilaya\_id & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya d'arrivée \\
+to\_wilaya\_code & \texttt{INTEGER} & FK $\to$ wilayas, NOT NULL & Wilaya d'arrivée \\
 \hline
 departure\_time & \texttt{TIMESTAMPTZ} & NOT NULL, INDEXED & Date et heure de départ \\
 \hline
@@ -517,13 +577,13 @@ Le passage du diagramme de classes au schéma relationnel suit les règles class
 \texttt{users}(\underline{id}, phone, email, password, first\_name, last\_name, date\_of\_birth, role, verification\_status, identity\_status, created\_at)\\[1pt]
 \texttt{vehicles}(\underline{id}, \#owner\_id, make, model, license\_plate\_encrypted, color, seats, is\_active)\\[1pt]
 \texttt{wilayas}(\underline{code}, name\_fr, name\_ar, latitude, longitude)\\[1pt]
-\texttt{routes}(\underline{id}, \#from\_wilaya\_id, \#to\_wilaya\_id, from\_city, to\_city, distance\_km, duration\_minutes, route\_geometry, waypoints)\\[1pt]
-\texttt{trips}(\underline{id}, \#driver\_id, \#vehicle\_id, \#from\_wilaya\_id, \#to\_wilaya\_id, departure\_time, price\_per\_seat, available\_seats, status, created\_at)\\[1pt]
+\texttt{routes}(\underline{id}, \#from\_wilaya\_code, \#to\_wilaya\_code, from\_city, to\_city, distance\_km, duration\_minutes, route\_geometry, waypoints)\\[1pt]
+\texttt{trips}(\underline{id}, \#driver\_id, \#vehicle\_id, \#from\_wilaya\_code, \#to\_wilaya\_code, departure\_time, price\_per\_seat, available\_seats, status, created\_at)\\[1pt]
 \texttt{trip\_requests}(\underline{id}, \#passenger\_id, \#from\_wilaya\_code, \#to\_wilaya\_code, date, seats, status, expires\_at)\\[1pt]
 \texttt{bookings}(\underline{id}, \#trip\_id, \#passenger\_id, num\_seats, total\_price, status, payment\_status, payment\_method, created\_at)\\[1pt]
 \texttt{payment\_sessions}(\underline{id}, \#user\_id, \#booking\_id, provider, provider\_checkout\_id, payment\_method, amount, status, checkout\_url, created\_at)\\[1pt]
 \texttt{payment\_methods}(\underline{id}, \#user\_id, type, card\_number\_encrypted, card\_number\_iv, card\_number\_auth\_tag, card\_number\_salt, last\_four, cardholder\_name, expiry\_month, expiry\_year, is\_default, created\_at)\\[1pt]
-\texttt{identity\_verifications}(\underline{id}, \#user\_id, id\_card\_front\_url, id\_card\_back\_url, selfie\_url, video\_url, face\_match\_score, liveness\_score, status, created\_at)\\[1pt]
+\texttt{identity\_verifications}(\underline{id}, \#user\_id, face\_match\_score, liveness\_score, antispoof\_score, status, role, ai\_raw\_result, created\_at)\\[1pt]
 \texttt{fraud\_events}(\underline{id}, \#user\_id, \#verification\_id, event\_type, severity, reason, created\_at)\\[1pt]
 \texttt{wallets}(\underline{id}, \#user\_id, balance, currency)\\[1pt]
 \texttt{wallet\_transactions}(\underline{id}, \#wallet\_id, type, amount, balance\_after, reference\_id, reference\_type, created\_at)\\[1pt]
@@ -699,7 +759,7 @@ La figure~\ref{fig:proc-passenger} illustre le processus de recherche, de réser
 \subsection{Validation du paiement}
 \label{sec:bpmn-admin}
 
-La figure~\ref{fig:proc-admin} présente le processus opérationnel de supervision et de modération de la plateforme par l'administrateur. L'administrateur veille à la santé de la plateforme par trois boucles~: la modération continue des contenus, le traitement des litiges et la revue des KYC litigieux. L'administrateur consulte en continu la file d'attente des dossiers en attente de revue (\textit{pending\_review}), examine les pièces justificatives et les scores d'inférence générés par le service d'IA, puis valide ou rejette le dossier en motivant sa décision. En cas de litige signalé par un passager (par exemple, non-présentation du conducteur ou trajet incomplet), l'administrateur analyse les traces du trajet, les échanges de messagerie et les positions GPS enregistrées, puis procède à l'arbitrage en débloquant les fonds vers le conducteur ou en remboursant le passager. Ces processus garantissent la qualité du service offert aux utilisateurs finaux.
+La figure~\ref{fig:proc-admin} présente le processus opérationnel de supervision et de modération de la plateforme par l'administrateur. L'administrateur veille à la santé de la plateforme par trois boucles~: la modération continue des contenus, le traitement des litiges et la revue des KYC litigieux. L'administrateur consulte en continu la file d'attente des dossiers en attente de revue (\textit{pending\_review}), examine les pièces justificatives et les scores d'inférence générés par le service d'IA, puis valide ou rejette le dossier en motivant sa décision. En cas de litige signalé par un passager (par exemple, non-présentation du conducteur ou trajet incomplet), l'administrateur analyse les traces du trajet, les échanges de messagerie et les positions GPS enregistrées, puis procède à l'arbitrage en débloquant les fonds vers le conducteur ou en remboursant le passager. Ces processus participent à la qualité du service offert aux utilisateurs finaux.
 
 \begin{figure}[H]
 \centering
@@ -750,11 +810,11 @@ L'ensemble est déployé derrière un \textit{reverse proxy} Nginx assurant la t
 \subsection{Tables \textsc{postgresql} et estimations de cardinalité}
 \label{sec:postgresql-justification}
 
-Le choix du système de gestion de bases de données constitue une décision architecturale structurante dont les conséquences se propagent sur l'ensemble du cycle de vie de la plateforme. Pour un système transactionnel manipulant simultanément des réservations concurrentes, des flux financiers et des données biométriques sensibles, la conformité stricte aux propriétés \textsc{acid} (Atomicité, Cohérence, Isolation, Durabilité) n'est pas négociable. PostgreSQL~16 garantit nativement ces propriétés, là où les bases documentaires de type MongoDB ou les entrepôts clé-valeur sacrifient la cohérence forte au profit de la disponibilité (théorème \textsc{cap}).
+Le choix du système de gestion de bases de données constitue une décision architecturale structurante dont les conséquences se propagent sur l'ensemble du cycle de vie de la plateforme. Pour un système transactionnel manipulant simultanément des réservations concurrentes, des flux financiers et des données biométriques sensibles, la conformité stricte aux propriétés \textsc{acid} (Atomicité, Cohérence, Isolation, Durabilité) n'est pas négociable. PostgreSQL~16 assure nativement ces propriétés, là où les bases documentaires de type MongoDB ou les entrepôts clé-valeur sacrifient la cohérence forte au profit de la disponibilité (théorème \textsc{cap}).
 
-Concrètement, le scénario critique de réservation concurrente illustre cette nécessité~: lorsque deux passagers tentent de réserver simultanément la dernière place disponible sur un trajet donné, le mécanisme de verrouillage pessimiste de PostgreSQL (\texttt{SELECT ... FOR UPDATE}) garantit qu'une seule transaction aboutit, l'autre étant bloquée puis informée de l'indisponibilité. Sous un modèle NoSQL à cohérence éventuelle, ce scénario engendrerait une sur-réservation (\textit{overbooking}) nécessitant des compensations financières et une dégradation de la confiance utilisateur.
+Concrètement, le scénario critique de réservation concurrente illustre cette nécessité~: lorsque deux passagers tentent de réserver simultanément la dernière place disponible sur un trajet donné, le mécanisme de verrouillage pessimiste de PostgreSQL (\texttt{SELECT ... FOR UPDATE}) assure qu'une seule transaction aboutit, l'autre étant bloquée puis informée de l'indisponibilité. Sous un modèle NoSQL à cohérence éventuelle, ce scénario engendrerait une sur-réservation (\textit{overbooking}) nécessitant des compensations financières et une dégradation de la confiance utilisateur.
 
-Par ailleurs, PostgreSQL offre le type natif \texttt{JSONB} qui permet de stocker les payloads semi-structurés --- tels que les scores flottants multi-dimensionnels retournés par le microservice IA ou les métadonnées de notification push --- sans renoncer aux garanties relationnelles. Les index B-Tree déployés sur le triplet \texttt{(originWilayaId, destinationWilayaId, departureAt)} réduisent la complexité algorithmique de la recherche de trajets de $O(N)$ (balayage séquentiel) à $O(\log N)$ (parcours d'arbre), ce qui préserve des temps de réponse sous la barre des 300~ms même sous forte charge concurrente.
+Par ailleurs, PostgreSQL offre le type natif \texttt{JSONB} qui permet de stocker les payloads semi-structurés --- tels que les scores flottants multi-dimensionnels retournés par le microservice IA ou les métadonnées de notification push --- sans renoncer aux propriétés relationnelles. Les index B-Tree déployés sur le triplet \texttt{(originWilayaId, destinationWilayaId, departureAt)} réduisent la complexité algorithmique de la recherche de trajets de $O(N)$ (balayage séquentiel) à $O(\log N)$ (parcours d'arbre), ce qui préserve des temps de réponse sous la barre des 300~ms même sous forte charge concurrente.
 
 \section{Modèle de données}
 \label{sec:modele-donnees}
@@ -880,7 +940,7 @@ Le parcours global d'un utilisateur, depuis l'authentification jusqu'à la fin d
 Ce chapitre a produit un ensemble cohérent d'artefacts de modélisation couvrant l'intégralité du cycle de conception de la plateforme \textit{RohWinBghit}~:
 
 \begin{itemize}
-  \item \textbf{8~exigences fonctionnelles} (tableau~\ref{tab:exigences-fonc}) et \textbf{8~exigences non fonctionnelles} (ENF~1 à ENF~8), assurant la couverture des besoins identifiés par l'enquête terrain (N~=~150).
+  \item \textbf{8~exigences fonctionnelles} (détaillées en section~\ref{sec:exigences-fonc}) et \textbf{8~exigences non fonctionnelles} (ENF~1 à ENF~8), assurant la couverture des besoins identifiés par l'enquête terrain (N~=~150).
   \item \textbf{5~User Stories} détaillées (tableau~\ref{tab:user-stories}) respectant les critères INVEST, réparties sur 42~items du Product Backlog.
   \item \textbf{1~diagramme de cas d'utilisation} consolidé (figure~\ref{fig:uc-global}) avec matrice de traçabilité (tableau~\ref{tab:tracabilite}).
   \item \textbf{1~diagramme de classes} du domaine (figure~\ref{fig:classes}) structuré en 4~agrégats (Transport, Paiement, Identité, Communication), accompagné du dictionnaire de 15~classes (tableau~\ref{tab:classes}) et du modèle relationnel normalisé.
@@ -893,7 +953,7 @@ Ce chapitre a produit un ensemble cohérent d'artefacts de modélisation couvran
   \item \textbf{1~matrice de risques} avec stratégies d'atténuation (tableau~\ref{tab:risques-mitigations}).
 \end{itemize}
 
-L'ensemble de ces artefacts garantit la traçabilité complète depuis les besoins utilisateurs jusqu'aux choix d'implémentation, et constitue le socle documentaire sur lequel s'appuie la phase de réalisation détaillée au chapitre suivant.
+L'ensemble de ces artefacts assure la traçabilité complète depuis les besoins utilisateurs jusqu'aux choix d'implémentation, et constitue le socle documentaire sur lequel s'appuie la phase de réalisation détaillée au chapitre suivant.
 
 \section{Conclusion}
 

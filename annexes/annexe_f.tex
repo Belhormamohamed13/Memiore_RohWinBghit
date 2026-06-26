@@ -26,8 +26,8 @@ CREATE TABLE trips (
   id                UUID           PRIMARY KEY DEFAULT uuid_generate_v4(),
   driver_id         UUID           NOT NULL REFERENCES users(id),
   vehicle_id        UUID           NOT NULL REFERENCES vehicles(id),
-  from_wilaya_id    INT            NOT NULL REFERENCES wilayas(id),
-  to_wilaya_id      INT            NOT NULL REFERENCES wilayas(id),
+  from_wilaya_code  INT            NOT NULL REFERENCES wilayas(code),
+  to_wilaya_code    INT            NOT NULL REFERENCES wilayas(code),
   from_city         VARCHAR(120)   NOT NULL,
   to_city           VARCHAR(120)   NOT NULL,
   departure_date    DATE           NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE trips (
 );
 
 CREATE INDEX idx_trips_route_date ON trips
-  (from_wilaya_id, to_wilaya_id, departure_date);
+  (from_wilaya_code, to_wilaya_code, departure_date);
 \end{lstlisting}
 
 

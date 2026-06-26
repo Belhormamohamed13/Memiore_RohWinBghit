@@ -1861,7 +1861,7 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
     // Col 2 Bottom : Ressources Clés
     drawCard(s, 2.3, by + 1.05, 1.7, 0.9);
     s.addText("💻 Ressources", { x: 2.3, y: by + 1.1, w: 1.7, h: 0.2, fontSize: 10, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Code propriétaire\n• Serveurs Cloud\n• Modèle antelopev2", { x: 2.35, y: by + 1.3, w: 1.6, h: 0.55, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("• Plateforme logicielle\n• Serveurs Cloud\n• Modèle antelopev2", { x: 2.35, y: by + 1.3, w: 1.6, h: 0.55, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
     // Col 3 Center : Propositions de Valeur (Highlighted)
     drawCard(s, 4.1, by, 1.8, bh, { fill: "E8F5EE", line: { color: COLOR_PRIMARY_DARK, width: 1.5 } });
@@ -1891,12 +1891,12 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
     // Structure de Coûts
     drawCard(s, 0.5, my, mw, mh);
     s.addText("💸 Structure de Coûts", { x: 0.5, y: my + 0.1, w: mw, h: 0.25, fontSize: 11.5, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Coûts Cloud & DevOps : Inférence IA FastAPI, serveurs de production.\n• Acquisition Marketing : Publicités ciblées, campagnes campus.\n• Ressources Humaines : Équipe technique & agents de modération KYC.", { x: 0.65, y: my + 0.38, w: mw - 0.3, h: 0.85, fontSize: 9, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 11 });
+    s.addText("• Infrastructure & DevOps : VPS Cloud, base de données, GPU IA (~28 500 DZD/mois).\n• Services tiers : Mapbox, SMS OTP, Chargily Pay (~9 500 DZD/mois).\n• Ressources humaines : Rémunération de l'équipe (~570 000 DZD/mois).\n• Marketing & Acquisition : Publicité et parrainage (~73 500 DZD/mois).\n→ CAPEX : 1 798 700 DZD  |  OPEX : 742 500 DZD / mois", { x: 0.65, y: my + 0.35, w: mw - 0.3, h: 0.95, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 11 });
 
     // Sources de Revenus
     drawCard(s, 5.1, my, mw, mh);
     s.addText("💰 Sources de Revenus", { x: 5.1, y: my + 0.1, w: mw, h: 0.25, fontSize: 11.5, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE, align: "center" });
-    s.addText("• Commission covoiturage : Commission de 5% à 15% sur les trajets.\n• Comm. billets bus/train : 3% à 5% via SNTF & SOGRAAL.\n• Abonnements & Publicité : Premium Conducteur (500 DA) + Ads B2B.", { x: 5.25, y: my + 0.38, w: mw - 0.3, h: 0.85, fontSize: 9, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 11 });
+    s.addText("• Commission sur les trajets : 12% sur transaction (~270 000 DZD/mois).\n• Abonnement Premium : Conducteurs réguliers (~50 000 DZD/mois).\n• Publicité locale ciblée : Commerces de proximité (~30 000 DZD/mois).\n• Partenariats B2B : Conventions (revenus variables).\n→ CA estimé : 350 000 DZD / mois  |  4 200 000 DZD / an", { x: 5.25, y: my + 0.35, w: mw - 0.3, h: 0.95, fontSize: 8.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY, lineSpacing: 11 });
 }
 
 // =============================================================================
@@ -1928,11 +1928,11 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
 
     // Card 3
     drawCard(s, 0.5, 3.7, cardW, cardH);
-    s.addText("Partenariats B2B", { x: 0.7, y: 3.75, w: 2.2, h: 0.28, fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE });
+    s.addText("Publicité & B2B", { x: 0.7, y: 3.75, w: 2.2, h: 0.28, fontSize: 14, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE });
     // Gold Pill
     s.addShape("roundRect", { x: 2.9, y: 3.75, w: 1.4, h: 0.26, fill: { color: COLOR_GOLD }, line: { width: 0 }, rectRadius: 0.2 });
     s.addText("PARTENARIAT", { x: 2.9, y: 3.75, w: 1.4, h: 0.26, fontSize: 9, bold: true, color: COLOR_BG_DARK, fontFace: FONT_BODY, align: "center", valign: "middle" });
-    s.addText("Publicités ciblées pour stations-services, assurances automobiles et opérateurs télécoms.", { x: 0.7, y: 4.08, w: 3.6, h: 0.65, fontSize: 10.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
+    s.addText("Espaces publicitaires ciblés de proximité et conventions de covoiturage subventionné B2B.", { x: 0.7, y: 4.08, w: 3.6, h: 0.65, fontSize: 10.5, color: COLOR_MUTED_TEXT, fontFace: FONT_BODY });
 
     // Right side native table: Projections on 3 Years
     s.addText("Prévisions de croissance sur 3 ans", { x: 4.8, y: 1.2, w: 4.0, h: 0.3, fontSize: 13, bold: true, color: COLOR_PRIMARY_DARK, fontFace: FONT_TITLE });
@@ -1958,9 +1958,9 @@ buildSectionDivider("06", "Modèle Économique", "Comment rentabiliser le projet
         ],
         [
             { text: "CA Estimé (DA)" },
-            { text: "3.6 Millions" },
-            { text: "21.6 Millions" },
-            { text: "72.0 Millions" }
+            { text: "2.2 Millions" },
+            { text: "3.7 Millions" },
+            { text: "5.4 Millions" }
         ],
         [
             { text: "Seuil de Rentabilité" },

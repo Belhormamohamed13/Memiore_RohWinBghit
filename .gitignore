@@ -71,3 +71,19 @@ __pycache__/
 dist/
 build/
 .cache/
+
+# ─── Tools, Agents and Editor cache ──────────────────────────────────────────
+.agents/
+.clario/
+.cursor/
+.mcp.json
+.windsurfrules
+.gemini/
+
+# ─── Generated media/temp files ──────────────────────────────────────────────
+*.mp4
+*.webm
+*.gif
+test_img.js
+youtube_chapters_mockup.txt
+

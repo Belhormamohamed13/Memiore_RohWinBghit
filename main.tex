@@ -223,7 +223,7 @@
 \definecolor{funcgreen}{RGB}{200,230,201}
 \definecolor{funcgreendark}{RGB}{46,125,50}
 \newtcolorbox{funcreq}[1][]{
-  enhanced, breakable,
+  enhanced,
   colback=funcgreen!40, colframe=funcgreendark,
   boxrule=0.6pt, arc=2pt,
   left=8pt,right=8pt,top=5pt,bottom=5pt,
@@ -235,7 +235,7 @@
 \definecolor{nonfuncorange}{RGB}{255,224,178}
 \definecolor{nonfuncorangedark}{RGB}{230,81,0}
 \newtcolorbox{nonfuncreq}[1][]{
-  enhanced, breakable,
+  enhanced,
   colback=nonfuncorange!40, colframe=nonfuncorangedark,
   boxrule=0.6pt, arc=2pt,
   left=8pt,right=8pt,top=5pt,bottom=5pt,
@@ -299,37 +299,41 @@
 \input{frontmatter/acronymes}
 
 % ── Numérotation ───────────────────────────────────
-\pagenumbering{roman}
+% Pas de numérotation pour les pages liminaires (garde, remerciements, dédicaces, résumés)
+\pagenumbering{gobble}
 
 % =====================================================================
 \begin{document}
 
 % ══════════════════════════════════════════════════
-%  PAGES LIMINAIRES
+%  PAGES LIMINAIRES (NON NUMÉROTÉES)
 % ══════════════════════════════════════════════════
 \include{frontmatter/garde}
 \include{frontmatter/remerciements}
 \include{frontmatter/dedicaces}
-\include{frontmatter/resume}
-\include{frontmatter/abstract}
 
-% Configuration des glossaires pour ne pas forcer de nouvelle page dédiée
-\printglossary[type=\acronymtype,title={Liste des abréviations},toctitle={Liste des abréviations}]
+% ══════════════════════════════════════════════════
+%  TABLE DES MATIÈRES ET LISTES (NUMÉROTATION ROMAINE)
+% ══════════════════════════════════════════════════
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+% 1. Table des matières
+\tableofcontents
 \clearpage
 
-% ══════════════════════════════════════════════════
-%  LISTES ET TABLE DES MATIÈRES
-% ══════════════════════════════════════════════════
+% 2. Liste des figures
 \listoffigures
 \addcontentsline{toc}{chapter}{Liste des figures}
 \clearpage
 
+% 3. Liste des tableaux
 \listoftables
 \addcontentsline{toc}{chapter}{Liste des tableaux}
 \clearpage
 
-\tableofcontents
-\clearpage
+% 4. Liste des abréviations
+\include{frontmatter/abbreviations}
 
 % Redéfinition du style des chapitres non numérotés après les pages liminaires
 % afin que l'Introduction et la Conclusion occupent une page dédiée
@@ -362,17 +366,25 @@
 \include{chapters/chap3_realisation}
 % \include{chapters/chap4_tests}
 \include{chapters/conclusion}
-
 % ══════════════════════════════════════════════════
 %  ANNEXES
 % ══════════════════════════════════════════════════
 \include{chapters/annexes}
 
 % ══════════════════════════════════════════════════
-%  BIBLIOGRAPHIE
+%  RÉSUMÉS ET BIBLIOGRAPHIE (RETOUR AU FORMAT BLOCK)
 % ══════════════════════════════════════════════════
+\titleformat{name=\chapter,numberless}[block]
+  {\normalfont\color{chapcolor}\Large\bfseries}
+  {}
+  {0pt}
+  {#1}
+\titlespacing*{name=\chapter,numberless}{0pt}{10pt}{20pt}
+
 \printbibliography[
   title={Bibliographie et Webographie},
   heading=bibintoc
 ]
+
+\include{frontmatter/resume}
 \end{document}

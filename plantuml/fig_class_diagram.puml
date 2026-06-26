@@ -63,6 +63,10 @@ class Admin <<Identity>> {
   --
   + moderateReview()
   + reviewKyc()
+  + manageUser()
+  + superviseTrip()
+  + monitorBooking()
+  + viewStatistics()
 }
 
 class IdentityVerification <<Identity>> {
@@ -89,6 +93,15 @@ class FraudEvent <<Identity>> {
   --
   + flag()
   + investigate()
+}
+
+class PlatformStats <<Identity>> {
+  + total_users : Integer
+  + active_trips : Integer
+  + total_bookings : Integer
+  + total_revenue_dzd : Float
+  --
+  + generateReport()
 }
 
 ' ===== TRAJET (vert) =====
@@ -226,8 +239,19 @@ User <|-- Passenger
 User <|-- Driver
 User <|-- Admin
 
+Admin ..> Passenger : "gère"
+Admin ..> Driver : "gère"
+Admin ..> Review : "modère"
+Admin ..> Trip : "supervise"
+Admin ..> Booking : "surveille"
+Admin ..> IdentityVerification : "vérifie"
+Admin ..> FraudEvent : "gère"
+Admin ..> PlatformStats : "consulte"
+
+
 Driver "1" -- "0..*" Vehicle : "possède"
 Driver "1" -- "0..*" Trip : "conduit"
+Driver ..> TripRequest : "répond à"
 Passenger "1" -- "0..*" Booking : "réserve"
 Passenger "1" -- "0..*" TripRequest : "demande"
 User "1" -- "0..1" Wallet : "détient"

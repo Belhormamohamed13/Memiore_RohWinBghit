@@ -1,30 +1,47 @@
 \begin{titlepage}
 \thispagestyle{empty}
 \centering
+\vspace*{-1.5cm} % Pulls the banner to the very top margin for better balance
 
-% Green banner at the top
-\includegraphics[width=\textwidth]{figures/logo_universite_banner}\\[0.4cm]
+% --- EN-TÊTE OFFICIEL ---
+\noindent\includegraphics[width=\textwidth]{figures/logo_universite_banner_backup}\\[0.4cm]
 
-{\small\bfseries REPUBLIQUE ALGERIENNE DEMOCRATIQUE ET POPULAIRE}\\[0.12cm]
-{\small\bfseries Université Abou Bekr Belkaïd -- Tlemcen}\\[0.08cm]
-{\small\bfseries Faculté des Sciences}\\[0.08cm]
-{\small\bfseries Département d'Informatique}
+{\scshape\scriptsize République Algérienne Démocratique et Populaire}\\[0.05cm]
+{\scshape\scriptsize Ministère de l'Enseignement Supérieur et de la Recherche Scientifique}\\[0.2cm]
+{\small\textbf{Université Abou Bekr Belkaïd -- Tlemcen}}\\[0.05cm]
+{\small\textbf{Faculté des Sciences}}\\[0.05cm]
+{\small\textbf{Département d'Informatique}}
+
+\vspace*{0.2cm}
+
+% --- BLOC DIPLÔME ---
+\noindent\makebox[\linewidth]{\rule{0.6\textwidth}{0.6pt}}\\[0.2cm]
+{\Large\bfseries MÉMOIRE DE FIN D'ÉTUDES}\\[0.1cm]
+{\small Pour l'obtention du diplôme de \textbf{Master en Informatique}}\\[0.05cm]
+{\small Option : \textbf{Génie Logiciel (GL)}}\\[0.1cm]
+{\footnotesize \textit{Dans le cadre de l'arrêté ministériel n° 1275 (mécanisme « Un diplôme, une Startup »)}}
+\\[0.05cm]
+\noindent\makebox[\linewidth]{\rule{0.6\textwidth}{0.6pt}}
 
 \vfill
 
-{\large\bfseries Mémoire de fin d'études}\\[0.15cm]
-{\small Pour l'obtention du diplôme de Master en Informatique}\\[0.15cm]
-{\small Dans le cadre de l'arrêté ministériel n° 1275 (mécanisme « Un diplôme, une Startup »)}\\[0.15cm]
-{\small\textbf{Option : Génie Logiciel (GL)}}
+% --- BLOC TITRE ---
+{\small\itshape Thème}\\[0.15cm]
 
-\vfill
-
-{\large\itshape Thème}\\[0.2cm]
-
-\begin{tcolorbox}[enhanced,colback=white,colframe=rohblue,boxrule=1.2pt,arc=4pt,width=0.95\textwidth,top=6pt,bottom=6pt]
-\centering
-{\LARGE\bfseries\color{rohblue} RohWinBghit}\\[4pt]
-{\large\textit{\textarabic{روح وين بغيت}}}\\[6pt]
+\begin{tcolorbox}[
+    enhanced,
+    colback=white,
+    colframe=rohblue,
+    boxrule=1.2pt,
+    arc=4pt,
+    drop shadow, % Ajoute une ombre élégante
+    width=0.95\textwidth,
+    top=8pt,
+    bottom=8pt,
+    halign=center
+]
+\raisebox{-0.2\height}{\includegraphics[height=0.9cm]{figures/logo_bus}} \quad {\LARGE\bfseries\color{rohblue} RohWinBghit} \quad \raisebox{-0.2\height}{\includegraphics[height=0.9cm]{figures/logo_bus}}\\[0.1cm]
+{\large\textit{\textarabic{روح وين بغيت}}}\\[0.25cm]
 {\normalsize\bfseries
   Conception et réalisation d'une plateforme mobile\\
   multiplateforme intelligente\\
@@ -34,35 +51,48 @@
 
 \vfill
 
-\begin{minipage}[t]{0.48\textwidth}
-\fontsize{10}{12}\selectfont
-\textbf{Réalisé par :}\\
-- AHMED BACHA Djamel Eddine\\
-- BELHORMA Sidi Mohammed Reduane
+% --- AUTEURS & ENCADRANTE ---
+\begin{minipage}[t]{0.52\textwidth}
+    \begin{flushleft}
+        \fontsize{10}{12}\selectfont
+        \textit{Réalisé par :}\\[0.15cm]
+        \textbf{AHMED BACHA Djamel Eddine}\\
+        \textbf{BELHORMA Sidi Mohammed Reduane}
+    \end{flushleft}
 \end{minipage}
 \hfill
-\begin{minipage}[t]{0.48\textwidth}
-\fontsize{10}{12}\selectfont
-\textbf{Encadré par :}\\
-- M\textsuperscript{me} BENLEDGHEM Rafika\\
-\textit{Maître-Assistante, Univ. Tlemcen}
+\begin{minipage}[t]{0.43\textwidth}
+    \begin{flushright}
+        \fontsize{10}{12}\selectfont
+        \begin{tabular}{@{}l@{}}
+            \textit{Encadré par :}\\[0.05cm]
+            \textbf{Dr. BENLEDGHEM Rafika}\\[0.05cm]
+            \textit{Docteur, Univ. Tlemcen}
+        \end{tabular}
+    \end{flushright}
 \end{minipage}
 
 \vfill
 
-\begin{minipage}{0.9\textwidth}\centering
-\fontsize{10}{12}\selectfont
-\textbf{Soutenu publiquement le 20 juin 2026 devant le jury composé de :}\\[0.2cm]
-\begin{tabular}{ll}
-- M\textsuperscript{me} BENMAHDI Meriem & (Présidente) \\
-- M\textsuperscript{me} BENLEDGHEM Rafika & (Encadrante) \\
-- M\textsuperscript{me} BENMANSOUR Fazilet & (Examinatrice) \\
-- M\textsuperscript{me} SELADJI Yassamine & (Experte I2E) \\
-\end{tabular}
-\end{minipage}
+% --- JURY ---
+\begin{flushleft}
+    \fontsize{9.5}{11.5}\selectfont
+    \textit{Soutenu publiquement le \textbf{20 juin 2026}, devant le jury composé de :}\\[0.2cm]
+    
+    \renewcommand{\arraystretch}{1.2} 
+    % Utilisation de tabular* pour ajuster dynamiquement l'espace et éviter tout retour à la ligne
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l l @{}}
+        \textbf{M\textsuperscript{me} BENMAHDI Meriem Bouchra}   & MCB                                      & Présidente \\
+        \textbf{M\textsuperscript{me} BENLEDGHEM Rafika}                   & Docteur, Univ. Tlemcen                   & Encadrante \\
+        \textbf{M\textsuperscript{me} BENMANSOUR Fazilet}& MCB                                      & Examinatrice \\
+        \textbf{M\textsuperscript{me} SELADJI Yassamine} & Professeur de l'Enseignement Supérieur   & Experte I2E \\
+    \end{tabular*}
+\end{flushleft}
 
 \vfill
 
-{\large\textbf{Année universitaire : 2025 / 2026}}
+% --- PIED DE PAGE ---
+\noindent\makebox[\linewidth]{\rule{0.25\textwidth}{0.5pt}}\\[0.15cm]
+{\normalsize\textbf{Année universitaire : 2025 / 2026}}
 
 \end{titlepage}

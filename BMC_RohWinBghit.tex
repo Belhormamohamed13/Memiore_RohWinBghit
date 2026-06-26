@@ -29,6 +29,8 @@
 \usepackage{tabularx}
 \usepackage{pdflscape}
 \usepackage{fontawesome5}
+\usepackage{caption}
+\usepackage{float}
 
 % ===== Branding Colors =====
 \definecolor{bmcgreen}{RGB}{27,94,59}        % Deep Green #1B5E3B
@@ -98,16 +100,20 @@
 Ministère de l'Enseignement Supérieur et de la Recherche Scientifique\\
 Université Abou Bekr Belkaïd Tlemcen\par}
 \vspace{2cm}
-\fbox{\parbox{0.75\textwidth}{\centering
-  {\Large\bfseries Business Model Canvas}\\[4pt]
-  {\Huge\bfseries RohWinBghit -- \textarabic{روح وين بغيت}}\\[4pt]
-  {\small Plateforme de covoiturage intercité en Algérie — sécurisée, vérifiée, localisée.}}}
-\vspace{2cm}
+\fbox{\parbox{0.8\textwidth}{\centering
+  \vspace{0.4cm}
+  {\Large\bfseries Business Model Canvas et Étude Économique}\\[6pt]
+  {\Huge\bfseries RohWinBghit -- \textarabic{روح وين بغيت}}\\[6pt]
+  {\small Plateforme technologique de covoiturage inter-wilayas en Algérie}\\[4pt]
+  \textit{\small Cadre de l'arrêté ministériel n\textsuperscript{o} 1275}\\[0.4cm]
+}}
+\vspace{2.5cm}
 
 \begin{flushleft}
 \textbf{Faculté / Institut :} Faculté de Technologie \\[6pt]
 \textbf{Département :} Informatique \\[6pt]
 \textbf{Nom du projet :} RohWinBghit \\[6pt]
+\textbf{Option :} Génie Logiciel / Télédistribution
 \end{flushleft}
 
 \vfill
@@ -115,389 +121,317 @@ Université Abou Bekr Belkaïd Tlemcen\par}
 \end{titlepage}
 
 % ============================================================
-\section{Proposition de Valeur \textit{(Value Proposition)}}
-\textarabic{القيمة المقترحة}
+\section{Description et marché cible}
 
-\subsection*{a. Quels problèmes résolvons-nous pour nos clients ?}
+\subsection{Introduction}
+La problématique de la mobilité interurbaine en Algérie constitue un enjeu socio-économique majeur. Les modes de transport traditionnels longue distance (train, bus, taxis collectifs) font régulièrement face à des contraintes de capacité, de rigidité horaire et de couverture géographique, en particulier pour relier les wilayas de taille intermédiaire. Dans ce contexte, l'optimisation des flux de transport par le biais de solutions numériques collaboratives apparaît comme une alternative prometteuse. La présente étude décrit le modèle et la viabilité de la plateforme de covoiturage \textit{RohWinBghit}, conçue pour répondre à ces défis de mobilité.
+
+\subsection{Description}
+\textit{RohWinBghit} (روح وين بغيت) est une solution logicielle multiplateforme (iOS, Android, Web) qui met en relation des conducteurs particuliers disposant de places libres et des passagers souhaitant effectuer un même trajet interurbain. Le système se distingue par l'intégration d'un mécanisme avancé de vérification d'identité (biométrie faciale et reconnaissance de document d'identité), d'un système de réservation numérique avec billets sécurisés par codes QR, et de solutions de paiement adaptées au contexte monétique national (cartes CIB, Edahabia, et paiement en espèces). 
+
+\subsection{Marché cible}
+L'essor des technologies mobiles et de l'internet haut débit en Algérie (représentant une pénétration de la téléphonie mobile et de l'internet mobile de plus en plus forte selon l'ARPCE) favorise l'adoption de services numériques de transport. Notre marché cible principal comprend :
 \begin{itemize}[leftmargin=1.5em]
-  \item L'absence totale d'une plateforme de covoiturage intercité fiable et sécurisée en Algérie.
-  \item L'insécurité des trajets partagés : aucune vérification d'identité des conducteurs ou des passagers.
-  \item Le manque d'options de paiement adaptées au marché algérien (CIB, Edahabia, espèces).
-  \item Les coûts élevés des transports intercités pour les étudiants, travailleurs et familles.
-  \item L'impossibilité pour les conducteurs de rentabiliser leurs trajets quotidiens ou occasionnels.
-  \item L'absence de trajet disponible entre les 69 wilayas avec un système de réservation numérique.
+  \item \textbf{Les étudiants universitaires :} qui se déplacent fréquemment entre les campus régionaux et leurs wilayas d'origine, et qui sont très sensibles aux coûts de déplacement.
+  \item \textbf{Les travailleurs pendulaires :} effectuant des allers-retours hebdomadaires ou mensuels entre leur lieu de travail interurbain et leur domicile familial.
+  \item \textbf{Les conducteurs réguliers :} propriétaires de véhicules particuliers qui effectuent des trajets inter-wilayas et cherchent à réduire leurs coûts d'exploitation (carburant et entretien) par le biais du partage de frais.
 \end{itemize}
 
-\subsection*{b. Quels besoins de nos clients satisfont nos produits ou services ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item Besoin de mobilité intercité à faible coût avec sécurité garantie.
-  \item Besoin de confiance : vérification biométrique (CIN + selfie liveness) obligatoire pour les conducteurs et les passagers.
-  \item Besoin de paiement flexible : CIB, Edahabia, portefeuille virtuel, espèces.
-  \item Besoin de communication directe conducteur-passager via chat et notifications temps réel.
-  \item Besoin d’un billet numérique QR code pour prouver sa réservation au moment du départ.
-  \item Besoin pour les conducteurs de générer des revenus complémentaires.
-\end{itemize}
-
-\subsection*{c. En quoi notre offre est-elle différente de celle de nos concurrents ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item Aucun concurrent direct en Algérie avec vérification d’identité biométrique intégrée (IA InsightFace).
-  \item Seule plateforme acceptant CIB et Edahabia, les deux principales cartes bancaires algériennes.
-  \item Système de demande de trajet : les passagers publient leur besoin, les conducteurs proposent leurs trajets.
-  \item Carte thermique en temps réel pour les conducteurs montrant les zones à forte demande.
-  \item Tarification dynamique intelligente basée sur la demande et l’offre (surge pricing).
-  \item Application mobile native iOS \& Android + application web complète + backoffice admin.
-  \item Couverture nationale : toutes les 69 wilayas algériennes avec coordonnées GPS intégrées.
-\end{itemize}
-
-\subsection*{d. Quelle est notre proposition unique de valeur ?}
-\begin{quote}\itshape
-« RohWinBghit est la première plateforme de covoiturage intercité entièrement dédiée au marché algérien. Elle combine sécurité biométrique avancée, moyens de paiement locaux (CIB, Edahabia), couverture nationale des 69 wilayas et une expérience utilisateur premium sur mobile et web. Le conducteur gagne de l’argent, le passager voyage en sécurité à prix réduit : c’est une solution gagnant-gagnant pensée 100\,\% pour l’Algérie. »
-\end{quote}
+\subsection{Analyse de la demande}
+L'analyse montre une demande significative pour une mobilité flexible et économique, mais freinée par des enjeux de sécurité et de confiance mutuelle. En introduisant des contrôles biométriques stricts pour les conducteurs et les passagers, la plateforme lève la principale barrière psychologique liée à la sécurité des trajets partagés, ouvrant ainsi l'accès à un large segment de voyageurs (familles, étudiantes, professionnels).
 
 % ============================================================
-\section{Segments de Clients \textit{(Customer Segments)}}
-\textarabic{انواع العملاء}
+\section{Aspects d'innovation}
 
-\subsection*{a. Quels sont nos clients principaux ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Passagers :} étudiants universitaires, travailleurs, familles voyageant entre wilayas.
-  \item \textbf{Conducteurs :} particuliers propriétaires d’un véhicule souhaitant rentabiliser leurs trajets.
-  \item \textbf{Administrateurs :} équipe RohWinBghit gérant la plateforme, les vérifications et les litiges.
-\end{itemize}
+\subsection{Introduction}
+L'innovation de la plateforme \textit{RohWinBghit} ne se limite pas à la dimension technologique ; elle englobe également l'adaptation fine du modèle collaboratif aux exigences de sécurité et aux spécificités de l'écosystème monétique et administratif algérien.
 
-\subsection*{b. Quels sont les différents segments de clients que nous visons ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Segment 1 — Étudiants (18-26 ans) :} voyagent fréquemment entre leur ville natale et leur université. Très sensibles au prix, utilisateurs intensifs du mobile.
-  \item \textbf{Segment 2 — Travailleurs actifs (25-45 ans) :} trajets professionnels ou personnels réguliers entre wilayas. Cherchent fiabilité et ponctualité.
-  \item \textbf{Segment 3 — Familles et voyageurs occasionnels :} trajets saisonniers (vacances, événements familiaux). Priorité à la sécurité et au confort.
-  \item \textbf{Segment 4 — Conducteurs-entrepreneurs :} cherchent à maximiser leurs gains sur leurs trajets quotidiens ou planifiés. Utilisent le tableau de bord conducteur et la carte thermique.
-  \item \textbf{Segment 5 — Algériens de la diaspora :} voyagent lors de visites en Algérie, apprécient le paiement par Stripe/PayPal.
-\end{itemize}
+\subsection{Différence avec la concurrence}
+Contrairement aux solutions de transport informelles (groupes de discussion, réseaux sociaux) qui manquent de traçabilité, ou aux applications de VTC urbaines limitées à une couverture de ville locale et coûteuses sur de longues distances, notre solution propose :
+\begin{enumerate}[label=\Alph*.]
+  \item \textbf{Une sécurité renforcée :} L'intégration d'un pipeline complet de contrôle d'identité automatique (\textit{KYC}) combinant la vérification documentaire et la détection active de vivacité pour limiter de façon significative le risque d'usurpation d'identité.
+  \item \textbf{Une monétique intégrée :} L'intégration de la passerelle de paiement Chargily Pay pour supporter les transactions en ligne en dinars algériens via CIB et Edahabia, complétée par un système de séquestre transactionnel garantissant le remboursement en cas d'annulation.
+  \item \textbf{Une tolérance réseau :} L'implémentation de caches locaux et de files de synchronisation asynchrones permettant le fonctionnement fluide de l'application lors de traversées de zones à connectivité mobile variable.
+\end{enumerate}
 
-\subsection*{c. Quels sont les besoins spécifiques de chaque segment ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Étudiants :} prix bas, interface simple, paiement par portefeuille virtuel ou espèces.
-  \item \textbf{Travailleurs :} ponctualité, conducteurs vérifiés, billet QR pour justificatif.
-  \item \textbf{Familles :} sécurité absolue, notation des conducteurs, suivi du trajet en temps réel.
-  \item \textbf{Conducteurs :} tableau de bord gains, demandes de trajet visibles, portefeuille intégré.
-  \item \textbf{Diaspora :} paiement international, interface en français/arabe/anglais.
-\end{itemize}
-
-\subsection*{d. Comment catégorisons-nous nos clients en groupes distincts ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Par rôle :} Passager / Conducteur / Administrateur — trois interfaces distinctes dans l’application.
-  \item \textbf{Par fréquence :} utilisateurs réguliers (abonnement premium possible) vs occasionnels.
-  \item \textbf{Par géographie :} wilayas à forte densité (Alger, Oran, Constantine, Annaba) vs secondaires.
-  \item \textbf{Par statut de vérification :} Non vérifié (accès limité) / Vérifié (accès complet).
-\end{itemize}
+\subsection{Impact sur la société}
+Sur le plan environnemental, la plateforme contribue à la réduction de l'empreinte carbone globale en maximisant le taux d'occupation des véhicules en circulation. Sur le plan économique et social, elle permet d'une part de démocratiser l'accès aux transports interurbains longue distance à tarifs abordables, et d'autre part de valoriser l'économie de partage en diminuant les frais d'usage des propriétaires de voitures.
 
 % ============================================================
-\section{Relation avec les Clients \textit{(Consumer Relationships)}}
-\textarabic{علاقة مع العملاء}
+\section{Modèle économique}
 
-\subsection*{a. Quel type de relation chaque segment de clients attend-il de nous ?}
+\subsection{Introduction}
+L'élaboration du modèle d'affaires de la startup s'appuie sur le cadre du dispositif « Un diplôme, une Startup » (Arrêté 1275). La viabilité financière à long terme est recherchée à travers une structure de revenus mixte minimisant le coût d'accès pour les utilisateurs initiaux tout en couvrant de façon réaliste les charges opérationnelles et d'infrastructure.
+
+\subsection{Description du Business Model Canvas (9 blocs)}
+
+\subsubsection{Value proposition (Propositions de valeur)}
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Passagers :} confiance, transparence sur l’identité du conducteur, communication facile.
-  \item \textbf{Conducteurs :} autonomie, outils de gestion puissants, support rapide en cas de problème.
-  \item \textbf{Tous :} notifications en temps réel, réponses rapides aux litiges, système d’évaluation équitable.
+  \item \textbf{Sécurité et confiance :} Vérification biométrique de l'identité des utilisateurs (KYC), notation mutuelle et suivi en temps réel du trajet par GPS.
+  \item \textbf{Accessibilité financière :} Partage équitable des frais de déplacement pour un tarif par siège inférieur aux transports privatifs traditionnels.
+  \item \textbf{Expérience utilisateur :} Prise de réservation instantanée, billet numérique avec code QR unique, et support de communication direct intégré.
+  \item \textbf{Réduction des coûts pour les conducteurs :} Possibilité d'atténuer les frais d'entretien et de carburant sur des itinéraires déjà planifiés.
 \end{itemize}
 
-\subsection*{b. Comment entretenons-nous actuellement les relations avec nos clients ?}
+\subsubsection{Customer segments (Segments clients)}
 \begin{itemize}[leftmargin=1.5em]
-  \item Chat intégré temps réel entre passager et conducteur via WebSocket (Socket.io).
-  \item Système de notation bidirectionnel après chaque trajet (passager note conducteur et inversement).
-  \item Notifications push pour chaque étape : réservation confirmée, départ imminent, trajet terminé.
-  \item Programme de parrainage : 200 DZD offerts pour chaque ami invité qui s’inscrit.
-  \item Centre d’aide intégré dans l’application avec FAQ et formulaire de contact support.
-  \item Niveaux de membre (Nouveau, Membre Privilège, Or, Platine) gamifiant l’expérience.
+  \item \textbf{Passagers :} Étudiants universitaires effectuant des trajets hebdomadaires, travailleurs en déplacement régulier, familles à la recherche de confort de voyage.
+  \item \textbf{Conducteurs :} Propriétaires de véhicules effectuant des trajets interurbains de moyenne ou longue distance (personnels ou professionnels).
 \end{itemize}
 
-\subsection*{c. Comment améliorons-nous ou personnalisons-nous nos interactions avec nos clients ?}
+\subsubsection{Customer relationships (Relations clients)}
 \begin{itemize}[leftmargin=1.5em]
-  \item Recommandations de trajets personnalisées basées sur l’historique de l’utilisateur.
-  \item Interface adaptée au rôle : tableau de bord distinct pour passager et conducteur.
-  \item Support multilingue : français, arabe (avec RTL), et anglais.
-  \item Mode sombre persistant synchronisé entre appareils.
-  \item Emails transactionnels personnalisés via SendGrid pour chaque action importante.
+  \item \textbf{Fidélisation par la confiance :} Badge de validation de profil, systèmes de notation transparents et gestion stricte de la conformité des données (en accord avec la loi 18-07).
+  \item \textbf{Assistance :} Support client intégré à l'application avec un canal de gestion rapide des litiges ou annulations.
 \end{itemize}
 
-% ============================================================
-\section{Canaux de Distribution \textit{(Channels)}}
-\textarabic{قنوات التوزيع}
-
-\subsection*{a. Par quels canaux nos clients veulent-ils être atteints ?}
+\subsubsection{Customer channels (Canaux)}
 \begin{itemize}[leftmargin=1.5em]
-  \item Application mobile iOS (App Store) et Android (Google Play) — canal principal.
-  \item Application web (site desktop) pour les réservations et la gestion de compte.
-  \item Réseaux sociaux algériens : Facebook, Instagram, TikTok pour l’acquisition.
-  \item Bouche-à-oreille et système de parrainage intégré.
-  \item Notifications push et SMS pour la rétention et les rappels.
+  \item \textbf{Canaux applicatifs :} Applications mobiles natives Android/iOS et site internet pour la consultation et le support.
+  \item \textbf{Canaux de communication :} Réseaux sociaux (Facebook, Instagram, LinkedIn), programmes d'ambassadeurs dans les universités et campagnes de sensibilisation physique sur les campus.
 \end{itemize}
 
-\subsection*{b. Quels canaux sont les plus efficaces pour atteindre chaque segment ?}
+\subsubsection{Key partners (Partenaires clés)}
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Étudiants :} TikTok, Instagram, groupes Facebook universitaires, parrainage entre pairs.
-  \item \textbf{Travailleurs :} LinkedIn, Facebook, bouche-à-oreille professionnel.
-  \item \textbf{Conducteurs :} groupes Facebook automobilistes algériens, YouTube tutoriels, pub ciblée.
-  \item \textbf{Familles :} Facebook, recommandations familiales, sécurité comme argument de vente principal.
+  \item \textbf{Intégrateurs monétiques :} Passerelle Chargily Pay pour le traitement des transactions par cartes CIB et Edahabia.
+  \item \textbf{Fournisseurs de cartographie :} API Mapbox pour les services de géolocalisation et de calcul d'itinéraire inter-wilayas.
+  \item \textbf{Partenaires institutionnels :} Universités et incubateurs technologiques universitaires pour l'appui logistique et l'accompagnement dans le développement.
+  \item \textbf{Fournisseurs cloud :} Fournisseurs d'hébergement d'infrastructures de calcul et de serveurs sécurisés.
+  \item \textbf{Partenariats stratégiques envisagés :} Discussions d'interopérabilité futures avec les acteurs du transport public ou collaborations potentielles avec des compagnies d'assurance.
 \end{itemize}
 
-\subsection*{c. Comment intégrons-nous différents canaux pour améliorer l’expérience clients ?}
+\subsubsection{Key activities (Activités clés)}
 \begin{itemize}[leftmargin=1.5em]
-  \item Continuité entre app mobile et web : même compte, même historique, même portefeuille.
-  \item Deep links depuis les notifications qui ouvrent directement l’écran concerné dans l’app.
-  \item Partage de trajets sur WhatsApp et réseaux sociaux depuis l’application.
-  \item Email de confirmation avec QR code imprimable pour les passagers sans smartphone.
+  \item \textbf{Technique :} Développement logiciel continu de l'infrastructure web, mobile et du microservice de traitement d'images d'IA (FastAPI).
+  \item \textbf{Sécurité :} Modération et supervision KYC de la base d'utilisateurs.
+  \item \textbf{Opérationnel :} Gestion des réclamations, conciliation des paiements et maintenance de la qualité de service.
 \end{itemize}
 
-% ============================================================
-\section{Partenaires Clés \textit{(Key Partnerships)}}
-\textarabic{الشراكة الرئيسية}
-
-\subsection*{a. Qui sont nos partenaires clés ?}
+\subsubsection{Key resources (Ressources clés)}
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Mapbox :} cartographie et géolocalisation intercité sur toutes les wilayas.
-  \item \textbf{CIB (Système Interbancaire Algérien) :} intégration des cartes bancaires algériennes.
-  \item \textbf{Barid El Djazaïr (Edahabia) :} paiement par carte postale algérienne.
-  \item \textbf{Firebase (Google) :} notifications push, authentification, analytics.
-  \item \textbf{SendGrid :} envoi d’emails transactionnels et marketing.
-  \item \textbf{Twilio :} envoi de SMS pour OTP et notifications critiques.
-  \item \textbf{AWS / Cloud provider :} hébergement de l’infrastructure backend et du service IA Python.
-  \item \textbf{Université Abou Bekr Belkaid Tlemcen :} soutien académique, validation du projet.
-  \item \textbf{SNTF / SOGRAAL :} intégration des voyages en bus et trains.
-  \item \textbf{Assureurs auto et Chargily :} intégration paiements et sécurité.
+  \item \textbf{Plateforme logicielle RohWinBghit :} Plateforme logicielle, base de données géographiques des wilayas et modèles d'IA pré-entraînés pour la vision par ordinateur.
+  \item \textbf{Ressources humaines :} Équipe fondatrice d'ingénieurs (développement, marketing, sécurité).
+  \item \textbf{Infrastructures :} Serveurs d'application et bases de données cloud.
 \end{itemize}
 
-\subsection*{b. Quels sont les partenariats qui nous aident à réduire les coûts ou améliorer notre valeur ?}
+\subsubsection{Cost structure (Coûts)}
+La structuration financière de la startup distingue les investissements de lancement (CAPEX) et les coûts réguliers de fonctionnement (OPEX).
+
+\paragraph{Investissements initiaux :} Le tableau~\ref{tab:investissements} détaille les investissements de démarrage nécessaires à la structuration juridique et technique de la plateforme.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|r|c|r|}
+\hline
+\rowcolor{bmclightgreen}
+\textbf{Investissements initiaux} & \textbf{Montant (DZD)} & \textbf{Quantité} & \textbf{Total (DZD)} \\
+\hline
+Frais d'immatriculation au registre du commerce & 3\,700 & 1 & 3\,700 \\
+\hline
+Frais de dépôt de marque et de propriété intellectuelle (INAPI, ONDA) & 17\,000 & 1 & 17\,000 \\
+\hline
+Honoraires d'avocats (rédaction des statuts et des contrats) & 20\,000 & 1 & 20\,000 \\
+\hline
+Licences d'exploitation Windows 11 & 5\,000 & 7 & 35\,000 \\
+\hline
+Licence Microsoft Office 365 Premium & 25\,000 & 1 & 25\,000 \\
+\hline
+Ordinateurs de développement & 180\,000 & 7 & 1\,260\,000 \\
+\hline
+Bureaux professionnels (1 directeur + 6 collaborateurs) & 30\,000 + 45\,000 & 6 + 1 & 225\,000 \\
+\hline
+Chaises de bureau (1 directeur + 6 collaborateurs) & 18\,000 + 25\,000 & 6 + 1 & 133\,000 \\
+\hline
+Imprimantes multifonctions & 40\,000 & 2 & 80\,000 \\
+\hline
+\rowcolor{bmclightgreen}
+\textbf{Total des investissements initiaux} & \textbf{--} & \textbf{--} & \textbf{1\,798\,700} \\
+\hline
+\end{tabularx}
+\caption{Investissements initiaux nécessaires au lancement de RohWinBghit}
+\label{tab:investissements}
+\end{table}
+
+\paragraph{Dépenses régulières d'exploitation (OPEX) :}
+Le tableau~\ref{tab:depenses} détaille la structure des charges de fonctionnement récurrentes mensuelles :
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|r|c|r|}
+\hline
+\rowcolor{bmclightgreen}
+\textbf{Désignation de la charge d'exploitation} & \textbf{Montant (DZD)} & \textbf{Quantité} & \textbf{Total mensuel (DZD)} \\
+\hline
+Salaire mensuel : Développeurs & 65\,000 & 2 & 130\,000 \\
+\hline
+Salaire mensuel : Marketing manager & 80\,000 & 1 & 80\,000 \\
+\hline
+Salaire mensuel : Commerciaux / Agents de terrain & 65\,000 & 2 & 130\,000 \\
+\hline
+Salaire mensuel : Team leader & 100\,000 & 1 & 100\,000 \\
+\hline
+Salaire mensuel : Directeur général & 130\,000 & 1 & 130\,000 \\
+\hline
+Loyer du local de bureau professionnel (F3) & 30\,000 & 1 & 30\,000 \\
+\hline
+Publicité sur les moteurs de recherche & 15\,000 & 1 & 15\,000 \\
+\hline
+Publicité sur les médias sociaux & 20\,000 & 1 & 20\,000 \\
+\hline
+Publicité et marketing d'e-mailing (MailChimp) & 16\,000 & 1 & 16\,000 \\
+\hline
+Partenariats avec des influenceurs locaux & 7\,500 & 3 & 22\,500 \\
+\hline
+Hébergement cloud (serveurs VPS OVH) & 2\,000 & 1 & 2\,000 \\
+\hline
+Abonnements API techniques (Agora, Firebase OTP) & 3\,000 & 1 & 3\,000 \\
+\hline
+Licence de sécurité antivirus & 15\,000 & 2 & 30\,000 \\
+\hline
+Abonnements Internet et téléphone & 4\,000 & 1 & 4\,000 \\
+\hline
+Frais de déplacements professionnels & 30\,000 & 1 & 30\,000 \\
+\hline
+\rowcolor{bmclightgreen}
+\textbf{Total des charges mensuelles} & \textbf{--} & \textbf{--} & \textbf{742\,500} \\
+\hline
+\end{tabularx}
+\caption{Charges régulières mensuelles de fonctionnement de la plateforme}
+\label{tab:depenses}
+\end{table}
+
+\subsubsection{Revenue streams (Revenus)}
+La plateforme \textit{RohWinBghit} adopte un modèle économique basé sur la gratuité d'accès pour les utilisateurs, monétisé par une commission sur les trajets et de la publicité locale ciblée. Les sources de revenus se décomposent comme suit :
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{InsightFace (open source) :} modèle IA biométrique gratuit évitant 50 000+ USD/an en API tierces.
-  \item \textbf{Expo / React Native :} développement iOS \& Android simultané avec une seule codebase.
-  \item \textbf{PostgreSQL open source :} base de données robuste sans licence.
-  \item \textbf{Partenariats universités :} accès au segment étudiants avec crédibilité institutionnelle.
-\end{itemize}
-
-\subsection*{c. Comment alignons-nous nos intérêts avec ceux de nos partenaires ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Chargily/CIB/Edahabia :} la digitalisation des paiements correspond à leur stratégie nationale.
-  \item \textbf{Mapbox :} usage API croissant renforce leur présence sur le marché algérien.
-  \item \textbf{SNTF/SOGRAAL :} permet de compléter l'offre multimodale sans entrer en concurrence directe.
-  \item \textbf{Universités :} vitrine technologique algérienne pour leurs étudiants et chercheurs.
-\end{itemize}
-
-% ============================================================
-\section{Activités Clés \textit{(Key Activities)}}
-\textarabic{الأنشطة الرئيسية}
-
-\subsection*{a. Quelles sont les actions principales pour livrer notre proposition de valeur ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item Développement continu de l’application mobile (iOS \& Android) et de l’interface web multiplateforme.
-  \item Vérification biométrique des conducteurs : traitement des CIN + vidéos de liveness par l’IA.
-  \item Matching intelligent conducteur-passager basé sur les demandes de trajet.
-  \item Modération, gestion des litiges et support pour assurer la satisfaction des clients.
-  \item Maintenance de l’infrastructure cloud et du service IA Python.
-  \item Acquisition et fidélisation utilisateurs via marketing digital et parrainage.
-\end{itemize}
-
-\subsection*{b. Quelles sont les opérations essentielles pour notre entreprise ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item Traitement sécurisé des paiements et gestion des portefeuilles virtuels.
-  \item Support client 24h/7j via le centre d’aide intégré et les tickets de support.
-  \item Mise à jour régulière du service IA pour améliorer la détection de fraude.
-  \item Gestion des migrations de base de données et de l’évolution du schéma.
-  \item Surveillance des performances en temps réel via Winston logs et Redis caching.
-\end{itemize}
-
-\subsection*{c. Quelles sont les activités qui créent le plus de valeur pour nos clients ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item La vérification d’identité biométrique : c’est le différenciateur \#1, créateur de confiance.
-  \item Le système de notation et d’évaluation : maintient la qualité du service sur le long terme.
-  \item Les notifications temps réel : réduisent l’anxiété du passager et du conducteur.
-  \item Le billet QR code : preuve tangible de réservation, élimine les malentendus au départ.
-\end{itemize}
-
-% ============================================================
-\section{Ressources Clés \textit{(Key Resources)}}
-\textarabic{الموارد الرئيسية}
-
-\subsection*{a. Quels sont nos actifs matériels, immatériels et humains essentiels ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Immatériels :} code source propriétaire (Node.js, React Native, Python IA), algorithmes de matching, base de données PostgreSQL des 69 wilayas.
-  \item \textbf{Technologiques :} plateforme numérique stable, outils techniques, service IA InsightFace, infrastructure cloud AWS.
-  \item \textbf{Humains :} ressources humaines clés (dev full-stack, modérateurs KYC, support client).
-  \item \textbf{Relationnels :} base d’utilisateurs vérifiés, réputation et confiance établie, partenariats bancaires.
-\end{itemize}
-
-\subsection*{b. Quels sont les outils et technologies dont nous avons besoin pour réussir ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Backend :} Node.js 18+, Express.js, PostgreSQL 14+, Redis (cache), Socket.io (temps réel).
-  \item \textbf{Frontend Web :} React 18, TypeScript, Vite, Tailwind CSS, Zustand, TanStack Query.
-  \item \textbf{Mobile :} React Native 0.81, Expo SDK 54, Mapbox, Expo SecureStore, Expo LocalAuthentication.
-  \item \textbf{IA :} Python FastAPI, InsightFace, OpenCV, ONNX Runtime, modèle antelopev2.
-  \item \textbf{Infrastructure :} Docker, docker-compose, EAS Build (Expo), GitHub Actions CI/CD.
-  \item \textbf{Services tiers :} Firebase (push), SendGrid (email), Twilio (SMS), Chargily.
-\end{itemize}
-
-\subsection*{c. Quels sont les principaux avantages concurrentiels de nos ressources ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item Le service IA biométrique maison évite 50 000+ USD/an en API de vérification tierces.
-  \item Architecture monorepo (backend + web + mobile) permet un développement synchronisé rapide.
-  \item La base de données des 69 wilayas avec coordonnées GPS est un actif stratégique unique.
-  \item Le modèle de vérification CIN algérien formé spécifiquement sur les documents algériens.
-  \item Stack technologique moderne permettant scalabilité vers des millions d’utilisateurs.
-\end{itemize}
-
-% ============================================================
-\section{Structure des Coûts \textit{(Cost Structure)}}
-\textarabic{التكاليف}
-
-\subsection*{a. Quels sont les coûts fixes et variables associés à notre modèle économique ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Coûts de développement et maintenance :} hébergement cloud, serveurs, base de données, maintenance de l'application et licences logicielles.
-  \item \textbf{Frais de marketing :} publicité digitale (Facebook Ads, Google Ads), participation à des expositions nationales, campagnes d'acquisition.
-  \item \textbf{Ressources Humaines :} salaires de l'équipe technique, support client, administration.
-  \item \textbf{Coûts variables :} frais transactionnels (Chargily, Stripe, PayPal), SMS (Twilio), stockage KYC.
-\end{itemize}
-
-\subsection*{b. Quels sont les coûts les plus importants pour notre entreprise ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item Infrastructure cloud : le service IA Python est gourmand en CPU — coût principal en phase de croissance.
-  \item Frais de marketing : acquisition organique et payante des utilisateurs.
-  \item Ressources Humaines : équipe DevOps, développeurs et support technique.
-  \item Fraude et litiges : support client, remboursements, modération des abus.
-\end{itemize}
-
-\subsection*{c. Comment pouvons-nous réduire les coûts ou améliorer l’efficacité de nos opérations ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item Utilisation de l’IA open source (InsightFace) au lieu d’API payantes.
-  \item Architecture microservices pour ne scale que le nécessaire.
-  \item Pousser le bouche-à-oreille et les parrainages pour réduire le marketing payant.
-  \item Compression des images et vidéos KYC côté mobile avant envoi au serveur.
-\end{itemize}
-
-% ============================================================
-\section{Sources de Revenus \textit{(Revenue Streams)}}
-\textarabic{مصادر الدخل}
-
-\subsection*{a. Quels produits ou services nos clients sont-ils prêts à payer ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item La mise en relation sécurisée pour chaque trajet (commission covoiturage).
-  \item La réservation de billets officiels de bus/train (SNTF/SOGRAAL).
-  \item Les entreprises pour intégrer leurs flottes ou afficher leur publicité ciblée.
-\end{itemize}
-
-\subsection*{b. Quels sont les différents moyens par lesquels nous pouvons générer des revenus ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Commission de 5\% à 15\% par trajet (covoiturage) :} tarification ajustée pour rester compétitif.
-  \item \textbf{Commission sur billets bus/train :} 3-5\% prélevés sur chaque billet réservé via la plateforme.
-  \item \textbf{Publicité ciblée :} affichage d'annonces de partenaires ou commerçants (restaurants, assurances) dans l'application.
-\end{itemize}
-
-\subsection*{c. Quel est notre modèle de tarification ?}
-\begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Tarification combinée :} base kilométrique pour les trajets personnels, prix fixes pour les billets de train/bus.
-  \item \textbf{Surge pricing (tarification dynamique) :} adapté aux périodes de forte affluence.
-  \item \textbf{Transparence :} le passager paie en ligne ou en espèces, le conducteur voit exactement son revenu net.
+  \item \textbf{Commission de 12\,\% sur trajets (source principale) :} Un prélèvement automatique de \textbf{12\,\%} est effectué sur chaque transaction confirmée via la plateforme, rémunérant le service de mise en relation sécurisée, la vérification KYC et l'accès à l'application. Sur la base d'un panier moyen de \textbf{800 DZD} par trajet, la plateforme perçoit une commission moyenne de \textbf{96 DZD} par mise en relation. Avec un objectif de \textbf{2\,813 trajets validés par mois} (représentant un volume d'affaires de \textbf{2\,250\,400 DZD / mois}), cela représente \textbf{270\,000 DZD / mois} (soit \textbf{3\,240\,000 DZD / an}).
+  \item \textbf{Publicité locale ciblée (source complémentaire) :} Espaces publicitaires in-app non intrusifs destinés aux commerces locaux situés sur les principaux axes routiers, développés de manière progressive. À vitesse de croisière (moyen terme), en ciblant \textbf{25 annonceurs partenaires locaux} à un forfait mensuel de \textbf{24\,000 DZD} chacun, cette source générera un revenu estimé à \textbf{600\,000 DZD / mois} (soit \textbf{7\,200\,000 DZD / an}).
+  \item \textbf{Partenariats institutionnels et B2B (source complémentaire) :} Conventions de covoiturage subventionné pour les étudiants ou salariés avec des universités et entreprises, constituant des revenus complémentaires non comptabilisés dans les projections de base.
 \end{itemize}
 
 % ============================================================
 \newgeometry{margin=1cm}%
 \begin{landscape}
-\thispagestyle{empty} % Masquer en-têtes et pieds de page pour une mise en page plein écran propre
+\thispagestyle{empty}
 \centering
 \vspace*{\fill}
 {\color{bmcgreen}\Large\bfseries\sffamily Business Model Canvas -- RohWinBghit}\\[0.4cm]
 \renewcommand{\arraystretch}{1.0}%
 \begin{tabularx}{\linewidth}{@{}XXXXX@{}}%
-\begin{bmcblock}[height=8.8cm]{\faHandshake~Partenaires Clés}%
+\begin{bmcblock}[height=10.6cm]{\faHandshake~Partenaires Clés}%
 \scriptsize
 \begin{itemize}[leftmargin=1.0em, itemsep=4pt, parsep=0pt]
-  \item \textbf{Mapbox / Firebase} : Géo-tracking \& notifications push.
-  \item \textbf{Chargily Pay V2} : Passerelle de paiement CIB/Edahabia.
-  \item \textbf{SNTF \& SOGRAAL} : Intégration bus/trains.
-  \item \textbf{Assureurs auto} : Protection des usagers.
-  \item \textbf{Twilio / SendGrid} : OTP SMS \& emails.
+  \item \textbf{Prototype et infrastructures} : Fournisseurs d'hébergement cloud, services de géolocalisation et cartographie, fournisseurs de passerelle monétique locale.
+  \item \textbf{Soutien académique} : Universités et incubateurs d'accompagnement à l'innovation.
+  \item \textbf{Acteurs du transport public} : Partenariats stratégiques envisagés avec les opérateurs de transport.
+  \item \textbf{Assurances} : Collaborations potentielles avec les compagnies d'assurance.
 \end{itemize}
 \end{bmcblock} &%
-\begin{bmcblock}[height=3.7cm]{\faCogs~Activités Clés}%
+\begin{bmcblock}[height=4.5cm]{\faCogs~Activités Clés}%
 \scriptsize
 \begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
-  \item \textbf{Matching intelligent} : Algorithme de mise en relation.
-  \item \textbf{Vérification KYC} : Pipeline IA FastAPI/InsightFace.
-  \item \textbf{Séquestre Chargily} : Transactions sécurisées.
+  \item \textbf{Développement continu} des applications mobiles et de la plateforme web.
+  \item \textbf{Supervision KYC} et modération des documents d'identité.
+  \item \textbf{Gestion des portefeuilles} et traitement des flux transactionnels.
 \end{itemize}
 \end{bmcblock}%
 \vspace{0.3cm}%
-\begin{bmcblock}[height=4.8cm]{\faLaptop~Ressources Clés}%
+\begin{bmcblock}[height=5.8cm]{\faLaptop~Ressources Clés}%
 \scriptsize
 \begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
-  \item \textbf{Code propriétaire} : React Native, Node.js.
-  \item \textbf{Hébergement Cloud} : Serveurs VPS sous Docker.
-  \item \textbf{Modèles d'IA} : InsightFace antelopev2.
-  \item \textbf{Données GPS} : Base des 69 wilayas.
+  \item \textbf{Plateforme logicielle RohWinBghit} et base de données géographiques d'Algérie.
+  \item \textbf{Modules de vision par ordinateur} formés pour la reconnaissance biométrique.
+  \item \textbf{Équipe d'ingénieurs} et infrastructure cloud dédiée.
+  \item \textbf{Propriété industrielle} (marques déposées).
 \end{itemize}
 \end{bmcblock} &%
-\begin{bmchighlight}[height=8.8cm]{\faGem~Proposition de Valeur}%
+\begin{bmchighlight}[height=10.6cm]{\faGem~Proposition de Valeur}%
 \scriptsize
 \begin{itemize}[leftmargin=1.0em, itemsep=4pt, parsep=0pt]
-  \item \textbf{1\textsuperscript{ère} plateforme vérifiée} de covoiturage en Algérie.
-  \item \textbf{Sécurité KYC biométrique} : Liveness + comparaison faciale.
-  \item \textbf{Paiement local intégré} : Cartes CIB, Edahabia et espèces.
-  \item \textbf{Couverture nationale} : Connexion des 69 wilayas.
-  \item \textbf{Économique \& flexible} : Tarifs réduits adaptables.
+  \item \textbf{Covoiturage interurbain sécurisé} grâce à un contrôle d'identité automatique.
+  \item \textbf{KYC biométrique} complet : Vérification documentaire et détection active de vivacité.
+  \item \textbf{Paiement local flexible} : Support des cartes nationales CIB et Edahabia, et espèces.
+  \item \textbf{Réservation numérique} traçable et billets sécurisés par codes QR.
+  \item \textbf{Réduction des coûts} de trajet par partage des frais d'exploitation du véhicule.
 \end{itemize}
 \end{bmchighlight} &%
-\begin{bmcblock}[height=3.7cm]{\faHeart~Relations Clients}%
+\begin{bmcblock}[height=4.5cm]{\faHeart~Relations Clients}%
 \scriptsize
 \begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
-  \item \textbf{Confiance} : Profils certifiés par badge vert.
-  \item \textbf{Notation mutuelle} : Notation après chaque trajet.
-  \item \textbf{Chat temps réel} : Communication WebSockets.
+  \item \textbf{Confiance réciproque} : Profils certifiés et système d'évaluation mutuelle.
+  \item \textbf{Support client} : Support et système de signalement des litiges intégré.
+  \item \textbf{Accompagnement} des utilisateurs dans la phase KYC.
 \end{itemize}
 \end{bmcblock}%
 \vspace{0.3cm}%
-\begin{bmcblock}[height=4.8cm]{\faBullhorn~Canaux}%
+\begin{bmcblock}[height=5.8cm]{\faBullhorn~Canaux}%
 \scriptsize
 \begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
-  \item \textbf{App Mobile} : Versions iOS \& Android.
-  \item \textbf{Portail Web} : Site vitrine \& console admin.
-  \item \textbf{Réseaux sociaux} : Acquisition et visibilité.
-  \item \textbf{Campus} : Ambassadeurs \& parrainage.
+  \item \textbf{Magasins d'applications} mobiles d'iOS et d'Android.
+  \item \textbf{Site internet} vitrine et console d'administration.
+  \item \textbf{Réseaux sociaux} et campagnes de communication.
+  \item \textbf{Campus universitaires} et programmes d'ambassadeurs.
 \end{itemize}
 \end{bmcblock} &%
-\begin{bmcblock}[height=8.8cm]{\faUsers~Segments Clients}%
+\begin{bmcblock}[height=10.6cm]{\faUsers~Segments Clients}%
 \scriptsize
 \begin{itemize}[leftmargin=1.0em, itemsep=4pt, parsep=0pt]
-  \item \textbf{Étudiants (68\,\%)} : Voyageurs réguliers, sensibles aux tarifs.
-  \item \textbf{Travailleurs actifs} : Navettes hebdomadaires inter-wilayas.
-  \item \textbf{Conducteurs particuliers} : Propriétaires cherchant à amortir leurs trajets.
-  \item \textbf{Voyageurs} : Familles en déplacement ponctuel.
+  \item \textbf{Étudiants universitaires} effectuant des navettes inter-wilayas.
+  \item \textbf{Travailleurs pendulaires} nécessitant des déplacements réguliers.
+  \item \textbf{Conducteurs particuliers} cherchant à réduire leurs frais de déplacement.
+  \item \textbf{Voyageurs occasionnels} se déplaçant pour raisons familiales ou loisirs.
 \end{itemize}
 \end{bmcblock} \\
-\end{tabularx}%
-\vspace{0.4cm}%
+\end{tabularx}
+
+\vspace{0.4cm}
 
 \begin{tabularx}{\linewidth}{@{}XX@{}}%
-\begin{bmcblock}[height=3.4cm]{\faCoins~Structure de Coûts}%
+\begin{bmcblock}[height=4.2cm]{\faCoins~Structure de Coûts}%
 \scriptsize
-\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
-  \item \textbf{Infrastructures \& DevOps} : Hébergement Cloud, calcul GPU pour l'IA.
-  \item \textbf{Services tiers} : API Mapbox, Twilio SMS, frais transactionnels Chargily.
-  \item \textbf{Ressources Humaines} : Salaires développeurs, support et modérateurs KYC.
-  \item \textbf{Marketing} : Campagnes promotionnelles campus et parrainage (200 DZD).
+\begin{itemize}[leftmargin=1.5em, itemsep=1pt, parsep=0pt, topsep=2pt, partopsep=0pt]
+  \item \textbf{Infrastructure \& DevOps} (\textasciitilde~28\,500~DZD/mois)
+  \item \textbf{Services tiers} (\textasciitilde~9\,500~DZD/mois)
+  \item \textbf{Ressources humaines} (\textasciitilde~570\,000~DZD/mois)
+  \item \textbf{Marketing \& Acquisition} (\textasciitilde~73\,500~DZD/mois)
 \end{itemize}
+\vspace*{\fill}
+\hrule
+\vspace{0.1cm}
+\centering
+\begin{tabular}{l@{~:~}l@{\qquad\qquad}l@{~:~}l}
+\textcolor{bmcgreen}{\textbf{CAPEX}} & \textbf{1\,798\,700~DZD} &
+\textcolor{bmcgreen}{\textbf{OPEX}} & \textbf{742\,500~DZD / mois}
+\end{tabular}
 \end{bmcblock} &%
-\begin{bmcblock}[height=3.4cm]{\faMoneyBillWave~Sources de Revenus}%
+\begin{bmcblock}[height=4.2cm]{\faMoneyBillWave~Sources de Revenus}%
 \scriptsize
-\begin{itemize}[leftmargin=1.0em, itemsep=2pt, parsep=0pt]
-  \item \textbf{Commission trajets} : Commission de 5\,\% à 15\,\% par réservation.
-  \item \textbf{Commission bus/train} : Commission de 3\,\% à 5\,\% sur l'offre multimodale.
-  \item \textbf{Abonnement Chauffeur} : Formule Premium à 500 DZD/mois pour plus de visibilité.
-  \item \textbf{Publicité \& Partenariats} : Affichage d'annonces ciblées B2B.
+\begin{itemize}[leftmargin=1.5em, itemsep=1pt, parsep=0pt, topsep=2pt, partopsep=0pt]
+  \item \textbf{Commission sur les trajets} (\textasciitilde~270\,000~DZD/mois)
+  \item \textbf{Abonnement Premium Conducteur} (\textasciitilde~50\,000~DZD/mois)
+  \item \textbf{Publicité locale ciblée} (\textasciitilde~30\,000~DZD/mois)
+  \item \textbf{Partenariats B2B} (revenus variables)
 \end{itemize}
+\vspace*{\fill}
+\hrule
+\vspace{0.1cm}
+\centering
+\begin{tabular}{l@{~:~}l@{\qquad\qquad}l@{~:~}l}
+\textcolor{bmcgreen}{\textbf{CA estimé}} & \textbf{350\,000~DZD / mois} &
+\textcolor{bmcgreen}{\textbf{CA estimé}} & \textbf{4\,200\,000~DZD / an}
+\end{tabular}
 \end{bmcblock} \\
-\end{tabularx}%
+\end{tabularx}
+
+\vspace{0.4cm}
+\captionof{table}{Vue synthétique qualitative du Business Model Canvas}
+\label{tab:app-bmc}
 \vspace*{\fill}
 \end{landscape}
 \restoregeometry
+
+\subsection{Justification et cohérence du modèle}
+Le Business Model Canvas présente une vue synthétique qualitative du modèle économique afin de faciliter la compréhension stratégique du projet. Les estimations financières détaillées, les hypothèses de coûts, les projections de revenus et l'analyse de rentabilité sont présentées dans la section Étude technico-économique et faisabilité du projet. Cette séparation permet de préserver la lisibilité du BMC tout en fournissant une analyse financière rigoureuse et cohérente avec les objectifs du dispositif « Un diplôme, une Startup » (Arrêté interministériel n\textsuperscript{o} 1275). Elle garantit que la vision présentée demeure crédible devant un jury universitaire et opérationnelle pour un accompagnement en incubateur.
 
 \end{document}

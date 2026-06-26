@@ -1,4 +1,4 @@
-\chapter{Réalisation, tests et déploiement}
+\chapter{Réalisation et validation de la plateforme RohWinBghit}
 \label{chap:realisation}
 
 \section{Introduction}
@@ -59,7 +59,7 @@ Le choix des briques technologiques de la plateforme a été guidé par des crit
 \subsection{Déploiement et conteneurisation}
 
 \begin{itemize}[leftmargin=1.8em]
-  \item \textbf{Docker et Docker Compose~\cite{docker_docs}~:} L'intégralité des composants de l'architecture distribuée est conteneurisée au sein d'images Docker légères, garantissant la reproductibilité stricte des environnements d'exécution entre les machines de développement, d'intégration et les serveurs de production.
+  \item \textbf{Docker et Docker Compose~\cite{docker_docs}~:} L'intégralité des composants de l'architecture distribuée est conteneurisée au sein d'images Docker légères, assurant la reproductibilité des environnements d'exécution entre les machines de développement, d'intégration et les serveurs de production.
   \item \textbf{Expo Application Services (EAS)~:} Suite de services cloud exploitée pour l'automatisation de la compilation des binaires natifs Android (AAB) et iOS (IPA) signés de manière conforme pour les magasins d'applications officiels.
 \end{itemize}
 
@@ -89,7 +89,7 @@ L'interface mobile de \textit{RohWinBghit} est unifiée au sein d'une unique bas
 \subsubsection{Parcours d'onboarding et inscription}
 \label{sec:onboarding}
 
-L'expérience utilisateur débute dès le premier lancement de l'application par un parcours d'onboarding soigneusement conçu pour établir la confiance, orienter le nouvel utilisateur et présenter les piliers de la plateforme (figure~\ref{fig:onboarding-landing}). Ce flux d'accueil présente le slogan «~Votre trajet, notre priorité~» ainsi que les trois garanties fondamentales du service~: une couverture géographique complète (58~wilayas, étendant le réseau sur toute l'Algérie), une assistance disponible en permanence (24/7) et une garantie de sécurité totale (100\,\%). Le bouton «~Commencer l'aventure~» ou «~Se connecter~/~S'inscrire~» redirige l'utilisateur vers le tunnel d'authentification et de création de compte.
+L'expérience utilisateur débute dès le premier lancement de l'application par un parcours d'onboarding soigneusement conçu pour établir la confiance, orienter le nouvel utilisateur et présenter les piliers de la plateforme (figure~\ref{fig:onboarding-landing}). Ce flux d'accueil présente le slogan «~Votre trajet, notre priorité~» ainsi que les trois axes fondamentaux du service~: une couverture géographique complète (69~wilayas, étendant le réseau sur toute l'Algérie), une assistance disponible en permanence (24/7) et l'accent mis sur la sécurisation des parcours. Le bouton «~Commencer l'aventure~» ou «~Se connecter~/~S'inscrire~» redirige l'utilisateur vers le tunnel d'authentification et de création de compte.
 
 \begin{figure}[H]
 \centering
@@ -219,7 +219,7 @@ La fiche détaillée d'un trajet (figure~\ref{fig:trip-details}) offre une vue c
 \end{figure}
 
 \noindent\textbf{Billet numérique et cycle de vie~:}
-Une fois la réservation effectuée, un billet numérique contenant un code QR unique et infalsifiable est généré (figure~\ref{fig:ticket-lifecycle}). Ce code embarque la signature cryptographique du tuple \texttt{(booking\_id, passenger\_id, trip\_id)}. Le billet évolue selon un cycle de vie en deux états~: à gauche, le statut «~En~attente~» (badge orange) indique que la réservation a été soumise et attend la validation du conducteur~; à droite, le statut «~Confirmé~» (badge vert) confirme l'acceptation. Chaque billet affiche les détails du trajet (horaires, wilayas, conducteur, prix) et un code de référence unique (ex.~\texttt{BK-A73756}). Les boutons «~Appeler~», «~Chat~» et «~Aide~» en pied d'écran permettent une communication directe avec le conducteur ou le support.
+Une fois la réservation effectuée, un billet numérique contenant un code QR unique, sécurisé par signature cryptographique, est généré (figure~\ref{fig:ticket-lifecycle}). Ce code embarque la signature cryptographique du tuple \texttt{(booking\_id, passenger\_id, trip\_id)}. Le billet évolue selon un cycle de vie en deux états~: à gauche, le statut «~En~attente~» (badge orange) indique que la réservation a été soumise et attend la validation du conducteur~; à droite, le statut «~Confirmé~» (badge vert) confirme l'acceptation. Chaque billet affiche les détails du trajet (horaires, wilayas, conducteur, prix) et un code de référence unique (ex.~\texttt{BK-A73756}). Les boutons «~Appeler~», «~Chat~» et «~Aide~» en pied d'écran permettent une communication directe avec le conducteur ou le support.
 
 \begin{figure}[H]
 \centering
@@ -238,7 +238,7 @@ Une fois la réservation effectuée, un billet numérique contenant un code QR u
 \end{figure}
 
 \noindent\textbf{Processus d'embarquement biométrique mutuel (Check-in)~:}
-Pour remédier aux fraudes d'identité et garantir que le conducteur et le passager réels sont bien ceux enregistrés, la plateforme intègre un parcours d'embarquement biométrique mutuel géré par le \texttt{CheckinController}. Ce flux interactif s'articule comme suit :
+Pour réduire les risques d'usurpation d'identité et vérifier la correspondance entre l'utilisateur enregistré et le passager ou conducteur réel lors de l'embarquement, la plateforme intègre un parcours d'embarquement biométrique mutuel géré par le \texttt{CheckinController}. Ce flux interactif s'articule comme suit :
 \begin{enumerate}
   \item Le passager présente son billet contenant le code QR unique généré sur son terminal mobile.
   \item Le conducteur scanne ce code QR à l'aide de l'appareil photo de son application.
@@ -525,14 +525,14 @@ L'analyse approfondie des résultats présentés sur cette capture d'écran met 
   \end{itemize}
   \item \textbf{Analyse sectorielle de la couverture par module~:}
   \begin{itemize}
-    \item \textbf{Routes de l'API (\textit{routes})~:} Présentent une couverture d'instructions et de lignes de code exceptionnelle de \textbf{98,75\,\%} (et \textbf{100\,\%} de couverture fonctionnelle), garantissant que chaque point d'accès réseau est surveillé de près par des tests d'intégration rigoureux via Supertest.
+    \item \textbf{Routes de l'API (\textit{routes})~:} Présentent une couverture d'instructions et de lignes de code exceptionnelle de \textbf{98,75\,\%} (et \textbf{100\,\%} de couverture fonctionnelle), assurant que chaque point d'accès réseau est surveillé de près par des tests d'intégration rigoureux via Supertest.
     \item \textbf{Middlewares Express~:} Bénéficient d'une couverture d'instructions de \textbf{89,01\,\%} et d'une couverture fonctionnelle absolue de \textbf{100\,\%}, confirmant l'intégrité opérationnelle des mécanismes de sécurité transversaux (validation des payloads Zod, vérification des sessions JWT, gestion centrale des erreurs Express et validations du statut de confiance KYC).
     \item \textbf{Classes utilitaires (\textit{utils})~:} Affichent un taux de \textbf{84,61\,\%} d'instructions et de lignes couvertes, assurant la résilience et le comportement correct de tous les services annexes (calcul de la tarification dynamique, chiffrement fort AES-256-GCM des données de véhicules, gestion et formatage des dates, et calcul des remboursements du portefeuille utilisateur).
     \item \textbf{Contrôleurs (\textit{controllers})~:} Affichent une couverture d'instructions de \textbf{71,85\,\%}, un excellent indicateur confirmant que la logique métier de gestion des réservations, de matching de trajets, de messagerie asynchrone et de vérification biométrique est minutieusement vérifiée.
   \end{itemize}
 \end{itemize}
 
-Ces résultats et indicateurs formels démontrent sans ambiguïté la robustesse, la stabilité et la haute fiabilité de l'implémentation de la plateforme \textit{RohWinBghit}, garantissant un fonctionnement fluide et sécurisé pour l'ensemble des usagers.
+Ces résultats et indicateurs formels démontrent sans ambiguïté la robustesse, la stabilité et la haute fiabilité de l'implémentation de la plateforme \textit{RohWinBghit}, contribuant à un fonctionnement fluide et sécurisé pour l'ensemble des usagers.
 
 Le tableau~\ref{tab:test-scenarios} présente les principaux scénarios de tests fonctionnels exécutés manuellement pour valider la conformité de chaque parcours utilisateur.
 
@@ -590,7 +590,11 @@ Message délivré en temps réel via WebSocket. Message persisté en base de don
 \section{Évaluation d'utilisabilité quantitative (SUS)}
 \label{sec:tests-sus}
 
-Pour valider l'hypothèse H2, une campagne d'évaluation d'utilisabilité a été menée en conditions réelles auprès de 18 participants représentatifs de la population cible algérienne (étudiants et conducteurs réguliers interurbains). L'étude s'appuie sur le questionnaire standardisé de l'échelle SUS (\textit{System Usability Scale})~:
+Pour valider l'hypothèse H2, une campagne d'évaluation d'utilisabilité a été menée en conditions réelles auprès de 18 participants représentatifs de la population cible algérienne (étudiants et conducteurs réguliers interurbains).
+
+Le \textbf{System Usability Scale (SUS)} est un questionnaire standardisé composé de 10~affirmations, proposé par Brooke~(1996), qui permet d'évaluer la perception subjective de l'utilisabilité d'un système. Chaque affirmation est notée sur une échelle de Likert à 5~points (1~=~\textit{pas du tout d'accord} à 5~=~\textit{tout à fait d'accord}). Le score final est calculé sur 100 selon un algorithme standardisé. Selon la classification de Bangor \textit{et~al.}~\cite{Bangor2008}, un score SUS supérieur à 68 correspond à une utilisabilité \guillemotleft~bonne~\guillemotright, tandis qu'un score supérieur à 80 est qualifié d'\guillemotleft~excellent~\guillemotright.
+
+Les résultats de la campagne SUS pour \textit{RohWinBghit} sont les suivants~:
 \begin{itemize}[leftmargin=1.8em]
   \item \textbf{Résultat global~:} La plateforme \textit{RohWinBghit} a obtenu un score moyen de \textbf{71,6 sur 100}.
   \item \textbf{Interprétation (Barème de Bangor)~:} Selon la classification de Bangor \textit{et~al.}~\cite{Bangor2008}, tout système obtenant un score SUS supérieur à 68 est qualifié d'utilisabilité «~bonne~». L'hypothèse H2 est par conséquent validée scientifiquement.
